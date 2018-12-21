@@ -79,5 +79,14 @@
     "files": [
       "src/routes/login/index.js"
     ]
+  },
+  {
+    "id": "ide.title",
+    "description": "IDE page title",
+    "defaultMessage": "IDE",
+    "message": "",
+    "files": [
+      "src/routes/ide/index.js"
+    ]
   }
 ]
