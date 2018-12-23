@@ -10,6 +10,9 @@
 import React from 'react';
 import PropTypes from 'prop-types'; // eslint-disable-line no-unused-vars
 import withStyles from 'isomorphic-style-loader/lib/withStyles';
+
+import Button from '@material-ui/core/Button';
+
 import s from './Ide.css';
 
 class Ide extends React.Component {
@@ -19,8 +22,9 @@ class Ide extends React.Component {
     return (
       <div className={s.root}>
         <div className={s.container}>
-          <h1>IDE</h1>
-          <div />
+          <Button variant="contained" color="primary">
+            IDE
+          </Button>
         </div>
       </div>
     );
