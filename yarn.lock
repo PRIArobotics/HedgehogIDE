@@ -4886,6 +4886,11 @@ flatten@^1.0.2:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/flatten/-/flatten-1.0.2.tgz#dae46a9d78fbe25292258cc1e780a41d95c03782"
 
+flexlayout-react@^0.3.3:
+  version "0.3.3"
+  resolved "https://registry.yarnpkg.com/flexlayout-react/-/flexlayout-react-0.3.3.tgz#f6e0db8fb46290301cdd931b375e808fadc02ab7"
+  integrity sha512-BtfAp6yPUaxAP8KyJBeIH0NgnTBsKZRV6wsMb80fXQp2cHM4kgOcrPkndkCMspc1/JUNo/RraNttCiPHNiJrxg==
+
 flow-bin@^0.74.0:
   version "0.74.0"
   resolved "https://registry.yarnpkg.com/flow-bin/-/flow-bin-0.74.0.tgz#8017bb00efb37cbe8d81fbb7f464038bde06adc9"

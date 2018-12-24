@@ -31,6 +31,7 @@
     "express-graphql": "^0.6.12",
     "express-jwt": "^5.3.1",
     "express-request-language": "^1.1.12",
+    "flexlayout-react": "^0.3.3",
     "graphql": "^0.13.2",
     "graphql-tag": "^2.6.1",
     "graphql-tools": "^2.16.0",
