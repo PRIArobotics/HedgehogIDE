@@ -94,10 +94,12 @@ class Ide extends React.Component {
       <div className={s.root}>
         <div className={s.container}>
           {this.state.model && (
-            <this.FlexLayout.Layout
-              model={this.state.model}
-              factory={this.factory}
-            />
+            <div className={s['flexlayout-container']}>
+              <this.FlexLayout.Layout
+                model={this.state.model}
+                factory={this.factory}
+              />
+            </div>
           )}
         </div>
       </div>

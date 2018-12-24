@@ -16,6 +16,11 @@
 
 .container {
   margin: 0 auto;
-  padding: 0 0 40px;
+  padding: 10px 0;
   max-width: var(--max-content-width);
+}
+
+.flexlayout-container {
+  height: 200px;
+  position: relative;
 }
