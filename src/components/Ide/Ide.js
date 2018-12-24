@@ -12,9 +12,10 @@ import PropTypes from 'prop-types'; // eslint-disable-line no-unused-vars
 import withStyles from 'isomorphic-style-loader/lib/withStyles';
 
 import Button from '@material-ui/core/Button';
-import FlexLayoutTheme from 'flexlayout-react/style/light.css';
 
 import s from './Ide.css';
+// eslint-disable-next-line css-modules/no-unused-class
+import FlexLayoutTheme from './flex_layout_ide.css';
 
 // FIXME work around FlexLayout's incompatibility with server-side rendering
 // if we're not in the browser, use a "never" promise
@@ -98,6 +99,7 @@ class Ide extends React.Component {
               <this.FlexLayout.Layout
                 model={this.state.model}
                 factory={this.factory}
+                classNameMapper={className => FlexLayoutTheme[className]}
               />
             </div>
           )}
