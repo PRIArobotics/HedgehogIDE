@@ -17,12 +17,6 @@ import s from './Ide.css';
 // eslint-disable-next-line css-modules/no-unused-class
 import FlexLayoutTheme from './flex_layout_ide.css';
 
-// FIXME work around FlexLayout's incompatibility with server-side rendering
-// if we're not in the browser, use a "never" promise
-const FlexLayoutP = process.env.BROWSER
-  ? import('flexlayout-react')
-  : new Promise(() => {});
-
 const json = {
   global: {},
   borders: [],
@@ -67,8 +61,8 @@ class Ide extends React.Component {
   }
 
   componentDidMount() {
-    FlexLayoutP.then(FlexLayout => {
-      // if we're not in the browser, this will never run
+    // FIXME work around FlexLayout's incompatibility with server-side rendering
+    import('flexlayout-react').then(FlexLayout => {
       this.FlexLayout = FlexLayout;
       this.setState({
         model: this.FlexLayout.Model.fromJson(json),
