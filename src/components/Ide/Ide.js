@@ -80,9 +80,11 @@ class Ide extends React.Component {
     switch (node.getComponent()) {
       case 'button': {
         return (
-          <Button variant="contained" color="primary">
-            IDE
-          </Button>
+          <div className={s.tab}>
+            <Button variant="contained" color="primary">
+              IDE
+            </Button>
+          </div>
         );
       }
       default:

@@ -24,3 +24,7 @@
   height: 200px;
   position: relative;
 }
+
+.tab {
+  margin: 2px;
+}
