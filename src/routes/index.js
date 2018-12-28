@@ -24,6 +24,10 @@ const routes = {
       load: () => import(/* webpackChunkName: 'ide' */ './ide'),
     },
     {
+      path: '/simulator',
+      load: () => import(/* webpackChunkName: 'simulator' */ './simulator'),
+    },
+    {
       path: '/contact',
       load: () => import(/* webpackChunkName: 'contact' */ './contact'),
     },

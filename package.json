@@ -41,6 +41,7 @@
     "isomorphic-style-loader": "^4.0.0",
     "jsonwebtoken": "^8.3.0",
     "lodash": "^4.17.5",
+    "matter-js": "^0.14.2",
     "node-fetch": "^2.1.2",
     "normalize.css": "^8.0.0",
     "passport": "^0.4.0",
