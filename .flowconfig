@@ -1,0 +1,10 @@
+[ignore]
+.*/build
+.*/docs
+.*/node_modules
+.*/public
+
+[include]
+
+[options]
+suppress_comment=\\(.\\|\n\\)*\\$FlowExpectError
