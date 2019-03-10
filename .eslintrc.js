@@ -102,5 +102,10 @@ module.exports = {
 
     // PropTypes and states are typed by Flow basically, but Flow cannot type defaultProps.
     'react/require-default-props': 'off',
+    // see https://medium.freecodecamp.org/incrementally-add-flow-type-checking-react-261fee015f80
+    'react/default-props-match-prop-types': [
+      'error',
+      { allowRequiredDefaults: true },
+    ],
   },
 };
