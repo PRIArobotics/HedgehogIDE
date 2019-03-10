@@ -12,6 +12,8 @@
 import React from 'react';
 import withStyles from 'isomorphic-style-loader/lib/withStyles';
 
+import Button from '@material-ui/core/Button';
+
 import s from './Ide.css';
 
 type PropTypes = {||};
@@ -21,8 +23,9 @@ class Ide extends React.Component<PropTypes> {
     return (
       <div className={s.root}>
         <div className={s.container}>
-          <h1>IDE</h1>
-          <div />
+          <Button variant="contained" color="primary">
+            IDE
+          </Button>
         </div>
       </div>
     );
