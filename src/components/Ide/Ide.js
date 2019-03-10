@@ -15,21 +15,95 @@ import withStyles from 'isomorphic-style-loader/lib/withStyles';
 import Button from '@material-ui/core/Button';
 
 import s from './Ide.css';
+// eslint-disable-next-line css-modules/no-unused-class
+import FlexLayoutTheme from './flex_layout_ide.css';
+
+const json = {
+  global: {},
+  borders: [],
+  layout: {
+    type: 'row',
+    weight: 50,
+    children: [
+      {
+        type: 'tabset',
+        weight: 50,
+        selected: 0,
+        children: [
+          {
+            type: 'tab',
+            name: 'A',
+            component: 'button',
+          },
+        ],
+      },
+      {
+        type: 'tabset',
+        weight: 50,
+        selected: 0,
+        children: [
+          {
+            type: 'tab',
+            name: 'B',
+            component: 'button',
+          },
+        ],
+      },
+    ],
+  },
+};
 
 type PropTypes = {||};
 
 class Ide extends React.Component<PropTypes> {
+  constructor(props) {
+    super(props);
+    this.state = {};
+  }
+
+  componentDidMount() {
+    // FIXME work around FlexLayout's incompatibility with server-side rendering
+    import('flexlayout-react').then(FlexLayout => {
+      this.FlexLayout = FlexLayout;
+      this.setState({
+        model: this.FlexLayout.Model.fromJson(json),
+      });
+    });
+  }
+
+  factory = node => {
+    switch (node.getComponent()) {
+      case 'button': {
+        return (
+          <div className={s.tab}>
+            <Button variant="contained" color="primary">
+              IDE
+            </Button>
+          </div>
+        );
+      }
+      default:
+        return null;
+    }
+  };
+
   render() {
     return (
       <div className={s.root}>
         <div className={s.container}>
-          <Button variant="contained" color="primary">
-            IDE
-          </Button>
+          {this.state.model && (
+            <div className={s['flexlayout-container']}>
+              <this.FlexLayout.Layout
+                model={this.state.model}
+                factory={this.factory}
+                classNameMapper={className => FlexLayoutTheme[className]}
+              />
+            </div>
+          )}
         </div>
       </div>
     );
   }
 }
 
-export default withStyles(s)(Ide);
+export default withStyles(s, FlexLayoutTheme)(Ide);
