@@ -24,6 +24,10 @@ const routes = {
       load: () => import(/* webpackChunkName: 'ide' */ './ide'),
     },
     {
+      path: '/apollo',
+      load: () => import(/* webpackChunkName: 'apollo' */ './apollo'),
+    },
+    {
       path: '/simulator',
       load: () => import(/* webpackChunkName: 'simulator' */ './simulator'),
     },
