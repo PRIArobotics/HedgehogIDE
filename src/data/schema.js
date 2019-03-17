@@ -10,6 +10,12 @@
 import merge from 'lodash.merge';
 
 import {
+  schema as ApolloSchema,
+  resolvers as ApolloResolvers,
+  queries as ApolloQueries,
+} from './graphql/Apollo/schema';
+
+import {
   schema as NewsSchema,
   resolvers as NewsResolvers,
   queries as NewsQueries,
@@ -46,6 +52,7 @@ const RootQuery = [
   # 2. [Mock your GraphQL API](https://www.apollographql.com/docs/graphql-tools/mocking.html) with fine-grained per-type mocking
   # 3. Automatically [stitch multiple schemas together](https://www.apollographql.com/docs/graphql-tools/schema-stitching.html) into one larger API
   type RootQuery {
+    ${ApolloQueries}
     ${NewsQueries}
     ${DatabaseQueries}
     ${OnMemoryStateQueries}
@@ -83,7 +90,12 @@ const SchemaDefinition = [
 
 // Merge all of the resolver objects together
 // Put schema together into one array of schema strings
-const resolvers = merge(NewsResolvers, DatabaseResolvers, TimestampResolvers);
+const resolvers = merge(
+  ApolloResolvers,
+  NewsResolvers,
+  DatabaseResolvers,
+  TimestampResolvers,
+);
 
 const schema = [
   ...SchemaDefinition,
@@ -91,6 +103,7 @@ const schema = [
   ...RootQuery,
   ...Mutation,
 
+  ...ApolloSchema,
   ...NewsSchema,
   ...DatabaseSchema,
   ...OnMemoryStateSchema,
