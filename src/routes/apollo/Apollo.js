@@ -13,6 +13,7 @@ import React from 'react';
 import { graphql, compose } from 'react-apollo';
 import type { OperationComponent } from 'react-apollo';
 import withStyles from 'isomorphic-style-loader/lib/withStyles';
+import Button from '@material-ui/core/Button';
 // $FlowExpectError
 import query from './query.graphql';
 import s from './Apollo.css';
@@ -28,14 +29,25 @@ const enhance: OperationComponent<ApolloQuery> = compose(
 
 const Apollo = enhance(props => {
   const {
-    data: { loading, apolloQuery },
+    data: { refetch, loading, apolloQuery },
   } = props;
 
   return (
     <div className={s.root}>
       <div className={s.container}>
         <h1>Apollo feature test</h1>
-        <p>{loading ? 'Loading...' : apolloQuery.data}</p>
+        <p>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={async () => {
+              await refetch();
+            }}
+          >
+            Refresh
+          </Button>
+          {loading ? 'Loading...' : apolloQuery.data}
+        </p>
       </div>
     </div>
   );
