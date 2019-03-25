@@ -10,7 +10,7 @@
 // @flow
 
 import React from 'react';
-import { graphql } from 'react-apollo';
+import { graphql, compose } from 'react-apollo';
 import type { OperationComponent } from 'react-apollo';
 import withStyles from 'isomorphic-style-loader/lib/withStyles';
 // $FlowExpectError
@@ -21,9 +21,12 @@ import type { ApolloQuery } from './__generated__/ApolloQuery';
 
 // Note: There is a regression from flow-bin@0.89.0
 // which spoils OperationComponent declaration. Be careful.
-const withQuery: OperationComponent<ApolloQuery> = graphql(query);
+const enhance: OperationComponent<ApolloQuery> = compose(
+  graphql(query),
+  withStyles(s),
+);
 
-const Home = withQuery(props => {
+const Apollo = enhance(props => {
   const {
     data: { loading, apolloQuery },
   } = props;
@@ -32,10 +35,10 @@ const Home = withQuery(props => {
     <div className={s.root}>
       <div className={s.container}>
         <h1>Apollo feature test</h1>
-        {loading ? 'Loading...' : <p>{apolloQuery.data}</p>}
+        <p>{loading ? 'Loading...' : apolloQuery.data}</p>
       </div>
     </div>
   );
 });
 
-export default withStyles(s)(Home);
+export default Apollo;
