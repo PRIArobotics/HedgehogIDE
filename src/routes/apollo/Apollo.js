@@ -16,6 +16,7 @@ import withStyles from 'isomorphic-style-loader/lib/withStyles';
 import Button from '@material-ui/core/Button';
 // $FlowExpectError
 import query from './query.graphql';
+import mutation from './mutation.graphql';
 import s from './Apollo.css';
 
 import type { ApolloQuery } from './__generated__/ApolloQuery';
@@ -23,13 +24,19 @@ import type { ApolloQuery } from './__generated__/ApolloQuery';
 // Note: There is a regression from flow-bin@0.89.0
 // which spoils OperationComponent declaration. Be careful.
 const enhance: OperationComponent<ApolloQuery> = compose(
-  graphql(query),
+  graphql(query, {
+    name: 'apolloQuery',
+  }),
+  graphql(mutation, {
+    name: 'apolloMutation',
+  }),
   withStyles(s),
 );
 
 const Apollo = enhance(props => {
   const {
-    data: { refetch, loading, apolloQuery },
+    apolloQuery: { refetch, loading, apolloQuery },
+    apolloMutation,
   } = props;
 
   return (
@@ -37,6 +44,7 @@ const Apollo = enhance(props => {
       <div className={s.container}>
         <h1>Apollo feature test</h1>
         <p>
+          Query:
           <Button
             variant="contained"
             color="primary"
@@ -47,6 +55,20 @@ const Apollo = enhance(props => {
             Refresh
           </Button>
           {loading ? 'Loading...' : apolloQuery.data}
+        </p>
+        <p>
+          Mutation:
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={async () => {
+              const { data } = (await apolloMutation()).data.apolloMutation;
+              // eslint-disable-next-line no-console
+              console.log(data);
+            }}
+          >
+            Refresh
+          </Button>
         </p>
       </div>
     </div>
