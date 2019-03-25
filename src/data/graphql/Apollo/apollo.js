@@ -12,10 +12,31 @@ export const queries = [
 `,
 ];
 
+export const mutations = [
+  `
+  apolloMutation: Value!
+`,
+];
+
 export const resolvers = {
   RootQuery: {
-    apolloQuery() {
-      return { data: 'Hello World' };
+    async apolloQuery() {
+      function sleep(ms) {
+        return new Promise(resolve => setTimeout(resolve, ms));
+      }
+
+      await sleep(500);
+      return { data: `Hello ${new Date()}` };
+    },
+  },
+  Mutation: {
+    async apolloMutation() {
+      function sleep(ms) {
+        return new Promise(resolve => setTimeout(resolve, ms));
+      }
+
+      await sleep(500);
+      return { data: `Hello ${new Date()}` };
     },
   },
 };

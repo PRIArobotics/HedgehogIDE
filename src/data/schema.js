@@ -12,6 +12,7 @@ import merge from 'lodash.merge';
 import {
   schema as ApolloSchema,
   resolvers as ApolloResolvers,
+  mutations as ApolloMutations,
   queries as ApolloQueries,
 } from './graphql/Apollo/schema';
 
@@ -72,6 +73,7 @@ const Mutation = [
   # 2. [Mock your GraphQL API](https://www.apollographql.com/docs/graphql-tools/mocking.html) with fine-grained per-type mocking
   # 3. Automatically [stitch multiple schemas together](https://www.apollographql.com/docs/graphql-tools/schema-stitching.html) into one larger API
   type Mutation {
+    ${ApolloMutations}
     ${DatabaseMutations}
     ${OnMemoryStateMutations}
   }
