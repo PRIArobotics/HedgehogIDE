@@ -26,6 +26,7 @@ import type { ApolloQuery } from './__generated__/ApolloQuery';
 const enhance: OperationComponent<ApolloQuery> = compose(
   graphql(query, {
     name: 'apolloQuery',
+    options: { notifyOnNetworkStatusChange: true },
   }),
   graphql(mutation, {
     name: 'apolloMutation',
