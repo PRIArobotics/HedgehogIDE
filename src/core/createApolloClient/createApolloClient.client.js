@@ -16,22 +16,26 @@ export default function createApolloClient() {
     resolvers: clientSideResolvers,
   });
 
+  const errorLink = onError(({ graphQLErrors, networkError }) => {
+    if (graphQLErrors)
+      graphQLErrors.map(({ message, locations, path }) =>
+        console.warn(
+          `[GraphQL error]: Message: ${message}, Location: ${locations}, Path: ${path}`,
+        ),
+      );
+    if (networkError) console.warn(`[Network error]: ${networkError}`);
+  });
+
+  const httpLink = new HttpLink({
+    uri: '/graphql',
+    credentials: 'include',
+  });
+
   const link = from([
     stateLink,
-    onError(({ graphQLErrors, networkError }) => {
-      if (graphQLErrors)
-        graphQLErrors.map(({ message, locations, path }) =>
-          console.warn(
-            `[GraphQL error]: Message: ${message}, Location: ${locations}, Path: ${path}`,
-          ),
-        );
-      if (networkError) console.warn(`[Network error]: ${networkError}`);
-    }),
+    errorLink,
     ...(__DEV__ ? [apolloLogger] : []),
-    new HttpLink({
-      uri: '/graphql',
-      credentials: 'include',
-    }),
+    httpLink,
   ]);
 
   return new ApolloClient({

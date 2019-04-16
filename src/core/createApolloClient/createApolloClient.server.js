@@ -7,24 +7,26 @@ import createCache from './createCache';
 
 export default function createApolloClient(schema, initialState) {
   const cache = createCache();
+
   const stateLink = withClientState({
     cache,
     defaults: initialState,
     resolvers: {},
   });
-  const link = from([
-    stateLink,
-    onError(({ graphQLErrors, networkError }) => {
-      if (graphQLErrors)
-        graphQLErrors.map(({ message, locations, path }) =>
-          console.warn(
-            `[GraphQL error]: Message: ${message}, Location: ${locations}, Path: ${path}`,
-          ),
-        );
-      if (networkError) console.warn(`[Network error]: ${networkError}`);
-    }),
-    new SchemaLink({ ...schema }),
-  ]);
+
+  const errorLink = onError(({ graphQLErrors, networkError }) => {
+    if (graphQLErrors)
+      graphQLErrors.map(({ message, locations, path }) =>
+        console.warn(
+          `[GraphQL error]: Message: ${message}, Location: ${locations}, Path: ${path}`,
+        ),
+      );
+    if (networkError) console.warn(`[Network error]: ${networkError}`);
+  });
+
+  const schemaLink = new SchemaLink({ ...schema });
+
+  const link = from([stateLink, errorLink, schemaLink]);
 
   return new ApolloClient({
     link,
