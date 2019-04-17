@@ -8,12 +8,14 @@
  */
 
 import merge from 'lodash.merge';
+import { PubSub } from 'graphql-subscriptions';
 
 import {
   schema as ApolloSchema,
   resolvers as ApolloResolvers,
   mutations as ApolloMutations,
   queries as ApolloQueries,
+  subscriptions as ApolloSubscriptions,
 } from './graphql/Apollo/schema';
 
 import {
@@ -80,30 +82,41 @@ const Mutation = [
 `,
 ];
 
+const Subscription = [
+  `
+  type Subscription {
+    ${ApolloSubscriptions}
+  }
+`,
+];
+
 const SchemaDefinition = [
   `
   
   schema {
     query: RootQuery
     mutation: Mutation
+    subscription: Subscription
   }
 `,
 ];
 
 // Merge all of the resolver objects together
 // Put schema together into one array of schema strings
-const resolvers = merge(
-  ApolloResolvers,
-  NewsResolvers,
-  DatabaseResolvers,
-  TimestampResolvers,
-);
+const resolvers = pubsub =>
+  merge(
+    ApolloResolvers(pubsub),
+    NewsResolvers,
+    DatabaseResolvers,
+    TimestampResolvers,
+  );
 
 const schema = [
   ...SchemaDefinition,
   ...TimestampSchema,
   ...RootQuery,
   ...Mutation,
+  ...Subscription,
 
   ...ApolloSchema,
   ...NewsSchema,
@@ -113,6 +126,6 @@ const schema = [
 
 export default {
   typeDefs: schema,
-  resolvers,
+  resolvers: resolvers(new PubSub()),
   ...(__DEV__ ? { log: e => console.error(e.stack) } : {}),
 };
