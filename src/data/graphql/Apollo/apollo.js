@@ -18,7 +18,13 @@ export const mutations = [
 `,
 ];
 
-export const resolvers = {
+export const subscriptions = [
+  `
+  apolloSubscription: Value!
+`,
+];
+
+export const resolvers = pubsub => ({
   RootQuery: {
     async apolloQuery() {
       function sleep(ms) {
@@ -36,7 +42,14 @@ export const resolvers = {
       }
 
       await sleep(500);
-      return { data: `Hello ${new Date()}` };
+      const msg = { data: `Hello ${new Date()}` };
+      pubsub.publish('apolloChannel', { apolloSubscription: msg });
+      return msg;
     },
   },
-};
+  Subscription: {
+    apolloSubscription: {
+      subscribe: () => pubsub.asyncIterator('apolloChannel'),
+    },
+  },
+});
