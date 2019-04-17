@@ -20,6 +20,7 @@ import mutation from './mutation.graphql';
 import s from './Apollo.css';
 
 import type { ApolloQuery } from './__generated__/ApolloQuery';
+import type { ApolloMutation } from './__generated__/ApolloMutation';
 
 // Note: There is a regression from flow-bin@0.89.0
 // which spoils OperationComponent declaration. Be careful.
@@ -34,46 +35,60 @@ const enhance: OperationComponent<ApolloQuery> = compose(
   withStyles(s),
 );
 
-const Apollo = enhance(props => {
-  const {
-    apolloQuery: { refetch, loading, apolloQuery },
-    apolloMutation,
-  } = props;
+type PropTypes = ApolloQuery & ApolloMutation;
 
-  return (
-    <div className={s.root}>
-      <div className={s.container}>
-        <h1>Apollo feature test</h1>
-        <p>
-          Query:
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={async () => {
-              await refetch();
-            }}
-          >
-            Refresh
-          </Button>
-          {loading ? 'Loading...' : apolloQuery.data}
-        </p>
-        <p>
-          Mutation:
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={async () => {
-              const { data } = (await apolloMutation()).data.apolloMutation;
-              // eslint-disable-next-line no-console
-              console.log(data);
-            }}
-          >
-            Refresh
-          </Button>
-        </p>
+class Apollo extends React.Component<PropTypes> {
+  constructor(props) {
+    super(props);
+    this.state = {
+      mutationData: null,
+    };
+  }
+
+  render() {
+    const {
+      apolloQuery: { refetch, loading, apolloQuery },
+      apolloMutation,
+    } = this.props;
+    const { mutationData } = this.state;
+
+    return (
+      <div className={s.root}>
+        <div className={s.container}>
+          <h1>Apollo feature test</h1>
+          <p>
+            Query:
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={async () => {
+                await refetch();
+              }}
+            >
+              Refresh
+            </Button>
+            {loading ? 'Loading...' : apolloQuery.data}
+          </p>
+          <p>
+            Mutation:
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={async () => {
+                const { data } = (await apolloMutation()).data.apolloMutation;
+                this.setState({
+                  mutationData: data,
+                });
+              }}
+            >
+              Refresh
+            </Button>
+            {mutationData === null ? '(not executed yet)' : mutationData}
+          </p>
+        </div>
       </div>
-    </div>
-  );
-});
+    );
+  }
+}
 
-export default Apollo;
+export default enhance(Apollo);
