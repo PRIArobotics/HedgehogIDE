@@ -1,7 +1,9 @@
 import { ApolloClient } from 'apollo-client';
-import { from } from 'apollo-link';
+import { getMainDefinition } from 'apollo-utilities';
+import { from, split } from 'apollo-link';
 import { onError } from 'apollo-link-error';
 import { HttpLink } from 'apollo-link-http';
+import { WebSocketLink } from 'apollo-link-ws';
 import apolloLogger from 'apollo-link-logger';
 import { withClientState } from 'apollo-link-state';
 import createCache from './createCache';
@@ -31,11 +33,29 @@ export default function createApolloClient() {
     credentials: 'include',
   });
 
+  const wsProtocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+  const wsLink = new WebSocketLink({
+    uri: `${wsProtocol}//${window.location.host}/subscriptions`,
+    options: {
+      reconnect: true,
+      // connectionParams: {
+      //   authToken: localStorage.getItem(AUTH_TOKEN),
+      // },
+    },
+  });
+
   const link = from([
     stateLink,
     errorLink,
     ...(__DEV__ ? [apolloLogger] : []),
-    httpLink,
+    split(
+      ({ query }) => {
+        const { kind, operation } = getMainDefinition(query);
+        return kind === 'OperationDefinition' && operation === 'subscription';
+      },
+      wsLink,
+      httpLink,
+    ),
   ]);
 
   return new ApolloClient({
