@@ -18,6 +18,9 @@ import ReactDOM from 'react-dom/server';
 import PrettyError from 'pretty-error';
 import { ApolloServer, makeExecutableSchema } from 'apollo-server-express';
 import { getDataFromTree } from 'react-apollo';
+import { execute, subscribe } from 'graphql';
+import { createServer } from 'http';
+import { SubscriptionServer } from 'subscriptions-transport-ws';
 import createApolloClient from './core/createApolloClient';
 import App from './components/App';
 import Html from './components/Html';
@@ -46,6 +49,7 @@ global.navigator = global.navigator || {};
 global.navigator.userAgent = global.navigator.userAgent || 'all';
 
 const app = express();
+const ws = createServer(app);
 
 //
 // If you are using proxy from external machine, you can set TRUST_PROXY env
@@ -128,7 +132,9 @@ const server = new ApolloServer({
   ...schema,
   uploads: false,
   introspection: __DEV__,
-  playground: __DEV__,
+  playground: __DEV__ && {
+    subscriptionEndpoint: '/subscriptions',
+  },
   debug: __DEV__,
   context: ({ req }) => ({ req }),
 });
@@ -243,8 +249,23 @@ app.use((err, req, res, next) => {
 const promise = models.sync().catch(err => console.error(err.stack));
 if (!module.hot) {
   promise.then(() => {
-    app.listen(config.port, () => {
+    // TODO no subscriptions when using `yarn start`
+    ws.listen(config.port, () => {
       console.info(`The server is running at http://localhost:${config.port}/`);
+
+      // Set up the WebSocket for handling GraphQL subscriptions
+      // eslint-disable-next-line no-new
+      new SubscriptionServer(
+        {
+          execute,
+          subscribe,
+          schema: makeExecutableSchema(schema),
+        },
+        {
+          server: ws,
+          path: '/subscriptions',
+        },
+      );
     });
   });
 }
