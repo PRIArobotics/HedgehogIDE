@@ -37,6 +37,9 @@ type PropTypes = {|
     loading: boolean,
   },
   apolloMutation: (args?: {}) => Promise<{ data: ApolloMutation }>,
+  apolloSubscription: ApolloSubscription & {
+    loading: boolean,
+  },
 |};
 
 // Note: There is a regression from flow-bin@0.89.0
@@ -55,9 +58,9 @@ const enhance: OperationComponent<PropTypes> = compose(
   graphql(mutation, {
     name: 'apolloMutation',
   }),
-  // graphql(subscription, {
-  //   name: 'apolloSubscription',
-  // }),
+  graphql(subscription, {
+    name: 'apolloSubscription',
+  }),
   withStyles(s),
 );
 
@@ -100,6 +103,7 @@ class Apollo extends React.Component<PropTypes, StateTypes> {
       apolloQuery: { refetch, loading, apolloQuery },
       apolloQuery2: { loading: loading2, apolloQuery: apolloQuery2 },
       apolloMutation,
+      apolloSubscription: { loading: loading3, apolloSubscription },
     } = this.props;
     const { mutationData } = this.state;
 
@@ -139,6 +143,10 @@ class Apollo extends React.Component<PropTypes, StateTypes> {
               Refresh
             </Button>
             {mutationData === null ? '(not executed yet)' : mutationData}
+          </p>
+          <p>
+            Subscription:
+            {loading3 ? 'Loading...' : apolloSubscription.data}
           </p>
         </div>
       </div>
