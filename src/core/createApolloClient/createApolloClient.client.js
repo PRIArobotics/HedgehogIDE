@@ -4,7 +4,7 @@ import { from, split } from 'apollo-link';
 import { onError } from 'apollo-link-error';
 import { HttpLink } from 'apollo-link-http';
 import { WebSocketLink } from 'apollo-link-ws';
-import apolloLogger from 'apollo-link-logger';
+// import apolloLogger from 'apollo-link-logger';
 import { withClientState } from 'apollo-link-state';
 import createCache from './createCache';
 import { resolvers as clientSideResolvers } from '../../data/graphql/OnMemoryState/schema';
@@ -47,7 +47,7 @@ export default function createApolloClient() {
   const link = from([
     stateLink,
     errorLink,
-    ...(__DEV__ ? [apolloLogger] : []),
+    // ...(__DEV__ ? [apolloLogger] : []),
     split(
       ({ query }) => {
         const { kind, operation } = getMainDefinition(query);

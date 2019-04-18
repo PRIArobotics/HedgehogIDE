@@ -19,14 +19,21 @@ import Button from '@material-ui/core/Button';
 import query from './query.graphql';
 // $FlowExpectError
 import mutation from './mutation.graphql';
+// $FlowExpectError
+import subscription from './subscription.graphql';
 import s from './Apollo.css';
 
 import type { ApolloQuery } from './__generated__/ApolloQuery';
 import type { ApolloMutation } from './__generated__/ApolloMutation';
+import type { ApolloSubscription } from './__generated__/ApolloSubscription';
 
 type PropTypes = {|
   apolloQuery: ApolloQuery & {
     refetch: () => Promise<void>,
+    loading: boolean,
+  },
+  apolloQuery2: ApolloQuery & {
+    subscribeToMore: ({}) => void,
     loading: boolean,
   },
   apolloMutation: (args?: {}) => Promise<{ data: ApolloMutation }>,
@@ -40,9 +47,17 @@ const enhance: OperationComponent<PropTypes> = compose(
     // $FlowExpectError
     options: { notifyOnNetworkStatusChange: true },
   }),
+  graphql(query, {
+    name: 'apolloQuery2',
+    // $FlowExpectError
+    options: { notifyOnNetworkStatusChange: true },
+  }),
   graphql(mutation, {
     name: 'apolloMutation',
   }),
+  // graphql(subscription, {
+  //   name: 'apolloSubscription',
+  // }),
   withStyles(s),
 );
 
@@ -58,9 +73,32 @@ class Apollo extends React.Component<PropTypes, StateTypes> {
     };
   }
 
+  componentDidMount() {
+    const {
+      apolloQuery2: { subscribeToMore },
+    } = this.props;
+
+    subscribeToMore({
+      document: subscription,
+      variables: {},
+      updateQuery: (prev: ApolloQuery, { subscriptionData }) => {
+        if (!subscriptionData.data) {
+          return prev;
+        }
+
+        const { data }: { data: ApolloSubscription } = subscriptionData;
+
+        return {
+          apolloQuery: data.apolloSubscription,
+        };
+      },
+    });
+  }
+
   render() {
     const {
       apolloQuery: { refetch, loading, apolloQuery },
+      apolloQuery2: { loading: loading2, apolloQuery: apolloQuery2 },
       apolloMutation,
     } = this.props;
     const { mutationData } = this.state;
@@ -81,6 +119,10 @@ class Apollo extends React.Component<PropTypes, StateTypes> {
               Refresh
             </Button>
             {loading ? 'Loading...' : apolloQuery.data}
+          </p>
+          <p>
+            Query with refresh:
+            {loading2 ? 'Loading...' : apolloQuery2.data}
           </p>
           <p>
             Mutation:
