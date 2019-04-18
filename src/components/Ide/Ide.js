@@ -12,6 +12,7 @@
 import React from 'react';
 import withStyles from 'isomorphic-style-loader/lib/withStyles';
 
+// $FlowExpectError
 import Button from '@material-ui/core/Button';
 
 import s from './Ide.css';
@@ -54,24 +55,12 @@ const json = {
 };
 
 type PropTypes = {||};
+type StateTypes = {|
+  model: any,
+|};
 
-class Ide extends React.Component<PropTypes> {
-  constructor(props) {
-    super(props);
-    this.state = {};
-  }
-
-  componentDidMount() {
-    // FIXME work around FlexLayout's incompatibility with server-side rendering
-    import('flexlayout-react').then(FlexLayout => {
-      this.FlexLayout = FlexLayout;
-      this.setState({
-        model: this.FlexLayout.Model.fromJson(json),
-      });
-    });
-  }
-
-  factory = node => {
+class Ide extends React.Component<PropTypes, StateTypes> {
+  static factory(node: any) {
     switch (node.getComponent()) {
       case 'button': {
         return (
@@ -85,7 +74,27 @@ class Ide extends React.Component<PropTypes> {
       default:
         return null;
     }
-  };
+  }
+
+  constructor(props: PropTypes) {
+    super(props);
+    this.state = {
+      model: null,
+    };
+  }
+
+  componentDidMount() {
+    // FIXME work around FlexLayout's incompatibility with server-side rendering
+    // $FlowExpectError
+    import('flexlayout-react').then(FlexLayout => {
+      this.FlexLayout = FlexLayout;
+      this.setState({
+        model: this.FlexLayout.Model.fromJson(json),
+      });
+    });
+  }
+
+  FlexLayout: any;
 
   render() {
     return (
@@ -95,7 +104,7 @@ class Ide extends React.Component<PropTypes> {
             <div className={s['flexlayout-container']}>
               <this.FlexLayout.Layout
                 model={this.state.model}
-                factory={this.factory}
+                factory={Ide.factory}
                 classNameMapper={className => FlexLayoutTheme[className]}
               />
             </div>
