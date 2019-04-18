@@ -13,20 +13,31 @@ import React from 'react';
 import { graphql, compose } from 'react-apollo';
 import type { OperationComponent } from 'react-apollo';
 import withStyles from 'isomorphic-style-loader/lib/withStyles';
+// $FlowExpectError
 import Button from '@material-ui/core/Button';
 // $FlowExpectError
 import query from './query.graphql';
+// $FlowExpectError
 import mutation from './mutation.graphql';
 import s from './Apollo.css';
 
 import type { ApolloQuery } from './__generated__/ApolloQuery';
 import type { ApolloMutation } from './__generated__/ApolloMutation';
 
+type PropTypes = {|
+  apolloQuery: ApolloQuery & {
+    refetch: () => Promise<void>,
+    loading: boolean,
+  },
+  apolloMutation: (args?: {}) => Promise<{ data: ApolloMutation }>,
+|};
+
 // Note: There is a regression from flow-bin@0.89.0
 // which spoils OperationComponent declaration. Be careful.
-const enhance: OperationComponent<ApolloQuery> = compose(
+const enhance: OperationComponent<PropTypes> = compose(
   graphql(query, {
     name: 'apolloQuery',
+    // $FlowExpectError
     options: { notifyOnNetworkStatusChange: true },
   }),
   graphql(mutation, {
@@ -35,9 +46,11 @@ const enhance: OperationComponent<ApolloQuery> = compose(
   withStyles(s),
 );
 
-type PropTypes = ApolloQuery & ApolloMutation;
+type StateTypes = {|
+  mutationData: string | null,
+|};
 
-class Apollo extends React.Component<PropTypes> {
+class Apollo extends React.Component<PropTypes, StateTypes> {
   constructor(props) {
     super(props);
     this.state = {
@@ -91,4 +104,5 @@ class Apollo extends React.Component<PropTypes> {
   }
 }
 
+// $FlowExpectError
 export default enhance(Apollo);
