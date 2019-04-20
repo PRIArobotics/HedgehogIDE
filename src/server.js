@@ -18,9 +18,7 @@ import ReactDOM from 'react-dom/server';
 import PrettyError from 'pretty-error';
 import { ApolloServer, makeExecutableSchema } from 'apollo-server-express';
 import { getDataFromTree } from 'react-apollo';
-import { execute, subscribe } from 'graphql';
 import { createServer } from 'http';
-import { SubscriptionServer } from 'subscriptions-transport-ws';
 import createApolloClient from './core/createApolloClient';
 import App from './components/App';
 import Html from './components/Html';
@@ -130,6 +128,7 @@ app.get(
 
 const server = new ApolloServer({
   ...schema,
+  subscriptions: '/subscriptions',
   uploads: false,
   introspection: __DEV__,
   playground: __DEV__ && {
@@ -139,6 +138,7 @@ const server = new ApolloServer({
   context: ({ req }) => ({ req }),
 });
 server.applyMiddleware({ app });
+server.installSubscriptionHandlers(ws);
 
 //
 // Register server-side rendering middleware
@@ -252,20 +252,6 @@ if (!module.hot) {
     // TODO no subscriptions when using `yarn start`
     ws.listen(config.port, () => {
       console.info(`The server is running at http://localhost:${config.port}/`);
-
-      // Set up the WebSocket for handling GraphQL subscriptions
-      // eslint-disable-next-line no-new
-      new SubscriptionServer(
-        {
-          execute,
-          subscribe,
-          schema: makeExecutableSchema(schema),
-        },
-        {
-          server: ws,
-          path: '/subscriptions',
-        },
-      );
     });
   });
 }
