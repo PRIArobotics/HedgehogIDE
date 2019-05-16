@@ -55,18 +55,26 @@ const ws = createServer(app);
 // -----------------------------------------------------------------------------
 app.set('trust proxy', config.trustProxy);
 
+// keep a list of auth-relevant middlewares to decode cookies in the WS handler
+const authMiddlewares = [];
+
+function useAuth(mw) {
+  authMiddlewares.push(mw);
+  app.use(mw);
+}
+
 //
 // Register Node.js middleware
 // -----------------------------------------------------------------------------
 app.use(express.static(path.resolve(__dirname, 'public')));
-app.use(cookieParser());
+useAuth(cookieParser());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
 //
 // Authentication
 // -----------------------------------------------------------------------------
-app.use(
+useAuth(
   expressJwt({
     secret: config.auth.jwt.secret,
     credentialsRequired: false,
@@ -128,14 +136,39 @@ app.get(
 
 const server = new ApolloServer({
   ...schema,
-  subscriptions: '/subscriptions',
+  subscriptions: {
+    path: '/subscriptions',
+    onConnect: async (connectionParams, webSocket) => {
+      const applyMiddleware = (middleware, req) =>
+        new Promise(resolve => middleware(req, null, resolve));
+
+      // eslint-disable-next-line no-restricted-syntax
+      for (const middleware of authMiddlewares) {
+        // eslint-disable-next-line no-await-in-loop
+        await applyMiddleware(middleware, webSocket.upgradeReq);
+      }
+
+      return {
+        user: webSocket.upgradeReq.user,
+        ...connectionParams,
+      };
+    },
+  },
   uploads: false,
   introspection: __DEV__,
   playground: __DEV__ && {
     subscriptionEndpoint: '/subscriptions',
   },
   debug: __DEV__,
-  context: ({ req }) => ({ req }),
+  context: ({ req, connection }) => {
+    if (req !== undefined) {
+      return { req };
+    }
+    if (connection !== undefined) {
+      return { connection };
+    }
+    return {};
+  },
 });
 server.applyMiddleware({ app });
 server.installSubscriptionHandlers(ws);
