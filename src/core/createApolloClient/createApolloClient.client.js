@@ -38,9 +38,6 @@ export default function createApolloClient() {
     uri: `${wsProtocol}//${window.location.host}/subscriptions`,
     options: {
       reconnect: true,
-      // connectionParams: {
-      //   authToken: localStorage.getItem(AUTH_TOKEN),
-      // },
     },
   });
 
