@@ -34,8 +34,10 @@ export default function createApolloClient() {
   });
 
   const wsProtocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+  // const wsHost = window.location.host;
+  const wsHost = `${window.location.hostname}:62178`;
   const wsLink = new WebSocketLink({
-    uri: `${wsProtocol}//${window.location.host}/subscriptions`,
+    uri: `${wsProtocol}//${wsHost}/subscriptions`,
     options: {
       reconnect: true,
     },
