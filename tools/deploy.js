@@ -14,13 +14,13 @@ import { makeDir, moveDir, cleanDir } from './lib/fs';
 import run from './run';
 
 // GitHub Pages
-const remote = {
-  name: 'github',
-  url: 'https://github.com/<user>/<repo>.git',
-  branch: 'gh-pages',
-  website: 'https://<user>.github.io/<repo>/',
-  static: true,
-};
+// const remote = {
+//   name: 'github',
+//   url: 'https://github.com/<user>/<repo>.git',
+//   branch: 'gh-pages',
+//   website: 'https://<user>.github.io/<repo>/',
+//   static: true,
+// };
 
 // Heroku
 // const remote = {
@@ -37,6 +37,14 @@ const remote = {
 //   branch: 'master',
 //   website: `http://<app>.azurewebsites.net`,
 // };
+
+// Uberspace
+const remote = {
+  name: 'github',
+  url: 'https://github.com/PRIArobotics/HedgehogIDE.git',
+  branch: 'gh-pages',
+  website: 'https://ide.pria.at/',
+};
 
 const options = {
   cwd: path.resolve(__dirname, '../build'),
@@ -116,11 +124,11 @@ async function deploy() {
       options,
     );
   }
-  await spawn(
-    'git',
-    ['push', remote.name, `master:${remote.branch}`, '--set-upstream'],
-    options,
-  );
+  // await spawn(
+  //   'git',
+  //   ['push', remote.name, `master:${remote.branch}`, '--set-upstream'],
+  //   options,
+  // );
 
   // Check if the site was successfully deployed
   const response = await fetch(remote.website);
