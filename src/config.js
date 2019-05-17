@@ -18,6 +18,9 @@ if (process.env.BROWSER) {
 module.exports = {
   // Node.js app
   port: process.env.PORT || 3000,
+  securePort: process.env.SECURE_PORT || 3001,
+  certFile: process.env.CERT_FILE || null,
+  keyFile: process.env.KEY_FILE || null,
 
   // https://expressjs.com/en/guide/behind-proxies.html
   trustProxy: process.env.TRUST_PROXY || 'loopback',
