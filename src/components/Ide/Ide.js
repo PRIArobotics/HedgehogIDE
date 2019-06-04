@@ -19,6 +19,17 @@ import s from './Ide.css';
 // eslint-disable-next-line css-modules/no-unused-class
 import FlexLayoutTheme from './flex_layout_ide.css';
 
+const importer = (async () => {
+  if (!process.env.BROWSER) {
+    // never resolves
+    await new Promise(() => {});
+  }
+  // import flexlayout
+  return {
+    FlexLayout: await import('flexlayout-react'),
+  };
+})();
+
 const json = {
   global: {},
   borders: [],
@@ -85,8 +96,7 @@ class Ide extends React.Component<PropTypes, StateTypes> {
 
   componentDidMount() {
     // FIXME work around FlexLayout's incompatibility with server-side rendering
-    // $FlowExpectError
-    import('flexlayout-react').then(FlexLayout => {
+    importer.then(({ FlexLayout }) => {
       this.FlexLayout = FlexLayout;
       this.setState({
         model: this.FlexLayout.Model.fromJson(json),
