@@ -14,7 +14,7 @@ import withStyles from 'isomorphic-style-loader/lib/withStyles';
 
 // $FlowExpectError
 import Button from '@material-ui/core/Button';
-import Editor from '../Editor/Editor';
+import Editor from '../Editor';
 
 import s from './Ide.css';
 // eslint-disable-next-line css-modules/no-unused-class
