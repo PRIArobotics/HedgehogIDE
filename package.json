@@ -50,6 +50,7 @@
     "prop-types": "^15.6.2",
     "query-string": "^6.1.0",
     "react": "^16.5.2",
+    "react-ace": "^7.0.1",
     "react-apollo": "^2.1.11",
     "react-dom": "^16.5.2",
     "sequelize": "^4.38.1",

@@ -14,6 +14,7 @@ import withStyles from 'isomorphic-style-loader/lib/withStyles';
 
 // $FlowExpectError
 import Button from '@material-ui/core/Button';
+import Editor from '../Editor/Editor';
 
 import s from './Ide.css';
 // eslint-disable-next-line css-modules/no-unused-class
@@ -57,7 +58,7 @@ const json = {
           {
             type: 'tab',
             name: 'B',
-            component: 'button',
+            component: 'editor',
           },
         ],
       },
@@ -79,6 +80,13 @@ class Ide extends React.Component<PropTypes, StateTypes> {
             <Button variant="contained" color="primary">
               IDE
             </Button>
+          </div>
+        );
+      }
+      case 'editor': {
+        return (
+          <div className={s.tab}>
+            <Editor />
           </div>
         );
       }
