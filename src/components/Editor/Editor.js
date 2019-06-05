@@ -50,28 +50,28 @@ class Editor extends React.Component<PropTypes, StateTypes> {
 
   render() {
     return (
-      <div>
-        {this.state.aceReady && (
-          <this.AceEditor.default
-            mode="javascript"
-            // onLoad={this.onLoad}
-            // onChange={this.onChange}
-            // onSelectionChange={this.onSelectionChange}
-            // onCursorChange={this.onCursorChange}
-            // onValidate={this.onValidate}
-            value="foo"
-            showGutter
-            highlightActiveLine
-            setOptions={{
-              enableBasicAutocompletion: true,
-              // enableLiveAutocompletion: true,
-              // enableSnippets: this.state.enableSnippets,
-              showLineNumbers: true,
-              tabSize: 2,
-            }}
-          />
-        )}
-      </div>
+      this.state.aceReady && (
+        <this.AceEditor.default
+          mode="javascript"
+          width="100%"
+          height="100%"
+          // onLoad={this.onLoad}
+          // onChange={this.onChange}
+          // onSelectionChange={this.onSelectionChange}
+          // onCursorChange={this.onCursorChange}
+          // onValidate={this.onValidate}
+          value="foo"
+          showGutter
+          highlightActiveLine
+          setOptions={{
+            enableBasicAutocompletion: true,
+            // enableLiveAutocompletion: true,
+            // enableSnippets: this.state.enableSnippets,
+            showLineNumbers: true,
+            tabSize: 2,
+          }}
+        />
+      )
     );
   }
 }

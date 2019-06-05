@@ -84,11 +84,7 @@ class Ide extends React.Component<PropTypes, StateTypes> {
         );
       }
       case 'editor': {
-        return (
-          <div className={s.tab}>
-            <Editor />
-          </div>
-        );
+        return <Editor />;
       }
       default:
         return null;
