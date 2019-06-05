@@ -27,7 +27,7 @@ type PropTypes = {|
 class Layout extends React.Component<PropTypes> {
   render() {
     return (
-      <div>
+      <div className={s.root}>
         <Header />
         {this.props.children}
         <Feedback />

@@ -118,8 +118,11 @@ class Ide extends React.Component<PropTypes, StateTypes> {
     return (
       <div className={s.root}>
         <div className={s.container}>
+          <div className={s['nav-container']}>
+            <p>nav</p>
+          </div>
           {this.state.model && (
-            <div className={s['flexlayout-container']}>
+            <div className={s['editor-container']}>
               <this.FlexLayout.Layout
                 model={this.state.model}
                 factory={Ide.factory}

@@ -31,6 +31,12 @@ body {
   margin: 0;
 }
 
+.root {
+  height: 100vh;
+  display: grid;
+  grid: 'header' min-content 'content' 1fr 'footer' min-content;
+}
+
 a {
   color: #0074c2;
 }
