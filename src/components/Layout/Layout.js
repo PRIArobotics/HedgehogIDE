@@ -17,6 +17,7 @@ import withStyles from 'isomorphic-style-loader/lib/withStyles';
 import normalizeCss from 'normalize.css';
 import s from './Layout.scss';
 import Header from '../Header';
+import Sidebar from '../Sidebar';
 import Footer from '../Footer';
 
 type PropTypes = {|
@@ -31,7 +32,9 @@ class Layout extends React.Component<PropTypes> {
           <Header />
         </div>
         <div className={s.main}>
-          <div className={s.sidebar}>foo</div>
+          <div className={s.sidebar}>
+            <Sidebar />
+          </div>
           <div className={s.content}>{this.props.children}</div>
         </div>
         <div className={s.footer}>
