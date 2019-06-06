@@ -12,7 +12,7 @@ import withStyles from 'isomorphic-style-loader/lib/withStyles';
 
 import Matter from 'matter-js';
 
-import s from './Simulator.css';
+import s from './Simulator.scss';
 
 class Robot {
   constructor(pose) {

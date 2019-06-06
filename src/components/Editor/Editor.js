@@ -12,7 +12,7 @@
 import React from 'react';
 import withStyles from 'isomorphic-style-loader/lib/withStyles';
 
-import s from './Editor.css';
+import s from './Editor.scss';
 
 const importer = (async () => {
   if (!process.env.BROWSER) {

@@ -7,32 +7,19 @@
  * LICENSE.txt file in the root directory of this source tree.
  */
 
-@import '../variables.css';
+@import '../variables.scss';
 
 .root {
-  padding: 10px 20px;
-  box-sizing: border-box;
-  height: 100%;
+  padding-left: 20px;
+  padding-right: 20px;
 }
 
 .container {
-  height: 100%;
   margin: 0 auto;
+  padding: 10px 0;
   max-width: var(--max-content-width);
-  display: flex;
-  flex-flow: row nowrap;
 }
 
-.nav-container {
-  flex: 0 auto;
-  min-width: 150px;
-}
-
-.editor-container {
-  flex: 1 auto;
-  position: relative;
-}
-
-.tab {
-  margin: 2px;
+.canvas {
+  min-height: 300px;
 }

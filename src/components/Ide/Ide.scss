@@ -10,20 +10,29 @@
 @import '../variables.scss';
 
 .root {
-  background: var(--hedgehog-green-light);
-  color: #fff;
+  padding: 10px 20px;
+  box-sizing: border-box;
+  height: 100%;
 }
 
 .container {
-  padding: 10px;
+  height: 100%;
+  margin: 0 auto;
+  max-width: var(--max-content-width);
+  display: flex;
+  flex-flow: row nowrap;
 }
 
-.brand {
-  color: color(var(--hedgehog-green-light) lightness(+10%));
-  text-decoration: none;
-  font-size: 1.75em; /* ~28px */
+.nav-container {
+  flex: 0 auto;
+  min-width: 150px;
 }
 
-.brandTxt {
-  margin-left: 10px;
+.editor-container {
+  flex: 1 auto;
+  position: relative;
+}
+
+.tab {
+  margin: 2px;
 }
