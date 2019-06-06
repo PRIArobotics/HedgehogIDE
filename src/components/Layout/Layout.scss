@@ -35,10 +35,25 @@ body {
   height: 100vh;
   display: flex;
   flex-flow: column nowrap;
-}
 
-.content {
-  flex: 1 auto;
+  .header,
+  .footer {
+    flex: 0 auto;
+  }
+
+  .main {
+    flex: 1 auto;
+    display: flex;
+    flex-flow: row nowrap;
+
+    .sidebar {
+      flex: 0 auto;
+    }
+
+    .content {
+      flex: 1 auto;
+    }
+  }
 }
 
 a {
