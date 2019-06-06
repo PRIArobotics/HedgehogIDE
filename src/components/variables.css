@@ -21,6 +21,13 @@
   --max-content-width: 1000px;
 
   /*
+   * Application specific
+   * ======================================================================== */
+
+  --hedgehog-green-light: #38b449;
+  --hedgehog-green-dark: #007c3c;
+
+  /*
    * Media queries breakpoints
    * ======================================================================== */
 

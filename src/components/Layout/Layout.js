@@ -15,7 +15,7 @@ import withStyles from 'isomorphic-style-loader/lib/withStyles';
 
 // external-global styles must be imported in your JS.
 import normalizeCss from 'normalize.css';
-import s from './Layout.css';
+import s from './Layout.scss';
 import Header from '../Header';
 import Footer from '../Footer';
 
@@ -27,9 +27,16 @@ class Layout extends React.Component<PropTypes> {
   render() {
     return (
       <div className={s.root}>
-        <Header />
-        <div className={s.content}>{this.props.children}</div>
-        <Footer />
+        <div className={s.header}>
+          <Header />
+        </div>
+        <div className={s.main}>
+          <div className={s.sidebar}>foo</div>
+          <div className={s.content}>{this.props.children}</div>
+        </div>
+        <div className={s.footer}>
+          <Footer />
+        </div>
       </div>
     );
   }
