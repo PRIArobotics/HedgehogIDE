@@ -11,25 +11,25 @@
 
 .root {
   padding: 10px 20px;
+  box-sizing: border-box;
+  height: 100%;
 }
 
 .container {
   height: 100%;
   margin: 0 auto;
   max-width: var(--max-content-width);
-  display: grid;
-  grid:
-    'nav editor' 1fr
-    / min-content 1fr;
+  display: flex;
+  flex-flow: row nowrap;
 }
 
 .nav-container {
-  grid-area: nav;
+  flex: 0 auto;
   min-width: 150px;
 }
 
 .editor-container {
-  grid-area: editor;
+  flex: 1 auto;
   position: relative;
 }
 

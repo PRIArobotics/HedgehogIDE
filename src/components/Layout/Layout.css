@@ -33,8 +33,12 @@ body {
 
 .root {
   height: 100vh;
-  display: grid;
-  grid: 'header' min-content 'content' 1fr 'footer' min-content;
+  display: flex;
+  flex-flow: column nowrap;
+}
+
+.content {
+  flex: 1 auto;
 }
 
 a {
