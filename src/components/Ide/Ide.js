@@ -16,7 +16,7 @@ import withStyles from 'isomorphic-style-loader/lib/withStyles';
 import Button from '@material-ui/core/Button';
 import Editor from '../Editor';
 
-import s from './Ide.css';
+import s from './Ide.scss';
 // eslint-disable-next-line css-modules/no-unused-class
 import FlexLayoutTheme from './flex_layout_ide.css';
 
