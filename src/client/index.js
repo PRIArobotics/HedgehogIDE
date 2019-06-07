@@ -18,7 +18,7 @@ import history from '../core/history';
 import { updateMeta } from './DOMUtils';
 import createApolloClient from '../core/createApolloClient';
 import router from '../core/router';
-import registerNetworkStatusUpdate from './networkStatus';
+import setupNetworkStatus from './networkStatus';
 
 const apolloClient = createApolloClient();
 
@@ -166,4 +166,4 @@ if (module.hot) {
 
 // This is a demonstration of how to mutate the client state of apollo-link-state.
 // If you don't need the networkStatus, please erase below lines.
-registerNetworkStatusUpdate(apolloClient);
+setupNetworkStatus(apolloClient);
