@@ -14,11 +14,11 @@ import deepForceUpdate from 'react-deep-force-update';
 import queryString from 'query-string';
 import gql from 'graphql-tag';
 import { createPath } from 'history/PathUtils';
-import App from './components/App';
-import history from './history';
-import { updateMeta } from './DOMUtils';
-import createApolloClient from './core/createApolloClient';
-import router from './router';
+import App from '../components/App';
+import history from '../history';
+import { updateMeta } from '../DOMUtils';
+import createApolloClient from '../core/createApolloClient';
+import router from '../router';
 
 const apolloClient = createApolloClient();
 
@@ -154,7 +154,7 @@ onLocationChange(currentLocation);
 
 // Enable Hot Module Replacement (HMR)
 if (module.hot) {
-  module.hot.accept('./router', () => {
+  module.hot.accept('../router', () => {
     if (appInstance && appInstance.updater.isMounted(appInstance)) {
       // Force-update the whole tree, including components that refuse to update
       deepForceUpdate(appInstance);
