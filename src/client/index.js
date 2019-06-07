@@ -16,7 +16,7 @@ import gql from 'graphql-tag';
 import { createPath } from 'history/PathUtils';
 import App from '../components/App';
 import history from '../history';
-import { updateMeta } from '../DOMUtils';
+import { updateMeta } from './DOMUtils';
 import createApolloClient from '../core/createApolloClient';
 import router from '../router';
 
