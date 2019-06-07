@@ -23,16 +23,16 @@ import http from 'http';
 import https from 'https';
 import createApolloClient from '../core/createApolloClient';
 import App from '../components/App';
-import Html from '../components/Html';
+import Html from './Html';
 import { ErrorPageWithoutStyle } from '../routes/error/ErrorPage';
 import errorPageStyle from '../routes/error/ErrorPage.css';
-import passport from '../passport';
+import passport from './passport';
 import router from '../router';
 import models from '../data/models';
 import schema from '../data/schema';
 // import assets from './asset-manifest.json'; // eslint-disable-line import/no-unresolved
 import chunks from './chunk-manifest.json'; // eslint-disable-line import/no-unresolved
-import config from '../config';
+import config from './config';
 import createInitialState from '../core/createInitialState';
 
 process.on('unhandledRejection', (reason, p) => {

@@ -8,7 +8,7 @@
  */
 
 import Sequelize, { Op } from 'sequelize';
-import config from '../config';
+import config from '../server/config';
 
 const sequelize = new Sequelize(config.databaseUrl, {
   operatorsAliases: Op,
