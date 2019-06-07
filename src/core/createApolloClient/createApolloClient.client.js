@@ -7,7 +7,7 @@ import { WebSocketLink } from 'apollo-link-ws';
 // import apolloLogger from 'apollo-link-logger';
 import { withClientState } from 'apollo-link-state';
 import createCache from './createCache';
-import { resolvers as clientSideResolvers } from '../../data/graphql/OnMemoryState/schema';
+import { resolvers as clientSideResolvers } from '../graphql/OnMemoryState/schema';
 
 export default function createApolloClient() {
   const cache = createCache();
