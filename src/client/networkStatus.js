@@ -1,6 +1,6 @@
 import gql from 'graphql-tag';
 
-export default function registerNetworkStatusUpdate(apolloClient) {
+export default function setup(apolloClient) {
   function onNetworkStatusChange() {
     apolloClient.mutate({
       mutation: gql`
