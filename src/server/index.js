@@ -27,7 +27,7 @@ import Html from './Html';
 import { ErrorPageWithoutStyle } from '../routes/error/ErrorPage';
 import errorPageStyle from '../routes/error/ErrorPage.css';
 import passport from './passport';
-import router from '../router';
+import router from '../core/router';
 import models from './data/models';
 import schema from './data/schema';
 // import assets from './asset-manifest.json'; // eslint-disable-line import/no-unresolved
@@ -324,7 +324,7 @@ if (!module.hot) {
 // -----------------------------------------------------------------------------
 if (module.hot) {
   app.hot = module.hot;
-  module.hot.accept('../router');
+  module.hot.accept('../core/router');
 }
 
 export default app;

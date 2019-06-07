@@ -11,7 +11,7 @@
 
 import React from 'react';
 import type { Node } from 'react';
-import history from '../../history';
+import history from '../../core/history';
 
 function isLeftClickEvent(event) {
   return event.button === 0;
