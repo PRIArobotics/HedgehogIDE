@@ -13,6 +13,10 @@ import React from 'react';
 import type { Node } from 'react';
 import PropTypes from 'prop-types';
 import { ApolloProvider } from 'react-apollo';
+import { ThemeProvider } from '@material-ui/styles';
+import CssBaseline from '@material-ui/core/CssBaseline';
+
+import theme from './theme';
 
 // Since the current React Starter Kit uses older React Context API that cannot be typed,
 // here we declare duplicate type information.
@@ -82,7 +86,12 @@ class App extends React.PureComponent<Props> {
     // NOTE: If you need to add or modify header, footer etc. of the app,
     // please do that inside the Layout component.
     return (
-      <ApolloProvider client={client}>{this.props.children}</ApolloProvider>
+      <ApolloProvider client={client}>
+        <ThemeProvider theme={theme}>
+          <CssBaseline />
+          {this.props.children}
+        </ThemeProvider>
+      </ApolloProvider>
     );
   }
 }
