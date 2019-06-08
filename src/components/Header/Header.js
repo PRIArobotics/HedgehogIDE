@@ -20,11 +20,14 @@ import { withStyles } from '@material-ui/styles';
 import SvgIcon from '../misc/SvgIcon';
 import logoUrl from './logo.svg';
 
-const styled = withStyles({
+const styled = withStyles(theme => ({
+  appBar: {
+    zIndex: theme.zIndex.drawer + 1,
+  },
   brandTxt: {
     marginLeft: '10px',
   },
-});
+}));
 
 type PropTypes = {|
   classes: object,
@@ -35,12 +38,12 @@ class Header extends React.Component<PropTypes> {
     const { classes } = this.props;
 
     return (
-      <AppBar>
+      <AppBar className={classes.appBar}>
         <Toolbar>
           <IconButton edge="start" color="inherit" aria-label="Hedgehog">
             <SvgIcon src={logoUrl} alt="Hedgehog Logo" />
           </IconButton>
-          <Typography className={classes.brandTxt} variant="h6">
+          <Typography className={classes.brandTxt} variant="h6" noWrap>
             Hedgehog IDE
           </Typography>
         </Toolbar>
