@@ -15,19 +15,16 @@ import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import IconButton from '@material-ui/core/IconButton';
-import Icon from '@material-ui/core/Icon';
 import { withStyles } from '@material-ui/styles';
 
+import SvgIcon from '../misc/SvgIcon';
 import logoUrl from './logo.svg';
 
-const styles = {
-  brandIcon: {
-    verticalAlign: 'top',
-  },
+const styled = withStyles({
   brandTxt: {
     marginLeft: '10px',
   },
-};
+});
 
 type PropTypes = {|
   classes: object,
@@ -41,13 +38,7 @@ class Header extends React.Component<PropTypes> {
       <AppBar>
         <Toolbar>
           <IconButton edge="start" color="inherit" aria-label="Hedgehog">
-            <Icon>
-              <img
-                className={classes.brandIcon}
-                src={logoUrl}
-                alt="Hedgehog Logo"
-              />
-            </Icon>
+            <SvgIcon src={logoUrl} alt="Hedgehog Logo" />
           </IconButton>
           <Typography className={classes.brandTxt} variant="h6">
             Hedgehog IDE
@@ -58,4 +49,4 @@ class Header extends React.Component<PropTypes> {
   }
 }
 
-export default withStyles(styles)(Header);
+export default styled(Header);
