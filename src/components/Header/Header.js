@@ -7,27 +7,55 @@
  * LICENSE.txt file in the root directory of this source tree.
  */
 
+// @flow
+
 import React from 'react';
-import withStyles from 'isomorphic-style-loader/lib/withStyles';
-import s from './Header.scss';
-import Link from '../Link';
-import Navigation from '../Navigation';
+
+import AppBar from '@material-ui/core/AppBar';
+import Toolbar from '@material-ui/core/Toolbar';
+import Typography from '@material-ui/core/Typography';
+import IconButton from '@material-ui/core/IconButton';
+import Icon from '@material-ui/core/Icon';
+import { withStyles } from '@material-ui/styles';
+
 import logoUrl from './logo.svg';
 
-class Header extends React.Component {
+const styles = {
+  brandIcon: {
+    verticalAlign: 'top',
+  },
+  brandTxt: {
+    marginLeft: '10px',
+  },
+};
+
+type PropTypes = {|
+  classes: object,
+|};
+
+class Header extends React.Component<PropTypes> {
   render() {
+    const { classes } = this.props;
+
     return (
-      <div className={s.root}>
-        <div className={s.container}>
-          <Navigation />
-          <Link className={s.brand} to="/">
-            <img src={logoUrl} width="38" height="38" alt="Hedgehog" />
-            <span className={s.brandTxt}>Hedgehog IDE</span>
-          </Link>
-        </div>
-      </div>
+      <AppBar>
+        <Toolbar>
+          <IconButton edge="start" color="inherit" aria-label="Hedgehog">
+            <Icon>
+              <img
+                className={classes.brandIcon}
+                src={logoUrl}
+                alt="Hedgehog Logo"
+              />
+            </Icon>
+          </IconButton>
+          <Typography className={classes.brandTxt} variant="h6">
+            Hedgehog IDE
+          </Typography>
+        </Toolbar>
+      </AppBar>
     );
   }
 }
 
-export default withStyles(s)(Header);
+export default withStyles(styles)(Header);
