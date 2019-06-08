@@ -28,11 +28,10 @@ import passport from './passport';
 import router from '../core/router';
 import models from './data/models';
 import schema from './data/schema';
-// import assets from './asset-manifest.json'; // eslint-disable-line import/no-unresolved
-import chunks from './chunk-manifest.json'; // eslint-disable-line import/no-unresolved
 import config from './config';
 import createInitialState from '../core/createInitialState';
 import renderHtml from './renderHtml';
+import { IsomorphicStyleLoader, loadScripts } from './loaders';
 
 process.on('unhandledRejection', (reason, p) => {
   console.error('Unhandled Rejection at:', p, 'reason:', reason);
@@ -177,14 +176,7 @@ server.applyMiddleware({ app });
 // -----------------------------------------------------------------------------
 app.get('*', async (req, res, next) => {
   try {
-    const css = new Set();
-
-    // Enables critical path CSS rendering
-    // https://github.com/kriasoft/isomorphic-style-loader
-    const insertCss = (...styles) => {
-      // eslint-disable-next-line no-underscore-dangle
-      styles.forEach(style => css.add(style._getCss()));
-    };
+    const isomorphicStyleLoader = new IsomorphicStyleLoader();
 
     const initialState = createInitialState({
       user: req.user || null,
@@ -202,7 +194,7 @@ app.get('*', async (req, res, next) => {
     // Global (context) variables that can be easily accessed from any React component
     // https://facebook.github.io/react/docs/context.html
     const context = {
-      insertCss,
+      insertCss: isomorphicStyleLoader.insertCss.bind(isomorphicStyleLoader),
       // The twins below are wild, be careful!
       pathname: req.path,
       query: req.query,
@@ -220,24 +212,17 @@ app.get('*', async (req, res, next) => {
     const rootComponent = <App context={context}>{route.component}</App>;
     await getDataFromTree(rootComponent);
 
-    const styles = [{ id: 'css', cssText: [...css].join('') }];
-
-    const scripts = new Set();
-    const addChunk = chunk => {
-      if (chunks[chunk]) {
-        chunks[chunk].forEach(asset => scripts.add(asset));
-      } else if (__DEV__) {
-        throw new Error(`Chunk with name '${chunk}' cannot be found`);
-      }
-    };
-    addChunk('client');
-    if (route.chunk) addChunk(route.chunk);
-    if (route.chunks) route.chunks.forEach(addChunk);
+    const styles = [{ id: 'css', cssText: isomorphicStyleLoader.collect() }];
+    const scripts = loadScripts(
+      'client',
+      ...(route.chunk ? [route.chunk] : []),
+      ...(route.chunks ? route.chunks : []),
+    );
 
     const data = {
       ...route,
       styles,
-      scripts: Array.from(scripts),
+      scripts,
       app: {
         apiUrl: config.api.clientUrl,
         // Cache for client-side apolloClient
