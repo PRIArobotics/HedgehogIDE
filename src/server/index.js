@@ -218,11 +218,11 @@ app.get('*', async (req, res, next) => {
       return;
     }
 
-    const data = { ...route };
     const rootComponent = <App context={context}>{route.component}</App>;
     await getDataFromTree(rootComponent);
-    data.children = await ReactDOM.renderToString(rootComponent);
-    data.styles = [{ id: 'css', cssText: [...css].join('') }];
+    const children = await ReactDOM.renderToString(rootComponent);
+
+    const styles = [{ id: 'css', cssText: [...css].join('') }];
 
     const scripts = new Set();
     const addChunk = chunk => {
@@ -236,13 +236,18 @@ app.get('*', async (req, res, next) => {
     if (route.chunk) addChunk(route.chunk);
     if (route.chunks) route.chunks.forEach(addChunk);
 
-    data.scripts = Array.from(scripts);
-    data.app = {
-      apiUrl: config.api.clientUrl,
-      // Cache for client-side apolloClient
-      cache: context.client.extract(),
-      // Initial state for client-side stateLink
-      initialState,
+    const data = {
+      ...route,
+      children,
+      styles,
+      scripts: Array.from(scripts),
+      app: {
+        apiUrl: config.api.clientUrl,
+        // Cache for client-side apolloClient
+        cache: context.client.extract(),
+        // Initial state for client-side stateLink
+        initialState,
+      },
     };
 
     const html = ReactDOM.renderToStaticMarkup(<Html {...data} />);
@@ -263,15 +268,22 @@ pe.skipPackage('express');
 // eslint-disable-next-line no-unused-vars
 app.use((err, req, res, next) => {
   console.error(pe.render(err));
-  const html = ReactDOM.renderToStaticMarkup(
-    <Html
-      title="Internal Server Error"
-      description={err.message}
-      styles={[{ id: 'css', cssText: errorPageStyle._getCss() }]} // eslint-disable-line no-underscore-dangle
-    >
-      {ReactDOM.renderToString(<ErrorPageWithoutStyle error={err} />)}
-    </Html>,
-  );
+
+  const rootComponent = <ErrorPageWithoutStyle error={err} />;
+  const children = ReactDOM.renderToString(rootComponent);
+
+  const styles = [
+    { id: 'css', cssText: errorPageStyle._getCss() }, // eslint-disable-line no-underscore-dangle
+  ];
+
+  const data = {
+    title: 'Internal Server Error',
+    description: err.message,
+    styles,
+    children,
+  };
+
+  const html = ReactDOM.renderToStaticMarkup(<Html {...data} />);
   res.status(err.status || 500);
   res.send(`<!doctype html>${html}`);
 });
