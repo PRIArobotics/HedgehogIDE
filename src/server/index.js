@@ -220,7 +220,7 @@ app.get('*', async (req, res, next) => {
 
     const rootComponent = <App context={context}>{route.component}</App>;
     await getDataFromTree(rootComponent);
-    const children = await ReactDOM.renderToString(rootComponent);
+    const children = ReactDOM.renderToString(rootComponent);
 
     const styles = [{ id: 'css', cssText: [...css].join('') }];
 
