@@ -15,7 +15,6 @@ import bodyParser from 'body-parser';
 import expressJwt, { UnauthorizedError as Jwt401Error } from 'express-jwt';
 import jwt from 'jsonwebtoken';
 import React from 'react';
-import ReactDOM from 'react-dom/server';
 import PrettyError from 'pretty-error';
 import { ApolloServer, makeExecutableSchema } from 'apollo-server-express';
 import { getDataFromTree } from 'react-apollo';
@@ -23,7 +22,6 @@ import http from 'http';
 import https from 'https';
 import createApolloClient from '../core/createApolloClient';
 import App from '../components/App';
-import Html from './Html';
 import { ErrorPageWithoutStyle } from '../routes/error/ErrorPage';
 import errorPageStyle from '../routes/error/ErrorPage.css';
 import passport from './passport';
@@ -34,6 +32,7 @@ import schema from './data/schema';
 import chunks from './chunk-manifest.json'; // eslint-disable-line import/no-unresolved
 import config from './config';
 import createInitialState from '../core/createInitialState';
+import renderHtml from './renderHtml';
 
 process.on('unhandledRejection', (reason, p) => {
   console.error('Unhandled Rejection at:', p, 'reason:', reason);
@@ -220,7 +219,6 @@ app.get('*', async (req, res, next) => {
 
     const rootComponent = <App context={context}>{route.component}</App>;
     await getDataFromTree(rootComponent);
-    const children = ReactDOM.renderToString(rootComponent);
 
     const styles = [{ id: 'css', cssText: [...css].join('') }];
 
@@ -238,7 +236,6 @@ app.get('*', async (req, res, next) => {
 
     const data = {
       ...route,
-      children,
       styles,
       scripts: Array.from(scripts),
       app: {
@@ -250,9 +247,9 @@ app.get('*', async (req, res, next) => {
       },
     };
 
-    const html = ReactDOM.renderToStaticMarkup(<Html {...data} />);
+    const html = renderHtml(rootComponent, data);
     res.status(route.status || 200);
-    res.send(`<!doctype html>${html}`);
+    res.send(html);
   } catch (err) {
     next(err);
   }
@@ -270,7 +267,6 @@ app.use((err, req, res, next) => {
   console.error(pe.render(err));
 
   const rootComponent = <ErrorPageWithoutStyle error={err} />;
-  const children = ReactDOM.renderToString(rootComponent);
 
   const styles = [
     { id: 'css', cssText: errorPageStyle._getCss() }, // eslint-disable-line no-underscore-dangle
@@ -280,12 +276,11 @@ app.use((err, req, res, next) => {
     title: 'Internal Server Error',
     description: err.message,
     styles,
-    children,
   };
 
-  const html = ReactDOM.renderToStaticMarkup(<Html {...data} />);
+  const html = renderHtml(rootComponent, data);
   res.status(err.status || 500);
-  res.send(`<!doctype html>${html}`);
+  res.send(html);
 });
 
 //
