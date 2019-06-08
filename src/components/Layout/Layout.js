@@ -14,7 +14,6 @@ import type { Node } from 'react';
 import withStyles from 'isomorphic-style-loader/lib/withStyles';
 
 // external-global styles must be imported in your JS.
-import normalizeCss from 'normalize.css';
 import s from './Layout.scss';
 import Header from '../Header';
 import Sidebar from '../Sidebar';
@@ -45,4 +44,4 @@ class Layout extends React.Component<PropTypes> {
   }
 }
 
-export default withStyles(normalizeCss, s)(Layout);
+export default withStyles(s)(Layout);

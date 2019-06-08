@@ -1,3 +1,5 @@
+import { ServerStyleSheets } from '@material-ui/styles';
+
 // import assets from './asset-manifest.json'; // eslint-disable-line import/no-unresolved
 import chunks from './chunk-manifest.json'; // eslint-disable-line import/no-unresolved
 
@@ -29,4 +31,16 @@ export function loadScripts(...chnks) {
   });
 
   return [...scripts];
+}
+
+export class MaterialStyleLoader {
+  sss = new ServerStyleSheets();
+
+  wrap(component) {
+    return this.sss.collect(component);
+  }
+
+  collect() {
+    return this.sss.toString();
+  }
 }

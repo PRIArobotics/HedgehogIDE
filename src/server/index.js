@@ -31,7 +31,11 @@ import schema from './data/schema';
 import config from './config';
 import createInitialState from '../core/createInitialState';
 import renderHtml from './renderHtml';
-import { IsomorphicStyleLoader, loadScripts } from './loaders';
+import {
+  IsomorphicStyleLoader,
+  MaterialStyleLoader,
+  loadScripts,
+} from './loaders';
 
 process.on('unhandledRejection', (reason, p) => {
   console.error('Unhandled Rejection at:', p, 'reason:', reason);
@@ -177,6 +181,7 @@ server.applyMiddleware({ app });
 app.get('*', async (req, res, next) => {
   try {
     const isomorphicStyleLoader = new IsomorphicStyleLoader();
+    const materialStyleLoader = new MaterialStyleLoader();
 
     const initialState = createInitialState({
       user: req.user || null,
@@ -209,10 +214,16 @@ app.get('*', async (req, res, next) => {
       return;
     }
 
-    const rootComponent = <App context={context}>{route.component}</App>;
+    const rootComponent = materialStyleLoader.wrap(
+      <App context={context}>{route.component}</App>,
+    );
     await getDataFromTree(rootComponent);
 
-    const styles = [{ id: 'css', cssText: isomorphicStyleLoader.collect() }];
+    const styles = [
+      { id: 'css', cssText: isomorphicStyleLoader.collect() },
+      // TODO need to remove this on the client? https://material-ui.com/guides/server-rendering/#the-client-side
+      { id: 'material-css', cssText: materialStyleLoader.collect() },
+    ];
     const scripts = loadScripts(
       'client',
       ...(route.chunk ? [route.chunk] : []),
