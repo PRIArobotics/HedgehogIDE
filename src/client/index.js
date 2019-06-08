@@ -14,7 +14,7 @@ import deepForceUpdate from 'react-deep-force-update';
 import queryString from 'query-string';
 import { createPath } from 'history/PathUtils';
 import App from '../components/App';
-import history from '../core/history';
+import setupHistory from './history';
 import { updateMeta } from './DOMUtils';
 import createApolloClient from '../core/createApolloClient';
 import router from '../core/router';
@@ -39,25 +39,11 @@ const context = {
 };
 
 const container = document.getElementById('app');
-let currentLocation = history.location;
 let appInstance;
 
-const scrollPositionsHistory = {};
-
 // Re-render the app when window.location changes
-async function onLocationChange(location, action) {
-  // Remember the latest scroll position for the previous location
-  scrollPositionsHistory[currentLocation.key] = {
-    scrollX: window.pageXOffset,
-    scrollY: window.pageYOffset,
-  };
-  // Delete stored scroll position for next page if any
-  if (action === 'PUSH') {
-    delete scrollPositionsHistory[location.key];
-  }
-  currentLocation = location;
-
-  const isInitialRender = !action;
+// eslint-disable-next-line no-shadow
+const history = setupHistory(async (history, location, isInitialRender) => {
   try {
     context.pathname = location.pathname;
     context.query = queryString.parse(location.search);
@@ -68,7 +54,7 @@ async function onLocationChange(location, action) {
     const route = await router.resolve(context);
 
     // Prevent multiple page renders during the routing process
-    if (currentLocation.key !== location.key) {
+    if (history.currentLocation.key !== location.key) {
       return;
     }
 
@@ -104,26 +90,7 @@ async function onLocationChange(location, action) {
         // updateLink('canonical', route.canonicalUrl);
         // etc.
 
-        let scrollX = 0;
-        let scrollY = 0;
-        const pos = scrollPositionsHistory[location.key];
-        if (pos) {
-          scrollX = pos.scrollX;
-          scrollY = pos.scrollY;
-        } else {
-          const targetHash = location.hash.substr(1);
-          if (targetHash) {
-            const target = document.getElementById(targetHash);
-            if (target) {
-              scrollY = window.pageYOffset + target.getBoundingClientRect().top;
-            }
-          }
-        }
-
-        // Restore the scroll position if it was saved into the state
-        // or scroll to the given #hash anchor
-        // or scroll to top of the page
-        window.scrollTo(scrollX, scrollY);
+        history.restoreScrolling(location);
 
         // Google Analytics tracking. Don't send 'pageview' event after
         // the initial rendering, as it was already sent
@@ -140,17 +107,12 @@ async function onLocationChange(location, action) {
     console.error(error);
 
     // Do a full page reload if error occurs during client-side navigation
-    if (!isInitialRender && currentLocation.key === location.key) {
+    if (!isInitialRender && history.currentLocation.key === location.key) {
       console.error('RSK will reload your page after error');
       window.location.reload();
     }
   }
-}
-
-// Handle client-side navigation by using HTML5 History API
-// For more information visit https://github.com/mjackson/history#readme
-history.listen(onLocationChange);
-onLocationChange(currentLocation);
+});
 
 // Enable Hot Module Replacement (HMR)
 if (module.hot) {
@@ -160,7 +122,7 @@ if (module.hot) {
       deepForceUpdate(appInstance);
     }
 
-    onLocationChange(currentLocation);
+    history.initialRender();
   });
 }
 
