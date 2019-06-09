@@ -39,7 +39,13 @@ const styled = withStyles(theme => ({
     height: '100vh',
     display: 'flex',
     flexFlow: 'column nowrap',
+  },
+  contentPane: {
+    flex: '1 auto',
     overflow: 'auto',
+
+    display: 'flex',
+    flexFlow: 'column nowrap',
   },
   content: {
     flex: '1 auto',
@@ -67,8 +73,10 @@ class Layout extends React.Component<PropTypes> {
         </Drawer>
         <div className={classes.main}>
           <div className={classes.appBarSpacer} />
-          <main className={classes.content}>{children}</main>
-          <Footer />
+          <div className={classes.contentPane}>
+            <main className={classes.content}>{children}</main>
+            <Footer />
+          </div>
         </div>
       </div>
     );
