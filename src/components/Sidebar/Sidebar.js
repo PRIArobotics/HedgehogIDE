@@ -20,10 +20,8 @@ import AssignmentIcon from '@material-ui/icons/Assignment';
 import { withStyles } from '@material-ui/styles';
 
 const styled = withStyles(theme => ({
-  drawerPaper: {
-    // TODO this width is manually adjusted to center the icons
-    width: '58px',
-    overflowX: 'hidden',
+  listItemIcon: {
+    minWidth: 'auto',
   },
   toolbar: theme.mixins.toolbar,
 }));
@@ -37,17 +35,17 @@ class Sidebar extends React.Component<PropTypes> {
     const { classes } = this.props;
 
     return (
-      <Drawer classes={{ paper: classes.drawerPaper }} variant="permanent" open>
+      <Drawer variant="permanent" open>
         <div className={classes.toolbar} />
         <List>
           <ListItem button>
-            <ListItemIcon>
+            <ListItemIcon className={classes.listItemIcon}>
               <AssignmentIcon />
             </ListItemIcon>
           </ListItem>
           <Divider />
           <ListItem button>
-            <ListItemIcon>
+            <ListItemIcon className={classes.listItemIcon}>
               <AssignmentIcon />
             </ListItemIcon>
           </ListItem>
