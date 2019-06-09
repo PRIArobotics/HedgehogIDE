@@ -11,11 +11,10 @@
 
 import React from 'react';
 
-import Drawer from '@material-ui/core/Drawer';
-import Divider from '@material-ui/core/Divider';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
+import Divider from '@material-ui/core/Divider';
 import AssignmentIcon from '@material-ui/icons/Assignment';
 import { withStyles } from '@material-ui/styles';
 
@@ -35,22 +34,19 @@ class Sidebar extends React.Component<PropTypes> {
     const { classes } = this.props;
 
     return (
-      <Drawer variant="permanent" open>
-        <div className={classes.toolbar} />
-        <List>
-          <ListItem button>
-            <ListItemIcon className={classes.listItemIcon}>
-              <AssignmentIcon />
-            </ListItemIcon>
-          </ListItem>
-          <Divider />
-          <ListItem button>
-            <ListItemIcon className={classes.listItemIcon}>
-              <AssignmentIcon />
-            </ListItemIcon>
-          </ListItem>
-        </List>
-      </Drawer>
+      <List>
+        <ListItem button>
+          <ListItemIcon className={classes.listItemIcon}>
+            <AssignmentIcon />
+          </ListItemIcon>
+        </ListItem>
+        <Divider />
+        <ListItem button>
+          <ListItemIcon className={classes.listItemIcon}>
+            <AssignmentIcon />
+          </ListItemIcon>
+        </ListItem>
+      </List>
     );
   }
 }

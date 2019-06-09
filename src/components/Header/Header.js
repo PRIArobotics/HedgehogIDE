@@ -11,7 +11,6 @@
 
 import React from 'react';
 
-import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import IconButton from '@material-ui/core/IconButton';
@@ -20,9 +19,10 @@ import { withStyles } from '@material-ui/styles';
 import SvgIcon from '../misc/SvgIcon';
 import logoUrl from './logo.svg';
 
+// eslint-disable-next-line no-unused-vars
 const styled = withStyles(theme => ({
-  appBar: {
-    zIndex: theme.zIndex.drawer + 1,
+  gutters: {
+    paddingLeft: theme.spacing(2),
   },
   brandTxt: {
     marginLeft: '10px',
@@ -38,16 +38,14 @@ class Header extends React.Component<PropTypes> {
     const { classes } = this.props;
 
     return (
-      <AppBar className={classes.appBar}>
-        <Toolbar>
-          <IconButton edge="start" color="inherit" aria-label="Hedgehog">
-            <SvgIcon src={logoUrl} alt="Hedgehog Logo" />
-          </IconButton>
-          <Typography className={classes.brandTxt} variant="h6" noWrap>
-            Hedgehog IDE
-          </Typography>
-        </Toolbar>
-      </AppBar>
+      <Toolbar classes={{ gutters: classes.gutters }}>
+        <IconButton edge="start" color="inherit" aria-label="Hedgehog">
+          <SvgIcon src={logoUrl} alt="Hedgehog Logo" />
+        </IconButton>
+        <Typography className={classes.brandTxt} variant="h6" noWrap>
+          Hedgehog IDE
+        </Typography>
+      </Toolbar>
     );
   }
 }
