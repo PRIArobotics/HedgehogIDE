@@ -8,21 +8,17 @@ import { withStyles } from '@material-ui/styles';
 type PropTypes = {|
   src: string,
   alt?: string,
-  classes: object,
+  // classes: object,
 |};
 
-const styled = withStyles({
-  icon: {
-    verticalAlign: 'top',
-  },
-});
+const styled = withStyles({});
 
 class SvgIcon extends React.Component<PropTypes> {
   render() {
-    const { src, alt, classes } = this.props;
+    const { src, alt } = this.props;
     return (
       <Icon>
-        <img className={classes.icon} src={src} alt={alt} />
+        <img src={src} alt={alt} />
       </Icon>
     );
   }
