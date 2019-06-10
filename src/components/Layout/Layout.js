@@ -32,6 +32,8 @@ const styled = withStyles(theme => ({
   appBarSpacer: theme.mixins.toolbar,
   sidebar: {
     position: 'relative',
+    height: '100vh',
+    overflow: 'auto',
   },
   main: {
     flex: '1 auto',
