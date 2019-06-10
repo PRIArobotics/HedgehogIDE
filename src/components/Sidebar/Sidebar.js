@@ -15,8 +15,13 @@ import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import Divider from '@material-ui/core/Divider';
-import AssignmentIcon from '@material-ui/icons/Assignment';
+import CodeIcon from '@material-ui/icons/Code';
+import CloudQueueIcon from '@material-ui/icons/CloudQueue';
+import NavigationIcon from '@material-ui/icons/Navigation';
+import TuneIcon from '@material-ui/icons/Tune';
 import { withStyles } from '@material-ui/styles';
+
+import Link from '../misc/Link';
 
 const styled = withStyles(theme => ({
   listItemIcon: {
@@ -35,15 +40,25 @@ class Sidebar extends React.Component<PropTypes> {
 
     return (
       <List>
+        <ListItem button component={Link} to="/ide">
+          <ListItemIcon className={classes.listItemIcon}>
+            <CodeIcon />
+          </ListItemIcon>
+        </ListItem>
         <ListItem button>
           <ListItemIcon className={classes.listItemIcon}>
-            <AssignmentIcon />
+            <TuneIcon />
+          </ListItemIcon>
+        </ListItem>
+        <ListItem button component={Link} to="/simulator">
+          <ListItemIcon className={classes.listItemIcon}>
+            <NavigationIcon />
           </ListItemIcon>
         </ListItem>
         <Divider />
-        <ListItem button>
+        <ListItem button component={Link} to="/apollo">
           <ListItemIcon className={classes.listItemIcon}>
-            <AssignmentIcon />
+            <CloudQueueIcon />
           </ListItemIcon>
         </ListItem>
       </List>
