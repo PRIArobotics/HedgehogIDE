@@ -16,7 +16,7 @@ async function action() {
     title: 'IDE',
     chunks: ['ide'],
     component: (
-      <Layout>
+      <Layout contentFill>
         <Ide />
       </Layout>
     ),
