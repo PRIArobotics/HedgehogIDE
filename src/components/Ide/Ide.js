@@ -13,7 +13,6 @@ import React from 'react';
 import withStyles from 'isomorphic-style-loader/lib/withStyles';
 import { compose } from 'react-apollo';
 
-// $FlowExpectError
 import Paper from '@material-ui/core/Paper';
 import Button from '@material-ui/core/Button';
 import { withStyles as withStylesMaterial } from '@material-ui/styles';
