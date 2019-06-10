@@ -15,6 +15,8 @@ import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import Divider from '@material-ui/core/Divider';
+import Tooltip from '@material-ui/core/Tooltip';
+
 import CodeIcon from '@material-ui/icons/Code';
 import CloudQueueIcon from '@material-ui/icons/CloudQueue';
 import NavigationIcon from '@material-ui/icons/Navigation';
@@ -40,27 +42,35 @@ class Sidebar extends React.Component<PropTypes> {
 
     return (
       <List>
-        <ListItem button component={Link} to="/ide">
-          <ListItemIcon className={classes.listItemIcon}>
-            <CodeIcon />
-          </ListItemIcon>
-        </ListItem>
-        <ListItem button>
-          <ListItemIcon className={classes.listItemIcon}>
-            <TuneIcon />
-          </ListItemIcon>
-        </ListItem>
-        <ListItem button component={Link} to="/simulator">
-          <ListItemIcon className={classes.listItemIcon}>
-            <NavigationIcon />
-          </ListItemIcon>
-        </ListItem>
+        <Tooltip title="Code Editor" placement="right">
+          <ListItem button component={Link} to="/ide">
+            <ListItemIcon className={classes.listItemIcon}>
+              <CodeIcon />
+            </ListItemIcon>
+          </ListItem>
+        </Tooltip>
+        <Tooltip title="Robot Controls" placement="right">
+          <ListItem button>
+            <ListItemIcon className={classes.listItemIcon}>
+              <TuneIcon />
+            </ListItemIcon>
+          </ListItem>
+        </Tooltip>
+        <Tooltip title="Robot Simulator" placement="right">
+          <ListItem button component={Link} to="/simulator">
+            <ListItemIcon className={classes.listItemIcon}>
+              <NavigationIcon />
+            </ListItemIcon>
+          </ListItem>
+        </Tooltip>
         <Divider />
-        <ListItem button component={Link} to="/apollo">
-          <ListItemIcon className={classes.listItemIcon}>
-            <CloudQueueIcon />
-          </ListItemIcon>
-        </ListItem>
+        <Tooltip title="Apollo Feature Test" placement="right">
+          <ListItem button component={Link} to="/apollo">
+            <ListItemIcon className={classes.listItemIcon}>
+              <CloudQueueIcon />
+            </ListItemIcon>
+          </ListItem>
+        </Tooltip>
       </List>
     );
   }
