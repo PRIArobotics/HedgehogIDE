@@ -113,20 +113,18 @@ class Ide extends React.Component<PropTypes, StateTypes> {
   render() {
     return (
       <div className={s.root}>
-        <div className={s.container}>
-          <div className={s['nav-container']}>
-            <p>nav</p>
-          </div>
-          {this.state.model && (
-            <div className={s['editor-container']}>
-              <this.FlexLayout.Layout
-                model={this.state.model}
-                factory={Ide.factory}
-                classNameMapper={className => FlexLayoutTheme[className]}
-              />
-            </div>
-          )}
+        <div className={s['nav-container']}>
+          <p>nav</p>
         </div>
+        {this.state.model && (
+          <div className={s['editor-container']}>
+            <this.FlexLayout.Layout
+              model={this.state.model}
+              factory={Ide.factory}
+              classNameMapper={className => FlexLayoutTheme[className]}
+            />
+          </div>
+        )}
       </div>
     );
   }
