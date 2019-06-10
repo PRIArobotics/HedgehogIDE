@@ -19,13 +19,11 @@
 .nav-container {
   flex: 0 auto;
   min-width: 150px;
+  margin-right: 8px;
+  padding: 10px;
 }
 
 .editor-container {
   flex: 1 auto;
   position: relative;
-}
-
-.tab {
-  margin: 2px;
 }

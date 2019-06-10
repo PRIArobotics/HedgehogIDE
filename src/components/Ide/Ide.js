@@ -13,6 +13,7 @@ import React from 'react';
 import withStyles from 'isomorphic-style-loader/lib/withStyles';
 
 // $FlowExpectError
+import Paper from '@material-ui/core/Paper';
 import Button from '@material-ui/core/Button';
 import Editor from '../Editor';
 
@@ -46,7 +47,7 @@ const json = {
           {
             type: 'tab',
             name: 'A',
-            component: 'button',
+            component: 'editor',
           },
         ],
       },
@@ -74,15 +75,6 @@ type StateTypes = {|
 class Ide extends React.Component<PropTypes, StateTypes> {
   static factory(node: any) {
     switch (node.getComponent()) {
-      case 'button': {
-        return (
-          <div className={s.tab}>
-            <Button variant="contained" color="primary">
-              IDE
-            </Button>
-          </div>
-        );
-      }
       case 'editor': {
         return <Editor />;
       }
@@ -113,17 +105,19 @@ class Ide extends React.Component<PropTypes, StateTypes> {
   render() {
     return (
       <div className={s.root}>
-        <div className={s['nav-container']}>
-          <p>nav</p>
-        </div>
+        <Paper className={s['nav-container']} square>
+          <Button variant="contained" color="primary">
+            IDE
+          </Button>
+        </Paper>
         {this.state.model && (
-          <div className={s['editor-container']}>
+          <Paper className={s['editor-container']} square>
             <this.FlexLayout.Layout
               model={this.state.model}
               factory={Ide.factory}
               classNameMapper={className => FlexLayoutTheme[className]}
             />
-          </div>
+          </Paper>
         )}
       </div>
     );
