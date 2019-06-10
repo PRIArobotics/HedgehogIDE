@@ -33,6 +33,8 @@ const styled = withStyles(theme => ({
   sidebar: {
     position: 'relative',
     height: '100vh',
+  },
+  sidebarContent: {
     overflow: 'auto',
   },
   main: {
@@ -87,7 +89,9 @@ class Layout extends React.Component<PropTypes> {
         <Drawer classes={{ paper: classes.sidebar }} variant="permanent" open>
           <div className={classes.appBarSpacer} />
           <Divider />
-          <Sidebar />
+          <div className={classes.sidebarContent}>
+            <Sidebar />
+          </div>
         </Drawer>
         <div className={classes.main}>
           <div className={classes.appBarSpacer} />
