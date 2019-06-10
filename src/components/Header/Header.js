@@ -16,6 +16,7 @@ import Typography from '@material-ui/core/Typography';
 import IconButton from '@material-ui/core/IconButton';
 import { withStyles } from '@material-ui/styles';
 
+import Link from '../misc/Link';
 import SvgIcon from '../misc/SvgIcon';
 import logoUrl from './logo.svg';
 
@@ -39,7 +40,13 @@ class Header extends React.Component<PropTypes> {
 
     return (
       <Toolbar classes={{ gutters: classes.gutters }}>
-        <IconButton edge="start" color="inherit" aria-label="Hedgehog">
+        <IconButton
+          edge="start"
+          color="inherit"
+          component={Link}
+          to="/"
+          aria-label="Hedgehog"
+        >
           <SvgIcon src={logoUrl} alt="Hedgehog Logo" />
         </IconButton>
         <Typography className={classes.brandTxt} variant="h6" noWrap>
