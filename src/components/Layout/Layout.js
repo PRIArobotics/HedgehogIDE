@@ -52,16 +52,32 @@ const styled = withStyles(theme => ({
   content: {
     flex: '1 auto',
   },
+  contentPaneFill: {
+    flex: '1 auto',
+
+    display: 'flex',
+    flexFlow: 'column nowrap',
+  },
+  contentFill: {
+    flex: '1 0 0',
+    minHeight: 0,
+  },
 }));
 
 type PropTypes = {|
   children: Node,
   classes: object,
+  contentFill: boolean,
 |};
 
 class Layout extends React.Component<PropTypes> {
   render() {
-    const { children, classes } = this.props;
+    const { children, classes, contentFill } = this.props;
+
+    const contentPaneClass = contentFill
+      ? classes.contentPaneFill
+      : classes.contentPane;
+    const contentClass = contentFill ? classes.contentFill : classes.content;
 
     return (
       <div className={classes.root}>
@@ -75,8 +91,8 @@ class Layout extends React.Component<PropTypes> {
         </Drawer>
         <div className={classes.main}>
           <div className={classes.appBarSpacer} />
-          <div className={classes.contentPane}>
-            <main className={classes.content}>{children}</main>
+          <div className={contentPaneClass}>
+            <main className={contentClass}>{children}</main>
             <Footer />
           </div>
         </div>

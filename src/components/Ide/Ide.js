@@ -33,6 +33,9 @@ const styled = withStylesMaterial(theme => ({
     flex: '0 auto',
     minWidth: '150px',
     marginRight: theme.spacing(1),
+    overflow: 'auto',
+  },
+  navContainerInner: {
     padding: theme.spacing(1),
   },
   editorContainer: {
@@ -130,9 +133,11 @@ class Ide extends React.Component<PropTypes, StateTypes> {
     return (
       <div className={classes.root}>
         <Paper className={classes.navContainer} square>
-          <Button variant="contained" color="primary">
-            IDE
-          </Button>
+          <div className={classes.navContainerInner}>
+            <Button variant="contained" color="primary">
+              IDE
+            </Button>
+          </div>
         </Paper>
         {this.state.model && (
           <Paper className={classes.editorContainer} square>
@@ -149,6 +154,6 @@ class Ide extends React.Component<PropTypes, StateTypes> {
 }
 
 export default compose(
-  styled,
   withStyles(FlexLayoutTheme),
+  styled,
 )(Ide);
