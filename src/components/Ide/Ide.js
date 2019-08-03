@@ -17,6 +17,7 @@ import Paper from '@material-ui/core/Paper';
 import Button from '@material-ui/core/Button';
 import { withStyles as withStylesMaterial } from '@material-ui/styles';
 
+import FlexLayout from 'flexlayout-react';
 import Editor from '../Editor';
 
 // eslint-disable-next-line css-modules/no-unused-class
@@ -43,17 +44,6 @@ const styled = withStylesMaterial(theme => ({
     position: 'relative',
   },
 }));
-
-const importer = (async () => {
-  if (!process.env.BROWSER) {
-    // never resolves
-    await new Promise(() => {});
-  }
-  // import flexlayout
-  return {
-    FlexLayout: await import('flexlayout-react'),
-  };
-})();
 
 const json = {
   global: {},
@@ -111,21 +101,9 @@ class Ide extends React.Component<PropTypes, StateTypes> {
   constructor(props: PropTypes) {
     super(props);
     this.state = {
-      model: null,
+      model: FlexLayout.Model.fromJson(json),
     };
   }
-
-  componentDidMount() {
-    // FIXME work around FlexLayout's incompatibility with server-side rendering
-    importer.then(({ FlexLayout }) => {
-      this.FlexLayout = FlexLayout;
-      this.setState({
-        model: this.FlexLayout.Model.fromJson(json),
-      });
-    });
-  }
-
-  FlexLayout: any;
 
   render() {
     const { classes } = this.props;
@@ -139,15 +117,13 @@ class Ide extends React.Component<PropTypes, StateTypes> {
             </Button>
           </div>
         </Paper>
-        {this.state.model && (
-          <Paper className={classes.editorContainer} square>
-            <this.FlexLayout.Layout
-              model={this.state.model}
-              factory={Ide.factory}
-              classNameMapper={className => FlexLayoutTheme[className]}
-            />
-          </Paper>
-        )}
+        <Paper className={classes.editorContainer} square>
+          <FlexLayout.Layout
+            model={this.state.model}
+            factory={Ide.factory}
+            classNameMapper={className => FlexLayoutTheme[className]}
+          />
+        </Paper>
       </div>
     );
   }

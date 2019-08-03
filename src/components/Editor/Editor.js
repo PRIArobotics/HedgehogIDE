@@ -12,66 +12,36 @@
 import React from 'react';
 import withStyles from 'isomorphic-style-loader/lib/withStyles';
 
+import AceEditor from 'react-ace';
+
 import s from './Editor.scss';
 
-const importer = (async () => {
-  if (!process.env.BROWSER) {
-    // never resolves
-    await new Promise(() => {});
-  }
-
-  // import ace editor
-  return {
-    AceEditor: await import('react-ace'),
-  };
-})();
-
 type PropTypes = {||};
-type StateTypes = {|
-  aceReady: boolean,
-|};
+type StateTypes = {||};
 
 class Editor extends React.Component<PropTypes, StateTypes> {
-  constructor(props: PropTypes) {
-    super(props);
-    this.state = {
-      aceReady: false,
-    };
-  }
-
-  componentDidMount() {
-    importer.then(({ AceEditor }) => {
-      this.AceEditor = AceEditor;
-      this.setState({
-        aceReady: true,
-      });
-    });
-  }
-
   render() {
     return (
-      this.state.aceReady && (
-        <this.AceEditor.default
-          mode="javascript"
-          width="100%"
-          height="100%"
-          // onLoad={this.onLoad}
-          // onChange={this.onChange}
-          // onSelectionChange={this.onSelectionChange}
-          // onCursorChange={this.onCursorChange}
-          // onValidate={this.onValidate}
-          value="foo"
-          showGutter
-          highlightActiveLine
-          setOptions={{
-            enableBasicAutocompletion: true,
-            // enableLiveAutocompletion: true,
-            // enableSnippets: this.state.enableSnippets,
-            showLineNumbers: true,
-            tabSize: 2,
-          }}
-        />
-      )
+      <AceEditor
+        mode="javascript"
+        width="100%"
+        height="100%"
+        // onLoad={this.onLoad}
+        // onChange={this.onChange}
+        // onSelectionChange={this.onSelectionChange}
+        // onCursorChange={this.onCursorChange}
+        // onValidate={this.onValidate}
+        value="foo"
+        showGutter
+        highlightActiveLine
+        setOptions={{
+          enableBasicAutocompletion: true,
+          // enableLiveAutocompletion: true,
+          // enableSnippets: this.state.enableSnippets,
+          showLineNumbers: true,
+          tabSize: 2,
+        }}
+      />
     );
   }
 }
