@@ -8,16 +8,21 @@
  */
 
 import React from 'react';
-import Ide from '../../components/Ide/Ide';
 import Layout from '../../components/Layout';
+import NoSSR from '../../components/misc/NoSSR';
 
 async function action() {
+  const showIde = async () => {
+    const { default: Ide } = await import('../../components/Ide');
+
+    return <Ide />;
+  };
   return {
     title: 'IDE',
     chunks: ['ide'],
     component: (
       <Layout contentFill>
-        <Ide />
+        <NoSSR>{showIde}</NoSSR>
       </Layout>
     ),
   };
