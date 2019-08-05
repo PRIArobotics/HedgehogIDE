@@ -135,7 +135,7 @@ class Ide extends React.Component<PropTypes, StateTypes> {
         <Paper className={classes.editorContainer} square>
           <FlexLayout.Layout
             model={this.state.model}
-            ref = {this.flexRef}
+            ref={this.flexRef}
             factory={Ide.factory}
             classNameMapper={className => FlexLayoutTheme[className]}
           />
