@@ -16,7 +16,7 @@ export default async function codegen() {
   await runWebpack(
     {
       ...serverConfig,
-      entry: './src/data/schema.js',
+      entry: './src/server/data/schema.js',
       output: {
         path: serverConfig.output.path,
         filename: 'schema.js',
