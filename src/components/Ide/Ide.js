@@ -115,6 +115,11 @@ class Ide extends React.Component<PropTypes, StateTypes> {
             <Button variant="contained" color="primary">
               IDE
             </Button>
+            <br />
+            <br />
+            <Button variant="contained" color="primary">
+              Simulator
+            </Button>
           </div>
         </Paper>
         <Paper className={classes.editorContainer} square>
