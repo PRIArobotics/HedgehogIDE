@@ -14,8 +14,12 @@ import withStyles from 'isomorphic-style-loader/lib/withStyles';
 import { compose } from 'react-apollo';
 
 import Paper from '@material-ui/core/Paper';
-import Button from '@material-ui/core/Button';
 import { withStyles as withStylesMaterial } from '@material-ui/styles';
+
+import CodeIcon from '@material-ui/icons/Code';
+import AddToQueueIcon from '@material-ui/icons/AddToQueue';
+import IconButton from '@material-ui/core/IconButton';
+import Tooltip from '@material-ui/core/Tooltip';
 
 import FlexLayout from 'flexlayout-react';
 import Editor from '../Editor';
@@ -23,6 +27,17 @@ import Simulator from '../Simulator';
 
 // eslint-disable-next-line css-modules/no-unused-class
 import FlexLayoutTheme from './flex_layout_ide.css';
+
+const iconStyles = {
+  smallIcon: {
+    width: 20,
+    height: 20,
+  },
+  small: {
+    width: 38,
+    height: 38,
+  },
+};
 
 const styled = withStylesMaterial(theme => ({
   root: {
@@ -105,14 +120,16 @@ class Ide extends React.Component<PropTypes, StateTypes> {
 
   constructor(props: PropTypes) {
     super(props);
+    this.state = { model: FlexLayout.Model.fromJson(json) };
     this.flexRef = React.createRef();
-    this.state = {
-      model: FlexLayout.Model.fromJson(json),
-    };
   }
 
   handleClick() {
-    this.flexRef.current.addTabToTabSet("left-half", {type:"tab", component:"simulator", name:"Simulator"});
+    this.flexRef.current.addTabToActiveTabSet({
+      type: 'tab',
+      component: 'simulator',
+      name: 'Simulator',
+    });
   }
 
   render() {
@@ -122,20 +139,34 @@ class Ide extends React.Component<PropTypes, StateTypes> {
       <div className={classes.root}>
         <Paper className={classes.navContainer} square>
           <div className={classes.navContainerInner}>
-            <Button variant="contained" color="primary">
-              IDE
-            </Button>
-            <br />
-            <br />
-            <Button variant="contained" color="primary" onClick={(e) => this.handleClick(e)}>
-              Simulator
-            </Button>
+            <Tooltip title="IDE">
+              <IconButton
+                variant="contained"
+                color="primary"
+                iconStyle={iconStyles.smallIcon}
+                style={iconStyles.small}
+                onClick={e => this.handleClick(e)}
+              >
+                <CodeIcon />
+              </IconButton>
+            </Tooltip>
+            <Tooltip title="Simulation">
+              <IconButton
+                variant="contained"
+                color="primary"
+                iconStyle={iconStyles.smallIcon}
+                style={iconStyles.small}
+                onClick={e => this.handleClick(e)}
+              >
+                <AddToQueueIcon />
+              </IconButton>
+            </Tooltip>
           </div>
         </Paper>
         <Paper className={classes.editorContainer} square>
           <FlexLayout.Layout
             model={this.state.model}
-            ref = {this.flexRef}
+            ref={this.flexRef}
             factory={Ide.factory}
             classNameMapper={className => FlexLayoutTheme[className]}
           />
