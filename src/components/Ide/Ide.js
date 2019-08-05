@@ -132,9 +132,16 @@ class Ide extends React.Component<PropTypes, StateTypes> {
     });
   }
 
+  handleClick2() {
+    this.flexRef.current.addTabToActiveTabSet({
+      type: 'tab',
+      component: 'editor',
+      name: 'Editor',
+    });
+  }
+
   render() {
     const { classes } = this.props;
-
     return (
       <div className={classes.root}>
         <Paper className={classes.navContainer} square>
@@ -145,7 +152,7 @@ class Ide extends React.Component<PropTypes, StateTypes> {
                 color="primary"
                 iconStyle={iconStyles.smallIcon}
                 style={iconStyles.small}
-                onClick={e => this.handleClick(e)}
+                onClick={e => this.handleClick2(e)}
               >
                 <CodeIcon />
               </IconButton>
