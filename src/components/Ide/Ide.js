@@ -105,6 +105,10 @@ class Ide extends React.Component<PropTypes, StateTypes> {
     };
   }
 
+  handleClick() {
+    console.log("CLICK");
+  }
+
   render() {
     const { classes } = this.props;
 
@@ -117,7 +121,7 @@ class Ide extends React.Component<PropTypes, StateTypes> {
             </Button>
             <br />
             <br />
-            <Button variant="contained" color="primary">
+            <Button variant="contained" color="primary" onClick={(e) => this.handleClick(e)}>
               Simulator
             </Button>
           </div>
