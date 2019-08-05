@@ -19,6 +19,7 @@ import { withStyles as withStylesMaterial } from '@material-ui/styles';
 
 import FlexLayout from 'flexlayout-react';
 import Editor from '../Editor';
+import Simulator from '../Simulator';
 
 // eslint-disable-next-line css-modules/no-unused-class
 import FlexLayoutTheme from './flex_layout_ide.css';
@@ -44,7 +45,7 @@ const styled = withStylesMaterial(theme => ({
     position: 'relative',
   },
 }));
-
+// JSON (Daten) von Tabs
 const json = {
   global: {},
   borders: [],
@@ -59,7 +60,7 @@ const json = {
         children: [
           {
             type: 'tab',
-            name: 'A',
+            name: 'A', // Name für tab
             component: 'editor',
           },
         ],
@@ -72,7 +73,7 @@ const json = {
           {
             type: 'tab',
             name: 'B',
-            component: 'editor',
+            component: 'simulator',
           },
         ],
       },
@@ -92,6 +93,9 @@ class Ide extends React.Component<PropTypes, StateTypes> {
     switch (node.getComponent()) {
       case 'editor': {
         return <Editor />;
+      }
+      case 'simulator': {
+        return <Simulator />;
       }
       default:
         return null;
