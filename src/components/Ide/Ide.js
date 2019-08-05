@@ -55,7 +55,7 @@ const json = {
     children: [
       {
         type: 'tabset',
-        id: 'left',
+        id: 'left-half',
         weight: 50,
         selected: 0,
         children: [
@@ -105,14 +105,14 @@ class Ide extends React.Component<PropTypes, StateTypes> {
 
   constructor(props: PropTypes) {
     super(props);
+    this.flexRef = React.createRef();
     this.state = {
       model: FlexLayout.Model.fromJson(json),
     };
   }
 
   handleClick() {
-    console.log("CLICK");
-    this.refs.layout.addTabToTabSet("left", {type:"tab", component:"simulator", name:"Simulator"});
+    this.flexRef.current.addTabToTabSet("left-half", {type:"tab", component:"simulator", name:"Simulator"});
   }
 
   render() {
@@ -135,7 +135,7 @@ class Ide extends React.Component<PropTypes, StateTypes> {
         <Paper className={classes.editorContainer} square>
           <FlexLayout.Layout
             model={this.state.model}
-            ref = "layout"
+            ref = {this.flexRef}
             factory={Ide.factory}
             classNameMapper={className => FlexLayoutTheme[className]}
           />
