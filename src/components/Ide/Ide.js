@@ -61,7 +61,6 @@ const styled = withStylesMaterial(theme => ({
   },
 }));
 
-// JSON (Daten) von Tabs
 const json = {
   global: {},
   borders: [],
@@ -79,12 +78,17 @@ type StateTypes = {|
 |};
 
 class Ide extends React.Component<PropTypes, StateTypes> {
+  static simulatorOn;
+
   static factory(node: any) {
     switch (node.getComponent()) {
       case 'editor': {
         return <Editor />;
       }
       case 'simulator': {
+        node.setEventListener('close', () => {
+          Ide.simulatorOn = false;
+        });
         return <Simulator />;
       }
       default:
@@ -94,6 +98,7 @@ class Ide extends React.Component<PropTypes, StateTypes> {
 
   constructor(props: PropTypes) {
     super(props);
+    Ide.simulatorOn = false;
     this.state = { model: FlexLayout.Model.fromJson(json) };
     this.flexRef = React.createRef();
   }
@@ -131,11 +136,17 @@ class Ide extends React.Component<PropTypes, StateTypes> {
   }
 
   addSimulator() {
-    this.addNode({
-      type: 'tab',
-      component: 'simulator',
-      name: 'Simulator',
-    });
+    if (Ide.simulatorOn === false) {
+      this.addNode({
+        id: 'sim',
+        type: 'tab',
+        component: 'simulator',
+        name: 'Simulator',
+      });
+      Ide.simulatorOn = true;
+    } else {
+      this.state.model.doAction(FlexLayout.Actions.selectTab('sim'));
+    }
   }
 
   addEditor() {
