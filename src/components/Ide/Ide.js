@@ -60,40 +60,14 @@ const styled = withStylesMaterial(theme => ({
     position: 'relative',
   },
 }));
+
 // JSON (Daten) von Tabs
 const json = {
   global: {},
   borders: [],
   layout: {
-    type: 'row',
-    weight: 50,
-    children: [
-      {
-        type: 'tabset',
-        id: 'left-half',
-        weight: 50,
-        selected: 0,
-        children: [
-          {
-            type: 'tab',
-            name: 'A', // Name für tab
-            component: 'editor',
-          },
-        ],
-      },
-      {
-        type: 'tabset',
-        weight: 50,
-        selected: 0,
-        children: [
-          {
-            type: 'tab',
-            name: 'B',
-            component: 'editor',
-          },
-        ],
-      },
-    ],
+    type: 'tabset',
+    children: [],
   },
 };
 
