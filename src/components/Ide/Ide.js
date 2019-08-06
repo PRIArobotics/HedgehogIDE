@@ -73,6 +73,7 @@ const json = {
         id: 'left-half',
         weight: 50,
         selected: 0,
+        enableDeleteWhenEmpty: false,
         children: [
           {
             type: 'tab',
