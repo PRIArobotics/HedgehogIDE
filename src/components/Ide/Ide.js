@@ -98,16 +98,48 @@ class Ide extends React.Component<PropTypes, StateTypes> {
     this.flexRef = React.createRef();
   }
 
-  handleClick() {
-    this.flexRef.current.addTabToActiveTabSet({
+  addNode(nodeJson) {
+    // TODO this is a workaround for a FlexLayout bug
+    const enumerateTabsetIds = (tabsets, root) => {
+      tabsets.push(root.getId());
+      root.getChildren().forEach(child => enumerateTabsetIds(tabsets, child));
+      return tabsets;
+    };
+
+    const allTabsetIds = enumerateTabsetIds([], this.state.model.getRoot());
+    const active = this.state.model.getActiveTabset();
+
+    if (active !== undefined && allTabsetIds.indexOf(active.getId()) !== -1) {
+      this.state.model.doAction(
+        FlexLayout.Actions.addNode(
+          nodeJson,
+          active.getId(),
+          FlexLayout.DockLocation.CENTER,
+          -1,
+        ),
+      );
+    } else {
+      this.state.model.doAction(
+        FlexLayout.Actions.addNode(
+          nodeJson,
+          this.state.model.getRoot().getId(),
+          FlexLayout.DockLocation.RIGHT,
+          -1,
+        ),
+      );
+    }
+  }
+
+  addSimulator() {
+    this.addNode({
       type: 'tab',
       component: 'simulator',
       name: 'Simulator',
     });
   }
 
-  handleClick2() {
-    this.flexRef.current.addTabToActiveTabSet({
+  addEditor() {
+    this.addNode({
       type: 'tab',
       component: 'editor',
       name: 'Editor',
@@ -126,7 +158,7 @@ class Ide extends React.Component<PropTypes, StateTypes> {
                 color="primary"
                 iconStyle={iconStyles.smallIcon}
                 style={iconStyles.small}
-                onClick={e => this.handleClick2(e)}
+                onClick={() => this.addEditor()}
               >
                 <CodeIcon />
               </IconButton>
@@ -137,7 +169,7 @@ class Ide extends React.Component<PropTypes, StateTypes> {
                 color="primary"
                 iconStyle={iconStyles.smallIcon}
                 style={iconStyles.small}
-                onClick={e => this.handleClick(e)}
+                onClick={() => this.addSimulator()}
               >
                 <AddToQueueIcon />
               </IconButton>
