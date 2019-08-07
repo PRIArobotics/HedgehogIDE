@@ -105,12 +105,12 @@ class FileTree extends React.Component {
     );
     */
     return (
-      <div style={{ margin: '0 20px' }}>
+      <div style={{ margin: '0 10px' }}>
         <Tree
           className="myCls"
           showLine
           checkable={false}
-          selectable={false}
+          selectable
           defaultExpandAll
           onExpand={this.onExpand}
           defaultSelectedKeys={this.state.defaultSelectedKeys}
