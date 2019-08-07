@@ -1,0 +1,6 @@
+{
+  "name": "FileTree",
+  "version": "0.0.0",
+  "private": true,
+  "main": "FileTree.js"
+}

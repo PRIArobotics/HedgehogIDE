@@ -27,6 +27,7 @@ import Simulator from '../Simulator';
 
 // eslint-disable-next-line css-modules/no-unused-class
 import FlexLayoutTheme from './flex_layout_ide.css';
+import FileTree from '../FileTree/FileTree';
 
 const iconStyles = {
   smallIcon: {
@@ -186,6 +187,7 @@ class Ide extends React.Component<PropTypes, StateTypes> {
               </IconButton>
             </Tooltip>
           </div>
+          <FileTree />
         </Paper>
         <Paper className={classes.editorContainer} square>
           <FlexLayout.Layout
