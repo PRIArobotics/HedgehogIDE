@@ -81,6 +81,14 @@ class FileTree extends React.Component {
     e.stopPropagation();
   };
 
+  onDragStart = (event, node) => {
+    console.log('Begin', event, node);
+  };
+
+  onDragEnd = (event, node) => {
+    console.log('End', event, node);
+  };
+
   setTreeRef = tree => {
     this.tree = tree;
   };
@@ -107,16 +115,19 @@ class FileTree extends React.Component {
     return (
       <div style={{ margin: '0 10px' }}>
         <Tree
-          className="myCls"
+          className="file-tree"
           showLine
           checkable={false}
           selectable
+          draggable
           defaultExpandAll
           onExpand={this.onExpand}
           defaultSelectedKeys={this.state.defaultSelectedKeys}
           defaultCheckedKeys={this.state.defaultCheckedKeys}
           onSelect={this.onSelect}
           onCheck={this.onCheck}
+          onDragStart={this.onDragStart}
+          onDragEnd={this.onDragEnd}
           treeData={treeData}
         />
       </div>
