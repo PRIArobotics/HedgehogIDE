@@ -4,6 +4,8 @@ import ReactDOM from 'react-dom';
 import Tree from 'rc-tree';
 import s from 'rc-tree/assets/index.css';
 import withStyles from 'isomorphic-style-loader/lib/withStyles';
+import { ContextMenu, MenuItem, ContextMenuTrigger } from 'react-contextmenu';
+import s1 from './filetree-styling.css';
 
 const treeData = [
   {
@@ -93,43 +95,39 @@ class FileTree extends React.Component {
     this.tree = tree;
   };
 
+  handleRightClick = () => {
+    console.log('Click!');
+  };
+
   render() {
-    /*
-    const customLabel = (
-      <span className="cus-label">
-        <span>operations: </span>
-        <span style={{ color: 'blue' }} onClick={this.onEdit}>
-          Edit
-        </span>
-        &nbsp;
-        <label onClick={e => e.stopPropagation()}>
-          <input type="checkbox" /> checked
-        </label>
-        &nbsp;
-        <span style={{ color: '#EB0000' }} onClick={this.onDel}>
-          Delete
-        </span>
-      </span>
-    );
-    */
     return (
       <div style={{ margin: '0 10px' }}>
-        <Tree
-          className="file-tree"
-          showLine
-          checkable={false}
-          selectable
-          draggable
-          defaultExpandAll
-          onExpand={this.onExpand}
-          defaultSelectedKeys={this.state.defaultSelectedKeys}
-          defaultCheckedKeys={this.state.defaultCheckedKeys}
-          onSelect={this.onSelect}
-          onCheck={this.onCheck}
-          onDragStart={this.onDragStart}
-          onDragEnd={this.onDragEnd}
-          treeData={treeData}
-        />
+        <ContextMenuTrigger id="filecontext">
+          <Tree
+            className="file-tree"
+            showLine
+            checkable={false}
+            selectable
+            draggable
+            defaultExpandAll
+            onExpand={this.onExpand}
+            defaultSelectedKeys={this.state.defaultSelectedKeys}
+            defaultCheckedKeys={this.state.defaultCheckedKeys}
+            onSelect={this.onSelect}
+            onCheck={this.onCheck}
+            onDragStart={this.onDragStart}
+            onDragEnd={this.onDragEnd}
+            onRightClick={this.handleRightClick}
+            treeData={treeData}
+          />
+        </ContextMenuTrigger>
+        {/*
+        <ContextMenu id="filecontext">
+          <MenuItem>Add New File</MenuItem>
+          <MenuItem>Rename</MenuItem>
+          <MenuItem>Delete</MenuItem>
+        </ContextMenu>
+        */}
       </div>
     );
   }
