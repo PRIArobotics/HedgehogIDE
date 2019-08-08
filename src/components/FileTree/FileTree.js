@@ -4,8 +4,8 @@ import ReactDOM from 'react-dom';
 import Tree from 'rc-tree';
 import s from 'rc-tree/assets/index.css';
 import withStyles from 'isomorphic-style-loader/lib/withStyles';
-import { ContextMenu, MenuItem, ContextMenuTrigger } from 'react-contextmenu';
-import s1 from './filetree-styling.css';
+// eslint-disable-next-line css-modules/no-unused-class
+import { Menu, MenuItem } from '@material-ui/core';
 
 const treeData = [
   {
@@ -29,13 +29,25 @@ const treeData = [
   },
 ];
 
+let anchorEl = null;
+let cmOpen = false;
+
+function handleClick(event) {
+  anchorEl = event.currentTarget;
+}
+
+function handleClose() {
+  cmOpen = false;
+  anchorEl = null;
+}
+
 class FileTree extends React.Component {
   static propTypes = {
     keys: PropTypes.array,
   };
 
-  static defaultProps = {
-    keys: ['0-0-0-0'],
+  state = {
+    selectedKeys: [],
   };
 
   constructor(props) {
@@ -91,43 +103,45 @@ class FileTree extends React.Component {
     console.log('End', event, node);
   };
 
-  setTreeRef = tree => {
-    this.tree = tree;
-  };
-
-  handleRightClick = () => {
-    console.log('Click!');
+  handleRightClick = (event, node) => {
+    console.log('right click', event, node);
+    this.setState({ selectedKeys: [event.node.props.eventKey] });
+    anchorEl = event.currentTarget;
+    cmOpen = true;
   };
 
   render() {
     return (
       <div style={{ margin: '0 10px' }}>
-        <ContextMenuTrigger id="filecontext">
-          <Tree
-            className="file-tree"
-            showLine
-            checkable={false}
-            selectable
-            draggable
-            defaultExpandAll
-            onExpand={this.onExpand}
-            defaultSelectedKeys={this.state.defaultSelectedKeys}
-            defaultCheckedKeys={this.state.defaultCheckedKeys}
-            onSelect={this.onSelect}
-            onCheck={this.onCheck}
-            onDragStart={this.onDragStart}
-            onDragEnd={this.onDragEnd}
-            onRightClick={this.handleRightClick}
-            treeData={treeData}
-          />
-        </ContextMenuTrigger>
-        {/*
-        <ContextMenu id="filecontext">
-          <MenuItem>Add New File</MenuItem>
-          <MenuItem>Rename</MenuItem>
-          <MenuItem>Delete</MenuItem>
-        </ContextMenu>
-        */}
+        <Tree
+          className="file-tree"
+          showLine
+          checkable={false}
+          selectable
+          draggable
+          defaultExpandAll
+          onExpand={this.onExpand}
+          defaultSelectedKeys={this.state.defaultSelectedKeys}
+          defaultCheckedKeys={this.state.defaultCheckedKeys}
+          onSelect={this.onSelect}
+          onCheck={this.onCheck}
+          onDragStart={this.onDragStart}
+          onDragEnd={this.onDragEnd}
+          onRightClick={this.handleRightClick}
+          selectedKeys={this.state.selectedKeys}
+          treeData={treeData}
+        />
+        <Menu
+          id="simple-menu"
+          anchorEl={anchorEl}
+          keepMounted
+          open={cmOpen}
+          onClose={handleClose}
+        >
+          <MenuItem onClick={handleClose}>Profile</MenuItem>
+          <MenuItem onClick={handleClose}>My account</MenuItem>
+          <MenuItem onClick={handleClose}>Logout</MenuItem>
+        </Menu>
       </div>
     );
   }
