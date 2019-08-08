@@ -36,11 +36,6 @@ function handleClick(event) {
   anchorEl = event.currentTarget;
 }
 
-function handleClose() {
-  cmOpen = false;
-  anchorEl = null;
-}
-
 class FileTree extends React.Component {
   static propTypes = {
     keys: PropTypes.array,
@@ -107,8 +102,15 @@ class FileTree extends React.Component {
     console.log('right click', event, node);
     this.setState({ selectedKeys: [event.node.props.eventKey] });
     anchorEl = event.currentTarget;
+    console.log(anchorEl);
     cmOpen = true;
   };
+
+  handleClose = () => {
+    cmOpen = false;
+    this.setState(this.state);
+    anchorEl = null;
+  }
 
   render() {
     return (
@@ -136,11 +138,11 @@ class FileTree extends React.Component {
           anchorEl={anchorEl}
           keepMounted
           open={cmOpen}
-          onClose={handleClose}
+          onClose={this.handleClose}
         >
-          <MenuItem onClick={handleClose}>Profile</MenuItem>
-          <MenuItem onClick={handleClose}>My account</MenuItem>
-          <MenuItem onClick={handleClose}>Logout</MenuItem>
+          <MenuItem onClick={this.handleClose}>Profile</MenuItem>
+          <MenuItem onClick={this.handleClose}>My account</MenuItem>
+          <MenuItem onClick={this.handleClose}>Logout</MenuItem>
         </Menu>
       </div>
     );

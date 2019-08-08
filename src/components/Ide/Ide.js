@@ -193,6 +193,7 @@ class Ide extends React.Component<PropTypes, StateTypes> {
                 <AddToQueueIcon />
               </IconButton>
             </Tooltip>
+            <hr />
           </div>
           <FileTree />
         </Paper>
