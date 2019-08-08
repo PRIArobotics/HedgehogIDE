@@ -31,7 +31,6 @@ const treeData = [
 
 let anchorEl = null;
 let cmOpen = false;
-let cursorPos = null;
 
 class FileTree extends React.Component {
   static propTypes = {
@@ -50,12 +49,8 @@ class FileTree extends React.Component {
       defaultSelectedKeys: keys,
       defaultCheckedKeys: keys,
     };
-    document.body.addEventListener('mousemove', e => (cursorPos = e.target));
+    document.body.addEventListener('mousemove', e => (anchorEl = e.target));
   }
-
-  onExpand = (...args) => {
-    console.log('onExpand', ...args);
-  };
 
   onSelect = (selectedKeys, info) => {
     console.log('selected', selectedKeys, info);
@@ -71,23 +66,6 @@ class FileTree extends React.Component {
     }
   };
 
-  onCheck = (checkedKeys, info) => {
-    console.log('onCheck', checkedKeys, info);
-  };
-
-  onEdit = () => {
-    setTimeout(() => {
-      console.log('current key: ', this.selKey);
-    }, 0);
-  };
-
-  onDel = e => {
-    if (!window.confirm('sure to delete?')) {
-      return;
-    }
-    e.stopPropagation();
-  };
-
   onDragStart = (event, node) => {
     console.log('Begin', event, node);
   };
@@ -100,13 +78,11 @@ class FileTree extends React.Component {
     console.log('right click', event, node);
     this.setState({ selectedKeys: [event.node.props.eventKey] });
     console.log(anchorEl);
-    anchorEl = cursorPos;
     cmOpen = true;
   };
 
   handleClose = () => {
     cmOpen = false;
-    anchorEl = null;
     this.setState(this.state);
   };
 
