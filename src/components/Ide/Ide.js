@@ -121,7 +121,11 @@ class Ide extends React.Component<PropTypes, StateTypes> {
     const nodes = this.getNodes();
     const active = this.state.model.getActiveTabset();
 
-    if (active !== undefined && active.getId() in nodes) {
+    if (
+      active !== undefined &&
+      active.getId() in nodes &&
+      nodes[active.getId()].getType() === 'tabset'
+    ) {
       this.state.model.doAction(
         FlexLayout.Actions.addNode(
           nodeJson,
