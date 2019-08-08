@@ -104,18 +104,24 @@ class Ide extends React.Component<PropTypes, StateTypes> {
     this.flexRef = React.createRef();
   }
 
-  addNode(nodeJson) {
-    // TODO this is a workaround for a FlexLayout bug
-    const enumerateTabsetIds = (tabsets, root) => {
-      tabsets.push(root.getId());
-      root.getChildren().forEach(child => enumerateTabsetIds(tabsets, child));
-      return tabsets;
+  getNodes() {
+    const nodes = {};
+
+    const enumerateNodes = root => {
+      nodes[root.getId()] = root;
+      root.getChildren().forEach(child => enumerateNodes(child));
     };
 
-    const allTabsetIds = enumerateTabsetIds([], this.state.model.getRoot());
+    enumerateNodes(this.state.model.getRoot());
+
+    return nodes;
+  }
+
+  addNode(nodeJson) {
+    const nodes = this.getNodes();
     const active = this.state.model.getActiveTabset();
 
-    if (active !== undefined && allTabsetIds.indexOf(active.getId()) !== -1) {
+    if (active !== undefined && active.getId() in nodes) {
       this.state.model.doAction(
         FlexLayout.Actions.addNode(
           nodeJson,
