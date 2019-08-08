@@ -31,10 +31,7 @@ const treeData = [
 
 let anchorEl = null;
 let cmOpen = false;
-
-function handleClick(event) {
-  anchorEl = event.currentTarget;
-}
+let cursorPos = null;
 
 class FileTree extends React.Component {
   static propTypes = {
@@ -53,6 +50,7 @@ class FileTree extends React.Component {
       defaultSelectedKeys: keys,
       defaultCheckedKeys: keys,
     };
+    document.body.addEventListener('mousemove', e => (cursorPos = e.target));
   }
 
   onExpand = (...args) => {
@@ -61,7 +59,7 @@ class FileTree extends React.Component {
 
   onSelect = (selectedKeys, info) => {
     console.log('selected', selectedKeys, info);
-    this.selKey = info.node.props.eventKey;
+    this.setState({ selectedKeys : [info.node.props.eventKey] });
 
     if (this.tree) {
       console.log(
@@ -101,16 +99,16 @@ class FileTree extends React.Component {
   handleRightClick = (event, node) => {
     console.log('right click', event, node);
     this.setState({ selectedKeys: [event.node.props.eventKey] });
-    anchorEl = event.currentTarget;
     console.log(anchorEl);
+    anchorEl = cursorPos;
     cmOpen = true;
   };
 
   handleClose = () => {
     cmOpen = false;
-    this.setState(this.state);
     anchorEl = null;
-  }
+    this.setState(this.state);
+  };
 
   render() {
     return (
@@ -140,9 +138,9 @@ class FileTree extends React.Component {
           open={cmOpen}
           onClose={this.handleClose}
         >
-          <MenuItem onClick={this.handleClose}>Profile</MenuItem>
-          <MenuItem onClick={this.handleClose}>My account</MenuItem>
-          <MenuItem onClick={this.handleClose}>Logout</MenuItem>
+          <MenuItem onClick={this.handleClose}>New</MenuItem>
+          <MenuItem onClick={this.handleClose}>Rename</MenuItem>
+          <MenuItem onClick={this.handleClose}>Delete</MenuItem>
         </Menu>
       </div>
     );
