@@ -79,17 +79,12 @@ type StateTypes = {|
 |};
 
 class Ide extends React.Component<PropTypes, StateTypes> {
-  static simulatorOn;
-
   static factory(node: any) {
     switch (node.getComponent()) {
       case 'editor': {
         return <Editor />;
       }
       case 'simulator': {
-        node.setEventListener('close', () => {
-          Ide.simulatorOn = false;
-        });
         return <Simulator />;
       }
       default:
@@ -147,16 +142,18 @@ class Ide extends React.Component<PropTypes, StateTypes> {
   }
 
   addSimulator() {
-    if (Ide.simulatorOn === false) {
+    const nodes = this.getNodes();
+
+    if ('sim' in nodes) {
+      // TODO assert `nodes.sim.getType() === 'tab'`
+      this.state.model.doAction(FlexLayout.Actions.selectTab('sim'));
+    } else {
       this.addNode({
         id: 'sim',
         type: 'tab',
         component: 'simulator',
         name: 'Simulator',
       });
-      Ide.simulatorOn = true;
-    } else {
-      this.state.model.doAction(FlexLayout.Actions.selectTab('sim'));
     }
   }
 
