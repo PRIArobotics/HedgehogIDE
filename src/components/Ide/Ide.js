@@ -18,12 +18,14 @@ import { withStyles as withStylesMaterial } from '@material-ui/styles';
 
 import CodeIcon from '@material-ui/icons/Code';
 import AddToQueueIcon from '@material-ui/icons/AddToQueue';
+import NotesIcon from '@material-ui/icons/Notes';
 import IconButton from '@material-ui/core/IconButton';
 import Tooltip from '@material-ui/core/Tooltip';
 
 import FlexLayout from 'flexlayout-react';
 import Editor from '../Editor';
 import Simulator from '../Simulator';
+import Console from '../Console';
 
 // eslint-disable-next-line css-modules/no-unused-class
 import FlexLayoutTheme from './flex_layout_ide.css';
@@ -86,6 +88,9 @@ class Ide extends React.Component<PropTypes, StateTypes> {
       }
       case 'simulator': {
         return <Simulator />;
+      }
+      case 'console': {
+        return <Console />;
       }
       default:
         return null;
@@ -165,6 +170,21 @@ class Ide extends React.Component<PropTypes, StateTypes> {
     });
   }
 
+  addConsole() {
+    const nodes = this.getNodes();
+    if ('console' in nodes) {
+      // TODO assert `nodes.sim.getType() === 'tab'`
+      this.state.model.doAction(FlexLayout.Actions.selectTab('console'));
+    } else {
+      this.addNode({
+        id: 'console',
+        type: 'tab',
+        component: 'console',
+        name: 'Console',
+      });
+    }
+  }
+
   render() {
     const { classes } = this.props;
     return (
@@ -191,6 +211,17 @@ class Ide extends React.Component<PropTypes, StateTypes> {
                 onClick={() => this.addSimulator()}
               >
                 <AddToQueueIcon />
+              </IconButton>
+            </Tooltip>
+            <Tooltip title="Console">
+              <IconButton
+                variant="contained"
+                color="primary"
+                iconStyle={iconStyles.smallIcon}
+                style={iconStyles.small}
+                onClick={() => this.addConsole()}
+              >
+                <NotesIcon />
               </IconButton>
             </Tooltip>
             <hr />

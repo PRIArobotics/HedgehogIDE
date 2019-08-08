@@ -54,7 +54,7 @@ class FileTree extends React.Component {
 
   onSelect = (selectedKeys, info) => {
     console.log('selected', selectedKeys, info);
-    this.setState({ selectedKeys : [info.node.props.eventKey] });
+    this.setState({ selectedKeys: [info.node.props.eventKey] });
 
     if (this.tree) {
       console.log(
@@ -75,9 +75,7 @@ class FileTree extends React.Component {
   };
 
   handleRightClick = (event, node) => {
-    console.log('right click', event, node);
     this.setState({ selectedKeys: [event.node.props.eventKey] });
-    console.log(anchorEl);
     cmOpen = true;
   };
 
