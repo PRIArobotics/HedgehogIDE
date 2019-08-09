@@ -30,7 +30,6 @@ const treeData = [
 ];
 
 let anchorEl = null;
-let cmOpen = false;
 
 class FileTree extends React.Component {
   static propTypes = {
@@ -75,13 +74,14 @@ class FileTree extends React.Component {
   };
 
   handleRightClick = (event, node) => {
+    console.log('right click', event, node);
     this.setState({ selectedKeys: [event.node.props.eventKey] });
-    cmOpen = true;
+    console.log(anchorEl);
+    this.setState({ cmOpen: true });
   };
 
   handleClose = () => {
-    cmOpen = false;
-    this.setState(this.state);
+    this.setState({ cmOpen: false });
   };
 
   render() {
@@ -107,7 +107,7 @@ class FileTree extends React.Component {
           id="simple-menu"
           anchorEl={anchorEl}
           keepMounted
-          open={cmOpen}
+          open={this.state.cmOpen}
           onClose={this.handleClose}
         >
           <MenuItem onClick={this.handleClose}>New Folder</MenuItem>
