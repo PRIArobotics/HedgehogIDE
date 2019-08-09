@@ -12,7 +12,16 @@ class Console extends React.Component {
     this.inputRef = React.createRef();
   }
 
+  componentDidMount() {
+    document.getElementById('consoleInput').scrollIntoView(false);
+  }
+
   componentDidUpdate() {
+    if (consoleText.length > 100) {
+      // maximum number of rows is set at 100
+      consoleText.splice(0, 1); // removes the first row (first value of the array)
+      this.componentDidUpdate(); // checks if it is still too long
+    }
     document.getElementById('consoleInput').scrollIntoView(false);
   }
 
