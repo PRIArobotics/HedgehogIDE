@@ -6,3 +6,7 @@
 .consoleText {
   white-space: pre-wrap;
 }
+
+.inputText {
+  color: #007c3c;
+}
