@@ -14,10 +14,13 @@ class Console extends React.Component {
 
   onSubmit = e => {
     e.preventDefault();
-    console.log(this.inputRef.current.value);
-    consoleText += this.inputRef.current.value;
-    consoleText += '<br />';
-    ReactDOM.render(consoleText, document.getElementById('text1'));
+    consoleText = this.inputRef.current.value;
+    document
+      .getElementById('consoleText')
+      .appendChild(document.createTextNode(consoleText));
+    document
+      .getElementById('consoleText')
+      .appendChild(document.createElement('Br'));
     this.inputRef.current.value = '';
   };
 
@@ -25,7 +28,7 @@ class Console extends React.Component {
     return (
       <div className={s.console}>
         Hallo! <br />
-        <div id="text1" />
+        <span id="consoleText" />
         <form onSubmit={this.onSubmit}>
           User&gt; <input type="text" name="name" className={s.console} ref={this.inputRef} />
         </form>
