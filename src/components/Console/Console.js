@@ -1,9 +1,8 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
 
 import withStyles from 'isomorphic-style-loader/lib/withStyles';
+// eslint-disable-next-line css-modules/no-unused-class
 import s from './console.css';
-import Ide from '../Ide';
 
 let consoleText = [];
 
@@ -13,11 +12,14 @@ class Console extends React.Component {
     this.inputRef = React.createRef();
   }
 
+  componentDidUpdate() {
+    document.getElementById('consoleInput').scrollIntoView(false);
+  }
+
   onSubmit = e => {
     e.preventDefault();
     consoleText.push(`>>>${this.inputRef.current.value}`);
     this.forceUpdate();
-    document.getElementById('scro').scrollIntoView();
     this.inputRef.current.value = '';
   };
 
@@ -27,7 +29,7 @@ class Console extends React.Component {
         {consoleText.map(text => (
           <div>{text}<br /></div>
         ))}
-        <form onSubmit={this.onSubmit}>
+        <form onSubmit={this.onSubmit} id="consoleInput">
           &gt;&gt;&gt;
           <input
             type="text"
@@ -36,7 +38,6 @@ class Console extends React.Component {
             ref={this.inputRef}
           />
         </form>
-        <br id="scro" />
       </div>
     );
   }
