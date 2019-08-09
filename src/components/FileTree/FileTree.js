@@ -1,12 +1,12 @@
+// @flow
+
 import React from 'react';
-import PropTypes from 'prop-types';
-import ReactDOM from 'react-dom';
 import Tree from 'rc-tree';
 import s from 'rc-tree/assets/index.css';
 import withStyles from 'isomorphic-style-loader/lib/withStyles';
-// eslint-disable-next-line css-modules/no-unused-class
 import { Menu, MenuItem } from '@material-ui/core';
 
+// TODO get rid of dummy tree
 const treeData = [
   {
     key: '0-0',
@@ -31,52 +31,43 @@ const treeData = [
 
 let anchorEl = null;
 
-class FileTree extends React.Component {
-  static propTypes = {
-    keys: PropTypes.array,
-  };
+type PropTypes = {|
+  keys: array,
+|};
+type StateTypes = {|
+  defaultSelectedKeys: array,
+  defaultCheckedKeys: array,
+|};
 
-  state = {
-    selectedKeys: [],
-  };
-
-  constructor(props) {
+class FileTree extends React.Component<PropTypes, StateTypes> {
+  constructor(props: PropTypes) {
     super(props);
     const { keys } = props;
     this.state = {
-      defaultExpandedKeys: keys,
+      selectedKeys: [],
       defaultSelectedKeys: keys,
       defaultCheckedKeys: keys,
     };
-    document.body.addEventListener('mousemove', e => (anchorEl = e.target));
+    document.body.addEventListener('mousemove', e => {
+      anchorEl = e.target;
+    });
   }
 
   onSelect = (selectedKeys, info) => {
-    console.log('selected', selectedKeys, info);
     this.setState({ selectedKeys: [info.node.props.eventKey] });
-
-    if (this.tree) {
-      console.log(
-        'Selected DOM node:',
-        selectedKeys.map(key =>
-          ReactDOM.findDOMNode(this.tree.domTreeNodes[key]),
-        ),
-      );
-    }
   };
 
-  onDragStart = (event, node) => {
-    console.log('Begin', event, node);
-  };
+  // TODO implement moving files/directories via drag & drop
 
-  onDragEnd = (event, node) => {
-    console.log('End', event, node);
-  };
+  // onDragStart = (event, node) => {
+  // };
+
+  // onDragEnd = (event, node) => {
+  // };
 
   handleRightClick = (event, node) => {
-    console.log('right click', event, node);
+    // TODO only right click supported for opening context menu
     this.setState({ selectedKeys: [event.node.props.eventKey] });
-    console.log(anchorEl);
     this.setState({ cmOpen: true });
   };
 
