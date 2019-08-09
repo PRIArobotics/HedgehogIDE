@@ -2,3 +2,7 @@
   font-family: 'Consolas', monospace;
   font-size: large;
 }
+
+.consoleText {
+  white-space: pre-wrap;
+}
