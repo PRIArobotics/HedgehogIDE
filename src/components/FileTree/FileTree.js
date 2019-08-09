@@ -54,7 +54,7 @@ class FileTree extends React.Component {
 
   onSelect = (selectedKeys, info) => {
     console.log('selected', selectedKeys, info);
-    this.setState({ selectedKeys : [info.node.props.eventKey] });
+    this.setState({ selectedKeys: [info.node.props.eventKey] });
 
     if (this.tree) {
       console.log(
@@ -96,11 +96,9 @@ class FileTree extends React.Component {
           selectable
           draggable
           defaultExpandAll
-          onExpand={this.onExpand}
           defaultSelectedKeys={this.state.defaultSelectedKeys}
           defaultCheckedKeys={this.state.defaultCheckedKeys}
           onSelect={this.onSelect}
-          onCheck={this.onCheck}
           onDragStart={this.onDragStart}
           onDragEnd={this.onDragEnd}
           onRightClick={this.handleRightClick}
@@ -114,7 +112,8 @@ class FileTree extends React.Component {
           open={cmOpen}
           onClose={this.handleClose}
         >
-          <MenuItem onClick={this.handleClose}>New</MenuItem>
+          <MenuItem onClick={this.handleClose}>New Folder</MenuItem>
+          <MenuItem onClick={this.handleClose}>New File</MenuItem>
           <MenuItem onClick={this.handleClose}>Rename</MenuItem>
           <MenuItem onClick={this.handleClose}>Delete</MenuItem>
         </Menu>
