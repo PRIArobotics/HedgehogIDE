@@ -3,8 +3,9 @@ import ReactDOM from 'react-dom';
 
 import withStyles from 'isomorphic-style-loader/lib/withStyles';
 import s from './console.css';
+import Ide from '../Ide';
 
-let consoleText = '';
+let consoleText = [];
 
 class Console extends React.Component {
   constructor(props) {
@@ -14,24 +15,28 @@ class Console extends React.Component {
 
   onSubmit = e => {
     e.preventDefault();
-    consoleText = this.inputRef.current.value;
-    document
-      .getElementById('consoleText')
-      .appendChild(document.createTextNode(consoleText));
-    document
-      .getElementById('consoleText')
-      .appendChild(document.createElement('Br'));
+    consoleText.push(`>>>${this.inputRef.current.value}`);
+    this.forceUpdate();
+    document.getElementById('scro').scrollIntoView();
     this.inputRef.current.value = '';
   };
 
   render() {
     return (
-      <div className={s.console}>
-        Hallo! <br />
-        <span id="consoleText" />
+      <div className={s.console} id="console">
+        {consoleText.map(text => (
+          <div>{text}<br /></div>
+        ))}
         <form onSubmit={this.onSubmit}>
-          User&gt; <input type="text" name="name" className={s.console} ref={this.inputRef} />
+          &gt;&gt;&gt;
+          <input
+            type="text"
+            name="name"
+            className={s.console}
+            ref={this.inputRef}
+          />
         </form>
+        <br id="scro" />
       </div>
     );
   }
