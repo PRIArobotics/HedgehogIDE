@@ -4,6 +4,10 @@
   flex-flow: column nowrap;
 }
 
+pre {
+  font-size: 19px;
+}
+
 .output {
   display: block;
   flex: 1 0 auto;
@@ -35,12 +39,13 @@
 .consoleInput input {
   width: 100%;
   font-family: monospace;
-  font-size: large;
+  font-size: 19px;
   border: none;
 }
 
 .fixed {
   font-family: monospace;
+  font-size: 19px;
   z-index: 100;
 }
 
