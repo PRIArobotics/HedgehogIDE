@@ -17,10 +17,9 @@ class Console extends React.Component {
   }
 
   componentDidUpdate() {
-    if (consoleText.length > 100) {
+    while (consoleText.length > 100) {
       // maximum number of rows is set at 100
       consoleText.splice(0, 1); // removes the first row (first value of the array)
-      this.componentDidUpdate(); // checks if it is still too long
     }
     document.getElementById('consoleInput').scrollIntoView(false);
   }
@@ -44,15 +43,11 @@ class Console extends React.Component {
             }
           })}
         </div>
-        <div className={s.fixed} style={{ borderWidth: '3px', borderStyle: 'solid' }} >
+        <div className={s.fixed}>
           <form onSubmit={this.onSubmit} style={{ display: 'flex' }}>
             &gt;&gt;&gt;
             <div id="consoleInput" className={s.consoleInput}>
-              <input
-                style={{ width: '100%', fontFamily: 'Consolas, monospace', fontSize: 'large' }}
-                type="text"
-                ref={this.inputRef}
-              />
+              <input type="text" ref={this.inputRef} />
             </div>
           </form>
         </div>
