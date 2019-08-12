@@ -1,19 +1,15 @@
 .console {
   font-family: 'Consolas', monospace;
   font-size: large;
-  overflow: auto;
   height: 100%;
   display: flex;
   flex-flow: column nowrap;
 }
 
-#consoleInput {
-  border: 1px;
-}
-
 .output {
   display: block;
   flex: 1 0 auto;
+  overflow: auto;
 }
 
 .fixed {
