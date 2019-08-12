@@ -19,48 +19,64 @@ class Console extends React.Component {
   componentDidUpdate() {
     while (consoleText.length > 100) {
       // maximum number of rows is set at 100
-      consoleText.splice(0, 1); // removes the first row (first value of the array)
+      consoleText.splice(0, 1);
+      // removes the first row (first value of the array)
     }
     document.getElementById('consoleInput').scrollIntoView(false);
   }
 
   onSubmit = e => {
     e.preventDefault();
-    this.inputValue = this.inputRef.current.value
+    this.inputValue = this.inputRef.current.value;
     if (this.inputValue.startsWith('/')) {
       switch (this.inputValue) {
         case '/help':
         case '/h':
-          consoleText.push(`>>>${this.inputValue}`);
-          consoleText.push('Help Page');
+          this.consoleOut(`${this.inputValue}`, 'userInput');
+          this.consoleOut('Help Page', 'stdOut');
           break;
         case '/clear':
         case '/c':
           consoleText = [];
           break;
         default:
-          consoleText.push(`>>>${this.inputValue}`);
-          consoleText.push(`Command not found: ${this.inputValue}`);
+          this.consoleOut(`${this.inputValue}`, 'userInput');
+          this.consoleOut(`Command not found: ${this.inputValue}`, 'stdErr');
           break;
       }
     } else {
-      consoleText.push(`>>>${this.inputValue}`);
+      this.consoleOut(`${this.inputValue}`, 'userInput');
     }
     this.forceUpdate();
     this.inputRef.current.value = '';
+  };
+
+  consoleOut = (text, info) => {
+    switch (info) {
+      case 'userInput':
+        consoleText.push({ text: `>>>${text}`, color: 'green' });
+        break;
+      case 'stdOut':
+        consoleText.push({ text: `${text}`, color: 'black' });
+        break;
+      case 'stdErr':
+        consoleText.push({ text: `Error: ${text}`, color: 'red' });
+        break;
+      default:
+        consoleText.push({ text: `${text}`, color: 'black' });
+        break;
+    }
   };
 
   render() {
     return (
       <div className={s.console} id="console">
         <div className={s.output}>
-          {consoleText.map(text => {
-            if (text.startsWith('>>>')) {
-              return (<div style={{ wordWrap: 'break-word', color: 'green' }}>{text}</div>)
-            } else {
-              return (<div style={{ wordWrap: 'break-word' }}>{text}</div>)
-            }
-          })}
+          {consoleText.map(({ text, color }) => (
+            <div className={s.textOutput} textColor={color}>
+              {text}
+            </div>
+          ))}
         </div>
         <div className={s.fixed}>
           <form onSubmit={this.onSubmit} style={{ display: 'flex' }}>
