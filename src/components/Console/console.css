@@ -12,16 +12,22 @@
   overflow: auto;
 }
 
+.consoleInput {
+  flex-grow: 1;
+  width: 100%;
+}
+
 .fixed {
   /*
   left: 214px;
   bottom: 0;
   position: fixed;
   */
+  font-family: 'Consolas', monospace;
+  font-size: large;
   z-index: 100;
 }
 
 .inputText {
   color: #007c3c;
 }
-
