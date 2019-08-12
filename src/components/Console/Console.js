@@ -33,7 +33,7 @@ class Console extends React.Component {
         case '/help':
         case '/h':
           this.consoleOut(`${this.inputValue}`, 'userInput');
-          this.consoleOut('Help Page', 'stdOut');
+          this.consoleOut('1st Line\n2nd Line', 'stdOut');
           break;
         case '/clear':
         case '/c':
@@ -60,7 +60,7 @@ class Console extends React.Component {
         consoleText.push({ text: `${text}`, color: 'black' });
         break;
       case 'stdErr':
-        consoleText.push({ text: `Error: ${text}`, color: 'red' });
+        consoleText.push({ text: `[Error] ${text}`, color: 'red' });
         break;
       default:
         consoleText.push({ text: `${text}`, color: 'black' });
@@ -73,9 +73,9 @@ class Console extends React.Component {
       <div className={s.console} id="console">
         <div className={s.output}>
           {consoleText.map(({ text, color }) => (
-            <div className={s.textOutput} textColor={color}>
+            <pre className={s.textOutput} textColor={color}>
               {text}
-            </div>
+            </pre>
           ))}
         </div>
         <div className={s.fixed}>
