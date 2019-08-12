@@ -16,6 +16,21 @@
   width: 100%;
 }
 
+.textOutput[textColor=green] {
+  word-wrap: break-word;
+  color: green;
+}
+
+.textOutput[textColor=red] {
+  word-wrap: break-word;
+  color: red;
+}
+
+.textOutput[textColor=black] {
+  word-wrap: break-word;
+  color: black;
+}
+
 .consoleInput input {
   width: 100%;
   font-family: 'Consolas', monospace;
