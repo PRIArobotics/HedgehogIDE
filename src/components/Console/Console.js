@@ -36,18 +36,16 @@ class Console extends React.Component {
     return (
       <div className={s.console} id="console">
         <div className={s.output}>
-        {consoleText.map(text => (
-          <div>{text}</div>
-        ))}
+          {consoleText.map(text => (
+            <div>{text}</div>
+          ))}
         </div>
         <div className={s.fixed} style={{ borderWidth: '3px', borderStyle: 'solid' }} >
-          <form onSubmit={this.onSubmit} style={{ display: 'inline', width: '100%'}}>
-            <div style={{ width: '3em', border: '1px', display: 'inline' }}>
-              &gt;&gt;&gt;
-            </div>
-            <div id="consoleInput" style={{ display: 'inline', width: '97%' }}>
+          <form onSubmit={this.onSubmit} style={{ display: 'flex' }}>
+            &gt;&gt;&gt;
+            <div id="consoleInput" className={s.consoleInput}>
               <input
-                style={{ width: '100%' }}
+                style={{ width: '100%', fontFamily: 'Consolas, monospace', fontSize: 'large' }}
                 type="text"
                 ref={this.inputRef}
               />
