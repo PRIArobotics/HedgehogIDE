@@ -4,7 +4,7 @@ import withStyles from 'isomorphic-style-loader/lib/withStyles';
 // eslint-disable-next-line css-modules/no-unused-class
 import s from './console.css';
 
-let consoleText = [];
+const consoleText = [];
 
 class Console extends React.Component {
   constructor(props) {
@@ -37,7 +37,7 @@ class Console extends React.Component {
       <div className={s.console} id="console">
         <div className={s.output}>
           {consoleText.map(text => (
-            <div>{text}</div>
+            <div style={{ wordWrap: 'break-word' }}>{text}</div>
           ))}
         </div>
         <div className={s.fixed} style={{ borderWidth: '3px', borderStyle: 'solid' }} >
