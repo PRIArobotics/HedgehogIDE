@@ -1,12 +1,31 @@
 .console {
   font-family: 'Consolas', monospace;
   font-size: large;
+  overflow: auto;
+  height: 100%;
+  display: flex;
+  flex-flow: column nowrap;
 }
 
-.consoleText {
-  white-space: pre-wrap;
+#consoleInput {
+  border: 1px;
+}
+
+.output {
+  display: flex;
+  flex: 1 0 auto;
+}
+
+.fixed {
+  /*
+  left: 214px;
+  bottom: 0;
+  position: fixed;
+  */
+  z-index: 100;
 }
 
 .inputText {
   color: #007c3c;
 }
+

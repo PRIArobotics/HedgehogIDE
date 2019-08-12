@@ -35,18 +35,26 @@ class Console extends React.Component {
   render() {
     return (
       <div className={s.console} id="console">
+        <div className={s.output}>
         {consoleText.map(text => (
           <div>{text}<br /></div>
         ))}
-        <form onSubmit={this.onSubmit} id="consoleInput">
-          &gt;&gt;&gt;
-          <input
-            type="text"
-            name="name"
-            className={s.console}
-            ref={this.inputRef}
-          />
-        </form>
+        </div>
+        <div className={s.fixed} style={{ borderWidth: '3px', borderStyle: 'solid' }} >
+          <form onSubmit={this.onSubmit}>
+            <div style={{ width: '3em', border: '1px' }}>
+              &gt;&gt;&gt;
+            </div>
+            <div id="consoleInput">
+              <input
+                type="text"
+                name="name"
+                className={s.console}
+                ref={this.inputRef}
+              />
+            </div>
+          </form>
+        </div>
       </div>
     );
   }
