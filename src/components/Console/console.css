@@ -1,6 +1,4 @@
 .console {
-  font-family: 'Consolas', monospace;
-  font-size: large;
   height: 100%;
   display: flex;
   flex-flow: column nowrap;
@@ -16,36 +14,33 @@
   width: 100%;
 }
 
-.textOutput[textColor=green] {
+.textOutput {
+  margin: 0;
+  white-space: pre-wrap;
   word-wrap: break-word;
+}
+
+.textOutput[textColor=green] {
   color: green;
 }
 
 .textOutput[textColor=red] {
-  word-wrap: break-word;
   color: red;
 }
 
 .textOutput[textColor=black] {
-  word-wrap: break-word;
   color: black;
 }
 
 .consoleInput input {
   width: 100%;
-  font-family: 'Consolas', monospace;
+  font-family: monospace;
   font-size: large;
   border: none;
 }
 
 .fixed {
-  /*
-  left: 214px;
-  bottom: 0;
-  position: fixed;
-  */
-  font-family: 'Consolas', monospace;
-  font-size: large;
+  font-family: monospace;
   z-index: 100;
 }
 
