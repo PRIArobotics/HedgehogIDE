@@ -37,7 +37,7 @@ class Console extends React.Component {
       <div className={s.console} id="console">
         <div className={s.output}>
         {consoleText.map(text => (
-          <div>{text}<br /></div>
+          <div>{text}</div>
         ))}
         </div>
         <div className={s.fixed} style={{ borderWidth: '3px', borderStyle: 'solid' }} >
