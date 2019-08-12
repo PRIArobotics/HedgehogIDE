@@ -4,7 +4,7 @@ import withStyles from 'isomorphic-style-loader/lib/withStyles';
 // eslint-disable-next-line css-modules/no-unused-class
 import s from './console.css';
 
-const consoleText = [];
+let consoleText = [];
 
 class Console extends React.Component {
   constructor(props) {
@@ -27,7 +27,26 @@ class Console extends React.Component {
 
   onSubmit = e => {
     e.preventDefault();
-    consoleText.push(`>>>${this.inputRef.current.value}`);
+    this.inputValue = this.inputRef.current.value
+    if (this.inputValue.startsWith('/')) {
+      switch (this.inputValue) {
+        case '/help':
+        case '/h':
+          consoleText.push(`>>>${this.inputValue}`);
+          consoleText.push('Help Page');
+          break;
+        case '/clear':
+        case '/c':
+          consoleText = [];
+          break;
+        default:
+          consoleText.push(`>>>${this.inputValue}`);
+          consoleText.push(`Command not found: ${this.inputValue}`);
+          break;
+      }
+    } else {
+      consoleText.push(`>>>${this.inputValue}`);
+    }
     this.forceUpdate();
     this.inputRef.current.value = '';
   };
@@ -44,12 +63,12 @@ class Console extends React.Component {
             }
           })}
         </div>
-        <div className={s.fixed} style={{ borderWidth: '3px', borderStyle: 'solid' }} >
+        <div className={s.fixed}>
           <form onSubmit={this.onSubmit} style={{ display: 'flex' }}>
             &gt;&gt;&gt;
             <div id="consoleInput" className={s.consoleInput}>
               <input
-                style={{ width: '100%', fontFamily: 'Consolas, monospace', fontSize: 'large' }}
+                style={{ width: '100%', fontFamily: 'Consolas, monospace', fontSize: 'large', border: 'none' }}
                 type="text"
                 ref={this.inputRef}
               />
