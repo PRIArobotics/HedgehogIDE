@@ -16,6 +16,13 @@
   width: 100%;
 }
 
+.consoleInput input {
+  width: 100%;
+  font-family: 'Consolas', monospace;
+  font-size: large;
+  border: none;
+}
+
 .fixed {
   /*
   left: 214px;
