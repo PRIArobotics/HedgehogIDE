@@ -36,9 +36,13 @@ class Console extends React.Component {
     return (
       <div className={s.console} id="console">
         <div className={s.output}>
-          {consoleText.map(text => (
-            <div style={{ wordWrap: 'break-word' }}>{text}</div>
-          ))}
+          {consoleText.map(text => {
+            if (text.startsWith('>>>')) {
+              return (<div style={{ wordWrap: 'break-word', color: 'green' }}>{text}</div>)
+            } else {
+              return (<div style={{ wordWrap: 'break-word' }}>{text}</div>)
+            }
+          })}
         </div>
         <div className={s.fixed} style={{ borderWidth: '3px', borderStyle: 'solid' }} >
           <form onSubmit={this.onSubmit} style={{ display: 'flex' }}>
