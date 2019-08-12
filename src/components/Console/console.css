@@ -9,7 +9,6 @@
 .output {
   display: block;
   flex: 1 0 auto;
-  overflow: auto;
 }
 
 .consoleInput {
