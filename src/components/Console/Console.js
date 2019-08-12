@@ -41,15 +41,14 @@ class Console extends React.Component {
         ))}
         </div>
         <div className={s.fixed} style={{ borderWidth: '3px', borderStyle: 'solid' }} >
-          <form onSubmit={this.onSubmit}>
-            <div style={{ width: '3em', border: '1px' }}>
+          <form onSubmit={this.onSubmit} style={{ display: 'inline', width: '100%'}}>
+            <div style={{ width: '3em', border: '1px', display: 'inline' }}>
               &gt;&gt;&gt;
             </div>
-            <div id="consoleInput">
+            <div id="consoleInput" style={{ display: 'inline', width: '07%' }}>
               <input
+                style={{ width: '100%' }}
                 type="text"
-                name="name"
-                className={s.console}
                 ref={this.inputRef}
               />
             </div>
