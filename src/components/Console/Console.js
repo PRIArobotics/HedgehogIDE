@@ -45,7 +45,7 @@ class Console extends React.Component {
             <div style={{ width: '3em', border: '1px', display: 'inline' }}>
               &gt;&gt;&gt;
             </div>
-            <div id="consoleInput" style={{ display: 'inline', width: '07%' }}>
+            <div id="consoleInput" style={{ display: 'inline', width: '97%' }}>
               <input
                 style={{ width: '100%' }}
                 type="text"
