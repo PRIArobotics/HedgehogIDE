@@ -6,6 +6,13 @@ import s from 'rc-tree/assets/index.css';
 import withStyles from 'isomorphic-style-loader/lib/withStyles';
 import { Menu, MenuItem } from '@material-ui/core';
 
+/*
+--- rc-tree BUG ---
+Open all Nodes (or one child node), then close the root node.
+After reloading, the root node will open even though it is not
+defined in the localstorage.
+*/
+
 // TODO get rid of dummy tree
 const treeData = [
   {
@@ -23,6 +30,14 @@ const treeData = [
         children: [
           { key: '0-0-1-0', title: 'File #2' },
           { key: '0-0-1-1', title: 'File #3' },
+          {
+            key: '0-0-1-2',
+            title: 'Folder #3',
+            children: [
+              { key: '0-0-1-2-0', title: 'File #4' },
+              { key: '0-0-1-2-1', title: 'File #5' },
+            ],
+          },
         ],
       },
     ],
