@@ -108,7 +108,7 @@ class Ide extends React.Component<PropTypes, StateTypes> {
     this.flexRef = React.createRef();
   }
 
-  componentWillUnmount(): void {
+  save = () => {
     localStorage.setItem(
       'IDELayout',
       JSON.stringify(this.state.model.toJson()),
@@ -159,7 +159,6 @@ class Ide extends React.Component<PropTypes, StateTypes> {
 
   addSimulator() {
     const nodes = this.getNodes();
-
     if ('sim' in nodes) {
       // TODO assert `nodes.sim.getType() === 'tab'`
       this.state.model.doAction(FlexLayout.Actions.selectTab('sim'));
@@ -245,6 +244,7 @@ class Ide extends React.Component<PropTypes, StateTypes> {
             ref={this.flexRef}
             factory={Ide.factory}
             classNameMapper={className => FlexLayoutTheme[className]}
+            onModelChange={this.save}
           />
         </Paper>
       </div>
