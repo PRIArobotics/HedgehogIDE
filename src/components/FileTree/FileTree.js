@@ -42,11 +42,8 @@ type StateTypes = {|
 class FileTree extends React.Component<PropTypes, StateTypes> {
   constructor(props: PropTypes) {
     super(props);
-    const { keys } = props;
     this.state = {
       selectedKeys: [],
-      defaultSelectedKeys: keys,
-      defaultCheckedKeys: keys,
     };
     document.body.addEventListener('mousemove', e => {
       anchorEl = e.target;
@@ -75,6 +72,10 @@ class FileTree extends React.Component<PropTypes, StateTypes> {
     this.setState({ cmOpen: false });
   };
 
+  treeOnExpand = keys => {
+    this.props.callbackSave(keys);
+  }
+
   render() {
     return (
       <div style={{ margin: '0 10px' }}>
@@ -84,14 +85,13 @@ class FileTree extends React.Component<PropTypes, StateTypes> {
           checkable={false}
           selectable
           draggable
-          defaultExpandAll
-          defaultSelectedKeys={this.state.defaultSelectedKeys}
-          defaultCheckedKeys={this.state.defaultCheckedKeys}
+          defaultExpandedKeys={this.props.callbackGet()}
           onSelect={this.onSelect}
           onDragStart={this.onDragStart}
           onDragEnd={this.onDragEnd}
           onRightClick={this.handleRightClick}
           selectedKeys={this.state.selectedKeys}
+          onExpand={this.treeOnExpand}
           treeData={treeData}
         />
         <Menu

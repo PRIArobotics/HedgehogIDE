@@ -100,20 +100,25 @@ class Ide extends React.Component<PropTypes, StateTypes> {
   constructor(props: PropTypes) {
     super(props);
     Ide.simulatorOn = false;
+    const lsJson = JSON.parse(localStorage.getItem('IDELayout'));
     if (localStorage.getItem('IDELayout')) {
-      this.state = { model: FlexLayout.Model.fromJson(JSON.parse(localStorage.getItem('IDELayout'))) };
+      this.state = { model: FlexLayout.Model.fromJson(lsJson.editorState) };
+      this.expandedKeys = lsJson.filetree;
     } else {
       this.state = { model: FlexLayout.Model.fromJson(json) };
     }
     this.flexRef = React.createRef();
   }
 
-  save = () => {
-    localStorage.setItem(
-      'IDELayout',
-      JSON.stringify(this.state.model.toJson()),
-    );
-  }
+  fileTreeGet = () => {
+    try {
+      const lsJson = JSON.parse(localStorage.getItem('IDELayout'));
+      console.log(lsJson.filetree);
+      return lsJson.filetree.split(',');
+    } catch (error) {
+      return [];
+    }
+  };
 
   getNodes() {
     const nodes = {};
@@ -127,6 +132,23 @@ class Ide extends React.Component<PropTypes, StateTypes> {
 
     return nodes;
   }
+
+  fileTreeSave = expandedKeys => {
+    this.expandedKeys = '';
+    expandedKeys.forEach(item => {
+      this.expandedKeys += item;
+      this.expandedKeys += ',';
+    });
+    this.save();
+  };
+
+  save = () => {
+    const jsonObj = {
+      filetree: this.expandedKeys,
+      editorState: this.state.model.toJson(),
+    };
+    localStorage.setItem('IDELayout', JSON.stringify(jsonObj));
+  };
 
   addNode(nodeJson) {
     const nodes = this.getNodes();
@@ -236,7 +258,10 @@ class Ide extends React.Component<PropTypes, StateTypes> {
             </Tooltip>
             <hr />
           </div>
-          <FileTree />
+          <FileTree
+            callbackSave={this.fileTreeSave}
+            callbackGet={this.fileTreeGet}
+          />
         </Paper>
         <Paper className={classes.editorContainer} square>
           <FlexLayout.Layout
