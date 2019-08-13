@@ -17,7 +17,7 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 import Divider from '@material-ui/core/Divider';
 import Tooltip from '@material-ui/core/Tooltip';
 
-import CodeIcon from '@material-ui/icons/Code';
+import EditIcon from '@material-ui/icons/Edit';
 import CloudQueueIcon from '@material-ui/icons/CloudQueue';
 import NavigationIcon from '@material-ui/icons/Navigation';
 import TuneIcon from '@material-ui/icons/Tune';
@@ -42,10 +42,10 @@ class Sidebar extends React.Component<PropTypes> {
 
     return (
       <List>
-        <Tooltip title="Code Editor" placement="right">
+        <Tooltip title="IDE" placement="right">
           <ListItem button component={Link} to="/ide">
             <ListItemIcon className={classes.listItemIcon}>
-              <CodeIcon />
+              <EditIcon />
             </ListItemIcon>
           </ListItem>
         </Tooltip>
@@ -53,13 +53,6 @@ class Sidebar extends React.Component<PropTypes> {
           <ListItem button>
             <ListItemIcon className={classes.listItemIcon}>
               <TuneIcon />
-            </ListItemIcon>
-          </ListItem>
-        </Tooltip>
-        <Tooltip title="Robot Simulator" placement="right">
-          <ListItem button component={Link} to="/simulator">
-            <ListItemIcon className={classes.listItemIcon}>
-              <NavigationIcon />
             </ListItemIcon>
           </ListItem>
         </Tooltip>

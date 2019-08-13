@@ -191,7 +191,7 @@ class Ide extends React.Component<PropTypes, StateTypes> {
       <div className={classes.root}>
         <Paper className={classes.navContainer} square>
           <div className={classes.navContainerInner}>
-            <Tooltip title="IDE">
+            <Tooltip title="Editor">
               <IconButton
                 variant="contained"
                 color="primary"
@@ -202,7 +202,7 @@ class Ide extends React.Component<PropTypes, StateTypes> {
                 <CodeIcon />
               </IconButton>
             </Tooltip>
-            <Tooltip title="Simulation">
+            <Tooltip title="Simulator">
               <IconButton
                 variant="contained"
                 color="primary"
