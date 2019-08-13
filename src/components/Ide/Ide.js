@@ -100,8 +100,19 @@ class Ide extends React.Component<PropTypes, StateTypes> {
   constructor(props: PropTypes) {
     super(props);
     Ide.simulatorOn = false;
-    this.state = { model: FlexLayout.Model.fromJson(json) };
+    if (localStorage.getItem('IDELayout')) {
+      this.state = { model: FlexLayout.Model.fromJson(JSON.parse(localStorage.getItem('IDELayout'))) };
+    } else {
+      this.state = { model: FlexLayout.Model.fromJson(json) };
+    }
     this.flexRef = React.createRef();
+  }
+
+  componentWillUnmount(): void {
+    localStorage.setItem(
+      'IDELayout',
+      JSON.stringify(this.state.model.toJson()),
+    );
   }
 
   getNodes() {
