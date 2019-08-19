@@ -1,50 +1,25 @@
 import React from 'react';
-import BlocklyComponent, { Block, Value, Field, Shadow } from './Blockly';
+import Blockly from 'blockly';
 
 class VisualEditor extends React.Component {
+  componentDidMount() {
+    Blockly.inject('blocklyDiv', { toolbox: this.toolbox });
+  }
+
   render() {
     return (
-      <div className="App">
-        <header className="App-header">
-          <BlocklyComponent
-            ref={e => (this.simpleWorkspace = e)}
-            readOnly={false}
-            move={{
-              scrollbars: true,
-              drag: true,
-              wheel: true,
-            }}
-            initialXml={`
-<xml xmlns="http://www.w3.org/1999/xhtml">
-<block type="controls_if" x="0" y="0"></block>
-</xml>
-      `}
-          >
-            <Block type="controls_ifelse" />
-            <Block type="logic_compare" />
-            <Block type="logic_operation" />
-            <Block type="controls_repeat_ext">
-              <Value name="TIMES">
-                <Shadow type="math_number">
-                  <Field name="NUM">10</Field>
-                </Shadow>
-              </Value>
-            </Block>
-            <Block type="logic_operation" />
-            <Block type="logic_negate" />
-            <Block type="logic_boolean" />
-            <Block type="logic_null" disabled="true" />
-            <Block type="logic_ternary" />
-            <Block type="text_charAt">
-              <Value name="VALUE">
-                <Block type="variables_get">
-                  <Field name="VAR">text</Field>
-                </Block>
-              </Value>
-            </Block>
-          </BlocklyComponent>
-        </header>
-      </div>
+      <React.Fragment>
+        <div id="blocklyDiv" style={{ height: '600px', width: '1000px' }} />
+        <xml id="toolbox" style={{ display: 'none' }} ref={(toolbox) => this.toolbox = toolbox} >
+          <block type="controls_if" />
+          <block type="controls_repeat_ext" />
+          <block type="logic_compare" />
+          <block type="math_number" />
+          <block type="math_arithmetic" />
+          <block type="text" />
+          <block type="text_print" />
+        </xml>
+      </React.Fragment>
     );
   }
 }
