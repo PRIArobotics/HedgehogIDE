@@ -19,6 +19,7 @@ import { withStyles as withStylesMaterial } from '@material-ui/styles';
 import CodeIcon from '@material-ui/icons/Code';
 import AddToQueueIcon from '@material-ui/icons/AddToQueue';
 import NotesIcon from '@material-ui/icons/Notes';
+import CallToActionIcon from '@material-ui/icons/CallToAction';
 import IconButton from '@material-ui/core/IconButton';
 import Tooltip from '@material-ui/core/Tooltip';
 
@@ -94,7 +95,7 @@ class Ide extends React.Component<PropTypes, StateTypes> {
         return <Console />;
       }
       case 'blockly': {
-        return <VisualEditor />
+        return <VisualEditor />;
       }
       default:
         return null;
@@ -114,16 +115,6 @@ class Ide extends React.Component<PropTypes, StateTypes> {
     this.flexRef = React.createRef();
   }
 
-  fileTreeGet = () => {
-    try {
-      const lsJson = JSON.parse(localStorage.getItem('IDELayout'));
-      console.log(lsJson.filetree);
-      return lsJson.filetree.split(',');
-    } catch (error) {
-      return [];
-    }
-  };
-
   getNodes() {
     const nodes = {};
 
@@ -136,6 +127,16 @@ class Ide extends React.Component<PropTypes, StateTypes> {
 
     return nodes;
   }
+
+  fileTreeGet = () => {
+    try {
+      const lsJson = JSON.parse(localStorage.getItem('IDELayout'));
+      console.log(lsJson.filetree);
+      return lsJson.filetree.split(',');
+    } catch (error) {
+      return [];
+    }
+  };
 
   fileTreeSave = expandedKeys => {
     this.expandedKeys = '';
@@ -276,7 +277,7 @@ class Ide extends React.Component<PropTypes, StateTypes> {
                 style={iconStyles.small}
                 onClick={() => this.addBlockly()}
               >
-                <NotesIcon />
+                <CallToActionIcon />
               </IconButton>
             </Tooltip>
             <hr />

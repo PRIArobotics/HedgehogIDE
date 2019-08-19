@@ -20,7 +20,6 @@ class Console extends React.Component {
     while (consoleText.length > 100) {
       // maximum number of rows is set at 100
       consoleText.splice(0, 1);
-      // removes the first row (first value of the array)
     }
     document.getElementById('consoleInput').scrollIntoView(false);
   }
