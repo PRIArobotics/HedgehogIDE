@@ -26,6 +26,7 @@ import FlexLayout from 'flexlayout-react';
 import Editor from '../Editor';
 import Simulator from '../Simulator';
 import Console from '../Console';
+import VisualEditor from '../VisualEditor';
 
 // eslint-disable-next-line css-modules/no-unused-class
 import FlexLayoutTheme from './flex_layout_ide.css';
@@ -91,6 +92,9 @@ class Ide extends React.Component<PropTypes, StateTypes> {
       }
       case 'console': {
         return <Console />;
+      }
+      case 'blockly': {
+        return <VisualEditor />
       }
       default:
         return null;
@@ -217,6 +221,14 @@ class Ide extends React.Component<PropTypes, StateTypes> {
     }
   }
 
+  addBlockly() {
+    this.addNode({
+      type: 'tab',
+      component: 'blockly',
+      name: 'Visual Editor',
+    });
+  }
+
   render() {
     const { classes } = this.props;
     return (
@@ -252,6 +264,17 @@ class Ide extends React.Component<PropTypes, StateTypes> {
                 iconStyle={iconStyles.smallIcon}
                 style={iconStyles.small}
                 onClick={() => this.addConsole()}
+              >
+                <NotesIcon />
+              </IconButton>
+            </Tooltip>
+            <Tooltip title="Visual Editor">
+              <IconButton
+                variant="contained"
+                color="primary"
+                iconStyle={iconStyles.smallIcon}
+                style={iconStyles.small}
+                onClick={() => this.addBlockly()}
               >
                 <NotesIcon />
               </IconButton>
