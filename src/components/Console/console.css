@@ -4,10 +4,6 @@
   flex-flow: column nowrap;
 }
 
-pre {
-  font-size: 19px;
-}
-
 .output {
   display: block;
   flex: 1 0 auto;
@@ -22,6 +18,7 @@ pre {
   margin: 0;
   white-space: pre-wrap;
   word-wrap: break-word;
+  font-size: 19px;
 }
 
 .textOutput[textColor=green] {
