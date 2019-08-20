@@ -12,6 +12,13 @@
 .consoleInput {
   flex-grow: 1;
   width: 100%;
+
+  input {
+    width: 100%;
+    font-family: monospace;
+    font-size: 19px;
+    border: none;
+  }
 }
 
 .textOutput {
@@ -19,25 +26,18 @@
   white-space: pre-wrap;
   word-wrap: break-word;
   font-size: 19px;
-}
 
-.textOutput[textColor=green] {
-  color: green;
-}
+  &.stdin {
+    color: green;
+  }
 
-.textOutput[textColor=red] {
-  color: red;
-}
+  &.stdout {
+    color: black;
+  }
 
-.textOutput[textColor=black] {
-  color: black;
-}
-
-.consoleInput input {
-  width: 100%;
-  font-family: monospace;
-  font-size: 19px;
-  border: none;
+  &.stderr {
+    color: red;
+  }
 }
 
 .fixed {
