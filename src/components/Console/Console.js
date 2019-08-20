@@ -1,15 +1,23 @@
+// @flow
+
 import React from 'react';
 
 import withStyles from 'isomorphic-style-loader/lib/withStyles';
 // eslint-disable-next-line css-modules/no-unused-class
 import s from './console.css';
 
-let consoleText = [];
+type PropTypes = {||};
+type StateTypes = {|
+  consoleText: Array<String>,
+|};
 
-class Console extends React.Component {
+class Console extends React.Component<PropTypes, StateTypes> {
   constructor(props) {
     super(props);
     this.inputRef = React.createRef();
+    this.state = {
+      consoleText: [],
+    }
   }
 
   componentDidMount() {
@@ -17,10 +25,6 @@ class Console extends React.Component {
   }
 
   componentDidUpdate() {
-    while (consoleText.length > 100) {
-      // maximum number of rows is set at 100
-      consoleText.splice(0, 1);
-    }
     document.getElementById('consoleInput').scrollIntoView(false);
   }
 
@@ -36,7 +40,9 @@ class Console extends React.Component {
           break;
         case '/clear':
         case '/c':
-          consoleText = [];
+          this.setState({
+            consoleText: [],
+          });
           break;
         default:
           this.consoleOut(`${this.inputValue}`, 'userInput');
@@ -46,32 +52,41 @@ class Console extends React.Component {
     } else {
       this.consoleOut(`${this.inputValue}`, 'userInput');
     }
-    this.forceUpdate();
     this.inputRef.current.value = '';
   };
 
   consoleOut = (text, info) => {
+    let item;
+
     switch (info) {
       case 'userInput':
-        consoleText.push({ text: `>>>${text}`, color: 'green' });
+        item = { text: `>>>${text}`, color: 'green' };
         break;
       case 'stdOut':
-        consoleText.push({ text: `${text}`, color: 'black' });
+        item = { text: `${text}`, color: 'black' };
         break;
       case 'stdErr':
-        consoleText.push({ text: `[Error] ${text}`, color: 'red' });
+        item = { text: `[Error] ${text}`, color: 'red' };
         break;
       default:
-        consoleText.push({ text: `${text}`, color: 'black' });
+        item = { text: `${text}`, color: 'black' };
         break;
     }
+
+    this.setState(oldState => {
+      const oldText = oldState.consoleText;
+
+      return {
+        consoleText: [...oldText.slice(-99), item],
+      };
+    });
   };
 
   render() {
     return (
       <div className={s.console} id="console">
         <div className={s.output}>
-          {consoleText.map(({ text, color }) => (
+          {this.state.consoleText.map(({ text, color }) => (
             <pre className={s.textOutput} textColor={color}>
               {text}
             </pre>
