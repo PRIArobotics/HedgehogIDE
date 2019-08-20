@@ -3,16 +3,13 @@ import Blockly from 'blockly';
 
 class VisualEditor extends React.Component {
   componentDidMount() {
-    Blockly.inject(`blocklyDiv-${this.props.id}`, {
+    this.workspace = Blockly.inject(`blocklyDiv-${this.props.id}`, {
       toolbox: this.toolbox,
       move: {
         scrollbars: true,
         drag: true,
         wheel: false,
       },
-    });
-    this.workspace = Blockly.inject('blocklyDiv', {
-      toolbox: document.getElementById('toolbox'),
     });
     this.workspace.addChangeListener(() => this.workspaceUpdater());
   }
