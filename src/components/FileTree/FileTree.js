@@ -89,7 +89,7 @@ class FileTree extends React.Component<PropTypes, StateTypes> {
 
   treeOnExpand = keys => {
     this.props.callbackSave(keys);
-  }
+  };
 
   render() {
     return (
