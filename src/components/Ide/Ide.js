@@ -95,7 +95,7 @@ class Ide extends React.Component<PropTypes, StateTypes> {
         return <Console />;
       }
       case 'blockly': {
-        return <VisualEditor />;
+        return <VisualEditor id={node.getId()} />;
       }
       default:
         return null;
