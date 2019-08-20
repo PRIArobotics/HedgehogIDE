@@ -102,6 +102,8 @@ class Ide extends React.Component<PropTypes, StateTypes> {
     }
   }
 
+  blocklyTabIds = new Set();
+
   constructor(props: PropTypes) {
     super(props);
     Ide.simulatorOn = false;
@@ -145,6 +147,29 @@ class Ide extends React.Component<PropTypes, StateTypes> {
       this.expandedKeys += ',';
     });
     this.save();
+  };
+
+  onFlexModelChange = () => {
+    this.updateBlocklyTabs();
+    this.save();
+  };
+
+  updateBlocklyTabs = () => {
+    this.state.model.visitNodes(node => {
+      if (node.getType() !== 'tab' || node.getComponent() !== 'blockly') return;
+
+      const id = node.getId();
+      if (!this.blocklyTabIds.has(id)) {
+        this.blocklyTabIds.add(id);
+
+        node.setEventListener('close', () => {
+          this.blocklyTabIds.delete(id);
+        });
+        node.setEventListener('resize', () => {
+          // TODO
+        });
+      }
+    });
   };
 
   save = () => {
@@ -293,7 +318,7 @@ class Ide extends React.Component<PropTypes, StateTypes> {
             ref={this.flexRef}
             factory={Ide.factory}
             classNameMapper={className => FlexLayoutTheme[className]}
-            onModelChange={this.save}
+            onModelChange={this.onFlexModelChange}
           />
         </Paper>
       </div>
