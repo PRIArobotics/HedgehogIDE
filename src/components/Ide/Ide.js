@@ -130,7 +130,6 @@ class Ide extends React.Component<PropTypes, StateTypes> {
   fileTreeGet = () => {
     try {
       const lsJson = JSON.parse(localStorage.getItem('IDELayout'));
-      console.log(lsJson.filetree);
       return lsJson.filetree.split(',');
     } catch (error) {
       return [];
