@@ -17,7 +17,7 @@ class Console extends React.Component<PropTypes, StateTypes> {
     this.inputRef = React.createRef();
     this.state = {
       consoleText: [],
-    }
+    };
   }
 
   componentDidMount() {
