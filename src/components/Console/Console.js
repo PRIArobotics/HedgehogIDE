@@ -4,7 +4,7 @@ import React from 'react';
 
 import withStyles from 'isomorphic-style-loader/lib/withStyles';
 // eslint-disable-next-line css-modules/no-unused-class
-import s from './console.css';
+import s from './console.scss';
 
 type PropTypes = {||};
 type StateTypes = {|
@@ -35,8 +35,8 @@ class Console extends React.Component<PropTypes, StateTypes> {
       switch (this.inputValue) {
         case '/help':
         case '/h':
-          this.consoleOut(`${this.inputValue}`, 'userInput');
-          this.consoleOut('1st Line\n2nd Line', 'stdOut');
+          this.consoleOut(`${this.inputValue}`, 'stdin');
+          this.consoleOut('1st Line\n2nd Line', 'stdout');
           break;
         case '/clear':
         case '/c':
@@ -45,51 +45,28 @@ class Console extends React.Component<PropTypes, StateTypes> {
           });
           break;
         default:
-          this.consoleOut(`${this.inputValue}`, 'userInput');
-          this.consoleOut(`Command not found: ${this.inputValue}`, 'stdErr');
+          this.consoleOut(`${this.inputValue}`, 'stdin');
+          this.consoleOut(`Command not found: ${this.inputValue}`, 'stderr');
           break;
       }
     } else {
-      this.consoleOut(`${this.inputValue}`, 'userInput');
+      this.consoleOut(`${this.inputValue}`, 'stdin');
     }
     this.inputRef.current.value = '';
   };
 
-  consoleOut = (text, info) => {
-    let item;
-
-    switch (info) {
-      case 'userInput':
-        item = { text: `>>>${text}`, color: 'green' };
-        break;
-      case 'stdOut':
-        item = { text: `${text}`, color: 'black' };
-        break;
-      case 'stdErr':
-        item = { text: `[Error] ${text}`, color: 'red' };
-        break;
-      default:
-        item = { text: `${text}`, color: 'black' };
-        break;
-    }
-
-    this.setState(oldState => {
-      const oldText = oldState.consoleText;
-
-      return {
-        consoleText: [...oldText.slice(-99), item],
-      };
-    });
+  consoleOut = (text, stream) => {
+    this.setState(oldState => ({
+      consoleText: [...oldState.consoleText.slice(-99), { text, stream }],
+    }));
   };
 
   render() {
     return (
       <div className={s.console} id="console">
         <div className={s.output}>
-          {this.state.consoleText.map(({ text, color }) => (
-            <pre className={s.textOutput} textColor={color}>
-              {text}
-            </pre>
+          {this.state.consoleText.map(({ text, stream }) => (
+            <pre className={`${s.textOutput} ${s[stream]}`}>{text}</pre>
           ))}
         </div>
         <div className={s.fixed}>
