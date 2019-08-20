@@ -17,12 +17,13 @@ class VisualEditor extends React.Component {
   workspaceUpdater() {
     this.code = Blockly.JavaScript.workspaceToCode(this.workspace);
     console.log(this.code);
+    document.getElementById('workspaceCode').innerHTML = this.code;
   }
 
   render() {
     return (
       <React.Fragment>
-        <div id={`blocklyDiv-${this.props.id}`} style={{ height: '600px', width: '1000px' }} />
+        <div id={`blocklyDiv-${this.props.id}`} style={{ height: '600px', width: '700px', float: 'left', borderRight: '2px solid black'}} />
         <xml id={`toolbox-${this.props.id}`} style={{ display: 'none' }} ref={(toolbox) => {this.toolbox = toolbox}}>
           <category name="Logic" colour="210">
             <block type="controls_if" />
@@ -41,6 +42,7 @@ class VisualEditor extends React.Component {
           <category name="Variables" custom="VARIABLE" colour="330" />
           <category name="Functions" custom="PROCEDURE" colour="290" />
         </xml>
+        <pre id="workspaceCode" />
       </React.Fragment>
     );
   }
