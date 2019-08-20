@@ -3,14 +3,21 @@ import Blockly from 'blockly';
 
 class VisualEditor extends React.Component {
   componentDidMount() {
-    Blockly.inject('blocklyDiv', { toolbox: this.toolbox });
+    Blockly.inject(`blocklyDiv-${this.props.id}`, {
+      toolbox: this.toolbox,
+      move: {
+        scrollbars: true,
+        drag: true,
+        wheel: false,
+      },
+    });
   }
 
   render() {
     return (
       <React.Fragment>
-        <div id="blocklyDiv" style={{ height: '600px', width: '1000px' }} />
-        <xml id="toolbox" style={{ display: 'none' }} ref={(toolbox) => {this.toolbox = toolbox}}>
+        <div id={`blocklyDiv-${this.props.id}`} style={{ height: '600px', width: '1000px' }} />
+        <xml id={`toolbox-${this.props.id}`} style={{ display: 'none' }} ref={(toolbox) => {this.toolbox = toolbox}}>
           <category name="Logic" colour="210">
             <block type="controls_if" />
             <block type="logic_compare" />
