@@ -120,12 +120,9 @@ class Ide extends React.Component<PropTypes, StateTypes> {
   getNodes() {
     const nodes = {};
 
-    const enumerateNodes = root => {
-      nodes[root.getId()] = root;
-      root.getChildren().forEach(child => enumerateNodes(child));
-    };
-
-    enumerateNodes(this.state.model.getRoot());
+    this.state.model.visitNodes(node => {
+      nodes[node.getId()] = node;
+    });
 
     return nodes;
   }
