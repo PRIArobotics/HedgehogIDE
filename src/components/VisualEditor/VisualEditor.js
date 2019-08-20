@@ -16,7 +16,7 @@ class VisualEditor extends React.Component {
 
   workspaceUpdater() {
     this.code = Blockly.JavaScript.workspaceToCode(this.workspace);
-    document.getElementById('workspaceCode').innerHTML = this.code;
+    document.getElementById(`workspaceCode-${this.props.id}`).innerHTML = this.code;
   }
 
   render() {
@@ -55,7 +55,7 @@ class VisualEditor extends React.Component {
           <category name="Variables" custom="VARIABLE" colour="330" />
           <category name="Functions" custom="PROCEDURE" colour="290" />
         </xml>
-        <pre id="workspaceCode" />
+        <pre id={`workspaceCode-${this.props.id}`} />
       </React.Fragment>
     );
   }
