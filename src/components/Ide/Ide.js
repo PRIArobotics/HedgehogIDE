@@ -111,16 +111,12 @@ class Ide extends React.Component<PropTypes, StateTypes> {
     if (localStorage.getItem('IDELayout')) {
       this.state = { model: FlexLayout.Model.fromJson(lsJson.editorState) };
       this.expandedKeys = lsJson.filetree;
+      this.blocklyobj = lsJson.blocklyState;
     } else {
       this.state = { model: FlexLayout.Model.fromJson(json) };
-    }
-    this.flexRef = React.createRef();
-    try {
-      this.blocklyobj = lsJson.blocklyState;
-    } catch (error) {
       this.blocklyobj = [];
     }
-    // this.blocklyobj = [];
+    this.flexRef = React.createRef();
   }
 
   getNodes() {
