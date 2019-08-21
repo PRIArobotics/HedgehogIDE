@@ -12,9 +12,9 @@ class VisualEditor extends React.Component {
       },
     });
     try {
-      const workspace_text = this.props.callbackGet(this.props.id);
+      const workspaceText = this.props.callbackGet(this.props.id);
       // console.log(`${this.props.id} ${workspace_text.workspaceXml}`);
-      Blockly.Xml.domToWorkspace(Blockly.Xml.textToDom(workspace_text.workspaceXml), this.workspace);
+      Blockly.Xml.domToWorkspace(Blockly.Xml.textToDom(workspaceText.workspaceXml), this.workspace);
     } catch (error) {
       // console.log(error);
     }

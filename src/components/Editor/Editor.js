@@ -20,6 +20,17 @@ type PropTypes = {||};
 type StateTypes = {||};
 
 class Editor extends React.Component<PropTypes, StateTypes> {
+
+  constructor(props) {
+    super(props);
+    this.value = this.props.callbackGet(this.props.id);
+  }
+
+  onChange = newValue => {
+    this.value = newValue;
+    this.props.callbackSave(this.value, this.props.id);
+  };
+
   render() {
     return (
       <AceEditor
@@ -27,11 +38,11 @@ class Editor extends React.Component<PropTypes, StateTypes> {
         width="100%"
         height="100%"
         // onLoad={this.onLoad}
-        // onChange={this.onChange}
+        onChange={this.onChange}
         // onSelectionChange={this.onSelectionChange}
         // onCursorChange={this.onCursorChange}
         // onValidate={this.onValidate}
-        value="foo"
+        value={this.value}
         showGutter
         highlightActiveLine
         setOptions={{
