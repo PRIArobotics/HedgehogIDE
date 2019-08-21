@@ -6,9 +6,14 @@ import withStyles from 'isomorphic-style-loader/lib/withStyles';
 // eslint-disable-next-line css-modules/no-unused-class
 import s from './console.scss';
 
+type ConsoleItem = {|
+  text: string,
+  stream: string,
+|};
+
 type PropTypes = {||};
 type StateTypes = {|
-  consoleText: Array<String>,
+  consoleText: Array<ConsoleItem>,
 |};
 
 class Console extends React.Component<PropTypes, StateTypes> {
@@ -26,7 +31,7 @@ class Console extends React.Component<PropTypes, StateTypes> {
     document.getElementById('consoleInput').scrollIntoView(false);
   }
 
-  consoleOut(text, stream) {
+  consoleOut(text: string, stream: string) {
     this.setState(oldState => ({
       consoleText: [...oldState.consoleText.slice(-99), { text, stream }],
     }));
