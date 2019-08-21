@@ -115,7 +115,12 @@ class Ide extends React.Component<PropTypes, StateTypes> {
       this.state = { model: FlexLayout.Model.fromJson(json) };
     }
     this.flexRef = React.createRef();
-    this.blocklyobj = [];
+    try {
+      this.blocklyobj = lsJson.blocklyState;
+    } catch (error) {
+      this.blocklyobj = [];
+    }
+    // this.blocklyobj = [];
   }
 
   getNodes() {
@@ -150,12 +155,9 @@ class Ide extends React.Component<PropTypes, StateTypes> {
     let retVal = null;
     try {
       const lsJson = JSON.parse(localStorage.getItem('IDELayout'));
-      console.log(lsJson.blocklyState);
       lsJson.blocklyState.forEach(item => {
-        console.log('forEach', item.workspace, id);
         if (item.workspace === id) {
           retVal = item;
-          console.log(item);
         }
       });
     } catch (error) {
