@@ -47,48 +47,54 @@ const treeData = [
 let anchorEl = null;
 
 type PropTypes = {|
-  keys: array,
+  callbackSave: (keys: Array<string>) => void,
+  callbackGet: () => Array<string>,
 |};
 type StateTypes = {|
-  defaultSelectedKeys: array,
-  defaultCheckedKeys: array,
+  cmOpen: boolean,
+  selectedKeys: Array<string>,
 |};
 
 class FileTree extends React.Component<PropTypes, StateTypes> {
+  state = {
+    cmOpen: false,
+    selectedKeys: [],
+  };
+
   constructor(props: PropTypes) {
     super(props);
-    this.state = {
-      selectedKeys: [],
-    };
+
     document.body.addEventListener('mousemove', e => {
       anchorEl = e.target;
     });
   }
 
-  onSelect = (selectedKeys, info) => {
+  handleTreeSelect = (selectedKeys, info) => {
     this.setState({ selectedKeys: [info.node.props.eventKey] });
   };
 
   // TODO implement moving files/directories via drag & drop
 
-  // onDragStart = (event, node) => {
+  // handleTreeDragStart = (event, node) => {
   // };
 
-  // onDragEnd = (event, node) => {
+  // handleTreeDragEnd = (event, node) => {
   // };
 
-  handleRightClick = (event, node) => {
+  handleTreeRightClick = (event, node) => {
     // TODO only right click supported for opening context menu
-    this.setState({ selectedKeys: [event.node.props.eventKey] });
-    this.setState({ cmOpen: true });
+    this.setState({
+      cmOpen: true,
+      selectedKeys: [event.node.props.eventKey],
+    });
   };
 
-  handleClose = () => {
-    this.setState({ cmOpen: false });
-  };
-
-  treeOnExpand = keys => {
+  handleTreeExpand = keys => {
     this.props.callbackSave(keys);
+  };
+
+  handleContextMenuClose = () => {
+    this.setState({ cmOpen: false });
   };
 
   render() {
@@ -101,12 +107,12 @@ class FileTree extends React.Component<PropTypes, StateTypes> {
           selectable
           draggable
           defaultExpandedKeys={this.props.callbackGet()}
-          onSelect={this.onSelect}
-          onDragStart={this.onDragStart}
-          onDragEnd={this.onDragEnd}
-          onRightClick={this.handleRightClick}
+          onSelect={this.handleTreeSelect}
+          // onDragStart={this.handleTreeDragStart}
+          // onDragEnd={this.handleTreeDragEnd}
+          onRightClick={this.handleTreeRightClick}
           selectedKeys={this.state.selectedKeys}
-          onExpand={this.treeOnExpand}
+          onExpand={this.handleTreeExpand}
           treeData={treeData}
         />
         <Menu
@@ -114,12 +120,12 @@ class FileTree extends React.Component<PropTypes, StateTypes> {
           anchorEl={anchorEl}
           keepMounted
           open={this.state.cmOpen}
-          onClose={this.handleClose}
+          onClose={this.handleContextMenuClose}
         >
-          <MenuItem onClick={this.handleClose}>New Folder</MenuItem>
-          <MenuItem onClick={this.handleClose}>New File</MenuItem>
-          <MenuItem onClick={this.handleClose}>Rename</MenuItem>
-          <MenuItem onClick={this.handleClose}>Delete</MenuItem>
+          <MenuItem onClick={this.handleContextMenuClose}>New Folder</MenuItem>
+          <MenuItem onClick={this.handleContextMenuClose}>New File</MenuItem>
+          <MenuItem onClick={this.handleContextMenuClose}>Rename</MenuItem>
+          <MenuItem onClick={this.handleContextMenuClose}>Delete</MenuItem>
         </Menu>
       </div>
     );
