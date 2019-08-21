@@ -61,13 +61,17 @@ class FileTree extends React.Component<PropTypes, StateTypes> {
     selectedKeys: [],
   };
 
-  constructor(props: PropTypes) {
-    super(props);
-
-    document.body.addEventListener('mousemove', e => {
-      anchorEl = e.target;
-    });
+  componentDidMount() {
+    document.body.addEventListener('mousemove', this.handleMouseMove);
   }
+
+  componentWillUnmount() {
+    document.body.removeEventListener('mousemove', this.handleMouseMove);
+  }
+
+  handleMouseMove = e => {
+    anchorEl = e.target;
+  };
 
   handleTreeSelect = (selectedKeys, info) => {
     this.setState({ selectedKeys: [info.node.props.eventKey] });
