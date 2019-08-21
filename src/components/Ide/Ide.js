@@ -123,21 +123,16 @@ class Ide extends React.Component<PropTypes, StateTypes> {
 
     const json = localStorage.getItem('IDELayout');
     if (json) {
-      const {
-        editorState,
-        filetree,
-        blocklyState,
-        editorTextState,
-      } = JSON.parse(json);
-      this.state = { model: FlexLayout.Model.fromJson(editorState) };
-      this.expandedKeys = filetree;
-      this.blocklyobj = blocklyState;
-      this.editorText = editorTextState;
+      const { layoutState, fileTreeState, blocklyState, aceState } = JSON.parse(json);
+      this.state = { model: FlexLayout.Model.fromJson(layoutState) };
+      this.fileTreeState = fileTreeState;
+      this.blocklyState = blocklyState;
+      this.aceState = aceState;
     } else {
       this.state = { model: FlexLayout.Model.fromJson(defaultLayout) };
-      this.expandedKeys = [];
-      this.blocklyobj = [];
-      this.editorText = [];
+      this.fileTreeState = {};
+      this.blocklyState = {};
+      this.aceState = {};
     }
   }
 
@@ -151,36 +146,17 @@ class Ide extends React.Component<PropTypes, StateTypes> {
     return nodes;
   }
 
-  fileTreeGet = () => {
-    const lsJson = JSON.parse(localStorage.getItem('IDELayout'));
-    return lsJson.filetree.split(',');
-  };
+  fileTreeGet = () => this.fileTreeState;
 
-  fileTreeSave = expandedKeys => {
-    this.expandedKeys = '';
-    expandedKeys.forEach(item => {
-      this.expandedKeys += item;
-      this.expandedKeys += ',';
-    });
+  fileTreeSave = fileTreeState => {
+    this.fileTreeState = fileTreeState;
     this.save();
   };
 
-  blocklyGet = id => {
-    let retVal = null;
-    const lsJson = JSON.parse(localStorage.getItem('IDELayout'));
-    lsJson.blocklyState.forEach(item => {
-      if (item.workspace === id) {
-        retVal = item;
-      }
-    });
-    return retVal;
-  };
+  blocklyGet = id => this.blocklyState[id];
 
   blocklySave = (workspace, id) => {
-    this.blocklyobj.forEach((item, index) => {
-      if (item.workspace === id) this.blocklyobj.splice(index, 1);
-    });
-    this.blocklyobj.push({ workspace: id, workspaceXml: workspace });
+    this.blocklyState[id] = workspace;
     this.save();
   };
 
@@ -189,22 +165,10 @@ class Ide extends React.Component<PropTypes, StateTypes> {
     this.save();
   };
 
-  editorGet = id => {
-    let retVal = '';
-    const lsJson = JSON.parse(localStorage.getItem('IDELayout'));
-    lsJson.editorTextState.forEach(item => {
-      if (item.editor === id) {
-        retVal = item.editorText;
-      }
-    });
-    return retVal;
-  };
+  editorGet = id => this.aceState[id];
 
   editorSave = (text, id) => {
-    this.editorText.forEach((item, index) => {
-      if (item.editor === id) this.editorText.splice(index, 1);
-    });
-    this.editorText.push({ editor: id, editorText: text });
+    this.aceState[id] = text;
     this.save();
   };
 
@@ -227,13 +191,15 @@ class Ide extends React.Component<PropTypes, StateTypes> {
   };
 
   save = () => {
-    const jsonObj = {
-      filetree: this.expandedKeys,
-      editorState: this.state.model.toJson(),
-      blocklyState: this.blocklyobj,
-      editorTextState: this.editorText,
-    };
-    localStorage.setItem('IDELayout', JSON.stringify(jsonObj));
+    localStorage.setItem(
+      'IDELayout',
+      JSON.stringify({
+        layoutState: this.state.model.toJson(),
+        fileTreeState: this.fileTreeState,
+        blocklyState: this.blocklyState,
+        aceState: this.aceState,
+      }),
+    );
   };
 
   addNode(nodeJson) {
