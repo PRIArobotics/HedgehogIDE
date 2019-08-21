@@ -12,13 +12,11 @@ type StateTypes = {|
 |};
 
 class Console extends React.Component<PropTypes, StateTypes> {
-  constructor(props) {
-    super(props);
-    this.inputRef = React.createRef();
-    this.state = {
-      consoleText: [],
-    };
-  }
+  inputRef: React.RefObject = React.createRef();
+
+  state = {
+    consoleText: [],
+  };
 
   componentDidMount() {
     document.getElementById('consoleInput').scrollIntoView(false);
@@ -28,37 +26,37 @@ class Console extends React.Component<PropTypes, StateTypes> {
     document.getElementById('consoleInput').scrollIntoView(false);
   }
 
-  onSubmit = e => {
+  consoleOut(text, stream) {
+    this.setState(oldState => ({
+      consoleText: [...oldState.consoleText.slice(-99), { text, stream }],
+    }));
+  }
+
+  handleSubmit = e => {
     e.preventDefault();
-    this.inputValue = this.inputRef.current.value;
-    if (this.inputValue.startsWith('/')) {
-      switch (this.inputValue) {
+    const input = this.inputRef.current.value;
+    this.inputRef.current.value = '';
+
+    this.consoleOut(`${input}`, 'stdin');
+    if (input.startsWith('/')) {
+      switch (input) {
         case '/help':
         case '/h':
-          this.consoleOut(`${this.inputValue}`, 'stdin');
           this.consoleOut('1st Line\n2nd Line', 'stdout');
           break;
+
         case '/clear':
         case '/c':
           this.setState({
             consoleText: [],
           });
           break;
+
         default:
-          this.consoleOut(`${this.inputValue}`, 'stdin');
-          this.consoleOut(`Command not found: ${this.inputValue}`, 'stderr');
+          this.consoleOut(`Command not found: ${input}`, 'stderr');
           break;
       }
-    } else {
-      this.consoleOut(`${this.inputValue}`, 'stdin');
     }
-    this.inputRef.current.value = '';
-  };
-
-  consoleOut = (text, stream) => {
-    this.setState(oldState => ({
-      consoleText: [...oldState.consoleText.slice(-99), { text, stream }],
-    }));
   };
 
   render() {
@@ -70,7 +68,7 @@ class Console extends React.Component<PropTypes, StateTypes> {
           ))}
         </div>
         <div className={s.fixed}>
-          <form onSubmit={this.onSubmit} style={{ display: 'flex' }}>
+          <form onSubmit={this.handleSubmit} style={{ display: 'flex' }}>
             &gt;&gt;&gt;
             <div id="consoleInput" className={s.consoleInput}>
               <input type="text" ref={this.inputRef} />
