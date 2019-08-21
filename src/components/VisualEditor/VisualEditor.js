@@ -1,11 +1,6 @@
 import React from 'react';
 import Blockly from 'blockly';
 
-/*
-  TODO Blockly is bugged when there are multiple instances open on the same page.
-   Saving and Loading the state from LocalStorage doesn't work with multiple instances of Blockly.
-   Having other Tabs that aren't Blockly open does not create bugs.
- */
 class VisualEditor extends React.Component {
   componentDidMount() {
     this.workspace = Blockly.inject(`blocklyDiv-${this.props.id}`, {
@@ -17,16 +12,17 @@ class VisualEditor extends React.Component {
       },
     });
     try {
-      const workspaceText = this.props.callbackGet(this.props.id);
-      console.log(workspaceText.workspaceXml);
-      Blockly.Xml.domToWorkspace(Blockly.Xml.textToDom(workspaceText.workspaceXml), this.workspace);
+      const workspace_text = this.props.callbackGet(this.props.id);
+      // console.log(`${this.props.id} ${workspace_text.workspaceXml}`);
+      Blockly.Xml.domToWorkspace(Blockly.Xml.textToDom(workspace_text.workspaceXml), this.workspace);
     } catch (error) {
-      console.log(error);
+      // console.log(error);
     }
-    this.workspace.addChangeListener(() => this.workspaceUpdated());
+    this.workspace.addChangeListener(() => this.workspaceUpdater());
   }
 
-  workspaceUpdated() {
+  workspaceUpdater() {
+    // console.log(`${this.props.id} update`);
     this.code = Blockly.JavaScript.workspaceToCode(this.workspace);
     document.getElementById(`workspaceCode-${this.props.id}`).innerHTML = this.code;
     const xml = Blockly.Xml.workspaceToDom(this.workspace);
@@ -36,7 +32,7 @@ class VisualEditor extends React.Component {
   render() {
     return (
       <React.Fragment>
-        <div id={`blocklyDiv-${this.props.id}`} style={{ height: '600px', width: '700px', float: 'left', borderRight: '2px solid black'}} />
+        <div id={`blocklyDiv-${this.props.id}`} style={{ height: '450px', width: '700px', float: 'left', borderRight: '2px solid black'}} />
         <xml id={`toolbox-${this.props.id}`} style={{ display: 'none' }} ref={(toolbox) => {this.toolbox = toolbox}}>
           <category name="Logic" colour="210">
             <block type="controls_if" />
