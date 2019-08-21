@@ -83,7 +83,7 @@ type StateTypes = {|
 |};
 
 class Ide extends React.Component<PropTypes, StateTypes> {
-  static factory(node: any) {
+  factory = (node: any) => {
     switch (node.getComponent()) {
       case 'editor': {
         return <Editor />;
@@ -95,7 +95,7 @@ class Ide extends React.Component<PropTypes, StateTypes> {
         return <Console />;
       }
       case 'blockly': {
-        return <VisualEditor id={node.getId()} />;
+        return <VisualEditor id={node.getId()} callbackGet={this.blocklyGet} callbackSave={this.blocklySave} />;
       }
       default:
         return null;
@@ -115,6 +115,7 @@ class Ide extends React.Component<PropTypes, StateTypes> {
       this.state = { model: FlexLayout.Model.fromJson(json) };
     }
     this.flexRef = React.createRef();
+    this.blocklyobj = [];
   }
 
   getNodes() {
@@ -145,6 +146,32 @@ class Ide extends React.Component<PropTypes, StateTypes> {
     this.save();
   };
 
+  blocklyGet = id => {
+    let retVal = null;
+    try {
+      const lsJson = JSON.parse(localStorage.getItem('IDELayout'));
+      console.log(lsJson.blocklyState);
+      lsJson.blocklyState.forEach(item => {
+        console.log('forEach', item.workspace, id);
+        if (item.workspace === id) {
+          retVal = item;
+          console.log(item);
+        }
+      });
+    } catch (error) {
+      return null;
+    }
+    return retVal;
+  }
+
+  blocklySave = (workspace, id) => {
+    this.blocklyobj.forEach((item, index) => {
+      if (item.workspace === id) this.blocklyobj.splice(index, 1);
+    });
+    this.blocklyobj.push({ workspace: id, workspaceXml: workspace });
+    this.save();
+  }
+
   onFlexModelChange = () => {
     this.updateBlocklyTabs();
     this.save();
@@ -172,6 +199,7 @@ class Ide extends React.Component<PropTypes, StateTypes> {
     const jsonObj = {
       filetree: this.expandedKeys,
       editorState: this.state.model.toJson(),
+      blocklyState: this.blocklyobj,
     };
     localStorage.setItem('IDELayout', JSON.stringify(jsonObj));
   };
@@ -312,7 +340,7 @@ class Ide extends React.Component<PropTypes, StateTypes> {
           <FlexLayout.Layout
             model={this.state.model}
             ref={this.flexRef}
-            factory={Ide.factory}
+            factory={this.factory}
             classNameMapper={className => FlexLayoutTheme[className]}
             onModelChange={this.onFlexModelChange}
           />

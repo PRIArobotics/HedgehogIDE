@@ -1,6 +1,10 @@
 import React from 'react';
 import Blockly from 'blockly';
 
+/* TODO when site is reloaded, the constructor reloads the blocks from the localstorage, even though the
+    Blockly Editor is not visible. When switched to it, it stays empty and stores its empty state into the
+    localstorage.
+*/
 class VisualEditor extends React.Component {
   componentDidMount() {
     this.workspace = Blockly.inject(`blocklyDiv-${this.props.id}`, {
@@ -11,33 +15,28 @@ class VisualEditor extends React.Component {
         wheel: false,
       },
     });
+    try {
+      const workspace_text = this.props.callbackGet(this.props.id);
+      console.log(workspace_text.workspaceXml);
+      Blockly.Xml.domToWorkspace(Blockly.Xml.textToDom(workspace_text.workspaceXml), this.workspace);
+    } catch (error) {
+      console.log(error);
+    }
     this.workspace.addChangeListener(() => this.workspaceUpdater());
   }
 
   workspaceUpdater() {
     this.code = Blockly.JavaScript.workspaceToCode(this.workspace);
     document.getElementById(`workspaceCode-${this.props.id}`).innerHTML = this.code;
+    const xml = Blockly.Xml.workspaceToDom(this.workspace);
+    this.props.callbackSave(Blockly.Xml.domToText(xml), this.props.id);
   }
 
   render() {
     return (
       <React.Fragment>
-        <div
-          id={`blocklyDiv-${this.props.id}`}
-          style={{
-            height: '600px',
-            width: '700px',
-            float: 'left',
-            borderRight: '2px solid black',
-          }}
-        />
-        <xml
-          id={`toolbox-${this.props.id}`}
-          style={{ display: 'none' }}
-          ref={toolbox => {
-            this.toolbox = toolbox;
-          }}
-        >
+        <div id={`blocklyDiv-${this.props.id}`} style={{ height: '600px', width: '700px', float: 'left', borderRight: '2px solid black'}} />
+        <xml id={`toolbox-${this.props.id}`} style={{ display: 'none' }} ref={(toolbox) => {this.toolbox = toolbox}}>
           <category name="Logic" colour="210">
             <block type="controls_if" />
             <block type="logic_compare" />
