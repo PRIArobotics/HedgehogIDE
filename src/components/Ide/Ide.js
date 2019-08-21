@@ -66,7 +66,7 @@ const styled = withStylesMaterial(theme => ({
   },
 }));
 
-const json = {
+const defaultLayout = {
   global: {},
   borders: [],
   layout: {
@@ -86,7 +86,13 @@ class Ide extends React.Component<PropTypes, StateTypes> {
   factory = (node: any) => {
     switch (node.getComponent()) {
       case 'editor': {
-        return <Editor id={node.getId()} callbackGet={this.editorGet} callbackSave={this.editorSave} />;
+        return (
+          <Editor
+            id={node.getId()}
+            callbackGet={this.editorGet}
+            callbackSave={this.editorSave}
+          />
+        );
       }
       case 'simulator': {
         return <Simulator />;
@@ -95,30 +101,44 @@ class Ide extends React.Component<PropTypes, StateTypes> {
         return <Console />;
       }
       case 'blockly': {
-        return <VisualEditor id={node.getId()} callbackGet={this.blocklyGet} callbackSave={this.blocklySave} />;
+        return (
+          <VisualEditor
+            id={node.getId()}
+            callbackGet={this.blocklyGet}
+            callbackSave={this.blocklySave}
+          />
+        );
       }
       default:
         return null;
     }
-  }
+  };
+
+  flexRef: React.RefObject = React.createRef();
 
   blocklyTabIds = new Set();
 
   constructor(props: PropTypes) {
     super(props);
-    Ide.simulatorOn = false;
-    const lsJson = JSON.parse(localStorage.getItem('IDELayout'));
-    if (localStorage.getItem('IDELayout')) {
-      this.state = { model: FlexLayout.Model.fromJson(lsJson.editorState) };
-      this.expandedKeys = lsJson.filetree;
-      this.blocklyobj = lsJson.blocklyState;
-      this.editorText = lsJson.editorTextState;
+
+    const json = localStorage.getItem('IDELayout');
+    if (json) {
+      const {
+        editorState,
+        filetree,
+        blocklyState,
+        editorTextState,
+      } = JSON.parse(json);
+      this.state = { model: FlexLayout.Model.fromJson(editorState) };
+      this.expandedKeys = filetree;
+      this.blocklyobj = blocklyState;
+      this.editorText = editorTextState;
     } else {
-      this.state = { model: FlexLayout.Model.fromJson(json) };
+      this.state = { model: FlexLayout.Model.fromJson(defaultLayout) };
+      this.expandedKeys = [];
       this.blocklyobj = [];
       this.editorText = [];
     }
-    this.flexRef = React.createRef();
   }
 
   getNodes() {
@@ -132,12 +152,8 @@ class Ide extends React.Component<PropTypes, StateTypes> {
   }
 
   fileTreeGet = () => {
-    try {
-      const lsJson = JSON.parse(localStorage.getItem('IDELayout'));
-      return lsJson.filetree.split(',');
-    } catch (error) {
-      return [];
-    }
+    const lsJson = JSON.parse(localStorage.getItem('IDELayout'));
+    return lsJson.filetree.split(',');
   };
 
   fileTreeSave = expandedKeys => {
@@ -151,18 +167,14 @@ class Ide extends React.Component<PropTypes, StateTypes> {
 
   blocklyGet = id => {
     let retVal = null;
-    try {
-      const lsJson = JSON.parse(localStorage.getItem('IDELayout'));
-      lsJson.blocklyState.forEach(item => {
-        if (item.workspace === id) {
-          retVal = item;
-        }
-      });
-    } catch (error) {
-      return null;
-    }
+    const lsJson = JSON.parse(localStorage.getItem('IDELayout'));
+    lsJson.blocklyState.forEach(item => {
+      if (item.workspace === id) {
+        retVal = item;
+      }
+    });
     return retVal;
-  }
+  };
 
   blocklySave = (workspace, id) => {
     this.blocklyobj.forEach((item, index) => {
@@ -170,7 +182,7 @@ class Ide extends React.Component<PropTypes, StateTypes> {
     });
     this.blocklyobj.push({ workspace: id, workspaceXml: workspace });
     this.save();
-  }
+  };
 
   onFlexModelChange = () => {
     this.updateBlocklyTabs();
@@ -179,14 +191,12 @@ class Ide extends React.Component<PropTypes, StateTypes> {
 
   editorGet = id => {
     let retVal = '';
-    try {
-      const lsJson = JSON.parse(localStorage.getItem('IDELayout'));
-      lsJson.editorTextState.forEach(item => {
-        if (item.editor === id) {
-          retVal = item.editorText;
-        }
-      });
-    } catch (error) {}
+    const lsJson = JSON.parse(localStorage.getItem('IDELayout'));
+    lsJson.editorTextState.forEach(item => {
+      if (item.editor === id) {
+        retVal = item.editorText;
+      }
+    });
     return retVal;
   };
 
@@ -196,7 +206,7 @@ class Ide extends React.Component<PropTypes, StateTypes> {
     });
     this.editorText.push({ editor: id, editorText: text });
     this.save();
-  }
+  };
 
   updateBlocklyTabs = () => {
     this.state.model.visitNodes(node => {
