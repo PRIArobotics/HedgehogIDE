@@ -99,6 +99,7 @@ module.exports = {
 
     'react/forbid-prop-types': 'off',
     'react/destructuring-assignment': 'off',
+    'react/sort-comp': 'off',
 
     // PropTypes and states are typed by Flow basically, but Flow cannot type defaultProps.
     'react/require-default-props': 'off',
