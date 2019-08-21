@@ -46,9 +46,13 @@ const treeData = [
 
 let anchorEl = null;
 
+type FileTreeState = {|
+  expandedKeys: Array<string>,
+|};
+
 type PropTypes = {|
-  callbackSave: (keys: Array<string>) => void,
-  callbackGet: () => Array<string>,
+  callbackSave: (state: FileTreeState) => void,
+  callbackGet: () => FileTreeState,
 |};
 type StateTypes = {|
   cmOpen: boolean,
@@ -93,8 +97,8 @@ class FileTree extends React.Component<PropTypes, StateTypes> {
     });
   };
 
-  handleTreeExpand = keys => {
-    this.props.callbackSave(keys);
+  handleTreeExpand = expandedKeys => {
+    this.props.callbackSave({ expandedKeys });
   };
 
   handleContextMenuClose = () => {
@@ -110,7 +114,7 @@ class FileTree extends React.Component<PropTypes, StateTypes> {
           checkable={false}
           selectable
           draggable
-          defaultExpandedKeys={this.props.callbackGet()}
+          defaultExpandedKeys={this.props.callbackGet().expandedKeys}
           onSelect={this.handleTreeSelect}
           // onDragStart={this.handleTreeDragStart}
           // onDragEnd={this.handleTreeDragEnd}
