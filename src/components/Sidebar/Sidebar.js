@@ -33,7 +33,7 @@ const styled = withStyles(theme => ({
 }));
 
 type PropTypes = {|
-  classes: object,
+  classes: Object,
 |};
 
 class Sidebar extends React.Component<PropTypes> {

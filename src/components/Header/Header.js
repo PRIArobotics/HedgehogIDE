@@ -31,7 +31,7 @@ const styled = withStyles(theme => ({
 }));
 
 type PropTypes = {|
-  classes: object,
+  classes: Object,
 |};
 
 class Header extends React.Component<PropTypes> {
