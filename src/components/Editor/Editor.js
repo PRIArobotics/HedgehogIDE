@@ -16,17 +16,24 @@ import AceEditor from 'react-ace';
 
 import s from './Editor.scss';
 
-type PropTypes = {||};
+type AceState = any;
+
+type PropTypes = {|
+  id: string,
+  callbackSave: (state: AceState, id: string) => void,
+  callbackGet: (id: string) => AceState,
+|};
 type StateTypes = {||};
 
 class Editor extends React.Component<PropTypes, StateTypes> {
+  value: AceState;
 
-  constructor(props) {
+  constructor(props: PropTypes) {
     super(props);
     this.value = this.props.callbackGet(this.props.id);
   }
 
-  onChange = newValue => {
+  onChange = (newValue: AceState) => {
     this.value = newValue;
     this.props.callbackSave(this.value, this.props.id);
   };
