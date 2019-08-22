@@ -79,7 +79,7 @@ type PropTypes = {|
   classes: object,
 |};
 type StateTypes = {|
-  model: any,
+  layoutModel: FlexLayout.Model,
 |};
 
 class Ide extends React.Component<PropTypes, StateTypes> {
@@ -124,26 +124,85 @@ class Ide extends React.Component<PropTypes, StateTypes> {
     const json = localStorage.getItem('IDELayout');
     if (json) {
       const { layoutState, fileTreeState, blocklyState, aceState } = JSON.parse(json);
-      this.state = { model: FlexLayout.Model.fromJson(layoutState) };
+      this.state = { layoutModel: FlexLayout.Model.fromJson(layoutState) };
       this.fileTreeState = fileTreeState;
       this.blocklyState = blocklyState;
       this.aceState = aceState;
     } else {
-      this.state = { model: FlexLayout.Model.fromJson(defaultLayout) };
+      this.state = { layoutModel: FlexLayout.Model.fromJson(defaultLayout) };
       this.fileTreeState = {};
       this.blocklyState = {};
       this.aceState = {};
     }
   }
 
+  save() {
+    localStorage.setItem(
+      'IDELayout',
+      JSON.stringify({
+        layoutState: this.state.layoutModel.toJson(),
+        fileTreeState: this.fileTreeState,
+        blocklyState: this.blocklyState,
+        aceState: this.aceState,
+      }),
+    );
+  }
+
   getNodes() {
     const nodes = {};
 
-    this.state.model.visitNodes(node => {
+    this.state.layoutModel.visitNodes(node => {
       nodes[node.getId()] = node;
     });
 
     return nodes;
+  }
+
+  addNode(nodeJson) {
+    const nodes = this.getNodes();
+    const active = this.state.layoutModel.getActiveTabset();
+
+    if (
+      active !== undefined &&
+      active.getId() in nodes &&
+      nodes[active.getId()].getType() === 'tabset'
+    ) {
+      this.state.layoutModel.doAction(
+        FlexLayout.Actions.addNode(
+          nodeJson,
+          active.getId(),
+          FlexLayout.DockLocation.CENTER,
+          -1,
+        ),
+      );
+    } else {
+      this.state.layoutModel.doAction(
+        FlexLayout.Actions.addNode(
+          nodeJson,
+          this.state.layoutModel.getRoot().getId(),
+          FlexLayout.DockLocation.RIGHT,
+          -1,
+        ),
+      );
+    }
+  }
+
+  updateBlocklyTabs() {
+    this.state.layoutModel.visitNodes(node => {
+      if (node.getType() !== 'tab' || node.getComponent() !== 'blockly') return;
+
+      const id = node.getId();
+      if (!this.blocklyTabIds.has(id)) {
+        this.blocklyTabIds.add(id);
+
+        node.setEventListener('close', () => {
+          this.blocklyTabIds.delete(id);
+        });
+        node.setEventListener('resize', () => {
+          // TODO
+        });
+      }
+    });
   }
 
   fileTreeGet = () => this.fileTreeState;
@@ -160,11 +219,6 @@ class Ide extends React.Component<PropTypes, StateTypes> {
     this.save();
   };
 
-  onFlexModelChange = () => {
-    this.updateBlocklyTabs();
-    this.save();
-  };
-
   editorGet = id => this.aceState[id];
 
   editorSave = (text, id) => {
@@ -172,70 +226,16 @@ class Ide extends React.Component<PropTypes, StateTypes> {
     this.save();
   };
 
-  updateBlocklyTabs = () => {
-    this.state.model.visitNodes(node => {
-      if (node.getType() !== 'tab' || node.getComponent() !== 'blockly') return;
-
-      const id = node.getId();
-      if (!this.blocklyTabIds.has(id)) {
-        this.blocklyTabIds.add(id);
-
-        node.setEventListener('close', () => {
-          this.blocklyTabIds.delete(id);
-        });
-        node.setEventListener('resize', () => {
-          // TODO
-        });
-      }
-    });
+  handleLayoutModelChange = () => {
+    this.updateBlocklyTabs();
+    this.save();
   };
 
-  save = () => {
-    localStorage.setItem(
-      'IDELayout',
-      JSON.stringify({
-        layoutState: this.state.model.toJson(),
-        fileTreeState: this.fileTreeState,
-        blocklyState: this.blocklyState,
-        aceState: this.aceState,
-      }),
-    );
-  };
-
-  addNode(nodeJson) {
-    const nodes = this.getNodes();
-    const active = this.state.model.getActiveTabset();
-
-    if (
-      active !== undefined &&
-      active.getId() in nodes &&
-      nodes[active.getId()].getType() === 'tabset'
-    ) {
-      this.state.model.doAction(
-        FlexLayout.Actions.addNode(
-          nodeJson,
-          active.getId(),
-          FlexLayout.DockLocation.CENTER,
-          -1,
-        ),
-      );
-    } else {
-      this.state.model.doAction(
-        FlexLayout.Actions.addNode(
-          nodeJson,
-          this.state.model.getRoot().getId(),
-          FlexLayout.DockLocation.RIGHT,
-          -1,
-        ),
-      );
-    }
-  }
-
-  addSimulator() {
+  addSimulator = () => {
     const nodes = this.getNodes();
     if ('sim' in nodes) {
       // TODO assert `nodes.sim.getType() === 'tab'`
-      this.state.model.doAction(FlexLayout.Actions.selectTab('sim'));
+      this.state.layoutModel.doAction(FlexLayout.Actions.selectTab('sim'));
     } else {
       this.addNode({
         id: 'sim',
@@ -244,21 +244,21 @@ class Ide extends React.Component<PropTypes, StateTypes> {
         name: 'Simulator',
       });
     }
-  }
+  };
 
-  addEditor() {
+  addEditor = () => {
     this.addNode({
       type: 'tab',
       component: 'editor',
       name: 'Editor',
     });
-  }
+  };
 
-  addConsole() {
+  addConsole = () => {
     const nodes = this.getNodes();
     if ('console' in nodes) {
       // TODO assert `nodes.sim.getType() === 'tab'`
-      this.state.model.doAction(FlexLayout.Actions.selectTab('console'));
+      this.state.layoutModel.doAction(FlexLayout.Actions.selectTab('console'));
     } else {
       this.addNode({
         id: 'console',
@@ -267,15 +267,15 @@ class Ide extends React.Component<PropTypes, StateTypes> {
         name: 'Console',
       });
     }
-  }
+  };
 
-  addBlockly() {
+  addBlockly = () => {
     this.addNode({
       type: 'tab',
       component: 'blockly',
       name: 'Visual Editor',
     });
-  }
+  };
 
   render() {
     const { classes } = this.props;
@@ -289,7 +289,7 @@ class Ide extends React.Component<PropTypes, StateTypes> {
                 color="primary"
                 iconStyle={iconStyles.smallIcon}
                 style={iconStyles.small}
-                onClick={() => this.addEditor()}
+                onClick={this.addEditor}
               >
                 <CodeIcon />
               </IconButton>
@@ -300,7 +300,7 @@ class Ide extends React.Component<PropTypes, StateTypes> {
                 color="primary"
                 iconStyle={iconStyles.smallIcon}
                 style={iconStyles.small}
-                onClick={() => this.addSimulator()}
+                onClick={this.addSimulator}
               >
                 <AddToQueueIcon />
               </IconButton>
@@ -311,7 +311,7 @@ class Ide extends React.Component<PropTypes, StateTypes> {
                 color="primary"
                 iconStyle={iconStyles.smallIcon}
                 style={iconStyles.small}
-                onClick={() => this.addConsole()}
+                onClick={this.addConsole}
               >
                 <NotesIcon />
               </IconButton>
@@ -322,7 +322,7 @@ class Ide extends React.Component<PropTypes, StateTypes> {
                 color="primary"
                 iconStyle={iconStyles.smallIcon}
                 style={iconStyles.small}
-                onClick={() => this.addBlockly()}
+                onClick={this.addBlockly}
               >
                 <CallToActionIcon />
               </IconButton>
@@ -336,11 +336,11 @@ class Ide extends React.Component<PropTypes, StateTypes> {
         </Paper>
         <Paper className={classes.editorContainer} square>
           <FlexLayout.Layout
-            model={this.state.model}
+            model={this.state.layoutModel}
             ref={this.flexRef}
             factory={this.factory}
             classNameMapper={className => FlexLayoutTheme[className]}
-            onModelChange={this.onFlexModelChange}
+            onModelChange={this.handleLayoutModelChange}
           />
         </Paper>
       </div>
