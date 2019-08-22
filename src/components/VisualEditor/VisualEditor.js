@@ -1,11 +1,16 @@
 // @flow
 
 import React from 'react';
+import withStyles from 'isomorphic-style-loader/lib/withStyles';
+
 import Blockly from 'blockly';
+
+import s from './VisualEditor.scss';
 
 type BlocklyState = any;
 
 type PropTypes = {|
+  layoutNode: any,
   callbackSave: (state: BlocklyState) => void,
   callbackGet: () => BlocklyState,
 |};
@@ -14,6 +19,8 @@ type StateTypes = {||};
 class VisualEditor extends React.Component<PropTypes, StateTypes> {
   containerRef: React.RefObject = React.createRef();
 
+  blocklyRef: React.RefObject = React.createRef();
+
   toolboxRef: React.RefObject = React.createRef();
 
   codeRef: React.RefObject = React.createRef();
@@ -21,7 +28,7 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
   workspace: Blockly.Workspace;
 
   componentDidMount() {
-    this.workspace = Blockly.inject(this.containerRef.current, {
+    this.workspace = Blockly.inject(this.blocklyRef.current, {
       toolbox: this.toolboxRef.current,
       move: {
         scrollbars: true,
@@ -39,6 +46,15 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
       // console.log(error);
     }
     this.workspace.addChangeListener(() => this.workspaceUpdater());
+
+    this.props.layoutNode.setEventListener('resize', () => {
+        const container = this.containerRef.current;
+        const blockly = this.blocklyRef.current;
+        console.log(container.offsetWidth, container.offsetHeight);
+        blockly.style.width = `${container.offsetWidth}px`;
+        blockly.style.height = `${container.offsetHeight}px`;
+        Blockly.svgResize(this.workspace);
+    });
   }
 
   workspaceUpdater() {
@@ -50,37 +66,32 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
 
   render() {
     return (
-      <React.Fragment>
-        <div
-          ref={this.containerRef}
-          style={{
-            height: '450px',
-            width: '700px',
-            float: 'left',
-            borderRight: '2px solid black',
-          }}
-        />
-        <pre ref={this.codeRef} />
-        <xml ref={this.toolboxRef} style={{ display: 'none' }}>
-          <category name="Logic" colour="210">
-            <block type="controls_if" />
-            <block type="logic_compare" />
-            <block type="logic_operation" />
-            <block type="logic_boolean" />
-          </category>
-          <category name="Loops" colour="120">
-            <block type="controls_whileUntil" />
-            <block type="controls_for" />
-          </category>
-          <category name="Math" colour="230">
-            <block type="math_number" />
-            <block type="math_arithmetic" />
-          </category>
-          <category name="Variables" custom="VARIABLE" colour="330" />
-          <category name="Functions" custom="PROCEDURE" colour="290" />
-        </xml>
-      </React.Fragment>
+      <div className={s.tabRoot}>
+        <div ref={this.containerRef} className={s.blocklyContainer}>
+          <div ref={this.blocklyRef} className={s.blockly} />
+          <xml ref={this.toolboxRef}>
+            <category name="Logic" colour="210">
+              <block type="controls_if" />
+              <block type="logic_compare" />
+              <block type="logic_operation" />
+              <block type="logic_boolean" />
+            </category>
+            <category name="Loops" colour="120">
+              <block type="controls_whileUntil" />
+              <block type="controls_for" />
+            </category>
+            <category name="Math" colour="230">
+              <block type="math_number" />
+              <block type="math_arithmetic" />
+            </category>
+            <category name="Variables" custom="VARIABLE" colour="330" />
+            <category name="Functions" custom="PROCEDURE" colour="290" />
+          </xml>
+        </div>
+        <pre ref={this.codeRef} className={s.codeContainer} />
+      </div>
     );
   }
 }
-export default VisualEditor;
+
+export default withStyles(s)(VisualEditor);

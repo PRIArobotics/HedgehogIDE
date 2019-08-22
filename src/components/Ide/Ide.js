@@ -103,6 +103,7 @@ class Ide extends React.Component<PropTypes, StateTypes> {
       case 'blockly': {
         return (
           <VisualEditor
+            layoutNode={node}
             callbackGet={() => this.blocklyGet(id)}
             callbackSave={workspace => this.blocklySave(workspace, id)}
           />
@@ -186,24 +187,6 @@ class Ide extends React.Component<PropTypes, StateTypes> {
     }
   }
 
-  updateBlocklyTabs() {
-    this.state.layoutModel.visitNodes(node => {
-      if (node.getType() !== 'tab' || node.getComponent() !== 'blockly') return;
-
-      const id = node.getId();
-      if (!this.blocklyTabIds.has(id)) {
-        this.blocklyTabIds.add(id);
-
-        node.setEventListener('close', () => {
-          this.blocklyTabIds.delete(id);
-        });
-        node.setEventListener('resize', () => {
-          // TODO
-        });
-      }
-    });
-  }
-
   fileTreeGet = () => this.fileTreeState;
 
   fileTreeSave = fileTreeState => {
@@ -226,7 +209,6 @@ class Ide extends React.Component<PropTypes, StateTypes> {
   };
 
   handleLayoutModelChange = () => {
-    this.updateBlocklyTabs();
     this.save();
   };
 
