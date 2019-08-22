@@ -68,7 +68,7 @@ const styled = withStyles(theme => ({
 
 type PropTypes = {|
   children: Node,
-  classes: object,
+  classes: Object,
   contentFill: boolean,
 |};
 

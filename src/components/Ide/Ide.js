@@ -76,7 +76,7 @@ const defaultLayout = {
 };
 
 type PropTypes = {|
-  classes: object,
+  classes: Object,
 |};
 type StateTypes = {|
   layoutModel: FlexLayout.Model,
