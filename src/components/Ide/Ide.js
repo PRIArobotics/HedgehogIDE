@@ -123,7 +123,9 @@ class Ide extends React.Component<PropTypes, StateTypes> {
 
     const json = localStorage.getItem('IDELayout');
     if (json) {
-      const { layoutState, fileTreeState, blocklyState, aceState } = JSON.parse(json);
+      const { layoutState, fileTreeState, blocklyState, aceState } = JSON.parse(
+        json,
+      );
       this.state = { layoutModel: FlexLayout.Model.fromJson(layoutState) };
       this.fileTreeState = fileTreeState;
       this.blocklyState = blocklyState;
