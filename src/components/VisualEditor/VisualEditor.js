@@ -6,9 +6,8 @@ import Blockly from 'blockly';
 type BlocklyState = any;
 
 type PropTypes = {|
-  id: string,
-  callbackSave: (state: BlocklyState, id: string) => void,
-  callbackGet: (id: string) => BlocklyState,
+  callbackSave: (state: BlocklyState) => void,
+  callbackGet: () => BlocklyState,
 |};
 type StateTypes = {||};
 
@@ -31,8 +30,7 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
       },
     });
     try {
-      const workspaceXml = this.props.callbackGet(this.props.id);
-      // console.log(`${this.props.id} ${workspace_text.workspaceXml}`);
+      const workspaceXml = this.props.callbackGet();
       Blockly.Xml.domToWorkspace(
         Blockly.Xml.textToDom(workspaceXml),
         this.workspace,
@@ -44,11 +42,10 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
   }
 
   workspaceUpdater() {
-    // console.log(`${this.props.id} update`);
     this.code = Blockly.JavaScript.workspaceToCode(this.workspace);
     this.codeRef.current.innerHTML = this.code;
     const xml = Blockly.Xml.workspaceToDom(this.workspace);
-    this.props.callbackSave(Blockly.Xml.domToText(xml), this.props.id);
+    this.props.callbackSave(Blockly.Xml.domToText(xml));
   }
 
   render() {

@@ -84,11 +84,12 @@ type StateTypes = {|
 
 class Ide extends React.Component<PropTypes, StateTypes> {
   factory = (node: any) => {
+    const id = node.getId();
     switch (node.getComponent()) {
       case 'editor': {
         return (
           <Editor
-            id={node.getId()}
+            id={id}
             callbackGet={this.editorGet}
             callbackSave={this.editorSave}
           />
@@ -103,9 +104,8 @@ class Ide extends React.Component<PropTypes, StateTypes> {
       case 'blockly': {
         return (
           <VisualEditor
-            id={node.getId()}
-            callbackGet={this.blocklyGet}
-            callbackSave={this.blocklySave}
+            callbackGet={() => this.blocklyGet(id)}
+            callbackSave={workspace => this.blocklySave(workspace, id)}
           />
         );
       }
