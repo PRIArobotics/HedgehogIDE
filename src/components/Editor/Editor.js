@@ -16,20 +16,28 @@ import AceEditor from 'react-ace';
 
 import s from './Editor.scss';
 
-type PropTypes = {||};
+type AceState = any;
+
+type PropTypes = {|
+  callbackSave: (state: AceState) => void,
+  callbackGet: () => AceState,
+|};
 type StateTypes = {|
   width: string,
   height: string,
 |};
 
 class Editor extends React.Component<PropTypes, StateTypes> {
-  constructor(props) {
+  value: AceState;
+
+  state = {
+    width: 0,
+    height: 0,
+  };
+
+  constructor(props: PropTypes) {
     super(props);
-    this.value = this.props.callbackGet(this.props.id);
-    this.state = {
-      width: 0,
-      height: 0,
-    };
+    this.value = this.props.callbackGet();
   }
 
   componentDidMount() {
@@ -37,9 +45,9 @@ class Editor extends React.Component<PropTypes, StateTypes> {
     this.setState({ height: '100%' });
   }
 
-  onChange = newValue => {
+  onChange = (newValue: AceState) => {
     this.value = newValue;
-    this.props.callbackSave(this.value, this.props.id);
+    this.props.callbackSave(this.value);
   };
 
   render() {
@@ -47,11 +55,11 @@ class Editor extends React.Component<PropTypes, StateTypes> {
       <AceEditor
         mode="javascript"
         name="editor"
+        width={this.state.width}
+        height={this.state.height}
         // onLoad={this.onLoad}
         onChange={this.onChange}
         fontSize={16}
-        width={this.state.width}
-        height={this.state.height}
         // onSelectionChange={this.onSelectionChange}
         // onCursorChange={this.onCursorChange}
         // onValidate={this.onValidate}
