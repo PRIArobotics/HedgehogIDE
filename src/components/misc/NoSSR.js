@@ -4,19 +4,16 @@ import React from 'react';
 import type { Node } from 'react';
 
 type PropTypes = {|
-  children?: () => Promise<Node>,
+  children: () => Promise<Node>,
 |};
 type StateTypes = {|
   children: Node | null,
 |};
 
 class NoSSR extends React.Component<PropTypes, StateTypes> {
-  constructor(props: PropTypes) {
-    super(props);
-    this.state = {
-      children: null,
-    };
-  }
+  state = {
+    children: null,
+  };
 
   componentDidMount() {
     if (process.env.BROWSER) {
