@@ -4,6 +4,28 @@ import React from 'react';
 import withStyles from 'isomorphic-style-loader/lib/withStyles';
 
 import Blockly from 'blockly';
+import jsInterpreter from './interpreter';
+import acorn from './acorn';
+
+global.acorn = acorn;
+
+const printBlock = {
+  type: 'text_alert',
+  message0: 'Output %1',
+  args0: [
+    {
+      type: 'input_value',
+      name: 'TEXT',
+      check: ['Number', 'String'],
+    },
+  ],
+  inputsInline: true,
+  previousStatement: null,
+  nextStatement: null,
+  colour: 70,
+  tooltip: 'This is a tooltip',
+  helpUrl: '',
+};
 
 import s from './VisualEditor.scss';
 
@@ -36,6 +58,7 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
         wheel: false,
       },
     });
+    this.addBlocklyBlocks();
     try {
       const workspaceXml = this.props.callbackGet();
       Blockly.Xml.domToWorkspace(
@@ -58,12 +81,49 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
     });
   }
 
+  addBlocklyBlocks() {
+    Blockly.Blocks.text_alert = {
+      init() {
+        this.jsonInit(printBlock);
+      },
+    };
+    Blockly.JavaScript.text_alert = function(block) {
+      const valueText = Blockly.JavaScript.valueToCode(
+        block,
+        'TEXT',
+        Blockly.JavaScript.ORDER_ATOMIC,
+      );
+      return `alert(${valueText});\n`;
+    };
+  }
+
   workspaceUpdater() {
     this.code = Blockly.JavaScript.workspaceToCode(this.workspace);
     this.codeRef.current.innerHTML = this.code;
     const xml = Blockly.Xml.workspaceToDom(this.workspace);
     this.props.callbackSave(Blockly.Xml.domToText(xml));
   }
+
+  runCode = () => {
+    try {
+      const codeInterpreter = new jsInterpreter.Interpreter(
+        this.code,
+        this.initApi,
+      );
+      codeInterpreter.run();
+    } catch (error) {
+      alert(error);
+    }
+  };
+
+  initApi = (interpreter, scope) => {
+    const wrapper = text => alert(text);
+    interpreter.setProperty(
+      scope,
+      'alert',
+      interpreter.createNativeFunction(wrapper),
+    );
+  };
 
   render() {
     return (
