@@ -89,9 +89,8 @@ class Ide extends React.Component<PropTypes, StateTypes> {
       case 'editor': {
         return (
           <Editor
-            id={id}
-            callbackGet={this.editorGet}
-            callbackSave={this.editorSave}
+            callbackGet={() => this.editorGet(id)}
+            callbackSave={workspace => this.editorSave(workspace, id)}
           />
         );
       }
