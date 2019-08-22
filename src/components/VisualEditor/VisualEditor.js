@@ -149,7 +149,10 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
             <category name="Functions" custom="PROCEDURE" colour="290" />
           </xml>
         </div>
-        <pre ref={this.codeRef} className={s.codeContainer} />
+        <div>
+          <pre ref={this.codeRef} className={s.codeContainer} />
+          <button onClick={this.runCode}>Run</button>
+        </div>
       </div>
     );
   }
