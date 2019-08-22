@@ -1,7 +1,18 @@
+// @flow
+
 import React from 'react';
 import Blockly from 'blockly';
 
-class VisualEditor extends React.Component {
+type BlocklyState = any;
+
+type PropTypes = {|
+  id: string,
+  callbackSave: (state: BlocklyState, id: string) => void,
+  callbackGet: (id: string) => BlocklyState,
+|};
+type StateTypes = {||};
+
+class VisualEditor extends React.Component<PropTypes, StateTypes> {
   componentDidMount() {
     this.workspace = Blockly.inject(`blocklyDiv-${this.props.id}`, {
       toolbox: this.toolbox,
@@ -14,7 +25,10 @@ class VisualEditor extends React.Component {
     try {
       const workspaceXml = this.props.callbackGet(this.props.id);
       // console.log(`${this.props.id} ${workspace_text.workspaceXml}`);
-      Blockly.Xml.domToWorkspace(Blockly.Xml.textToDom(workspaceXml), this.workspace);
+      Blockly.Xml.domToWorkspace(
+        Blockly.Xml.textToDom(workspaceXml),
+        this.workspace,
+      );
     } catch (error) {
       // console.log(error);
     }
@@ -32,8 +46,22 @@ class VisualEditor extends React.Component {
   render() {
     return (
       <React.Fragment>
-        <div id={`blocklyDiv-${this.props.id}`} style={{ height: '450px', width: '700px', float: 'left', borderRight: '2px solid black'}} />
-        <xml id={`toolbox-${this.props.id}`} style={{ display: 'none' }} ref={(toolbox) => {this.toolbox = toolbox}}>
+        <div
+          id={`blocklyDiv-${this.props.id}`}
+          style={{
+            height: '450px',
+            width: '700px',
+            float: 'left',
+            borderRight: '2px solid black',
+          }}
+        />
+        <xml
+          id={`toolbox-${this.props.id}`}
+          style={{ display: 'none' }}
+          ref={toolbox => {
+            this.toolbox = toolbox;
+          }}
+        >
           <category name="Logic" colour="210">
             <block type="controls_if" />
             <block type="logic_compare" />
