@@ -13,9 +13,17 @@ type PropTypes = {|
 type StateTypes = {||};
 
 class VisualEditor extends React.Component<PropTypes, StateTypes> {
+  containerRef: React.RefObject = React.createRef();
+
+  toolboxRef: React.RefObject = React.createRef();
+
+  codeRef: React.RefObject = React.createRef();
+
+  workspace: Blockly.Workspace;
+
   componentDidMount() {
-    this.workspace = Blockly.inject(`blocklyDiv-${this.props.id}`, {
-      toolbox: this.toolbox,
+    this.workspace = Blockly.inject(this.containerRef.current, {
+      toolbox: this.toolboxRef.current,
       move: {
         scrollbars: true,
         drag: true,
@@ -38,7 +46,7 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
   workspaceUpdater() {
     // console.log(`${this.props.id} update`);
     this.code = Blockly.JavaScript.workspaceToCode(this.workspace);
-    document.getElementById(`workspaceCode-${this.props.id}`).innerHTML = this.code;
+    this.codeRef.current.innerHTML = this.code;
     const xml = Blockly.Xml.workspaceToDom(this.workspace);
     this.props.callbackSave(Blockly.Xml.domToText(xml), this.props.id);
   }
@@ -47,7 +55,7 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
     return (
       <React.Fragment>
         <div
-          id={`blocklyDiv-${this.props.id}`}
+          ref={this.containerRef}
           style={{
             height: '450px',
             width: '700px',
@@ -55,13 +63,8 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
             borderRight: '2px solid black',
           }}
         />
-        <xml
-          id={`toolbox-${this.props.id}`}
-          style={{ display: 'none' }}
-          ref={toolbox => {
-            this.toolbox = toolbox;
-          }}
-        >
+        <pre ref={this.codeRef} />
+        <xml ref={this.toolboxRef} style={{ display: 'none' }}>
           <category name="Logic" colour="210">
             <block type="controls_if" />
             <block type="logic_compare" />
@@ -79,7 +82,6 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
           <category name="Variables" custom="VARIABLE" colour="330" />
           <category name="Functions" custom="PROCEDURE" colour="290" />
         </xml>
-        <pre id={`workspaceCode-${this.props.id}`} />
       </React.Fragment>
     );
   }
