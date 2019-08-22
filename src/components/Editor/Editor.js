@@ -16,41 +16,52 @@ import AceEditor from 'react-ace';
 
 import s from './Editor.scss';
 
-type AceState = any;
-
-type PropTypes = {|
-  callbackSave: (state: AceState) => void,
-  callbackGet: () => AceState,
+type PropTypes = {||};
+type StateTypes = {|
+  width: string,
+  height: string,
 |};
-type StateTypes = {||};
 
 class Editor extends React.Component<PropTypes, StateTypes> {
-  value: AceState;
-
-  constructor(props: PropTypes) {
+  constructor(props) {
     super(props);
-    this.value = this.props.callbackGet();
+    this.value = this.props.callbackGet(this.props.id);
+    this.state = {
+      width: 0,
+      height: 0,
+    };
   }
 
-  onChange = (newValue: AceState) => {
+  componentDidMount() {
+    this.setState({ width: '100%' });
+    this.setState({ height: '100%' });
+  }
+
+  onChange = newValue => {
     this.value = newValue;
-    this.props.callbackSave(this.value);
+    this.props.callbackSave(this.value, this.props.id);
   };
 
   render() {
     return (
       <AceEditor
         mode="javascript"
-        width="100%"
-        height="100%"
+        name="editor"
         // onLoad={this.onLoad}
         onChange={this.onChange}
+        fontSize={16}
+        width={this.state.width}
+        height={this.state.height}
         // onSelectionChange={this.onSelectionChange}
         // onCursorChange={this.onCursorChange}
         // onValidate={this.onValidate}
         value={this.value}
         showGutter
         highlightActiveLine
+        autoScrollEditorIntoView
+        style={{
+          position: 'absolute',
+        }}
         setOptions={{
           enableBasicAutocompletion: true,
           // enableLiveAutocompletion: true,
