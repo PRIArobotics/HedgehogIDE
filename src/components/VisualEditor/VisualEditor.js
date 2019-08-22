@@ -147,6 +147,9 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
             </category>
             <category name="Variables" custom="VARIABLE" colour="330" />
             <category name="Functions" custom="PROCEDURE" colour="290" />
+            <category name="Output">
+              <block type="text_alert" />
+            </category>
           </xml>
         </div>
         <div>
