@@ -35,6 +35,7 @@ type PropTypes = {|
   layoutNode: any,
   callbackSave: (state: BlocklyState) => void,
   callbackGet: () => BlocklyState,
+  callbackCode: (code: string) => void,
 |};
 type StateTypes = {||};
 

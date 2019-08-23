@@ -11,7 +11,9 @@ type ConsoleItem = {|
   stream: string,
 |};
 
-type PropTypes = {||};
+type PropTypes = {|
+  forwardedRef: React.RefObject,
+|};
 type StateTypes = {|
   consoleText: Array<ConsoleItem>,
 |};
@@ -24,11 +26,16 @@ class Console extends React.Component<PropTypes, StateTypes> {
   };
 
   componentDidMount() {
+    this.props.forwardedRef.current = this;
     document.getElementById('consoleInput').scrollIntoView(false);
   }
 
   componentDidUpdate() {
     document.getElementById('consoleInput').scrollIntoView(false);
+  }
+
+  componentWillUnmount() {
+    this.props.forwardedRef.current = null;
   }
 
   consoleOut(text: string, stream: string) {

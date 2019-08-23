@@ -98,7 +98,7 @@ class Ide extends React.Component<PropTypes, StateTypes> {
         return <Simulator />;
       }
       case 'console': {
-        return <Console ref={this.consoleRef} />;
+        return <Console forwardedRef={this.consoleRef} />;
       }
       case 'blockly': {
         return (
@@ -264,9 +264,15 @@ class Ide extends React.Component<PropTypes, StateTypes> {
   };
 
   runCode = (code: string) => {
-    console.log(code);
     this.addConsole();
-    this.consoleRef.current.consoleOut(code, 'stdin');
+    const tryPrint = text => {
+      if (this.consoleRef.current) {
+        this.consoleRef.current.consoleOut(text, 'stdout');
+      } else {
+        setTimeout(() => tryPrint(text), 0);
+      }
+    };
+    tryPrint(code);
   };
 
   render() {
