@@ -7,6 +7,9 @@ import Blockly from 'blockly';
 import jsInterpreter from './interpreter';
 import acorn from './acorn';
 
+import s from './VisualEditor.scss';
+import Ide from '../Ide/Ide';
+
 global.acorn = acorn;
 
 const printBlock = {
@@ -26,8 +29,6 @@ const printBlock = {
   tooltip: 'This is a tooltip',
   helpUrl: '',
 };
-
-import s from './VisualEditor.scss';
 
 type BlocklyState = any;
 
@@ -93,7 +94,7 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
         'TEXT',
         Blockly.JavaScript.ORDER_ATOMIC,
       );
-      return `alert(${valueText});\n`;
+      return `print(${valueText});`;
     };
   }
 
@@ -117,10 +118,16 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
   };
 
   initApi = (interpreter, scope) => {
-    const wrapper = text => alert(text);
+    let wrapper = text => alert(text);
     interpreter.setProperty(
       scope,
       'alert',
+      interpreter.createNativeFunction(wrapper),
+    );
+    wrapper = text => this.props.callbackCode(text);
+    interpreter.setProperty(
+      scope,
+      'print',
       interpreter.createNativeFunction(wrapper),
     );
   };

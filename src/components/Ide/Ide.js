@@ -98,7 +98,7 @@ class Ide extends React.Component<PropTypes, StateTypes> {
         return <Simulator />;
       }
       case 'console': {
-        return <Console />;
+        return <Console ref={this.consoleRef} />;
       }
       case 'blockly': {
         return (
@@ -106,6 +106,7 @@ class Ide extends React.Component<PropTypes, StateTypes> {
             layoutNode={node}
             callbackGet={() => this.blocklyGet(id)}
             callbackSave={workspace => this.blocklySave(workspace, id)}
+            callbackCode={code => this.runCode(code)}
           />
         );
       }
@@ -115,6 +116,8 @@ class Ide extends React.Component<PropTypes, StateTypes> {
   };
 
   flexRef: React.RefObject = React.createRef();
+
+  consoleRef: React.RefObject = React.createRef();
 
   blocklyTabIds = new Set();
 
@@ -258,6 +261,12 @@ class Ide extends React.Component<PropTypes, StateTypes> {
       component: 'blockly',
       name: 'Visual Editor',
     });
+  };
+
+  runCode = (code: string) => {
+    console.log(code);
+    this.addConsole();
+    this.consoleRef.current.consoleOut(code, 'stdin');
   };
 
   render() {
