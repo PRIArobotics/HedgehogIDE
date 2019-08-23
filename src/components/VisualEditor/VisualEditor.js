@@ -112,11 +112,12 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
   }
 
   runCode = () => {
+    this.infLoop = 1000;
+    const codeInterpreter = new jsInterpreter.Interpreter(
+      this.code,
+      this.initApi,
+    );
     try {
-      const codeInterpreter = new jsInterpreter.Interpreter(
-        this.code,
-        this.initApi,
-      );
       codeInterpreter.run();
     } catch (error) {
       alert(error);
