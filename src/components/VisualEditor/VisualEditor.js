@@ -60,8 +60,6 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
       },
     });
     this.addBlocklyBlocks();
-    Blockly.JavaScript.INFINITE_LOOP_TRAP =
-      'if(checkInfLoop()) throw "Infinite loop.";\n';
 
     const workspaceXml = this.props.callbackGet();
     if (workspaceXml) {
@@ -74,8 +72,8 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
     this.workspace.addChangeListener(() => this.workspaceUpdater());
 
     this.props.layoutNode.setEventListener('resize', this.refreshSize);
+    this.props.layoutNode.setEventListener('visibility', this.unselectBlock);
     this.refreshSize();
-    this.infLoop = 1000;
   }
 
   refreshSize = () => {
@@ -87,6 +85,10 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
       Blockly.svgResize(this.workspace);
     }, 0);
   };
+
+  unselectBlock = () => {
+    Blockly.hideChaff();
+  }
 
   addBlocklyBlocks() {
     Blockly.Blocks.text_alert = {
@@ -112,7 +114,6 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
   }
 
   runCode = () => {
-    this.infLoop = 1000;
     const codeInterpreter = new jsInterpreter.Interpreter(
       this.code,
       this.initApi,
