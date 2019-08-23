@@ -8,7 +8,6 @@ import jsInterpreter from './interpreter';
 import acorn from './acorn';
 
 import s from './VisualEditor.scss';
-import Ide from '../Ide/Ide';
 
 global.acorn = acorn;
 
@@ -62,15 +61,15 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
     this.addBlocklyBlocks();
     Blockly.JavaScript.INFINITE_LOOP_TRAP =
       'if(checkInfLoop()) throw "Infinite loop.";\n';
-    try {
-      const workspaceXml = this.props.callbackGet();
+
+    const workspaceXml = this.props.callbackGet();
+    if (workspaceXml) {
       Blockly.Xml.domToWorkspace(
         Blockly.Xml.textToDom(workspaceXml),
         this.workspace,
       );
-    } catch (error) {
-      // console.log(error);
     }
+
     this.workspace.addChangeListener(() => this.workspaceUpdater());
 
     this.props.layoutNode.setEventListener('resize', this.refreshSize);
@@ -100,7 +99,7 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
         'TEXT',
         Blockly.JavaScript.ORDER_ATOMIC,
       );
-      return `print(${valueText});`;
+      return `print(${valueText});\n`;
     };
   }
 
@@ -132,7 +131,7 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
     );
     wrapper = () => {
       this.infLoop = this.infLoop - 1;
-      if(this.infLoop === 0) {
+      if (this.infLoop === 0) {
         this.infLoop = 1000;
         return true;
       }
@@ -171,7 +170,7 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
               <block type="logic_boolean" />
               <block type="logic_null" />
               <block type="logic_ternary" />
-          </category>
+            </category>
             <category name="Loops" colour="%{BKY_LOOPS_HUE}">
               <block type="controls_repeat_ext">
                 <value name="TIMES">
@@ -274,7 +273,7 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
             </category>
           </xml>
         </div>
-        <div>
+        <div style={{ overflow: 'auto' }}>
           <pre ref={this.codeRef} className={s.codeContainer} />
           <button onClick={this.runCode}>Run</button>
         </div>
