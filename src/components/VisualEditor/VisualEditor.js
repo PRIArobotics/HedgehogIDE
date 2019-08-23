@@ -71,16 +71,19 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
     }
     this.workspace.addChangeListener(() => this.workspaceUpdater());
 
-    this.props.layoutNode.setEventListener('resize', () => {
-      setTimeout(() => {
-        const container = this.containerRef.current;
-        const blockly = this.blocklyRef.current;
-        blockly.style.width = `${container.offsetWidth}px`;
-        blockly.style.height = `${container.offsetHeight}px`;
-        Blockly.svgResize(this.workspace);
-      }, 0);
-    });
+    this.props.layoutNode.setEventListener('resize', this.refreshSize);
+    this.refreshSize();
   }
+
+  refreshSize = () => {
+    setTimeout(() => {
+      const container = this.containerRef.current;
+      const blockly = this.blocklyRef.current;
+      blockly.style.width = `${container.offsetWidth}px`;
+      blockly.style.height = `${container.offsetHeight}px`;
+      Blockly.svgResize(this.workspace);
+    }, 0);
+  };
 
   addBlocklyBlocks() {
     Blockly.Blocks.text_alert = {

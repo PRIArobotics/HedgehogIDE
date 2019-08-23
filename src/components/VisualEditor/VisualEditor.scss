@@ -14,7 +14,9 @@
     height: 100%;
 
     display: flex;
-    flex-flow: row;
+    flex-flow: row nowrap;
+
+    overflow: hidden;
 }
 
 .blocklyContainer {
