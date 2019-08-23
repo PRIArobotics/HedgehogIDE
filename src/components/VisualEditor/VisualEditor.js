@@ -14,7 +14,7 @@ global.acorn = acorn;
 
 const printBlock = {
   type: 'text_alert',
-  message0: 'Output %1',
+  message0: 'output %1',
   args0: [
     {
       type: 'input_value',
@@ -60,6 +60,8 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
       },
     });
     this.addBlocklyBlocks();
+    Blockly.JavaScript.INFINITE_LOOP_TRAP =
+      'if(checkInfLoop()) throw "Infinite loop.";\n';
     try {
       const workspaceXml = this.props.callbackGet();
       Blockly.Xml.domToWorkspace(
@@ -73,6 +75,7 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
 
     this.props.layoutNode.setEventListener('resize', this.refreshSize);
     this.refreshSize();
+    this.infLoop = 1000;
   }
 
   refreshSize = () => {
@@ -127,6 +130,19 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
       'alert',
       interpreter.createNativeFunction(wrapper),
     );
+    wrapper = () => {
+      this.infLoop = this.infLoop - 1;
+      if(this.infLoop === 0) {
+        this.infLoop = 1000;
+        return true;
+      }
+      return false;
+    };
+    interpreter.setProperty(
+      scope,
+      'checkInfLoop',
+      interpreter.createNativeFunction(wrapper),
+    );
     wrapper = text => this.props.callbackCode(text);
     interpreter.setProperty(
       scope,
@@ -141,24 +157,120 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
         <div ref={this.containerRef} className={s.blocklyContainer}>
           <div ref={this.blocklyRef} className={s.blockly} />
           <xml ref={this.toolboxRef}>
-            <category name="Logic" colour="210">
+            <category name="Logic" colour="%{BKY_LOGIC_HUE}">
               <block type="controls_if" />
+              <block type="controls_if">
+                <mutation else="1" />
+              </block>
+              <block type="controls_if">
+                <mutation elseif="1" else="1" />
+              </block>
               <block type="logic_compare" />
               <block type="logic_operation" />
+              <block type="logic_negate" />
               <block type="logic_boolean" />
-            </category>
-            <category name="Loops" colour="120">
+              <block type="logic_null" />
+              <block type="logic_ternary" />
+          </category>
+            <category name="Loops" colour="%{BKY_LOOPS_HUE}">
+              <block type="controls_repeat_ext">
+                <value name="TIMES">
+                  <block type="math_number">
+                    <field name="NUM">10</field>
+                  </block>
+                </value>
+              </block>
               <block type="controls_whileUntil" />
-              <block type="controls_for" />
+              <block type="controls_for">
+                <field name="VAR">i</field>
+                <value name="FROM">
+                  <block type="math_number">
+                    <field name="NUM">1</field>
+                  </block>
+                </value>
+                <value name="TO">
+                  <block type="math_number">
+                    <field name="NUM">10</field>
+                  </block>
+                </value>
+                <value name="BY">
+                  <block type="math_number">
+                    <field name="NUM">1</field>
+                  </block>
+                </value>
+              </block>
+              <block type="controls_forEach" />
+              <block type="controls_flow_statements" />
             </category>
-            <category name="Math" colour="230">
-              <block type="math_number" />
+            <category name="Math" colour="%{BKY_MATH_HUE}">
+              <block type="math_number">
+                <field name="NUM">0</field>
+              </block>
               <block type="math_arithmetic" />
+              <block type="math_single" />
+              <block type="math_trig" />
+              <block type="math_constant" />
+              <block type="math_number_property" />
+              <block type="math_round" />
+              <block type="math_on_list" />
+              <block type="math_modulo" />
+              <block type="math_constrain">
+                <value name="LOW">
+                  <block type="math_number">
+                    <field name="NUM">1</field>
+                  </block>
+                </value>
+                <value name="HIGH">
+                  <block type="math_number">
+                    <field name="NUM">10</field>
+                  </block>
+                </value>
+              </block>
+              <block type="math_random_int">
+                <value name="FROM">
+                  <block type="math_number">
+                    <field name="NUM">1</field>
+                  </block>
+                </value>
+                <value name="TO">
+                  <block type="math_number">
+                    <field name="NUM">10</field>
+                  </block>
+                </value>
+              </block>
+              <block type="math_random_float" />
+              <block type="math_atan2" />
             </category>
-            <category name="Variables" custom="VARIABLE" colour="330" />
-            <category name="Functions" custom="PROCEDURE" colour="290" />
-            <category name="Output">
+            <category name="Lists" colour="%{BKY_LISTS_HUE}">
+              <block type="lists_create_empty" />
+              <block type="lists_create_with" />
+              <block type="lists_repeat">
+                <value name="NUM">
+                  <block type="math_number">
+                    <field name="NUM">5</field>
+                  </block>
+                </value>
+              </block>
+              <block type="lists_length" />
+              <block type="lists_isEmpty" />
+              <block type="lists_indexOf" />
+              <block type="lists_getIndex" />
+              <block type="lists_setIndex" />
+            </category>
+            <sep />
+            <category
+              name="Variables"
+              custom="VARIABLE"
+              colour="%{BKY_VARIABLES_HUE}"
+            />
+            <category
+              name="Functions"
+              custom="PROCEDURE"
+              colour="%{BKY_PROCEDURES_HUE}"
+            />
+            <category name="Text" colour="70">
               <block type="text_alert" />
+              <block type="text" />
             </category>
           </xml>
         </div>
