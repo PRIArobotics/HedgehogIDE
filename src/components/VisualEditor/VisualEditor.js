@@ -16,6 +16,8 @@ import acorn from './acorn';
 import s from './VisualEditor.scss';
 import {Icon} from "@material-ui/core";
 
+import Executor from '../Executor';
+
 global.acorn = acorn;
 
 const printBlock = {
@@ -182,6 +184,10 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
   };
 
   render() {
+    const code = `
+    sendMessage('print', 'this is the child!!');
+    `;
+
     return (
       <div className={s.tabRoot}>
         <div ref={this.containerRef} className={s.blocklyContainer}>
@@ -305,6 +311,19 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
           </xml>
         </div>
         <div className={s.sidebar}>
+          {this.state.running ? (
+            <Executor
+              code={code}
+              handlers={{
+                print: (source, text) => {
+                  console.log(text);
+                },
+                exit: () => {
+                  this.setState({ running: false });
+                },
+              }}
+            />
+          ) : null}
           {this.state.running ? (
             <ColoredIconButton
               onClick={this.handleStopCode}

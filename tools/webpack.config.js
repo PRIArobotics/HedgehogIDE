@@ -311,6 +311,7 @@ const clientConfig = {
 
   entry: {
     client: ['@babel/polyfill', './src/client/index.js'],
+    executor: ['@babel/polyfill', './src/executor/index.js'],
   },
 
   plugins: [
