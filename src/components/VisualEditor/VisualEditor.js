@@ -142,7 +142,7 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
     this.props.callbackSave(Blockly.Xml.domToText(xml));
   }
 
-  runCode = () => {
+  handleRunCode = () => {
     /*
     const codeInterpreter = new jsInterpreter.Interpreter(
       this.code,
@@ -157,11 +157,11 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
     this.setState({ running: true });
   };
 
-  stopCode = () => {
+  handleStopCode = () => {
     this.setState({ running: false });
   };
 
-  handleClick = () => {
+  handleToggleCodeCollapsed = () => {
     this.setState(oldState => ({ codeCollapsed: !oldState.codeCollapsed }));
     this.refreshSize();
   };
@@ -307,7 +307,7 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
         <div className={s.sidebar}>
           {this.state.running ? (
             <ColoredIconButton
-              onClick={this.stopCode}
+              onClick={this.handleStopCode}
               disableRipple
               color="red"
             >
@@ -315,7 +315,7 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
             </ColoredIconButton>
           ) : (
             <ColoredIconButton
-              onClick={this.runCode}
+              onClick={this.handleRunCode}
               disableRipple
               color="limegreen"
             >
@@ -323,7 +323,7 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
             </ColoredIconButton>
           )}
           <br />
-          <ColoredIconButton onClick={this.handleClick}>
+          <ColoredIconButton onClick={this.handleToggleCodeCollapsed}>
             {this.state.codeCollapsed ? (
               <KeyboardArrowLeftIcon />
             ) : (
