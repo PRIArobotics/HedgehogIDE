@@ -4,7 +4,7 @@ import React from 'react';
 import withStyles from 'isomorphic-style-loader/lib/withStyles';
 
 import Blockly from 'blockly';
-import jsInterpreter from './interpreter';
+import Frame from 'react-frame-component';
 import acorn from './acorn';
 
 import s from './VisualEditor.scss';
@@ -156,12 +156,6 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
           <xml ref={this.toolboxRef}>
             <category name="Logic" colour="%{BKY_LOGIC_HUE}">
               <block type="controls_if" />
-              <block type="controls_if">
-                <mutation else="1" />
-              </block>
-              <block type="controls_if">
-                <mutation elseif="1" else="1" />
-              </block>
               <block type="logic_compare" />
               <block type="logic_operation" />
               <block type="logic_negate" />
@@ -274,8 +268,8 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
         <div style={{ overflow: 'auto' }}>
           <pre ref={this.codeRef} className={s.codeContainer} />
           <button onClick={this.runCode}>Run</button>
+          <Frame><h1>This is a frame</h1></Frame>
         </div>
-        <div ref={this.mountPoint} style={{ display: 'block' }} />
       </div>
     );
   }
