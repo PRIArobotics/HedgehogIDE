@@ -48,6 +48,8 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
 
   codeRef: React.RefObject = React.createRef();
 
+  mountPoint: React.RefObject = React.createRef();
+
   workspace: Blockly.Workspace;
 
   componentDidMount() {
@@ -88,7 +90,7 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
 
   unselectBlock = () => {
     Blockly.hideChaff();
-  }
+  };
 
   addBlocklyBlocks() {
     Blockly.Blocks.text_alert = {
@@ -114,6 +116,7 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
   }
 
   runCode = () => {
+    /*
     const codeInterpreter = new jsInterpreter.Interpreter(
       this.code,
       this.initApi,
@@ -123,6 +126,11 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
     } catch (error) {
       alert(error);
     }
+    */
+    const frame = document.createElement('iframe');
+    frame.setAttribute('src', 'www.google.com');
+    frame.setAttribute('sandbox', 'allow-scripts');
+    this.mountPoint.current.appendChild(frame);
   };
 
   initApi = (interpreter, scope) => {
@@ -130,19 +138,6 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
     interpreter.setProperty(
       scope,
       'alert',
-      interpreter.createNativeFunction(wrapper),
-    );
-    wrapper = () => {
-      this.infLoop = this.infLoop - 1;
-      if (this.infLoop === 0) {
-        this.infLoop = 1000;
-        return true;
-      }
-      return false;
-    };
-    interpreter.setProperty(
-      scope,
-      'checkInfLoop',
       interpreter.createNativeFunction(wrapper),
     );
     wrapper = text => this.props.callbackCode(text);
@@ -280,6 +275,7 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
           <pre ref={this.codeRef} className={s.codeContainer} />
           <button onClick={this.runCode}>Run</button>
         </div>
+        <div ref={this.mountPoint} style={{ display: 'block' }} />
       </div>
     );
   }
