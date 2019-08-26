@@ -1,31 +1,22 @@
-.console {
+.root {
   height: 100%;
+  font-family: monospace;
+  font-size: 19px;
+
   display: flex;
   flex-flow: column nowrap;
 }
 
+.outputPane {
+  flex: 1 1 auto;
+
+  overflow-y: scroll;
+}
+
 .output {
-  display: block;
-  flex: 1 0 auto;
-}
-
-.consoleInput {
-  flex-grow: 1;
-  width: 100%;
-
-  input {
-    width: 100%;
-    font-family: monospace;
-    font-size: 19px;
-    border: none;
-  }
-}
-
-.textOutput {
   margin: 0;
   white-space: pre-wrap;
   word-wrap: break-word;
-  font-size: 19px;
 
   &.stdin {
     color: green;
@@ -40,12 +31,16 @@
   }
 }
 
-.fixed {
-  font-family: monospace;
-  font-size: 19px;
-  z-index: 100;
-}
+.inputForm {
+  flex: 0 0 auto;
 
-.inputText {
-  color: #007c3c;
+  display: flex;
+  flex-flow: row nowrap;
+
+  input {
+    flex: 1 0 auto;
+    font-family: inherit;
+    font-size: inherit;
+    border: none;
+  }
 }

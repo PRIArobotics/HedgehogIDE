@@ -21,17 +21,19 @@ type StateTypes = {|
 class Console extends React.Component<PropTypes, StateTypes> {
   inputRef: React.RefObject = React.createRef();
 
+  bottomRef: React.RefObject = React.createRef();
+
   state = {
     consoleText: [],
   };
 
   componentDidMount() {
     this.props.forwardedRef.current = this;
-    document.getElementById('consoleInput').scrollIntoView(false);
+    this.bottomRef.current.scrollIntoView(false);
   }
 
   componentDidUpdate() {
-    document.getElementById('consoleInput').scrollIntoView(false);
+    this.bottomRef.current.scrollIntoView(false);
   }
 
   componentWillUnmount() {
@@ -73,20 +75,17 @@ class Console extends React.Component<PropTypes, StateTypes> {
 
   render() {
     return (
-      <div className={s.console} id="console">
-        <div className={s.output}>
+      <div className={s.root}>
+        <div className={s.outputPane}>
           {this.state.consoleText.map(({ text, stream }) => (
-            <pre className={`${s.textOutput} ${s[stream]}`}>{text}</pre>
+            <pre className={`${s.output} ${s[stream]}`}>{text}</pre>
           ))}
+          <div ref={this.bottomRef} />
         </div>
-        <div className={s.fixed}>
-          <form onSubmit={this.handleSubmit} style={{ display: 'flex' }}>
-            &gt;&gt;&gt;
-            <div id="consoleInput" className={s.consoleInput}>
-              <input type="text" ref={this.inputRef} />
-            </div>
-          </form>
-        </div>
+        <form className={s.inputForm} onSubmit={this.handleSubmit}>
+          &gt;&gt;&gt;&nbsp;
+          <input type="text" ref={this.inputRef} />
+        </form>
       </div>
     );
   }
