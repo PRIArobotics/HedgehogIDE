@@ -34,7 +34,9 @@
 }
 
 .codeContainer {
-    flex: 0 0 auto;
-
+    overflow: auto;
     width: 400px;
+    margin-top: 12px;
+    margin-bottom: 12px;
+    margin-left: 4px;
 }
