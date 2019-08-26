@@ -322,8 +322,11 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
         </div>
         <pre
           ref={this.codeRef}
-          className={s.codeContainer}
-          style={{ display: this.state.codeCollapsed ? 'none' : 'initial' }}
+          className={
+            this.state.codeCollapsed
+              ? `${s.codeContainer} ${s.collapsed}`
+              : s.codeContainer
+          }
         />
       </div>
     );
