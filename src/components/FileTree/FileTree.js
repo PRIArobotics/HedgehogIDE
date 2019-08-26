@@ -2,9 +2,11 @@
 
 import React from 'react';
 import Tree from 'rc-tree';
-import s from 'rc-tree/assets/index.css';
+import sRcTree from 'rc-tree/assets/index.css';
 import withStyles from 'isomorphic-style-loader/lib/withStyles';
 import { Menu, MenuItem } from '@material-ui/core';
+
+import s from './FileTree.scss';
 
 /*
 --- rc-tree BUG ---
@@ -111,7 +113,7 @@ class FileTree extends React.Component<PropTypes, StateTypes> {
 
   render() {
     return (
-      <div ref={this.rootDivRef} style={{ margin: '0 10px' }}>
+      <div ref={this.rootDivRef} className={s.root}>
         <Tree
           className="file-tree"
           showLine
@@ -144,4 +146,4 @@ class FileTree extends React.Component<PropTypes, StateTypes> {
   }
 }
 
-export default withStyles(s)(FileTree);
+export default withStyles(sRcTree, s)(FileTree);
