@@ -78,9 +78,7 @@ const defaultLayout = {
 type PropTypes = {|
   classes: Object,
 |};
-type StateTypes = {|
-  layoutModel: FlexLayout.Model,
-|};
+type StateTypes = {||};
 
 class Ide extends React.Component<PropTypes, StateTypes> {
   factory = (node: any) => {
@@ -129,12 +127,12 @@ class Ide extends React.Component<PropTypes, StateTypes> {
       const { layoutState, fileTreeState, blocklyState, aceState } = JSON.parse(
         json,
       );
-      this.state = { layoutModel: FlexLayout.Model.fromJson(layoutState) };
+      this.layoutState = FlexLayout.Model.fromJson(layoutState);
       this.fileTreeState = fileTreeState;
       this.blocklyState = blocklyState;
       this.aceState = aceState;
     } else {
-      this.state = { layoutModel: FlexLayout.Model.fromJson(defaultLayout) };
+      this.layoutState = FlexLayout.Model.fromJson(defaultLayout);
       this.fileTreeState = {};
       this.blocklyState = {};
       this.aceState = {};
@@ -145,7 +143,7 @@ class Ide extends React.Component<PropTypes, StateTypes> {
     localStorage.setItem(
       'IDELayout',
       JSON.stringify({
-        layoutState: this.state.layoutModel.toJson(),
+        layoutState: this.layoutState.toJson(),
         fileTreeState: this.fileTreeState,
         blocklyState: this.blocklyState,
         aceState: this.aceState,
@@ -156,7 +154,7 @@ class Ide extends React.Component<PropTypes, StateTypes> {
   getNodes() {
     const nodes = {};
 
-    this.state.layoutModel.visitNodes(node => {
+    this.layoutState.visitNodes(node => {
       nodes[node.getId()] = node;
     });
 
@@ -165,14 +163,14 @@ class Ide extends React.Component<PropTypes, StateTypes> {
 
   addNode(nodeJson) {
     const nodes = this.getNodes();
-    const active = this.state.layoutModel.getActiveTabset();
+    const active = this.layoutState.getActiveTabset();
 
     if (
       active !== undefined &&
       active.getId() in nodes &&
       nodes[active.getId()].getType() === 'tabset'
     ) {
-      this.state.layoutModel.doAction(
+      this.layoutState.doAction(
         FlexLayout.Actions.addNode(
           nodeJson,
           active.getId(),
@@ -181,10 +179,10 @@ class Ide extends React.Component<PropTypes, StateTypes> {
         ),
       );
     } else {
-      this.state.layoutModel.doAction(
+      this.layoutState.doAction(
         FlexLayout.Actions.addNode(
           nodeJson,
-          this.state.layoutModel.getRoot().getId(),
+          this.layoutState.getRoot().getId(),
           FlexLayout.DockLocation.RIGHT,
           -1,
         ),
@@ -221,7 +219,7 @@ class Ide extends React.Component<PropTypes, StateTypes> {
     const nodes = this.getNodes();
     if ('sim' in nodes) {
       // TODO assert `nodes.sim.getType() === 'tab'`
-      this.state.layoutModel.doAction(FlexLayout.Actions.selectTab('sim'));
+      this.layoutState.doAction(FlexLayout.Actions.selectTab('sim'));
     } else {
       this.addNode({
         id: 'sim',
@@ -244,7 +242,7 @@ class Ide extends React.Component<PropTypes, StateTypes> {
     const nodes = this.getNodes();
     if ('console' in nodes) {
       // TODO assert `nodes.sim.getType() === 'tab'`
-      this.state.layoutModel.doAction(FlexLayout.Actions.selectTab('console'));
+      this.layoutState.doAction(FlexLayout.Actions.selectTab('console'));
     } else {
       this.addNode({
         id: 'console',
@@ -334,7 +332,7 @@ class Ide extends React.Component<PropTypes, StateTypes> {
         </Paper>
         <Paper className={classes.editorContainer} square>
           <FlexLayout.Layout
-            model={this.state.layoutModel}
+            model={this.layoutState}
             ref={this.flexRef}
             factory={this.factory}
             classNameMapper={className => FlexLayoutTheme[className]}
