@@ -23,16 +23,14 @@ type PropTypes = {|
   callbackGet: () => AceState,
 |};
 type StateTypes = {|
-  width: string,
-  height: string,
+  initial: booleam,
 |};
 
 class Editor extends React.Component<PropTypes, StateTypes> {
   value: AceState;
 
   state = {
-    width: 0,
-    height: 0,
+    initial: true,
   };
 
   constructor(props: PropTypes) {
@@ -41,8 +39,7 @@ class Editor extends React.Component<PropTypes, StateTypes> {
   }
 
   componentDidMount() {
-    this.setState({ width: '100%' });
-    this.setState({ height: '100%' });
+    this.setState({ initial: false });
   }
 
   onChange = (newValue: AceState) => {
@@ -51,12 +48,16 @@ class Editor extends React.Component<PropTypes, StateTypes> {
   };
 
   render() {
+    // not rendering directly after the component was mounted
+    // somehow fixes a strange display bug.
+    if (this.state.initial) return null;
+
     return (
       <AceEditor
         mode="javascript"
         name="editor"
-        width={this.state.width}
-        height={this.state.height}
+        width="100%"
+        height="100%"
         // onLoad={this.onLoad}
         onChange={this.onChange}
         fontSize={16}
