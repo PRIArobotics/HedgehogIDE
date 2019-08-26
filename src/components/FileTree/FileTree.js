@@ -60,17 +60,21 @@ type StateTypes = {|
 |};
 
 class FileTree extends React.Component<PropTypes, StateTypes> {
+  rootDivRef: React.RefObject = React.createRef();
+
   state = {
     cmOpen: false,
     selectedKeys: [],
   };
 
   componentDidMount() {
-    document.body.addEventListener('mousemove', this.handleMouseMove);
+    const rootDiv = this.rootDivRef.current;
+    rootDiv.addEventListener('mousemove', this.handleMouseMove);
   }
 
   componentWillUnmount() {
-    document.body.removeEventListener('mousemove', this.handleMouseMove);
+    const rootDiv = this.rootDivRef.current;
+    rootDiv.removeEventListener('mousemove', this.handleMouseMove);
   }
 
   handleMouseMove = e => {
@@ -107,7 +111,7 @@ class FileTree extends React.Component<PropTypes, StateTypes> {
 
   render() {
     return (
-      <div style={{ margin: '0 10px' }}>
+      <div ref={this.rootDivRef} style={{ margin: '0 10px' }}>
         <Tree
           className="file-tree"
           showLine
