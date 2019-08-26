@@ -6,12 +6,15 @@ import withStyles from 'isomorphic-style-loader/lib/withStyles';
 import Blockly from 'blockly';
 import IconButton from '@material-ui/core/IconButton';
 import PlayArrowIcon from '@material-ui/icons/PlayArrow';
+import KeyboardArrowRightIcon from '@material-ui/icons/KeyboardArrowRight';
+import KeyboardArrowLeftIcon from '@material-ui/icons/KeyboardArrowLeft';
 import StopIcon from '@material-ui/icons/Stop';
 import { styled } from '@material-ui/styles';
 import jsInterpreter from './interpreter';
 import acorn from './acorn';
 // eslint-disable-next-line css-modules/no-unused-class
 import s from './VisualEditor.scss';
+import {Icon} from "@material-ui/core";
 
 global.acorn = acorn;
 
@@ -45,6 +48,7 @@ type StateTypes = {||};
 
 const ColoredIconButton = styled(({ color, ...other }) => <IconButton {...other} />)({
   color: props => props.color,
+  padding: '4px',
 });
 
 class VisualEditor extends React.Component<PropTypes, StateTypes> {
@@ -62,7 +66,8 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
 
   constructor(props) {
     super(props);
-    this.state = { running: false };
+    this.state = { running: false, codeCollapsed: false };
+    this.codeCollapsed = false;
   }
 
   componentDidMount() {
@@ -154,7 +159,12 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
 
   stopCode = () => {
     this.setState({ running: false });
-  }
+  };
+
+  handleClick = () => {
+    this.setState(oldState => ({ codeCollapsed: !oldState.codeCollapsed }));
+    this.refreshSize();
+  };
 
   initApi = (interpreter, scope) => {
     let wrapper = text => alert(text);
@@ -312,11 +322,18 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
             </category>
           </xml>
         </div>
-        <div style={{ overflow: 'auto' }}>
-          <pre ref={this.codeRef} className={s.codeContainer} />
+        <div style={{ marginTop: '2px', marginLeft: '2px', marginRight: '2px' }}>
           {button}
+          <br />
+          <ColoredIconButton onClick={this.handleClick}>
+            {this.state.codeCollapsed ? <KeyboardArrowLeftIcon /> : <KeyboardArrowRightIcon />}
+          </ColoredIconButton>
         </div>
-        <div ref={this.mountPoint} style={{ display: 'block' }} />
+        <pre
+          ref={this.codeRef}
+          className={s.codeContainer}
+          style={{ display: this.state.codeCollapsed ? 'none' : 'initial' }}
+        />
       </div>
     );
   }
