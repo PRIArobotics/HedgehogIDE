@@ -182,15 +182,6 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
   };
 
   render() {
-    const button = this.state.running ? (
-      <ColoredIconButton onClick={this.stopCode} disableRipple color="red">
-        <StopIcon />
-      </ColoredIconButton>
-    ) : (
-      <ColoredIconButton onClick={this.runCode} disableRipple color="limegreen">
-        <PlayArrowIcon />
-      </ColoredIconButton>
-    );
     return (
       <div className={s.tabRoot}>
         <div ref={this.containerRef} className={s.blocklyContainer}>
@@ -314,10 +305,30 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
           </xml>
         </div>
         <div className={s.sidebar}>
-          {button}
+          {this.state.running ? (
+            <ColoredIconButton
+              onClick={this.stopCode}
+              disableRipple
+              color="red"
+            >
+              <StopIcon />
+            </ColoredIconButton>
+          ) : (
+            <ColoredIconButton
+              onClick={this.runCode}
+              disableRipple
+              color="limegreen"
+            >
+              <PlayArrowIcon />
+            </ColoredIconButton>
+          )}
           <br />
           <ColoredIconButton onClick={this.handleClick}>
-            {this.state.codeCollapsed ? <KeyboardArrowLeftIcon /> : <KeyboardArrowRightIcon />}
+            {this.state.codeCollapsed ? (
+              <KeyboardArrowLeftIcon />
+            ) : (
+              <KeyboardArrowRightIcon />
+            )}
           </ColoredIconButton>
         </div>
         <pre
