@@ -4,7 +4,7 @@ import React from 'react';
 
 import withStyles from 'isomorphic-style-loader/lib/withStyles';
 // eslint-disable-next-line css-modules/no-unused-class
-import s from './console.scss';
+import s from './Console.scss';
 
 type ConsoleItem = {|
   text: string,
