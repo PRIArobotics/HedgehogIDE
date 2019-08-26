@@ -313,7 +313,7 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
             </category>
           </xml>
         </div>
-        <div style={{ marginTop: '2px', marginLeft: '2px', marginRight: '2px' }}>
+        <div className={s.sidebar}>
           {button}
           <br />
           <ColoredIconButton onClick={this.handleClick}>

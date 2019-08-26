@@ -21,6 +21,7 @@
 
 .blocklyContainer {
     flex: 1 0 auto;
+    min-width: 400px;
 
     position: relative;
 
@@ -33,9 +34,17 @@
     }
 }
 
+.sidebar {
+    flex: 0 0 auto;
+
+    margin: 2px;
+}
+
 .codeContainer {
-    overflow: auto;
+    flex: 0 1 auto;
     width: 400px;
+
+    overflow: auto;
     margin-top: 12px;
     margin-bottom: 12px;
     margin-left: 4px;
