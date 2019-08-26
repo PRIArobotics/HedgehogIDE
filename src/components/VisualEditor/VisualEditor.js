@@ -182,24 +182,15 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
   };
 
   render() {
-    let button = null;
-    if (this.state.running) {
-      button = (
-        <React.Fragment>
-          <ColoredIconButton onClick={this.stopCode} disableRipple color="red">
-            <StopIcon />
-          </ColoredIconButton>
-        </React.Fragment>
-      );
-    } else {
-      button = (
-        <React.Fragment>
-          <ColoredIconButton onClick={this.runCode} disableRipple color="limegreen">
-            <PlayArrowIcon />
-          </ColoredIconButton>
-        </React.Fragment>
-      );
-    }
+    const button = this.state.running ? (
+      <ColoredIconButton onClick={this.stopCode} disableRipple color="red">
+        <StopIcon />
+      </ColoredIconButton>
+    ) : (
+      <ColoredIconButton onClick={this.runCode} disableRipple color="limegreen">
+        <PlayArrowIcon />
+      </ColoredIconButton>
+    );
     return (
       <div className={s.tabRoot}>
         <div ref={this.containerRef} className={s.blocklyContainer}>
