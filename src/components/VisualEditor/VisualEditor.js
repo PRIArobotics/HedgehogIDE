@@ -4,9 +4,13 @@ import React from 'react';
 import withStyles from 'isomorphic-style-loader/lib/withStyles';
 
 import Blockly from 'blockly';
-import Frame from 'react-frame-component';
+import IconButton from '@material-ui/core/IconButton';
+import PlayArrowIcon from '@material-ui/icons/PlayArrow';
+import StopIcon from '@material-ui/icons/Stop';
+import { styled } from '@material-ui/styles';
+import jsInterpreter from './interpreter';
 import acorn from './acorn';
-
+// eslint-disable-next-line css-modules/no-unused-class
 import s from './VisualEditor.scss';
 
 global.acorn = acorn;
@@ -39,6 +43,10 @@ type PropTypes = {|
 |};
 type StateTypes = {||};
 
+const ColoredIconButton = styled(({ color, ...other }) => <IconButton {...other} />)({
+  color: props => props.color,
+});
+
 class VisualEditor extends React.Component<PropTypes, StateTypes> {
   containerRef: React.RefObject = React.createRef();
 
@@ -51,6 +59,11 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
   mountPoint: React.RefObject = React.createRef();
 
   workspace: Blockly.Workspace;
+
+  constructor(props) {
+    super(props);
+    this.state = { running: false };
+  }
 
   componentDidMount() {
     this.workspace = Blockly.inject(this.blocklyRef.current, {
@@ -127,11 +140,12 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
       alert(error);
     }
     */
-    const frame = document.createElement('iframe');
-    frame.setAttribute('src', 'www.google.com');
-    frame.setAttribute('sandbox', 'allow-scripts');
-    this.mountPoint.current.appendChild(frame);
+    this.setState({ running: true });
   };
+
+  stopCode = () => {
+    this.setState({ running: false });
+  }
 
   initApi = (interpreter, scope) => {
     let wrapper = text => alert(text);
@@ -149,6 +163,24 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
   };
 
   render() {
+    let button = null;
+    if (this.state.running) {
+      button = (
+        <React.Fragment>
+          <ColoredIconButton onClick={this.stopCode} disableRipple color="red">
+            <StopIcon />
+          </ColoredIconButton>
+        </React.Fragment>
+      );
+    } else {
+      button = (
+        <React.Fragment>
+          <ColoredIconButton onClick={this.runCode} disableRipple color="limegreen">
+            <PlayArrowIcon />
+          </ColoredIconButton>
+        </React.Fragment>
+      );
+    }
     return (
       <div className={s.tabRoot}>
         <div ref={this.containerRef} className={s.blocklyContainer}>
@@ -156,6 +188,12 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
           <xml ref={this.toolboxRef}>
             <category name="Logic" colour="%{BKY_LOGIC_HUE}">
               <block type="controls_if" />
+              <block type="controls_if">
+                <mutation else="1" />
+              </block>
+              <block type="controls_if">
+                <mutation elseif="1" else="1" />
+              </block>
               <block type="logic_compare" />
               <block type="logic_operation" />
               <block type="logic_negate" />
@@ -267,9 +305,9 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
         </div>
         <div style={{ overflow: 'auto' }}>
           <pre ref={this.codeRef} className={s.codeContainer} />
-          <button onClick={this.runCode}>Run</button>
-          <Frame><h1>This is a frame</h1></Frame>
+          {button}
         </div>
+        <div ref={this.mountPoint} style={{ display: 'block' }} />
       </div>
     );
   }
