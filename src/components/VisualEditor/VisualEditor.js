@@ -129,7 +129,7 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
         'TEXT',
         Blockly.JavaScript.ORDER_ATOMIC,
       );
-      return `context.sendMessage('consoleOut', ${valueText});\n`;
+      return `print(${valueText});\n`;
     };
   }
 
@@ -282,14 +282,11 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
               code={this.code}
               handlers={{
                 print: (source, text) => {
-                  console.log(text);
+                  this.props.callbackCode(text);
                 },
                 exit: (source, error) => {
                   if (error) console.error(error);
                   this.setState({ running: false });
-                },
-                consoleOut: (source, text) => {
-                  this.props.callbackCode(text);
                 },
               }}
             />
