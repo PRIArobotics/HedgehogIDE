@@ -154,16 +154,6 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
   };
 
   render() {
-    const code = `
-    return (async () => {
-      const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
-
-      context.sendMessage('print', 'this is the child');
-      await sleep(1000);
-      context.sendMessage('print', 'this is the child!!');
-    })();
-    `;
-
     return (
       <div className={s.tabRoot}>
         <div ref={this.containerRef} className={s.blocklyContainer}>
