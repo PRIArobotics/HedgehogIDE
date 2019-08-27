@@ -1,7 +1,10 @@
+// TODO hardcoded domain name
+const ORIGIN = 'http://localhost:3000';
+
 const handlers = {
   execute(source, code) {
     const sendMessage = (command, payload) => {
-      source.postMessage({ command, payload }, '*');
+      source.postMessage({ command, payload }, ORIGIN);
     };
 
     try {
@@ -14,8 +17,7 @@ const handlers = {
 };
 
 const receiveMessage = ({ data, origin, source }) => {
-  // TODO hardcoded domain name
-  if (origin !== 'http://localhost:3000') return;
+  if (origin !== ORIGIN) return;
 
   const { command, payload } = data;
 
