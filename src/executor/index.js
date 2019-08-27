@@ -3,16 +3,21 @@ const ORIGIN = 'http://localhost:3000';
 
 const handlers = {
   execute(source, code) {
-    const sendMessage = (command, payload) => {
-      source.postMessage({ command, payload }, ORIGIN);
+    const context = {
+      sendMessage(command, payload) {
+        source.postMessage({ command, payload }, ORIGIN);
+      },
     };
 
-    try {
-      // eslint-disable-next-line no-eval
-      eval(code);
-    } finally {
-      sendMessage('exit');
-    }
+    (async () => {
+      // eslint-disable-next-line no-new-func
+      const fn = new Function('context', code);
+      try {
+        await fn(context);
+      } finally {
+        context.sendMessage('exit');
+      }
+    })();
   },
 };
 
