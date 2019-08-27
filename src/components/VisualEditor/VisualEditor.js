@@ -39,7 +39,8 @@ type PropTypes = {|
   layoutNode: any,
   callbackSave: (state: BlocklyState) => void,
   callbackGet: () => BlocklyState,
-  callbackCode: (code: string) => void,
+  callbackRun: (code: string) => void,
+  callbackStop: () => void,
 |};
 type StateTypes = {||};
 
@@ -141,11 +142,11 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
   }
 
   handleRunCode = () => {
-    this.setState({ running: true });
+    this.props.callbackRun(this.code);
   };
 
   handleStopCode = () => {
-    this.setState({ running: false });
+    this.props.callbackStop();
   };
 
   handleToggleCodeCollapsed = () => {
@@ -277,20 +278,6 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
           </xml>
         </div>
         <div className={s.sidebar}>
-          {this.state.running ? (
-            <Executor
-              code={this.code}
-              handlers={{
-                print: (source, text) => {
-                  this.props.callbackCode(text);
-                },
-                exit: (source, error) => {
-                  if (error) console.error(error);
-                  this.setState({ running: false });
-                },
-              }}
-            />
-          ) : null}
           {this.state.running ? (
             <ColoredIconButton
               onClick={this.handleStopCode}
