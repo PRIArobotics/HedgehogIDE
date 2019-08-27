@@ -117,18 +117,18 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
   }
 
   addBlocklyBlocks() {
-    Blockly.Blocks.text_alert = {
+    Blockly.Blocks.text_print = {
       init() {
         this.jsonInit(printBlock);
       },
     };
-    Blockly.JavaScript.text_alert = function(block) {
+    Blockly.JavaScript.text_print = function(block) {
       const valueText = Blockly.JavaScript.valueToCode(
         block,
         'TEXT',
         Blockly.JavaScript.ORDER_ATOMIC,
       );
-      return `print(${valueText});\n`;
+      return `context.sendMessage('consoleOut', ${valueText});\n`;
     };
   }
 
@@ -140,17 +140,6 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
   }
 
   handleRunCode = () => {
-    /*
-    const codeInterpreter = new jsInterpreter.Interpreter(
-      this.code,
-      this.initApi,
-    );
-    try {
-      codeInterpreter.run();
-    } catch (error) {
-      alert(error);
-    }
-    */
     this.setState({ running: true });
   };
 
@@ -161,21 +150,6 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
   handleToggleCodeCollapsed = () => {
     this.setState(oldState => ({ codeCollapsed: !oldState.codeCollapsed }));
     this.refreshSize();
-  };
-
-  initApi = (interpreter, scope) => {
-    let wrapper = text => alert(text);
-    interpreter.setProperty(
-      scope,
-      'alert',
-      interpreter.createNativeFunction(wrapper),
-    );
-    wrapper = text => this.props.callbackCode(text);
-    interpreter.setProperty(
-      scope,
-      'print',
-      interpreter.createNativeFunction(wrapper),
-    );
   };
 
   render() {
@@ -306,7 +280,7 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
               colour="%{BKY_PROCEDURES_HUE}"
             />
             <category name="Text" colour="70">
-              <block type="text_alert" />
+              <block type="text_print" />
               <block type="text" />
             </category>
           </xml>
@@ -314,13 +288,16 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
         <div className={s.sidebar}>
           {this.state.running ? (
             <Executor
-              code={code}
+              code={this.code}
               handlers={{
                 print: (source, text) => {
                   console.log(text);
                 },
                 exit: () => {
                   this.setState({ running: false });
+                },
+                consoleOut: (source, text) => {
+                  this.props.callbackCode(text);
                 },
               }}
             />
