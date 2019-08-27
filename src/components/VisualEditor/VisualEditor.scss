@@ -33,17 +33,18 @@
 
 .sidebar {
   flex: 0 0 auto;
-  margin: 2px;
+  margin: 3px 2px;
   background-color: #e8e8e8;
-  border-radius: 5px;
-  padding: 2px;
+  border-radius: 9px;
+  padding: 5px 2px;
 }
 
 .codeContainer {
   flex: 0 1 auto;
   width: 400px;
   overflow: auto;
-  margin: 12px 4px 0;
+  padding: 6px 0 0 4px;
+  margin: 0;
 
   &.collapsed {
     display: none;
