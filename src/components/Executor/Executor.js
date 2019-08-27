@@ -36,6 +36,7 @@ class Executor extends React.Component<PropTypes, StateTypes> {
   receiveMessage = ({ data, origin, source }) => {
     if (origin !== 'null' || source !== this.frameRef.current.contentWindow)
       return;
+
     const { command, payload } = data;
 
     const handler = this.props.handlers[command];

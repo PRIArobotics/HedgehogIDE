@@ -284,7 +284,8 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
                 print: (source, text) => {
                   console.log(text);
                 },
-                exit: () => {
+                exit: (source, error) => {
+                  if (error) console.error(error);
                   this.setState({ running: false });
                 },
                 consoleOut: (source, text) => {
