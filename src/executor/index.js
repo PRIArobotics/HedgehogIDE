@@ -1,21 +1,31 @@
 // TODO hardcoded domain name
 const ORIGIN = 'http://localhost:3000';
 
+// eslint-disable-next-line no-underscore-dangle
+let _source = null;
+
+const sendMessage = (command, payload) => {
+  _source.postMessage({ command, payload }, ORIGIN);
+};
+
+// exported APIs for the client function
+global.print = text => sendMessage('print', text);
+global.sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
+
+// message listener & handlers
 const handlers = {
   execute(source, code) {
-    const context = {
-      sendMessage(command, payload) {
-        source.postMessage({ command, payload }, ORIGIN);
-      },
-    };
+    // TODO assert _source === null
+    _source = source;
 
     (async () => {
       // eslint-disable-next-line no-new-func
-      const fn = new Function('context', code);
+      const fn = new Function(code);
       try {
-        await fn(context);
-      } finally {
-        context.sendMessage('exit');
+        await fn();
+        sendMessage('exit');
+      } catch (error) {
+        sendMessage('exit', error);
       }
     })();
   },
