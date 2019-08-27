@@ -32,6 +32,7 @@ import VisualEditor from '../VisualEditor';
 // eslint-disable-next-line css-modules/no-unused-class
 import FlexLayoutTheme from './flex_layout_ide.css';
 import FileTree from '../FileTree/FileTree';
+import Executor from "../Executor";
 
 const iconStyles = {
   smallIcon: {
@@ -85,7 +86,9 @@ type PersistentState = {|
 type PropTypes = {|
   classes: Object,
 |};
-type StateTypes = {||};
+type StateTypes = {|
+  runningCode: string | null,
+|};
 
 class Ide extends React.Component<PropTypes, StateTypes> {
   factory = (node: any) => {
@@ -111,7 +114,8 @@ class Ide extends React.Component<PropTypes, StateTypes> {
             layoutNode={node}
             callbackGet={() => this.blocklyGet(id)}
             callbackSave={workspace => this.blocklySave(workspace, id)}
-            callbackCode={code => this.runCode(code)}
+            callbackRun={code => this.handleRunCode(code)}
+            callbackStop={() => this.handleStopCode()}
           />
         );
       }
@@ -125,6 +129,10 @@ class Ide extends React.Component<PropTypes, StateTypes> {
   consoleRef: React.RefObject = React.createRef();
 
   blocklyTabIds = new Set();
+
+  state = {
+    runningCode: null,
+  };
 
   persistentState: PersistentState = {
     layoutState: FlexLayout.Model.fromJson(defaultLayout),
@@ -282,16 +290,21 @@ class Ide extends React.Component<PropTypes, StateTypes> {
     });
   };
 
-  runCode = (code: string) => {
+  tryPrint = (text: string, stream: string) => {
     this.addConsole();
-    const tryPrint = text => {
-      if (this.consoleRef.current) {
-        this.consoleRef.current.consoleOut(text, 'stdout');
-      } else {
-        setTimeout(() => tryPrint(text), 0);
-      }
-    };
-    tryPrint(code);
+    if (this.consoleRef.current) {
+      this.consoleRef.current.consoleOut(text, 'stdout');
+    } else {
+      setTimeout(() => this.tryPrint(text, stream), 0);
+    }
+  };
+
+  handleRunCode = (code: string) => {
+    this.setState({ runningCode: code });
+  };
+
+  handleStopCode = () => {
+    this.setState({ runningCode: null });
   };
 
   render() {
@@ -360,6 +373,20 @@ class Ide extends React.Component<PropTypes, StateTypes> {
             onModelChange={this.handleLayoutModelChange}
           />
         </Paper>
+        {this.state.runningCode ? (
+          <Executor
+            code={this.state.runningCode}
+            handlers={{
+              print: (source, text) => {
+                this.tryPrint(text, 'stdout');
+              },
+              exit: (source, error) => {
+                if (error) this.tryPrint(error, 'stderr');
+                this.setState({ runningCode: null });
+              },
+            }}
+          />
+        ) : null}
       </div>
     );
   }
