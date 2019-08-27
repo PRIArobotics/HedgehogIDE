@@ -10,28 +10,25 @@
 @import '../variables.scss';
 
 .tabRoot {
-    width: 100%;
-    height: 100%;
-
-    display: flex;
-    flex-flow: row nowrap;
-
-    overflow: hidden;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-flow: row nowrap;
+  overflow: hidden;
 }
 
 .blocklyContainer {
-    flex: 1 0 auto;
-    min-width: 400px;
+  flex: 1 0 auto;
+  position: relative;
+  min-width: 400px;
 
-    position: relative;
+  > xml {
+    display: none;
+  }
 
-    > xml {
-        display: none;
-    }
-
-    .blockly {
-        position: absolute;
-    }
+  .blockly {
+    position: absolute;
+  }
 }
 
 .sidebar {
