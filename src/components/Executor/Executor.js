@@ -17,7 +17,7 @@ type PropTypes = {|
 |};
 type StateTypes = {||};
 
-class Editor extends React.Component<PropTypes, StateTypes> {
+class Executor extends React.Component<PropTypes, StateTypes> {
   frameRef: React.RefObject = React.createRef();
 
   state = {};
@@ -62,4 +62,4 @@ class Editor extends React.Component<PropTypes, StateTypes> {
   }
 }
 
-export default Editor;
+export default Executor;
