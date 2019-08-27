@@ -43,7 +43,9 @@ type PropTypes = {|
 |};
 type StateTypes = {||};
 
-const ColoredIconButton = styled(({ color, ...other }) => <IconButton {...other} />)({
+const ColoredIconButton = styled(({ color, ...other }) => (
+  <IconButton {...other} />
+))({
   color: props => props.color,
   padding: '4px',
 });
@@ -64,7 +66,6 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
   constructor(props) {
     super(props);
     this.state = { running: false, codeCollapsed: false };
-    this.codeCollapsed = false;
   }
 
   componentDidMount() {
