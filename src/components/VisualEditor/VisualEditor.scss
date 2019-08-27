@@ -32,21 +32,20 @@
 }
 
 .sidebar {
-    flex: 0 0 auto;
-
-    margin: 2px;
+  flex: 0 0 auto;
+  margin: 2px;
+  background-color: #e8e8e8;
+  border-radius: 5px;
+  padding: 2px;
 }
 
 .codeContainer {
-    flex: 0 1 auto;
-    width: 400px;
+  flex: 0 1 auto;
+  width: 400px;
+  overflow: auto;
+  margin: 12px 4px 0;
 
-    overflow: auto;
-    margin-top: 12px;
-    margin-bottom: 12px;
-    margin-left: 4px;
-
-    &.collapsed {
-        display: none;
-    }
+  &.collapsed {
+    display: none;
+  }
 }
