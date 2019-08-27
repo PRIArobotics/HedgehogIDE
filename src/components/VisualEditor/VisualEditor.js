@@ -10,15 +10,10 @@ import KeyboardArrowRightIcon from '@material-ui/icons/KeyboardArrowRight';
 import KeyboardArrowLeftIcon from '@material-ui/icons/KeyboardArrowLeft';
 import StopIcon from '@material-ui/icons/Stop';
 import { styled } from '@material-ui/styles';
-import jsInterpreter from './interpreter';
-import acorn from './acorn';
 // eslint-disable-next-line css-modules/no-unused-class
 import s from './VisualEditor.scss';
-import {Icon} from "@material-ui/core";
 
 import Executor from '../Executor';
-
-global.acorn = acorn;
 
 const printBlock = {
   type: 'text_alert',
