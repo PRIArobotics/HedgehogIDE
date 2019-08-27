@@ -180,7 +180,13 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
 
   render() {
     const code = `
-    sendMessage('print', 'this is the child!!');
+    return (async () => {
+      const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
+
+      context.sendMessage('print', 'this is the child');
+      await sleep(500);
+      context.sendMessage('print', 'this is the child!!');
+    })();
     `;
 
     return (
