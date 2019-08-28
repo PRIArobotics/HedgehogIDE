@@ -117,11 +117,8 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
     this.codeRef.current.addEventListener('transitionend', () => {
       if (this.resizeAnim) clearInterval(this.resizeAnim);
       this.refreshSize();
-      if (this.state.codeCollapsed) {
-        this.codeRef.current.style.overflow = 'hidden';
-      } else {
+      if (!this.state.codeCollapsed)
         this.codeRef.current.style.overflow = 'auto';
-      }
     });
     this.refreshSize();
   }

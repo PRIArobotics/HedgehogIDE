@@ -49,6 +49,7 @@
 
   &.collapsed {
     overflow: hidden;
+    padding-left: 0;
     width: 0;
   }
 }
