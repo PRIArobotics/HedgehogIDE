@@ -66,7 +66,10 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
 
   constructor(props) {
     super(props);
-    this.state = { running: false, codeCollapsed: false };
+    this.state = {
+      running: false,
+      codeCollapsed: true,
+    };
   }
 
   componentDidMount() {
@@ -151,7 +154,8 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
 
   handleToggleCodeCollapsed = () => {
     this.setState(oldState => ({ codeCollapsed: !oldState.codeCollapsed }));
-    this.refreshSize();
+    const resizeAnim = setInterval(() => this.refreshSize(), 5);
+    setTimeout(() => clearInterval(resizeAnim), 325);
   };
 
   render() {
@@ -296,7 +300,7 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
             </ColoredIconButton>
           )}
           <br />
-          <ColoredIconButton onClick={this.handleToggleCodeCollapsed}>
+          <ColoredIconButton onClick={this.handleToggleCodeCollapsed} disableRipple>
             {this.state.codeCollapsed ? (
               <KeyboardArrowLeftIcon />
             ) : (
