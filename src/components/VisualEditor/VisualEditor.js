@@ -13,8 +13,6 @@ import { styled } from '@material-ui/styles';
 // eslint-disable-next-line css-modules/no-unused-class
 import s from './VisualEditor.scss';
 
-import Executor from '../Executor';
-
 const printBlock = {
   type: 'text_alert',
   message0: 'output %1',
@@ -190,7 +188,7 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
       }
     })();
     `;
-    this.props.callbackRun(`return (async () => {${this.code}})();`);
+    this.props.callbackRun(this.code);
   };
 
   handleStopCode = () => {

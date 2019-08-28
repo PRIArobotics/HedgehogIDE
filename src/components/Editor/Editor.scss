@@ -8,3 +8,21 @@
  */
 
 @import '../variables.scss';
+
+.sidebar {
+  margin: 3px 2px;
+  background-color: #e8e8e8;
+  height: 100%;
+  border-radius: 9px;
+  padding: 5px 2px;
+  flex: 0 0 auto;
+}
+
+.container {
+  flex: 1 0 auto;
+}
+
+.root {
+  display: flex;
+  flex-flow: row nowrap;
+}

@@ -14,17 +14,31 @@ import withStyles from 'isomorphic-style-loader/lib/withStyles';
 
 import AceEditor from 'react-ace';
 
+import StopIcon from '@material-ui/icons/Stop';
+import { styled } from '@material-ui/styles';
+import IconButton from '@material-ui/core/IconButton';
+import PlayArrowIcon from '@material-ui/icons/PlayArrow';
 import s from './Editor.scss';
+import Blockly from "blockly";
 
 type AceState = any;
 
 type PropTypes = {|
   callbackSave: (state: AceState) => void,
   callbackGet: () => AceState,
+  callbackRun: (code: string) => void,
+  callbackStop: () => void,
 |};
 type StateTypes = {|
   initial: booleam,
 |};
+
+const ColoredIconButton = styled(({ color, ...other }) => (
+  <IconButton {...other} />
+))({
+  color: props => props.color,
+  padding: '4px',
+});
 
 class Editor extends React.Component<PropTypes, StateTypes> {
   value: AceState;
@@ -36,15 +50,39 @@ class Editor extends React.Component<PropTypes, StateTypes> {
   constructor(props: PropTypes) {
     super(props);
     this.value = this.props.callbackGet();
+    this.containerRef = React.createRef();
+    this.editorRef = React.createRef();
   }
 
   componentDidMount() {
     this.setState({ initial: false });
+    this.props.layoutNode.setEventListener('resize', this.handleResize);
   }
+
+  handleResize = () => {
+    setTimeout(() => {
+      /*
+      const container = this.containerRef.current;
+      const editor = this.editorRef.current;
+      editor.style.width = `${container.offsetWidth}px`;
+      editor.style.height = `${container.offsetHeight}px`;
+       */
+      const aceEditor = this.editorRef.current;
+      aceEditor.editor.resize();
+    }, 0);
+  };
 
   onChange = (newValue: AceState) => {
     this.value = newValue;
     this.props.callbackSave(this.value);
+  };
+
+  handleRunCode = () => {
+    this.props.callbackRun(this.value);
+  };
+
+  handleStopCode = () => {
+    this.props.callbackStop();
   };
 
   render() {
@@ -53,32 +91,57 @@ class Editor extends React.Component<PropTypes, StateTypes> {
     if (this.state.initial) return null;
 
     return (
-      <AceEditor
-        mode="javascript"
-        name="editor"
-        width="100%"
-        height="100%"
-        // onLoad={this.onLoad}
-        onChange={this.onChange}
-        fontSize={16}
-        // onSelectionChange={this.onSelectionChange}
-        // onCursorChange={this.onCursorChange}
-        // onValidate={this.onValidate}
-        value={this.value}
-        showGutter
-        highlightActiveLine
-        autoScrollEditorIntoView
-        style={{
-          position: 'absolute',
-        }}
-        setOptions={{
-          enableBasicAutocompletion: true,
-          // enableLiveAutocompletion: true,
-          // enableSnippets: this.state.enableSnippets,
-          showLineNumbers: true,
-          tabSize: 2,
-        }}
-      />
+      <div className={s.root}>
+        <div className={s.sidebar}>
+          {this.props.running ? (
+            <ColoredIconButton
+              onClick={this.handleStopCode}
+              disableRipple
+              color="red"
+            >
+              <StopIcon />
+            </ColoredIconButton>
+          ) : (
+            <ColoredIconButton
+              onClick={this.handleRunCode}
+              disableRipple
+              color="limegreen"
+            >
+              <PlayArrowIcon />
+            </ColoredIconButton>
+          )}
+          <br />
+        </div>
+        <div className={s.container} ref={this.containerRef}>
+          <AceEditor
+            mode="javascript"
+            name="editor"
+            width="100%"
+            height="100%"
+            ref={this.editorRef}
+            // onLoad={this.onLoad}
+            onChange={this.onChange}
+            fontSize={16}
+            // onSelectionChange={this.onSelectionChange}
+            // onCursorChange={this.onCursorChange}
+            // onValidate={this.onValidate}
+            value={this.value}
+            showGutter
+            highlightActiveLine
+            autoScrollEditorIntoView
+            style={{
+              position: 'absolute',
+            }}
+            setOptions={{
+              enableBasicAutocompletion: true,
+              // enableLiveAutocompletion: true,
+              // enableSnippets: this.state.enableSnippets,
+              showLineNumbers: true,
+              tabSize: 2,
+            }}
+          />
+        </div>
+      </div>
     );
   }
 }
