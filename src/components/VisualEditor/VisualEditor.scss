@@ -36,7 +36,6 @@
   background-color: #e8e8e8;
   border-radius: 9px;
   padding: 5px 2px;
-  z-index: 9999;
 }
 
 .codeContainer {
@@ -47,8 +46,6 @@
   margin: 0;
   transition-property: width;
   transition-duration: 0.3s;
-  background-color: white;
-  z-index: 9999;
 
   &.collapsed {
     width: 0;
