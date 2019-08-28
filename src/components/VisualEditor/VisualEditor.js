@@ -117,7 +117,11 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
     this.codeRef.current.addEventListener('transitionend', () => {
       if (this.resizeAnim) clearInterval(this.resizeAnim);
       this.refreshSize();
-      this.codeRef.current.style.overflow = 'auto';
+      if (this.state.codeCollapsed) {
+        this.codeRef.current.style.overflow = 'hidden';
+      } else {
+        this.codeRef.current.style.overflow = 'auto';
+      }
     });
     this.refreshSize();
   }
@@ -169,7 +173,7 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
         'TIME',
         Blockly.JavaScript.ORDER_ATOMIC,
       );
-      return `sleep(${valueText});\n`;
+      return `await sleep(${valueText});\n`;
     };
   }
 
@@ -189,7 +193,7 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
       }
     })();
     `;
-    this.props.callbackRun(this.code);
+    this.props.callbackRun(`return (async () => {${this.code}})();`);
   };
 
   handleStopCode = () => {

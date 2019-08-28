@@ -48,6 +48,7 @@
   transition-duration: 0.3s;
 
   &.collapsed {
+    overflow: hidden;
     width: 0;
   }
 }
