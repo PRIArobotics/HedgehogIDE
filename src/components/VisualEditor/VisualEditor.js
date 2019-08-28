@@ -59,6 +59,7 @@ type PropTypes = {|
   callbackGet: () => BlocklyState,
   callbackRun: (code: string) => void,
   callbackStop: () => void,
+  running: boolean,
 |};
 type StateTypes = {||};
 
