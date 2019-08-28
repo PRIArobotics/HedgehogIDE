@@ -33,6 +33,24 @@ const printBlock = {
   helpUrl: '',
 };
 
+const sleepBlock = {
+  type: 'sleep_block',
+  message0: 'sleep %1',
+  args0: [
+    {
+      type: 'input_value',
+      name: 'TIME',
+      check: 'Number',
+    },
+  ],
+  inputsInline: true,
+  previousStatement: null,
+  nextStatement: null,
+  colour: 230,
+  tooltip: '',
+  helpUrl: '',
+};
+
 type BlocklyState = any;
 
 type PropTypes = {|
@@ -67,7 +85,6 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
   constructor(props) {
     super(props);
     this.state = {
-      running: false,
       codeCollapsed: true,
     };
   }
@@ -127,6 +144,11 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
         this.jsonInit(printBlock);
       },
     };
+    Blockly.Blocks.sleep_block = {
+      init() {
+        this.jsonInit(sleepBlock);
+      },
+    };
     Blockly.JavaScript.text_print = function(block) {
       const valueText = Blockly.JavaScript.valueToCode(
         block,
@@ -134,6 +156,14 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
         Blockly.JavaScript.ORDER_ATOMIC,
       );
       return `print(${valueText});\n`;
+    };
+    Blockly.JavaScript.sleep_block = function(block) {
+      const valueText = Blockly.JavaScript.valueToCode(
+        block,
+        'TIME',
+        Blockly.JavaScript.ORDER_ATOMIC,
+      );
+      return `sleep(${valueText});\n`;
     };
   }
 
@@ -145,6 +175,14 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
   }
 
   handleRunCode = () => {
+    const code = `
+    return (async () => {
+      for (i = 1; i <= 100; i++) {
+        print(i);
+        await sleep(0);
+      }
+    })();
+    `;
     this.props.callbackRun(this.code);
   };
 
@@ -277,12 +315,13 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
             />
             <category name="Text" colour="70">
               <block type="text_print" />
+              <block type="sleep_block" />
               <block type="text" />
             </category>
           </xml>
         </div>
         <div className={s.sidebar}>
-          {this.state.running ? (
+          {this.props.running ? (
             <ColoredIconButton
               onClick={this.handleStopCode}
               disableRipple
@@ -300,7 +339,10 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
             </ColoredIconButton>
           )}
           <br />
-          <ColoredIconButton onClick={this.handleToggleCodeCollapsed} disableRipple>
+          <ColoredIconButton
+            onClick={this.handleToggleCodeCollapsed}
+            disableRipple
+          >
             {this.state.codeCollapsed ? (
               <KeyboardArrowLeftIcon />
             ) : (

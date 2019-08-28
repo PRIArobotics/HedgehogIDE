@@ -116,6 +116,7 @@ class Ide extends React.Component<PropTypes, StateTypes> {
             callbackSave={workspace => this.blocklySave(workspace, id)}
             callbackRun={code => this.handleRunCode(code)}
             callbackStop={() => this.handleStopCode()}
+            running={this.state.runningCode}
           />
         );
       }
@@ -379,6 +380,7 @@ class Ide extends React.Component<PropTypes, StateTypes> {
             handlers={{
               print: (source, text) => {
                 this.tryPrint(text, 'stdout');
+                //console.log(text);
               },
               exit: (source, error) => {
                 if (error) this.tryPrint(error, 'stderr');
