@@ -97,8 +97,12 @@ class Ide extends React.Component<PropTypes, StateTypes> {
       case 'editor': {
         return (
           <Editor
+            layoutNode={node}
             callbackGet={() => this.editorGet(id)}
             callbackSave={workspace => this.editorSave(workspace, id)}
+            callbackRun={code => this.handleRunCode(code)}
+            callbackStop={() => this.handleStopCode()}
+            running={!!this.state.runningCode}
           />
         );
       }
@@ -301,7 +305,7 @@ class Ide extends React.Component<PropTypes, StateTypes> {
   };
 
   handleRunCode = (code: string) => {
-    this.setState({ runningCode: code });
+    this.setState({ runningCode: `return (async () => {${code}})();` });
   };
 
   handleStopCode = () => {
