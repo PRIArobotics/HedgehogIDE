@@ -116,7 +116,6 @@ class Editor extends React.Component<PropTypes, StateTypes> {
           <AceEditor
             mode="javascript"
             name="editor"
-            width="100%"
             height="100%"
             ref={this.editorRef}
             // onLoad={this.onLoad}
@@ -131,6 +130,7 @@ class Editor extends React.Component<PropTypes, StateTypes> {
             autoScrollEditorIntoView
             style={{
               position: 'absolute',
+              width: 'calc(100% - 40px)',
             }}
             setOptions={{
               enableBasicAutocompletion: true,
