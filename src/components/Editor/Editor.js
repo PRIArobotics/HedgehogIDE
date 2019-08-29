@@ -30,9 +30,12 @@ type PropTypes = {|
   callbackRun: (code: string) => void,
   callbackStop: () => void,
   running: boolean,
+  layoutNode: any,
 |};
 type StateTypes = {|
   initial: boolean,
+  editorHeight: string,
+  editorWidth: string,
 |};
 
 const ColoredIconButton = styled(({ color, ...other }) => (
@@ -47,6 +50,8 @@ class Editor extends React.Component<PropTypes, StateTypes> {
 
   state = {
     initial: true,
+    editorWidth: 0,
+    editorHeight: 0,
   };
 
   constructor(props: PropTypes) {
@@ -58,11 +63,21 @@ class Editor extends React.Component<PropTypes, StateTypes> {
 
   componentDidMount() {
     this.setState({ initial: false });
+    this.props.layoutNode.setEventListener('resize', this.handleResize);
+    this.handleResize();
   }
 
   onChange = (newValue: AceState) => {
     this.value = newValue;
     this.props.callbackSave(this.value);
+  };
+
+  handleResize = () => {
+    setTimeout(() => {
+      this.setState({ editorHeight: this.containerRef.current.offsetHeight });
+      this.setState({ editorWidth: this.containerRef.current.offsetWidth });
+      this.editorRef.current.editor.resize();
+    }, 0);
   };
 
   handleRunCode = () => {
@@ -104,7 +119,8 @@ class Editor extends React.Component<PropTypes, StateTypes> {
           <AceEditor
             mode="javascript"
             name="editor"
-            height="100%"
+            height={this.state.editorHeight}
+            width={this.state.editorWidth}
             ref={this.editorRef}
             // onLoad={this.onLoad}
             onChange={this.onChange}
@@ -118,7 +134,6 @@ class Editor extends React.Component<PropTypes, StateTypes> {
             autoScrollEditorIntoView
             style={{
               position: 'absolute',
-              width: 'calc(100% - 40px)',
             }}
             setOptions={{
               enableBasicAutocompletion: true,
