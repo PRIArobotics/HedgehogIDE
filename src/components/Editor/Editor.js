@@ -50,8 +50,8 @@ class Editor extends React.Component<PropTypes, StateTypes> {
 
   state = {
     initial: true,
-    editorWidth: 0,
-    editorHeight: 0,
+    editorWidth: '0',
+    editorHeight: '0',
   };
 
   constructor(props: PropTypes) {
@@ -75,8 +75,10 @@ class Editor extends React.Component<PropTypes, StateTypes> {
 
   handleResize = () => {
     setTimeout(() => {
-      this.setState({ editorHeight: this.containerRef.current.offsetHeight });
-      this.setState({ editorWidth: this.containerRef.current.offsetWidth });
+      this.setState({
+        editorHeight: `${this.containerRef.current.offsetHeight}px`,
+        editorWidth: `${this.containerRef.current.offsetWidth}px`,
+      });
     }, 0);
   };
 
