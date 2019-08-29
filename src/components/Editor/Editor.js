@@ -31,7 +31,7 @@ type PropTypes = {|
   layoutNode: any,
 |};
 type StateTypes = {|
-  initial: booleam,
+  initial: boolean,
 |};
 
 const ColoredIconButton = styled(({ color, ...other }) => (
@@ -57,15 +57,7 @@ class Editor extends React.Component<PropTypes, StateTypes> {
 
   componentDidMount() {
     this.setState({ initial: false });
-    this.props.layoutNode.setEventListener('resize', this.handleResize);
   }
-
-  handleResize = () => {
-    setTimeout(() => {
-      const aceEditor = this.editorRef.current;
-      aceEditor.editor.resize();
-    }, 0);
-  };
 
   onChange = (newValue: AceState) => {
     this.value = newValue;
