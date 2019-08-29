@@ -83,7 +83,7 @@
 }
 
 .flexlayout__tab {
-  overflow: auto;
+  overflow: hidden;
   position: absolute;
   box-sizing: border-box;
   background-color: white;
