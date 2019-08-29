@@ -32,7 +32,7 @@ import VisualEditor from '../VisualEditor';
 // eslint-disable-next-line css-modules/no-unused-class
 import FlexLayoutTheme from './flex_layout_ide.css';
 import FileTree from '../FileTree/FileTree';
-import Executor from "../Executor";
+import Executor from '../Executor';
 
 const iconStyles = {
   smallIcon: {
