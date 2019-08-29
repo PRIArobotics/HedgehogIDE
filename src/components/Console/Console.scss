@@ -2,14 +2,13 @@
   height: 100%;
   font-family: monospace;
   font-size: 19px;
-
+  min-width: 300px;
   display: flex;
   flex-flow: column nowrap;
 }
 
 .outputPane {
   flex: 1 1 auto;
-
   overflow-y: scroll;
 }
 
@@ -33,7 +32,6 @@
 
 .inputForm {
   flex: 0 0 auto;
-
   display: flex;
   flex-flow: row nowrap;
 
