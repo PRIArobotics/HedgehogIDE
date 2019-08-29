@@ -97,7 +97,7 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
         wheel: false,
       },
     });
-    this.addBlocklyBlocks();
+    VisualEditor.addBlocklyBlocks();
 
     const workspaceXml = this.props.callbackGet();
     if (workspaceXml) {
@@ -143,7 +143,7 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
     }, 0);
   }
 
-  addBlocklyBlocks() {
+  static addBlocklyBlocks() {
     Blockly.Blocks.text_print = {
       init() {
         this.jsonInit(printBlock);
@@ -154,7 +154,7 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
         this.jsonInit(sleepBlock);
       },
     };
-    Blockly.JavaScript.text_print = function(block) {
+    Blockly.JavaScript.text_print = block => {
       const valueText = Blockly.JavaScript.valueToCode(
         block,
         'TEXT',
@@ -162,13 +162,13 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
       );
       return `print(${valueText});\n`;
     };
-    Blockly.JavaScript.sleep_block = function(block) {
-      const valueText = Blockly.JavaScript.valueToCode(
+    Blockly.JavaScript.sleep_block = block => {
+      const valueTime = Blockly.JavaScript.valueToCode(
         block,
         'TIME',
         Blockly.JavaScript.ORDER_ATOMIC,
       );
-      return `await sleep(${valueText});\n`;
+      return `await sleep(${valueTime});\n`;
     };
   }
 
