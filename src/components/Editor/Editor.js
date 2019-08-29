@@ -77,7 +77,6 @@ class Editor extends React.Component<PropTypes, StateTypes> {
     setTimeout(() => {
       this.setState({ editorHeight: this.containerRef.current.offsetHeight });
       this.setState({ editorWidth: this.containerRef.current.offsetWidth });
-      this.editorRef.current.editor.resize();
     }, 0);
   };
 
