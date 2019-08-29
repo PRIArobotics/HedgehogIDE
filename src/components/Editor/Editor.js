@@ -19,6 +19,8 @@ import { styled } from '@material-ui/styles';
 import IconButton from '@material-ui/core/IconButton';
 import PlayArrowIcon from '@material-ui/icons/PlayArrow';
 import s from './Editor.scss';
+import 'brace/mode/javascript';
+import 'brace/ext/language_tools';
 
 type AceState = any;
 
@@ -28,7 +30,6 @@ type PropTypes = {|
   callbackRun: (code: string) => void,
   callbackStop: () => void,
   running: boolean,
-  layoutNode: any,
 |};
 type StateTypes = {|
   initial: boolean,
@@ -121,7 +122,7 @@ class Editor extends React.Component<PropTypes, StateTypes> {
             }}
             setOptions={{
               enableBasicAutocompletion: true,
-              // enableLiveAutocompletion: true,
+              enableLiveAutocompletion: true,
               // enableSnippets: this.state.enableSnippets,
               showLineNumbers: true,
               tabSize: 2,
