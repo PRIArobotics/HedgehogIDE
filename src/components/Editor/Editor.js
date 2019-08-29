@@ -64,6 +64,7 @@ class Editor extends React.Component<PropTypes, StateTypes> {
   componentDidMount() {
     this.setState({ initial: false });
     this.props.layoutNode.setEventListener('resize', this.handleResize);
+    this.props.layoutNode.setEventListener('visibility', this.handleResize);
     this.handleResize();
   }
 
