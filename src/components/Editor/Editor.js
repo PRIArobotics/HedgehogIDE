@@ -19,7 +19,6 @@ import { styled } from '@material-ui/styles';
 import IconButton from '@material-ui/core/IconButton';
 import PlayArrowIcon from '@material-ui/icons/PlayArrow';
 import s from './Editor.scss';
-import Blockly from "blockly";
 
 type AceState = any;
 
@@ -28,6 +27,8 @@ type PropTypes = {|
   callbackGet: () => AceState,
   callbackRun: (code: string) => void,
   callbackStop: () => void,
+  running: boolean,
+  layoutNode: any,
 |};
 type StateTypes = {|
   initial: booleam,
@@ -61,12 +62,6 @@ class Editor extends React.Component<PropTypes, StateTypes> {
 
   handleResize = () => {
     setTimeout(() => {
-      /*
-      const container = this.containerRef.current;
-      const editor = this.editorRef.current;
-      editor.style.width = `${container.offsetWidth}px`;
-      editor.style.height = `${container.offsetHeight}px`;
-       */
       const aceEditor = this.editorRef.current;
       aceEditor.editor.resize();
     }, 0);
