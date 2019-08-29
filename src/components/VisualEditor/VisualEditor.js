@@ -180,14 +180,6 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
   }
 
   handleRunCode = () => {
-    const code = `
-    return (async () => {
-      for (i = 1; i <= 100; i++) {
-        print(i);
-        await sleep(0);
-      }
-    })();
-    `;
     this.props.callbackRun(this.code);
   };
 
