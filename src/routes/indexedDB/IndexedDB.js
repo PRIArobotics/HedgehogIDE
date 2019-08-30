@@ -34,22 +34,79 @@ const getDatabase = () => {
   return dataBase;
 };
 
+const stateDatabase = {
+  name: 'IndexDBState',
+  tables: [
+    {
+      name: 'States',
+      columns: {
+        id: {
+          primaryKey: true,
+          dataType: 'string',
+        },
+        state: {
+          default: '',
+          dataType: 'string',
+        },
+      },
+    },
+  ],
+};
+
 export default class IndexedDB extends React.Component {
   constructor(props) {
     super(props);
     this.dbRef = React.createRef();
+    this.inputRef = React.createRef();
+    this.state = { html: '' };
   }
 
-  async componentDidMount() {
-    try {
-      await connection.initDb(getDatabase());
-    } catch (ex) {
-      console.error(ex);
-    }
-    await connection.clear('Students');
-    await this.setStudents();
-    this.dbRef.current.innerHTML += 'Inserted values:</br>';
-    this.dbRef.current.innerHTML += JSON.stringify(await this.getStudents());
+  componentDidMount() {
+    /* (async () => {
+      try {
+        await connection.initDb(getDatabase());
+      } catch (ex) {
+        console.error(ex);
+      }
+      await connection.clear('Students');
+      await this.setStudents();
+      this.dbRef.current.innerHTML += 'Inserted values:</br>';
+      this.dbRef.current.innerHTML += JSON.stringify(await this.getStudents());
+    })(); */
+    (async () => {
+      try {
+        await connection.initDb(stateDatabase);
+      } catch (error) {
+        console.error(error);
+      }
+      this.inputRef.current.value = await this.selectDbState('Input');
+    })();
+  }
+
+  async selectDbState(id) {
+    const selectedArr = await connection.select({
+      from: 'States',
+      where: [
+        {
+          id,
+        },
+      ],
+    });
+    const selectedObj = selectedArr[0];
+    return selectedObj.state;
+  }
+
+  async insertDbState(id, state) {
+    await connection.insert({
+      into: 'States',
+      values: [
+        {
+          id,
+          state,
+        },
+      ],
+      upsert: true,
+    });
   }
 
   async setStudents() {
@@ -76,11 +133,18 @@ export default class IndexedDB extends React.Component {
     });
   }
 
+  handleInput = async () => {
+    await this.insertDbState('Input', this.inputRef.current.value);
+  };
+
   render() {
     return (
       <div>
         <h1>IndexedDB with JsStore</h1>
-        <div ref={this.dbRef} />
+        <div>{this.state.html}</div>
+        <form>
+          <input type="text" ref={this.inputRef} onInput={this.handleInput} />
+        </form>
       </div>
     );
   }
