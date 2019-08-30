@@ -22,7 +22,7 @@ async function action() {
     chunks: ['ide'],
     component: (
       <Layout contentFill>
-        <NoSSR>{showIde}</NoSSR>
+        <NoSSR key="ide">{showIde}</NoSSR>
       </Layout>
     ),
   };

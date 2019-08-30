@@ -22,7 +22,7 @@ async function action() {
     chunks: ['indexedDB'],
     component: (
       <Layout>
-        <NoSSR>{showIndexedDB}</NoSSR>
+        <NoSSR key="indexedDB">{showIndexedDB}</NoSSR>
       </Layout>
     ),
   };
