@@ -75,17 +75,19 @@ class Console extends React.Component<PropTypes, StateTypes> {
 
   render() {
     return (
-      <div className={s.root}>
-        <div className={s.outputPane}>
-          {this.state.consoleText.map(({ text, stream }) => (
-            <pre className={`${s.output} ${s[stream]}`}>{text}</pre>
-          ))}
-          <div ref={this.bottomRef} />
+      <div style={{ overflowX: 'auto', height: '100%' }}>
+        <div className={s.root}>
+          <div className={s.outputPane}>
+            {this.state.consoleText.map(({ text, stream }) => (
+              <pre className={`${s.output} ${s[stream]}`}>{text}</pre>
+            ))}
+            <div ref={this.bottomRef} />
+          </div>
+          <form className={s.inputForm} onSubmit={this.handleSubmit}>
+            &gt;&gt;&gt;&nbsp;
+            <input type="text" ref={this.inputRef} />
+          </form>
         </div>
-        <form className={s.inputForm} onSubmit={this.handleSubmit}>
-          &gt;&gt;&gt;&nbsp;
-          <input type="text" ref={this.inputRef} />
-        </form>
       </div>
     );
   }
