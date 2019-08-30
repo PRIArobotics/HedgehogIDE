@@ -64,6 +64,13 @@ class Sidebar extends React.Component<PropTypes> {
             </ListItemIcon>
           </ListItem>
         </Tooltip>
+        <Tooltip title="IndexedDB Feature Test" placement="right">
+          <ListItem button component={Link} to="/indexedDB">
+            <ListItemIcon className={classes.listItemIcon}>
+              <NavigationIcon />
+            </ListItemIcon>
+          </ListItem>
+        </Tooltip>
       </List>
     );
   }

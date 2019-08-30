@@ -55,6 +55,10 @@ const routes = {
       path: '/admin',
       load: () => import(/* webpackChunkName: 'admin' */ './admin'),
     },
+    {
+      path: '/indexedDB',
+      load: () => import(/* webpackChunkName: 'admin' */ './indexedDB'),
+    },
 
     // Wildcard routes, e.g. { path: '(.*)', ... } (must go last)
     {
