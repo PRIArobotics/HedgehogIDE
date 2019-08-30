@@ -63,10 +63,10 @@ export default class IndexedDB extends React.Component {
     this.dbRef.current.innerHTML += 'Insert started</br>';
     const noOfRowsInserted = await connection.insert({
       into: 'Students',
-      values: [value],
+      values: [value, value2],
     });
     if (noOfRowsInserted > 0) {
-      this.dbRef.current.innerHTML += 'Insert successful</br>';
+      this.dbRef.current.innerHTML += 'Insert successful<br>';
     }
   }
 
