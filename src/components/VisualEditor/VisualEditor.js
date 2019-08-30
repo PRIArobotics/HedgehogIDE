@@ -59,7 +59,9 @@ type PropTypes = {|
   callbackStop: () => void,
   running: boolean,
 |};
-type StateTypes = {||};
+type StateTypes = {|
+  codeCollapsed: boolean,
+|};
 
 const ColoredIconButton = styled(({ color, ...other }) => (
   <IconButton {...other} />
