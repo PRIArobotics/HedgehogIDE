@@ -8,15 +8,21 @@
  */
 
 import React from 'react';
-import IndexedDB from './IndexedDB';
 import Layout from '../../components/Layout';
+import NoSSR from '../../components/misc/NoSSR';
 
-function action() {
+async function action() {
+  const showIndexedDB = async () => {
+    const { default: IndexedDB } = await import('./IndexedDB');
+
+    return <IndexedDB />;
+  };
   return {
+    title: 'IndexedDB',
     chunks: ['indexedDB'],
     component: (
       <Layout>
-        <IndexedDB />
+        <NoSSR>{showIndexedDB}</NoSSR>
       </Layout>
     ),
   };
