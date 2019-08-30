@@ -37,15 +37,26 @@ const getDatabase = () => {
 export default class IndexedDB extends React.Component {
   async componentDidMount() {
     try {
-      await connection.initDb(getDatabase()); // Error: Unhandled Rejection (ReferenceError): JsStoreWorker is not defined
+      await connection.initDb(getDatabase());
     } catch (ex) {
       console.error(ex);
     }
-    console.log(
-      await connection.select({
-        from: 'Students',
-      }),
-    );
+    const value = {
+      name: 'someone',
+      gender: 'male',
+      country: 'somewhere',
+      city: 'somewhere2',
+    };
+    console.log('Insert started');
+    const noOfRowsInserted = await connection.insert({
+      into: 'Students',
+      values: [value],
+    });
+    if (noOfRowsInserted > 0) {
+      console.log('Insert successful');
+    }
+    console.log(await this.getStudents());
+    // await connection.clear('Students');
   }
 
   getStudents() {
