@@ -1,5 +1,5 @@
 import React from 'react';
-import * as JsStore from 'jsstore';
+import { connection } from './jsstore_con';
 
 const getDatabase = () => {
   const tblStudent = {
@@ -35,23 +35,21 @@ const getDatabase = () => {
 };
 
 export default class IndexedDB extends React.Component {
-  constructor(props) {
-    super(props);
-    this.connection = new JsStore.Instance();
+  async componentDidMount() {
     try {
-      this.connection.initDb(getDatabase()); // Error: Unhandled Rejection (ReferenceError): JsStoreWorker is not defined
+      await connection.initDb(getDatabase()); // Error: Unhandled Rejection (ReferenceError): JsStoreWorker is not defined
     } catch (ex) {
       console.error(ex);
     }
     console.log(
-      this.connection.select({
+      await connection.select({
         from: 'Students',
       }),
     );
   }
 
   getStudents() {
-    return this.connection.select({
+    return connection.select({
       from: 'Students',
     });
   }
