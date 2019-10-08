@@ -75,8 +75,14 @@ const history = setupHistory(async (history, location, isInitialRender) => {
             window.history.scrollRestoration = 'manual';
           }
 
-          const elem = document.getElementById('css');
-          if (elem) elem.parentNode.removeChild(elem);
+          {
+            const elem = document.getElementById('css');
+            if (elem) elem.parentNode.removeChild(elem);
+          }
+          {
+            const elem = document.getElementById('material-css');
+            if (elem) elem.parentNode.removeChild(elem);
+          }
           return;
         }
 
