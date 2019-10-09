@@ -31,6 +31,7 @@ import schema from './data/schema';
 import config from './config';
 import createInitialState from '../core/createInitialState';
 import renderHtml from './renderHtml';
+import renderExecutor from './renderExecutor';
 import {
   IsomorphicStyleLoader,
   MaterialStyleLoader,
@@ -178,6 +179,16 @@ server.applyMiddleware({ app });
 //
 // Register server-side rendering middleware
 // -----------------------------------------------------------------------------
+app.get('/executor', async (req, res, next) => {
+  try {
+    const html = renderExecutor();
+    res.status(200);
+    res.send(html);
+  } catch (err) {
+    next(err);
+  }
+});
+
 app.get('*', async (req, res, next) => {
   try {
     const isomorphicStyleLoader = new IsomorphicStyleLoader();

@@ -55,7 +55,7 @@ class Executor extends React.Component<PropTypes, StateTypes> {
       <iframe
         ref={this.frameRef}
         sandbox="allow-scripts"
-        src="/assets/executor.html"
+        src="/executor"
         style={{ display: 'none' }}
       />
     );
