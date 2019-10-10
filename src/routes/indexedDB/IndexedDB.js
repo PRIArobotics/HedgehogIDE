@@ -58,24 +58,26 @@ export default class IndexedDB extends React.Component {
     super(props);
     this.dbRef = React.createRef();
     this.inputRef = React.createRef();
+    // limit accessing the global connection to this constructor call
+    this.connection = connection;
     this.state = { html: '' };
   }
 
   componentDidMount() {
     /* (async () => {
       try {
-        await connection.initDb(getDatabase());
+        await this.connection.initDb(getDatabase());
       } catch (ex) {
         console.error(ex);
       }
-      await connection.clear('Students');
+      await this.connection.clear('Students');
       await this.setStudents();
       this.dbRef.current.innerHTML += 'Inserted values:</br>';
       this.dbRef.current.innerHTML += JSON.stringify(await this.getStudents());
     })(); */
     (async () => {
       try {
-        await connection.initDb(stateDatabase);
+        await this.connection.initDb(stateDatabase);
       } catch (error) {
         console.error(error);
       }
@@ -84,7 +86,7 @@ export default class IndexedDB extends React.Component {
   }
 
   async selectDbState(id) {
-    const selectedArr = await connection.select({
+    const selectedArr = await this.connection.select({
       from: 'States',
       where: [
         {
@@ -97,7 +99,7 @@ export default class IndexedDB extends React.Component {
   }
 
   async insertDbState(id, state) {
-    await connection.insert({
+    await this.connection.insert({
       into: 'States',
       values: [
         {
@@ -118,9 +120,9 @@ export default class IndexedDB extends React.Component {
       city: 'somewhere2',
     };
     this.dbRef.current.innerHTML += 'Insert started</br>';
-    const noOfRowsInserted = await connection.insert({
+    const noOfRowsInserted = await this.connection.insert({
       into: 'Students',
-      values: [value, value2],
+      values: [value],
     });
     if (noOfRowsInserted > 0) {
       this.dbRef.current.innerHTML += 'Insert successful<br>';
@@ -128,7 +130,7 @@ export default class IndexedDB extends React.Component {
   }
 
   getStudents() {
-    return connection.select({
+    return this.connection.select({
       from: 'Students',
     });
   }
