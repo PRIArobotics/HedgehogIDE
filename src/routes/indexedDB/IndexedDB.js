@@ -1,5 +1,5 @@
 import React from 'react';
-import { connection } from './jsstore_con';
+import connection from './jsstore_con';
 
 const getDatabase = () => {
   const tblStudent = {
