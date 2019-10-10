@@ -87,7 +87,6 @@ useAuth(
 );
 // Error handler for express-jwt
 app.use((err, req, res, next) => {
-  // eslint-disable-line no-unused-vars
   if (err instanceof Jwt401Error) {
     console.error('[express-jwt-error]', req.cookies.id_token);
     // `clearCookie`, otherwise user can't use web-app until cookie expires
@@ -276,7 +275,8 @@ app.use((err, req, res, next) => {
   const rootComponent = <ErrorPageWithoutStyle error={err} />;
 
   const styles = [
-    { id: 'css', cssText: errorPageStyle._getCss() }, // eslint-disable-line no-underscore-dangle
+    // eslint-disable-next-line no-underscore-dangle
+    { id: 'css', cssText: errorPageStyle._getCss() },
   ];
 
   const data = {

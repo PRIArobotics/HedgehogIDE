@@ -183,7 +183,6 @@ class Simulator extends React.Component {
     Matter.Render.stop(this.renderer);
   }
 
-  // eslint-disable-next-line class-methods-use-this
   unmountMatter() {
     // TODO
   }

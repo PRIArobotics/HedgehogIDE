@@ -20,7 +20,6 @@ import Link from '../misc/Link';
 import SvgIcon from '../misc/SvgIcon';
 import logoUrl from './logo.svg';
 
-// eslint-disable-next-line no-unused-vars
 const styled = withStyles(theme => ({
   gutters: {
     paddingLeft: theme.spacing(2),

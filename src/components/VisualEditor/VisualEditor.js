@@ -10,7 +10,6 @@ import KeyboardArrowRightIcon from '@material-ui/icons/KeyboardArrowRight';
 import KeyboardArrowLeftIcon from '@material-ui/icons/KeyboardArrowLeft';
 import StopIcon from '@material-ui/icons/Stop';
 import { styled } from '@material-ui/styles';
-// eslint-disable-next-line css-modules/no-unused-class
 import s from './VisualEditor.scss';
 
 const printBlock = {
