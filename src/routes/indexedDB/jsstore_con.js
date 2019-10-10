@@ -10,4 +10,5 @@ const getWorkerPath = () => {
 };
 
 const workerPath = getWorkerPath();
-export const connection = new JsStore.Instance(new Worker(workerPath));
+const connection = new JsStore.Instance(new Worker(workerPath));
+export default connection;
