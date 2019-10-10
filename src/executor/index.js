@@ -1,5 +1,5 @@
 // TODO hardcoded domain name
-const ORIGIN = 'http://localhost:3000';
+const ORIGIN = __DEV__ ? 'http://localhost:3000' : 'https://ide.pria.at';
 
 // eslint-disable-next-line no-underscore-dangle
 let _source = null;
