@@ -7,6 +7,7 @@ export default function renderExecutor() {
   const scripts = loadScripts('executor');
 
   const html = ReactDOM.renderToStaticMarkup(
+    // eslint-disable-next-line jsx-a11y/html-has-lang
     <html>
       <head>
         <meta charSet="utf-8" />

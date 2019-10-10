@@ -23,7 +23,7 @@ type PropTypes = {|
     cssText: string,
   }>,
   scripts: Array<string>,
-  app: Object, // eslint-disable-line
+  app: Object,
   children: string,
 |};
 
