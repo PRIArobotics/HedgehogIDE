@@ -7,6 +7,8 @@
  * LICENSE.txt file in the root directory of this source tree.
  */
 
+// @flow
+
 import React from 'react';
 import withStyles from 'isomorphic-style-loader/lib/withStyles';
 
@@ -15,6 +17,16 @@ import Matter from 'matter-js';
 import s from './Simulator.scss';
 
 class Robot {
+  leftWheel: Matter.Body;
+  rightWheel: Matter.Body;
+  body: Matter.Body;
+  bot: Matter.Composite;
+
+  parts: (Matter.Body | Matter.Composite)[];
+
+  leftSpeed: number = 0;
+  rightSpeed: number = 0;
+
   constructor(pose) {
     const { x, y, angle } = pose;
     const sin = Math.sin(angle);
@@ -75,9 +87,6 @@ class Robot {
     });
 
     this.parts = [...this.bot.parts, this.bot];
-
-    this.leftSpeed = 0;
-    this.rightSpeed = 0;
   }
 
   static applyForce(body, force, cos, sin) {

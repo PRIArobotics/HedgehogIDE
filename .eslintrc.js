@@ -38,6 +38,7 @@ module.exports = {
 
     'no-unused-vars': 'warn',
     'class-methods-use-this': 'warn',
+    'lines-between-class-members': 'off',
     'no-else-return': 'off',
 
     // Recommend not to leave any console.log in your code
