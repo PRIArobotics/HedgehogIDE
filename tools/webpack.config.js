@@ -68,6 +68,12 @@ const config = {
     strictExportPresence: true,
 
     rules: [
+      // Worker loader
+      {
+        test: /\/jsstore\.worker(\.min)?\.js$/,
+        use: { loader: 'file-loader' },
+      },
+
       // Rules for JS / JSX
       {
         test: reScript,
