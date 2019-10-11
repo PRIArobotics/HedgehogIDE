@@ -43,46 +43,55 @@ class Robot {
     };
 
     const material = {
-      density: 1,
-      frictionAir: 1,
+      density: 0.3,
+      frictionAir: 0.4,
     };
 
-    this.leftWheel = Matter.Bodies.circle(
+    this.leftWheel = Matter.Bodies.rectangle(
       ...translate(x, y, 20, -50),
-      10,
-      material,
+      ...[30, 20],
+      { ...material },
     );
-    this.rightWheel = Matter.Bodies.circle(
+    this.rightWheel = Matter.Bodies.rectangle(
       ...translate(x, y, 20, 50),
-      10,
-      material,
+      ...[30, 20],
+      { ...material },
     );
-    this.body = Matter.Bodies.rectangle(x, y, 100, 70, {
-      angle,
-      density: 0.1,
-    });
+    this.body = Matter.Bodies.rectangle(
+      ...translate(x, y, 0, 0),
+      ...[100, 70],
+      { angle, ...material },
+    );
     this.bot = Matter.Composite.create({
       parts: [this.leftWheel, this.rightWheel, this.body],
       constraints: [
         Matter.Constraint.create({
           bodyA: this.leftWheel,
+          pointA: translateVec(0, 0, 0, -10),
           bodyB: this.body,
-          pointB: translateVec(0, 0, 40, 0),
+          pointB: translateVec(0, 0, 20, -60),
+          render: { visible: false },
         }),
         Matter.Constraint.create({
           bodyA: this.leftWheel,
+          pointA: translateVec(0, 0, 0, 10),
           bodyB: this.body,
-          pointB: translateVec(0, 0, -40, 0),
+          pointB: translateVec(0, 0, 20, -40),
+          render: { visible: false },
         }),
         Matter.Constraint.create({
           bodyA: this.rightWheel,
+          pointA: translateVec(0, 0, 0, -10),
           bodyB: this.body,
-          pointB: translateVec(0, 0, 40, 0),
+          pointB: translateVec(0, 0, 20, 40),
+          render: { visible: false },
         }),
         Matter.Constraint.create({
           bodyA: this.rightWheel,
+          pointA: translateVec(0, 0, 0, 10),
           bodyB: this.body,
-          pointB: translateVec(0, 0, -40, 0),
+          pointB: translateVec(0, 0, 20, 60),
+          render: { visible: false },
         }),
       ],
     });
@@ -141,15 +150,15 @@ class Simulator extends React.Component {
     const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
     (async () => {
       await sleep(500);
-      this.robot.setSpeed(50, 50);
+      this.robot.setSpeed(100, 100);
       await sleep(500);
       this.robot.setSpeed(0, 0);
       await sleep(200);
-      this.robot.setSpeed(30, -30);
+      this.robot.setSpeed(70, -70);
       await sleep(300);
       this.robot.setSpeed(0, 0);
       await sleep(200);
-      this.robot.setSpeed(50, 50);
+      this.robot.setSpeed(100, 100);
       await sleep(500);
       this.stopMatter();
     })();
