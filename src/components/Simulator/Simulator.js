@@ -59,6 +59,7 @@ class Robot {
     );
     this.body = Matter.Bodies.rectangle(x, y, 100, 70, {
       angle,
+      density: 0.1,
     });
     this.bot = Matter.Composite.create({
       parts: [this.leftWheel, this.rightWheel, this.body],
@@ -96,6 +97,11 @@ class Robot {
     });
   }
 
+  setSpeed(left: number, right: number) {
+    this.leftSpeed = left;
+    this.rightSpeed = right;
+  }
+
   beforeUpdate() {
     const dx = this.leftWheel.position.x - this.rightWheel.position.x;
     const dy = this.leftWheel.position.y - this.rightWheel.position.y;
@@ -114,17 +120,39 @@ class Robot {
 class Simulator extends React.Component {
   static propTypes = {};
 
+  state = {};
+
+  engine: Matter.Engine;
+  runner: Matter.Runner;
+  robot: Robot;
+
+  elementRef: React.RefObject = React.createRef();
+  renderer: Matter.Render | null = null;
+
   constructor(props) {
     super(props);
-    this.state = {};
-
-    this.elementRef = React.createRef();
     this.createMatter();
   }
 
   componentDidMount() {
     this.mountMatter();
     this.startMatter();
+
+    const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
+    (async () => {
+      await sleep(500);
+      this.robot.setSpeed(50, 50);
+      await sleep(500);
+      this.robot.setSpeed(0, 0);
+      await sleep(200);
+      this.robot.setSpeed(30, -30);
+      await sleep(300);
+      this.robot.setSpeed(0, 0);
+      await sleep(200);
+      this.robot.setSpeed(50, 50);
+      await sleep(500);
+      this.stopMatter();
+    })();
   }
 
   componentWillUnmount() {
@@ -137,8 +165,6 @@ class Simulator extends React.Component {
     engine.world.gravity.y = 0;
 
     this.robot = new Robot({ x: 400, y: 150, angle: 0 });
-    this.robot.leftSpeed = 100;
-    this.robot.rightSpeed = 50;
 
     const box = Matter.Bodies.rectangle(500, 200, 60, 60, {
       density: 0.1,
@@ -176,13 +202,6 @@ class Simulator extends React.Component {
   }
 
   startMatter() {
-    setTimeout(() => {
-      this.robot.leftSpeed = 0;
-      this.robot.rightSpeed = 0;
-    }, 2000);
-    setTimeout(() => {
-      this.stopMatter();
-    }, 3000);
     Matter.Runner.run(this.runner, this.engine);
     Matter.Render.run(this.renderer);
   }
