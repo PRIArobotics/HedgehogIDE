@@ -166,11 +166,11 @@ const server = new ApolloServer({
   context: ({ req, connection }) => {
     if (req !== undefined) {
       return { req };
-    }
-    if (connection !== undefined) {
+    } else if (connection !== undefined) {
       return { connection };
+    } else {
+      return {};
     }
-    return {};
   },
 });
 server.applyMiddleware({ app });
