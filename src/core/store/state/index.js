@@ -25,6 +25,14 @@ const schema = {
 
 const connection = connect(schema);
 
+function unique<T>(result: T[]): T {
+  // eslint-disable-next-line no-throw-literal
+  if (result.length === 0) throw 'not found';
+  // eslint-disable-next-line no-throw-literal
+  if (result.length > 1) throw 'not unique';
+  return result[0];
+}
+
 // if you want to check initialization before making the first store access
 // it doesn't do anything, but if initialization failed, this will be a rejected promise.
 export async function init() {
@@ -34,15 +42,12 @@ export async function init() {
 export async function getState(id: string): Promise<string> {
   const conn = await connection;
 
-  const result = await conn.select({
-    from: 'States',
-    where: [{ id }],
-  });
-
-  // eslint-disable-next-line no-throw-literal
-  if (result.length === 0) throw 'not found';
-
-  return result[0].state;
+  return unique(
+    await conn.select({
+      from: 'States',
+      where: [{ id }],
+    }),
+  ).state;
 }
 
 export async function setState(id: string, state: string) {
