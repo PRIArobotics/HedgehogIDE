@@ -110,7 +110,6 @@
     "jest": "^24.3.1",
     "jest-codemods": "^0.16.0",
     "jest-transform-graphql": "^2.1.0",
-    "lint-staged": "^7.3.0",
     "markdown-it": "^8.4.2",
     "mkdirp": "^0.5.1",
     "null-loader": "^0.1.1",
@@ -151,27 +150,7 @@
     "webpack-hot-middleware": "^2.24.2",
     "webpack-node-externals": "^1.7.2"
   },
-  "lint-staged": {
-    "ignore": [
-      "package.json"
-    ],
-    "linters": {
-      "*.{js,jsx}": [
-        "npm run fix-js",
-        "git add --force"
-      ],
-      "*.{json,md,graphql}": [
-        "prettier --write",
-        "git add --force"
-      ],
-      "*.{css,less,styl,scss,sass,sss}": [
-        "stylelint --fix",
-        "git add --force"
-      ]
-    }
-  },
   "scripts": {
-    "precommit": "lint-staged",
     "lint-js": "eslint --ignore-path .gitignore --ignore-pattern \"/flow-typed/*\" --ignore-pattern \"!**/.*\" .",
     "lint-css": "stylelint \"src/**/*.{css,less,styl,scss,sass,sss}\"",
     "lint": "yarn run lint-js && yarn run lint-css",
