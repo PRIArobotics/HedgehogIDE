@@ -1,7 +1,7 @@
 // @flow
 
 import React from 'react';
-import * as StateDB from '../../core/jsstore/state';
+import * as StateDB from '../../core/store/state';
 
 export default class IndexedDB extends React.Component {
   inputRef: React.RefObject = React.createRef();
