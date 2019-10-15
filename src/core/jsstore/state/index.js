@@ -5,7 +5,7 @@ import * as JsStore from 'jsstore';
 import connect from '../connect';
 
 const schema = {
-  name: 'IndexDBState',
+  name: 'State',
   tables: [
     {
       name: 'States',
@@ -31,7 +31,7 @@ export async function init() {
   await connection;
 }
 
-export async function getState(id) {
+export async function getState(id: string): Promise<string> {
   const conn = await connection;
 
   const result = await conn.select({
@@ -45,7 +45,7 @@ export async function getState(id) {
   return result[0].state;
 }
 
-export async function setState(id, state) {
+export async function setState(id: string, state: string) {
   const conn = await connection;
 
   await conn.insert({
