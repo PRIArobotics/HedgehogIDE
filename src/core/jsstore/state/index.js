@@ -2,7 +2,7 @@
 
 import * as JsStore from 'jsstore';
 
-import connection from '../connection';
+import connect from '../connect';
 
 const schema = {
   name: 'IndexDBState',
@@ -23,27 +23,27 @@ const schema = {
   ],
 };
 
+const connection = connect(schema);
+
 class StateDB {
-  connection: JsStore.Instance;
-  initPromise: Promise<void>;
+  connection: Promise<JsStore.Instance>;
 
   // eslint-disable-next-line no-shadow
-  constructor(connection: JsStore.Instance) {
+  constructor(connection: Promise<JsStore.Instance>) {
     this.connection = connection;
-    this.initPromise = this.connection.initDb(schema);
   }
 
   // if you want to check initialization before making the first store access
   // it doesn't do anything, but if initialization failed,
   // this will be a rejected promise.
   async init() {
-    await this.initPromise;
+    await this.connection;
   }
 
   async getState(id) {
-    await this.initPromise;
+    const connection = await this.connection;
 
-    const result = await this.connection.select({
+    const result = await connection.select({
       from: 'States',
       where: [{ id }],
     });
@@ -55,9 +55,9 @@ class StateDB {
   }
 
   async setState(id, state) {
-    await this.initPromise;
+    const connection = await this.connection;
 
-    await this.connection.insert({
+    await connection.insert({
       into: 'States',
       values: [{ id, state }],
       upsert: true,
@@ -65,6 +65,4 @@ class StateDB {
   }
 }
 
-const STATE_DB = new StateDB(connection);
-
-export default STATE_DB;
+export default new StateDB(connection);
