@@ -8,8 +8,8 @@
  */
 
 import React from 'react';
-import Simulator from '../../components/Simulator/Simulator';
-import Layout from '../../components/Layout';
+import Simulator from '../../components/ide/Simulator';
+import Layout from '../../components/layout/Layout';
 
 async function action() {
   return {

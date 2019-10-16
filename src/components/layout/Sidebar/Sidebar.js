@@ -23,7 +23,7 @@ import NavigationIcon from '@material-ui/icons/Navigation';
 import TuneIcon from '@material-ui/icons/Tune';
 import { withStyles } from '@material-ui/styles';
 
-import Link from '../misc/Link';
+import Link from '../../misc/Link';
 
 const styled = withStyles(theme => ({
   listItemIcon: {
