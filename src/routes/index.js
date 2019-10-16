@@ -37,10 +37,6 @@ const routes = {
       load: () => import(/* webpackChunkName: 'apollo' */ './apollo'),
     },
     {
-      path: '/simulator',
-      load: () => import(/* webpackChunkName: 'simulator' */ './simulator'),
-    },
-    {
       path: '/contact',
       load: () => import(/* webpackChunkName: 'contact' */ './contact'),
     },
