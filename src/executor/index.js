@@ -1,3 +1,5 @@
+// @flow
+
 // TODO hardcoded domain name
 const ORIGIN = __DEV__ ? 'http://localhost:3000' : 'https://ide.pria.at';
 

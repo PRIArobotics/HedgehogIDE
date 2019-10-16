@@ -1,3 +1,5 @@
+// @flow
+
 import * as JsStore from 'jsstore';
 
 const workerPath =
