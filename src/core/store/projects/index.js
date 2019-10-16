@@ -46,7 +46,7 @@ export async function init() {
 export async function getProjects(): Promise<Project[]> {
   const conn = await connection;
 
-  return await conn.select({
+  return /* await */ conn.select({
     from: 'Projects',
   });
 }
@@ -58,7 +58,7 @@ export async function getProjectById(id: number): Promise<Project> {
     await conn.select({
       from: 'Projects',
       where: { id },
-    })
+    }),
   );
 }
 
@@ -69,7 +69,7 @@ export async function getProjectByName(name: string): Promise<Project[]> {
     await conn.select({
       from: 'Projects',
       where: { name },
-    })
+    }),
   );
 }
 
@@ -82,6 +82,7 @@ export async function createProject(project: Project): Promise<void> {
     return: true,
   });
 
+  // eslint-disable-next-line no-param-reassign
   project.id = id;
 }
 
@@ -104,6 +105,4 @@ export async function removeProject(project: Project): Promise<void> {
     from: 'Projects',
     where: { id },
   });
-
-  project.id = id;
 }

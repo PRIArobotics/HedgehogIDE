@@ -15,9 +15,10 @@ export default class IndexedDB extends React.Component {
 
       await ProjectsDB.init();
 
+      /* eslint-disable no-console */
       console.log('empty', await ProjectsDB.getProjects());
 
-      let p: ProjectsDB.Project = { name: 'foo' };
+      const p: ProjectsDB.Project = { name: 'foo' };
       console.log('new object', p);
 
       await ProjectsDB.createProject(p);
@@ -27,7 +28,9 @@ export default class IndexedDB extends React.Component {
 
       try {
         await ProjectsDB.createProject(p);
-      } catch(ex) {}
+      } catch (ex) {
+        //
+      }
 
       p.name = 'bar';
       await ProjectsDB.updateProject(p);
