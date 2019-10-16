@@ -43,7 +43,7 @@ class Sidebar extends React.Component<PropTypes> {
     return (
       <List>
         <Tooltip title="IDE" placement="right">
-          <ListItem button component={Link} to="/ide">
+          <ListItem button component={Link} to="/projects">
             <ListItemIcon className={classes.listItemIcon}>
               <EditIcon />
             </ListItemIcon>
