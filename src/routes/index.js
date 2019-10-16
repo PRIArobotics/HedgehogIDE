@@ -24,7 +24,7 @@ const routes = {
       children: [
         {
           path: '',
-          load: () => import(/* webpackChunkName: 'ide' */ './ide'),
+          load: () => import(/* webpackChunkName: 'ide' */ './projects'),
         },
         {
           path: '/:id',
