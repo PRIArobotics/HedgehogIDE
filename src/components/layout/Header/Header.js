@@ -16,8 +16,8 @@ import Typography from '@material-ui/core/Typography';
 import IconButton from '@material-ui/core/IconButton';
 import { withStyles } from '@material-ui/styles';
 
-import Link from '../misc/Link';
-import SvgIcon from '../misc/SvgIcon';
+import Link from '../../misc/Link';
+import SvgIcon from '../../misc/SvgIcon';
 import logoUrl from './logo.svg';
 
 const styled = withStyles(theme => ({

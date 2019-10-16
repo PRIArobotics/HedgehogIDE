@@ -7,8 +7,22 @@
  * LICENSE.txt file in the root directory of this source tree.
  */
 
-@import '../variables.scss';
+@import '../../variables.scss';
+
+.sidebar {
+  margin: 3px 2px;
+  background-color: #e8e8e8;
+  border-radius: 9px;
+  padding: 5px 2px;
+  flex: 0 0 auto;
+}
+
+.container {
+  flex: 1 0 auto;
+}
 
 .root {
-  margin: 0 10px;
+  display: flex;
+  flex-flow: row nowrap;
+  height: 100%;
 }

@@ -9,7 +9,7 @@
 
 import React from 'react';
 import Home from './Home';
-import Layout from '../../components/Layout';
+import Layout from '../../components/layout/Layout';
 
 async function action() {
   return {

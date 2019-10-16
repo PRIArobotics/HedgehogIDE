@@ -8,7 +8,7 @@
  */
 
 import React from 'react';
-import Layout from '../../components/Layout';
+import Layout from '../../components/layout/Layout';
 import Page from '../../components/Page';
 import about from './about.md';
 

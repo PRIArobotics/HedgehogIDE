@@ -24,15 +24,15 @@ import IconButton from '@material-ui/core/IconButton';
 import Tooltip from '@material-ui/core/Tooltip';
 
 import FlexLayout from 'flexlayout-react';
-import Editor from '../Editor';
-import Simulator from '../Simulator';
-import Console from '../Console';
-import VisualEditor from '../VisualEditor';
-
 // eslint-disable-next-line css-modules/no-unused-class
 import FlexLayoutTheme from './flex_layout_ide.css';
-import FileTree from '../FileTree/FileTree';
+
+import Console from '../Console';
+import Editor from '../Editor';
 import Executor from '../Executor';
+import FileTree from '../FileTree';
+import Simulator from '../Simulator';
+import VisualEditor from '../VisualEditor';
 
 const iconStyles = {
   smallIcon: {
