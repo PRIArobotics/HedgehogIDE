@@ -117,16 +117,17 @@ class Robot {
   }
 }
 
-class Simulator extends React.Component {
-  static propTypes = {};
+type PropTypes = {|
+  forwardedRef: React.RefObject,
+|};
+type StateTypes = {||};
 
-  state = {};
-
+class Simulator extends React.Component<PropTypes, StateTypes> {
   engine: Matter.Engine;
   runner: Matter.Runner;
   robot: Robot;
 
-  elementRef: React.RefObject = React.createRef();
+  renderTargetRef: React.RefObject = React.createRef();
   renderer: Matter.Render | null = null;
 
   constructor(props) {
@@ -135,6 +136,7 @@ class Simulator extends React.Component {
   }
 
   componentDidMount() {
+    this.props.forwardedRef.current = this;
     this.mountMatter();
     this.startMatter();
 
@@ -158,6 +160,7 @@ class Simulator extends React.Component {
   componentWillUnmount() {
     this.stopMatter();
     this.unmountMatter();
+    this.props.forwardedRef.current = null;
   }
 
   createMatter() {
@@ -192,7 +195,7 @@ class Simulator extends React.Component {
 
   mountMatter() {
     this.renderer = Matter.Render.create({
-      element: this.elementRef.current,
+      element: this.renderTargetRef.current,
       engine: this.engine,
       options: {
         width: 1000,
@@ -219,7 +222,7 @@ class Simulator extends React.Component {
     return (
       <div className={s.root}>
         <div className={s.container}>
-          <div className={s.canvas} ref={this.elementRef} />
+          <div className={s.canvas} ref={this.renderTargetRef} />
         </div>
       </div>
     );
