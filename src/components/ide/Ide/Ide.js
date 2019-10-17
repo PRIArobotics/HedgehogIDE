@@ -287,23 +287,31 @@ class Ide extends React.Component<PropTypes, StateTypes> {
     });
   };
 
-  getConsole = async () => {
-    const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
+  getConsole = () =>
+    new Promise(resolve => {
+      const tryIt = () => {
+        this.addConsole();
+        if (this.consoleRef.current) {
+          resolve(this.consoleRef.current);
+        } else {
+          setTimeout(tryIt, 0);
+        }
+      };
+      tryIt();
+    });
 
-    this.addConsole();
-    while (!this.consoleRef.current) await sleep(0);
-
-    return this.consoleRef.current;
-  };
-
-  getSimulator = async () => {
-    const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
-
-    this.addSimulator();
-    while (!this.simulatorRef.current) await sleep(0);
-
-    return this.simulatorRef.current;
-  };
+  getSimulator = () =>
+    new Promise(resolve => {
+      const tryIt = () => {
+        this.addSimulator();
+        if (this.simulatorRef.current) {
+          resolve(this.simulatorRef.current);
+        } else {
+          setTimeout(tryIt, 0);
+        }
+      };
+      tryIt();
+    });
 
   handleRunCode = (code: string) => {
     this.setState({ runningCode: `return (async () => {${code}})();` });
