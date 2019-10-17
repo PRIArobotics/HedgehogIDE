@@ -287,22 +287,22 @@ class Ide extends React.Component<PropTypes, StateTypes> {
     });
   };
 
-  tryPrint = (text: string, stream: string) => {
+  getConsole = async () => {
+    const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
+
     this.addConsole();
-    if (this.consoleRef.current) {
-      this.consoleRef.current.consoleOut(text, stream);
-    } else {
-      setTimeout(() => this.tryPrint(text, stream), 0);
-    }
+    while (!this.consoleRef.current) await sleep(0);
+
+    return this.consoleRef.current;
   };
 
-  tryMove = (left, right) => {
+  getSimulator = async () => {
+    const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
+
     this.addSimulator();
-    if (this.simulatorRef.current) {
-      this.simulatorRef.current.robot.setSpeed(left, right);
-    } else {
-      setTimeout(() => this.tryMove(left, right), 0);
-    }
+    while (!this.simulatorRef.current) await sleep(0);
+
+    return this.simulatorRef.current;
   };
 
   handleRunCode = (code: string) => {
@@ -383,15 +383,17 @@ class Ide extends React.Component<PropTypes, StateTypes> {
           <Executor
             code={this.state.runningCode}
             handlers={{
-              print: (source, text) => {
-                this.tryPrint(text, 'stdout');
+              print: async (source, text) => {
+                (await this.getConsole()).consoleOut(text, 'stdout');
               },
-              move: (source, { left, right }) => {
-                this.tryMove(left, right);
+              move: async (source, { left, right }) => {
+                (await this.getSimulator()).robot.setSpeed(left, right);
               },
-              exit: (source, error) => {
-                if (error) this.tryPrint(error, 'stderr');
+              exit: async (source, error) => {
                 this.setState({ runningCode: null });
+                if (error) {
+                  (await this.getConsole()).consoleOut(error, 'stderr');
+                }
               },
             }}
           />
