@@ -12,6 +12,7 @@ const sendMessage = (command, payload) => {
 
 // exported APIs for the client function
 global.print = text => sendMessage('print', text);
+global.move = (left, right) => sendMessage('move', { left, right });
 global.sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
 
 // message listener & handlers

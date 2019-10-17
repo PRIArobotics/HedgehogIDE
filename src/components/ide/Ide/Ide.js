@@ -296,18 +296,17 @@ class Ide extends React.Component<PropTypes, StateTypes> {
     }
   };
 
-  tryGoRobot = () => {
+  tryMove = (left, right) => {
     this.addSimulator();
     if (this.simulatorRef.current) {
-      this.simulatorRef.current.goRobot();
+      this.simulatorRef.current.robot.setSpeed(left, right);
     } else {
-      setTimeout(() => this.tryGoRobot(), 0);
+      setTimeout(() => this.tryMove(left, right), 0);
     }
   };
 
   handleRunCode = (code: string) => {
     this.setState({ runningCode: `return (async () => {${code}})();` });
-    this.tryGoRobot();
   };
 
   handleStopCode = () => {
@@ -386,6 +385,9 @@ class Ide extends React.Component<PropTypes, StateTypes> {
             handlers={{
               print: (source, text) => {
                 this.tryPrint(text, 'stdout');
+              },
+              move: (source, { left, right }) => {
+                this.tryMove(left, right);
               },
               exit: (source, error) => {
                 if (error) this.tryPrint(error, 'stderr');
