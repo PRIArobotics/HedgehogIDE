@@ -1,7 +1,5 @@
 // @flow
 
-import * as JsStore from 'jsstore';
-
 import connect from '../connect';
 
 export type Project = {|
