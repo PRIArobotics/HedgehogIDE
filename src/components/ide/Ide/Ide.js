@@ -290,7 +290,7 @@ class Ide extends React.Component<PropTypes, StateTypes> {
   tryPrint = (text: string, stream: string) => {
     this.addConsole();
     if (this.consoleRef.current) {
-      this.consoleRef.current.consoleOut(text, 'stdout');
+      this.consoleRef.current.consoleOut(text, stream);
     } else {
       setTimeout(() => this.tryPrint(text, stream), 0);
     }
