@@ -138,33 +138,13 @@ class Simulator extends React.Component<PropTypes, StateTypes> {
   componentDidMount() {
     this.props.forwardedRef.current = this;
     this.mountMatter();
+    this.startMatter();
   }
 
   componentWillUnmount() {
+    this.stopMatter();
     this.unmountMatter();
     this.props.forwardedRef.current = null;
-  }
-
-  async goRobot() {
-    this.startMatter();
-
-    const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
-
-    await sleep(500);
-    this.robot.setSpeed(100, 100);
-    await sleep(500);
-    this.robot.setSpeed(0, 0);
-    await sleep(200);
-    this.robot.setSpeed(70, -70);
-    await sleep(300);
-    this.robot.setSpeed(0, 0);
-    await sleep(200);
-    this.robot.setSpeed(100, 100);
-    await sleep(500);
-    this.robot.setSpeed(0, 0);
-
-    await sleep(500);
-    this.stopMatter();
   }
 
   createMatter() {
