@@ -76,6 +76,7 @@ type PersistentState = {|
 
 type PropTypes = {|
   classes: Object,
+  projectName: string,
 |};
 type StateTypes = {|
   runningCode: string | null,
