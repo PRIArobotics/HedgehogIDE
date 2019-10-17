@@ -3,13 +3,15 @@ import Layout from '../../components/layout/Layout';
 import NoSSR from '../../components/misc/NoSSR';
 
 async function action(context, params) {
+  const projectName = params.id;
+
   const showIde = async () => {
     const { default: Ide } = await import('../../components/ide/Ide');
 
-    return <Ide projectName={params.id} />;
+    return <Ide projectName={projectName} />;
   };
   return {
-    title: 'IDE',
+    title: projectName,
     chunks: ['ide'],
     component: (
       <Layout contentFill>
