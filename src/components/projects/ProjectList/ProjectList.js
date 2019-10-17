@@ -87,7 +87,7 @@ class Console extends React.Component<PropTypes, StateTypes> {
         newProjectName: '',
       });
     } catch (ex) {
-      if (typeof ex !== 'object' || ex.type !== 'ConstraintError') throw ex;
+      if (!(ex instanceof ProjectsDB.ProjectError)) throw ex;
       await this.refreshProjects();
     }
   }
@@ -106,8 +106,9 @@ class Console extends React.Component<PropTypes, StateTypes> {
       await this.refreshProjects();
       this.setState({ projectToDelete: null });
     } catch (ex) {
-      if (typeof ex !== 'object' || ex.type !== 'ConstraintError') throw ex;
+      if (!(ex instanceof ProjectsDB.ProjectError)) throw ex;
       await this.refreshProjects();
+      this.setState({ projectToDelete: null });
     }
   }
 
