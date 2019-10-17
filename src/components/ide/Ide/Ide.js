@@ -296,8 +296,18 @@ class Ide extends React.Component<PropTypes, StateTypes> {
     }
   };
 
+  tryGoRobot = () => {
+    this.addSimulator();
+    if (this.simulatorRef.current) {
+      this.simulatorRef.current.goRobot();
+    } else {
+      setTimeout(() => this.tryGoRobot(), 0);
+    }
+  };
+
   handleRunCode = (code: string) => {
     this.setState({ runningCode: `return (async () => {${code}})();` });
+    this.tryGoRobot();
   };
 
   handleStopCode = () => {
