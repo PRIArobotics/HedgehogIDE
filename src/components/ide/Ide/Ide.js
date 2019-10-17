@@ -99,7 +99,7 @@ class Ide extends React.Component<PropTypes, StateTypes> {
         );
       }
       case 'simulator': {
-        return <Simulator />;
+        return <Simulator forwardedRef={this.simulatorRef} />;
       }
       case 'console': {
         return <Console forwardedRef={this.consoleRef} />;
@@ -122,8 +122,8 @@ class Ide extends React.Component<PropTypes, StateTypes> {
   };
 
   flexRef: React.RefObject = React.createRef();
-
   consoleRef: React.RefObject = React.createRef();
+  simulatorRef: React.RefObject = React.createRef();
 
   blocklyTabIds = new Set();
 
@@ -265,7 +265,7 @@ class Ide extends React.Component<PropTypes, StateTypes> {
   addConsole = () => {
     const nodes = this.getNodes();
     if ('console' in nodes) {
-      // TODO assert `nodes.sim.getType() === 'tab'`
+      // TODO assert `nodes.console.getType() === 'tab'`
       this.persistentState.layoutState.doAction(
         FlexLayout.Actions.selectTab('console'),
       );
