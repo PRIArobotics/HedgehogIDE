@@ -48,7 +48,7 @@ const moveBlock = {
   inputsInline: true,
   previousStatement: null,
   nextStatement: null,
-  colour: 70,
+  colour: 120,
   tooltip: 'This is a tooltip',
   helpUrl: '',
 };
@@ -66,7 +66,7 @@ const sleepBlock = {
   inputsInline: true,
   previousStatement: null,
   nextStatement: null,
-  colour: 230,
+  colour: 120,
   tooltip: '',
   helpUrl: '',
 };
@@ -242,11 +242,6 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
           <div ref={this.blocklyRef} className={s.blockly} />
           <xml ref={this.toolboxRef}>
             <category name="Hedgehog" colour="120">
-              <block type="print_block">
-                <value name="TEXT">
-                  <shadow type="text" />
-                </value>
-              </block>
               <block type="move_block">
                 <value name="LEFT">
                   <shadow type="math_number">
@@ -267,6 +262,7 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
                 </value>
               </block>
             </category>
+            <sep />
             <category name="Logic" colour="%{BKY_LOGIC_HUE}">
               <block type="controls_if" />
               <block type="controls_if">
@@ -379,6 +375,11 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
               colour="%{BKY_PROCEDURES_HUE}"
             />
             <category name="Text" colour="70">
+              <block type="print_block">
+                <value name="TEXT">
+                  <shadow type="text" />
+                </value>
+              </block>
               <block type="text" />
             </category>
           </xml>
