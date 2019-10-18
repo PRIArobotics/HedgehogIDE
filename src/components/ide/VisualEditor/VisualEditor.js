@@ -13,13 +13,36 @@ import { styled } from '@material-ui/styles';
 import s from './VisualEditor.scss';
 
 const printBlock = {
-  type: 'text_alert',
+  type: 'print_block',
   message0: 'output %1',
   args0: [
     {
       type: 'input_value',
       name: 'TEXT',
       check: ['Number', 'String'],
+    },
+  ],
+  inputsInline: true,
+  previousStatement: null,
+  nextStatement: null,
+  colour: 70,
+  tooltip: 'This is a tooltip',
+  helpUrl: '',
+};
+
+const moveBlock = {
+  type: 'move_block',
+  message0: 'move with power %1 and %2',
+  args0: [
+    {
+      type: 'input_value',
+      name: 'LEFT',
+      check: 'Number',
+    },
+    {
+      type: 'input_value',
+      name: 'RIGHT',
+      check: 'Number',
     },
   ],
   inputsInline: true,
@@ -145,9 +168,14 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
   }
 
   static addBlocklyBlocks() {
-    Blockly.Blocks.text_print = {
+    Blockly.Blocks.print_block = {
       init() {
         this.jsonInit(printBlock);
+      },
+    };
+    Blockly.Blocks.move_block = {
+      init() {
+        this.jsonInit(moveBlock);
       },
     };
     Blockly.Blocks.sleep_block = {
@@ -155,19 +183,32 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
         this.jsonInit(sleepBlock);
       },
     };
-    Blockly.JavaScript.text_print = block => {
+    Blockly.JavaScript.print_block = block => {
       const valueText = Blockly.JavaScript.valueToCode(
         block,
         'TEXT',
-        Blockly.JavaScript.ORDER_ATOMIC,
+        Blockly.JavaScript.ORDER_NONE,
       );
       return `print(${valueText});\n`;
+    };
+    Blockly.JavaScript.move_block = block => {
+      const valueLeft = Blockly.JavaScript.valueToCode(
+        block,
+        'LEFT',
+        Blockly.JavaScript.ORDER_NONE,
+      );
+      const valueRight = Blockly.JavaScript.valueToCode(
+        block,
+        'RIGHT',
+        Blockly.JavaScript.ORDER_NONE,
+      );
+      return `move(${valueLeft}, ${valueRight});\n`;
     };
     Blockly.JavaScript.sleep_block = block => {
       const valueTime = Blockly.JavaScript.valueToCode(
         block,
         'TIME',
-        Blockly.JavaScript.ORDER_ATOMIC,
+        Blockly.JavaScript.ORDER_NONE,
       );
       return `await sleep(${valueTime});\n`;
     };
@@ -200,6 +241,32 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
         <div ref={this.containerRef} className={s.blocklyContainer}>
           <div ref={this.blocklyRef} className={s.blockly} />
           <xml ref={this.toolboxRef}>
+            <category name="Hedgehog" colour="120">
+              <block type="print_block">
+                <value name="TEXT">
+                  <shadow type="text" />
+                </value>
+              </block>
+              <block type="move_block">
+                <value name="LEFT">
+                  <shadow type="math_number">
+                    <field name="NUM">100</field>
+                  </shadow>
+                </value>
+                <value name="RIGHT">
+                  <shadow type="math_number">
+                    <field name="NUM">100</field>
+                  </shadow>
+                </value>
+              </block>
+              <block type="sleep_block">
+                <value name="TIME">
+                  <shadow type="math_number">
+                    <field name="NUM">1000</field>
+                  </shadow>
+                </value>
+              </block>
+            </category>
             <category name="Logic" colour="%{BKY_LOGIC_HUE}">
               <block type="controls_if" />
               <block type="controls_if">
@@ -312,8 +379,6 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
               colour="%{BKY_PROCEDURES_HUE}"
             />
             <category name="Text" colour="70">
-              <block type="text_print" />
-              <block type="sleep_block" />
               <block type="text" />
             </category>
           </xml>
