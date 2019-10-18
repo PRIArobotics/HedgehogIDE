@@ -119,6 +119,8 @@ class Robot {
 
 type PropTypes = {|
   forwardedRef: React.RefObject,
+  width: number,
+  height: number,
 |};
 type StateTypes = {||};
 
@@ -151,18 +153,28 @@ class Simulator extends React.Component<PropTypes, StateTypes> {
     const engine = Matter.Engine.create();
     engine.world.gravity.y = 0;
 
-    this.robot = new Robot({ x: 400, y: 150, angle: 0 });
+    this.robot = new Robot({ x: 100, y: 100, angle: 0 });
 
-    const box = Matter.Bodies.rectangle(500, 200, 60, 60, {
+    const box = Matter.Bodies.rectangle(300, 150, 60, 60, {
       density: 0.1,
       frictionAir: 0.2,
     });
 
+    const { width, height } = this.props;
+
     Matter.World.add(engine.world, [
-      Matter.Bodies.rectangle(500, 6, 980, 8, { isStatic: true }),
-      Matter.Bodies.rectangle(500, 594, 980, 8, { isStatic: true }),
-      Matter.Bodies.rectangle(6, 300, 8, 580, { isStatic: true }),
-      Matter.Bodies.rectangle(994, 300, 8, 580, { isStatic: true }),
+      Matter.Bodies.rectangle(width / 2, 6, width - 20, 8, {
+        isStatic: true,
+      }),
+      Matter.Bodies.rectangle(width / 2, height - 6, width - 20, 8, {
+        isStatic: true,
+      }),
+      Matter.Bodies.rectangle(6, height / 2, 8, height - 20, {
+        isStatic: true,
+      }),
+      Matter.Bodies.rectangle(width - 6, height / 2, 8, height - 20, {
+        isStatic: true,
+      }),
       ...this.robot.parts,
       box,
     ]);
@@ -178,13 +190,12 @@ class Simulator extends React.Component<PropTypes, StateTypes> {
   }
 
   mountMatter() {
+    const { width, height } = this.props;
+
     this.renderer = Matter.Render.create({
       element: this.renderTargetRef.current,
       engine: this.engine,
-      options: {
-        width: 1000,
-        height: 600,
-      },
+      options: { width, height },
     });
   }
 
