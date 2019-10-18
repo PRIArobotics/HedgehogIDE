@@ -99,7 +99,13 @@ class Ide extends React.Component<PropTypes, StateTypes> {
         );
       }
       case 'simulator': {
-        return <Simulator forwardedRef={this.simulatorRef} />;
+        return (
+          <Simulator
+            width={640}
+            height={480}
+            forwardedRef={this.simulatorRef}
+          />
+        );
       }
       case 'console': {
         return <Console forwardedRef={this.consoleRef} />;
