@@ -12,11 +12,6 @@
   flex: 1 0 auto;
   position: relative;
 
-  /* stylelint-disable-next-line selector-type-no-unknown */
-  > xml {
-    display: none;
-  }
-
   .blockly {
     position: absolute;
   }
