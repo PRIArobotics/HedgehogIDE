@@ -1,6 +1,7 @@
 // @flow
 
 import React from 'react';
+import ReactDOM from 'react-dom/server';
 import withStyles from 'isomorphic-style-loader/lib/withStyles';
 
 import Blockly from 'blockly';
@@ -39,15 +40,9 @@ const ColoredIconButton = styled(({ color, ...other }) => (
 
 class VisualEditor extends React.Component<PropTypes, StateTypes> {
   containerRef: React.RefObject = React.createRef();
-
   blocklyRef: React.RefObject = React.createRef();
-
-  toolboxRef: React.RefObject = React.createRef();
-
   codeRef: React.RefObject = React.createRef();
-
   mountPoint: React.RefObject = React.createRef();
-
   workspace: Blockly.Workspace;
 
   constructor(props) {
@@ -59,7 +54,7 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
 
   componentDidMount() {
     this.workspace = Blockly.inject(this.blocklyRef.current, {
-      toolbox: this.toolboxRef.current,
+      toolbox: this.createToolbox(),
       move: {
         scrollbars: true,
         drag: true,
@@ -99,6 +94,134 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
         this.codeRef.current.style.overflow = 'auto';
     });
     this.refreshSize();
+  }
+
+  createToolbox(): string {
+    const toolbox = (
+      <xml ref={this.toolboxRef}>
+        <category name="Hedgehog" colour="120">
+          {MoveBlock.toolboxBlocks.default()}
+          {SleepBlock.toolboxBlocks.default()}
+        </category>
+        <sep />
+        <category name="Logic" colour="%{BKY_LOGIC_HUE}">
+          <block type="controls_if" />
+          <block type="controls_if">
+            <mutation else="1" />
+          </block>
+          <block type="controls_if">
+            <mutation elseif="1" else="1" />
+          </block>
+          <block type="logic_compare" />
+          <block type="logic_operation" />
+          <block type="logic_negate" />
+          <block type="logic_boolean" />
+          <block type="logic_null" />
+          <block type="logic_ternary" />
+        </category>
+        <category name="Loops" colour="%{BKY_LOOPS_HUE}">
+          <block type="controls_repeat_ext">
+            <value name="TIMES">
+              <block type="math_number">
+                <field name="NUM">10</field>
+              </block>
+            </value>
+          </block>
+          <block type="controls_whileUntil" />
+          <block type="controls_for">
+            <field name="VAR">i</field>
+            <value name="FROM">
+              <block type="math_number">
+                <field name="NUM">1</field>
+              </block>
+            </value>
+            <value name="TO">
+              <block type="math_number">
+                <field name="NUM">10</field>
+              </block>
+            </value>
+            <value name="BY">
+              <block type="math_number">
+                <field name="NUM">1</field>
+              </block>
+            </value>
+          </block>
+          <block type="controls_forEach" />
+          <block type="controls_flow_statements" />
+        </category>
+        <category name="Math" colour="%{BKY_MATH_HUE}">
+          <block type="math_number">
+            <field name="NUM">0</field>
+          </block>
+          <block type="math_arithmetic" />
+          <block type="math_single" />
+          <block type="math_trig" />
+          <block type="math_constant" />
+          <block type="math_number_property" />
+          <block type="math_round" />
+          <block type="math_on_list" />
+          <block type="math_modulo" />
+          <block type="math_constrain">
+            <value name="LOW">
+              <block type="math_number">
+                <field name="NUM">1</field>
+              </block>
+            </value>
+            <value name="HIGH">
+              <block type="math_number">
+                <field name="NUM">10</field>
+              </block>
+            </value>
+          </block>
+          <block type="math_random_int">
+            <value name="FROM">
+              <block type="math_number">
+                <field name="NUM">1</field>
+              </block>
+            </value>
+            <value name="TO">
+              <block type="math_number">
+                <field name="NUM">10</field>
+              </block>
+            </value>
+          </block>
+          <block type="math_random_float" />
+          <block type="math_atan2" />
+        </category>
+        <category name="Lists" colour="%{BKY_LISTS_HUE}">
+          <block type="lists_create_empty" />
+          <block type="lists_create_with" />
+          <block type="lists_repeat">
+            <value name="NUM">
+              <block type="math_number">
+                <field name="NUM">5</field>
+              </block>
+            </value>
+          </block>
+          <block type="lists_length" />
+          <block type="lists_isEmpty" />
+          <block type="lists_indexOf" />
+          <block type="lists_getIndex" />
+          <block type="lists_setIndex" />
+        </category>
+        <sep />
+        <category
+          name="Variables"
+          custom="VARIABLE"
+          colour="%{BKY_VARIABLES_HUE}"
+        />
+        <category
+          name="Functions"
+          custom="PROCEDURE"
+          colour="%{BKY_PROCEDURES_HUE}"
+        />
+        <category name="Text" colour="70">
+          {PrintBlock.toolboxBlocks.default()}
+          <block type="text" />
+        </category>
+      </xml>
+    );
+    return ReactDOM.renderToStaticMarkup(toolbox);
   }
 
   handleResize = () => {
@@ -149,128 +272,6 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
       <div className={s.tabRoot}>
         <div ref={this.containerRef} className={s.blocklyContainer}>
           <div ref={this.blocklyRef} className={s.blockly} />
-          <xml ref={this.toolboxRef}>
-            <category name="Hedgehog" colour="120">
-              {MoveBlock.toolboxBlocks.default()}
-              {SleepBlock.toolboxBlocks.default()}
-            </category>
-            <sep />
-            <category name="Logic" colour="%{BKY_LOGIC_HUE}">
-              <block type="controls_if" />
-              <block type="controls_if">
-                <mutation else="1" />
-              </block>
-              <block type="controls_if">
-                <mutation elseif="1" else="1" />
-              </block>
-              <block type="logic_compare" />
-              <block type="logic_operation" />
-              <block type="logic_negate" />
-              <block type="logic_boolean" />
-              <block type="logic_null" />
-              <block type="logic_ternary" />
-            </category>
-            <category name="Loops" colour="%{BKY_LOOPS_HUE}">
-              <block type="controls_repeat_ext">
-                <value name="TIMES">
-                  <block type="math_number">
-                    <field name="NUM">10</field>
-                  </block>
-                </value>
-              </block>
-              <block type="controls_whileUntil" />
-              <block type="controls_for">
-                <field name="VAR">i</field>
-                <value name="FROM">
-                  <block type="math_number">
-                    <field name="NUM">1</field>
-                  </block>
-                </value>
-                <value name="TO">
-                  <block type="math_number">
-                    <field name="NUM">10</field>
-                  </block>
-                </value>
-                <value name="BY">
-                  <block type="math_number">
-                    <field name="NUM">1</field>
-                  </block>
-                </value>
-              </block>
-              <block type="controls_forEach" />
-              <block type="controls_flow_statements" />
-            </category>
-            <category name="Math" colour="%{BKY_MATH_HUE}">
-              <block type="math_number">
-                <field name="NUM">0</field>
-              </block>
-              <block type="math_arithmetic" />
-              <block type="math_single" />
-              <block type="math_trig" />
-              <block type="math_constant" />
-              <block type="math_number_property" />
-              <block type="math_round" />
-              <block type="math_on_list" />
-              <block type="math_modulo" />
-              <block type="math_constrain">
-                <value name="LOW">
-                  <block type="math_number">
-                    <field name="NUM">1</field>
-                  </block>
-                </value>
-                <value name="HIGH">
-                  <block type="math_number">
-                    <field name="NUM">10</field>
-                  </block>
-                </value>
-              </block>
-              <block type="math_random_int">
-                <value name="FROM">
-                  <block type="math_number">
-                    <field name="NUM">1</field>
-                  </block>
-                </value>
-                <value name="TO">
-                  <block type="math_number">
-                    <field name="NUM">10</field>
-                  </block>
-                </value>
-              </block>
-              <block type="math_random_float" />
-              <block type="math_atan2" />
-            </category>
-            <category name="Lists" colour="%{BKY_LISTS_HUE}">
-              <block type="lists_create_empty" />
-              <block type="lists_create_with" />
-              <block type="lists_repeat">
-                <value name="NUM">
-                  <block type="math_number">
-                    <field name="NUM">5</field>
-                  </block>
-                </value>
-              </block>
-              <block type="lists_length" />
-              <block type="lists_isEmpty" />
-              <block type="lists_indexOf" />
-              <block type="lists_getIndex" />
-              <block type="lists_setIndex" />
-            </category>
-            <sep />
-            <category
-              name="Variables"
-              custom="VARIABLE"
-              colour="%{BKY_VARIABLES_HUE}"
-            />
-            <category
-              name="Functions"
-              custom="PROCEDURE"
-              colour="%{BKY_PROCEDURES_HUE}"
-            />
-            <category name="Text" colour="70">
-              {PrintBlock.toolboxBlocks.default()}
-              <block type="text" />
-            </category>
-          </xml>
         </div>
         <div className={s.sidebar}>
           {this.props.running ? (
