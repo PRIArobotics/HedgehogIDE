@@ -64,7 +64,7 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
 
     const blocks = [MoveBlock, PrintBlock, SleepBlock];
     blocks.forEach(block => {
-      const type = block.blockJson.type;
+      const { type } = block.blockJson;
 
       Blockly.Blocks[type] = {
         init() {
