@@ -156,8 +156,8 @@ class Simulator extends React.Component<PropTypes, StateTypes> {
     this.robot = new Robot({ x: 100, y: 100, angle: 0 });
 
     const box = Matter.Bodies.rectangle(300, 150, 60, 60, {
-      density: 0.1,
-      frictionAir: 0.2,
+      density: 0.2,
+      frictionAir: 0.4,
     });
 
     const { width, height } = this.props;
