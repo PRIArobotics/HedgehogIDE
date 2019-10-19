@@ -66,7 +66,18 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
         wheel: false,
       },
     });
-    VisualEditor.addBlocklyBlocks();
+
+    const blocks = [MoveBlock, PrintBlock, SleepBlock];
+    blocks.forEach(block => {
+      const type = block.blockJson.type;
+
+      Blockly.Blocks[type] = {
+        init() {
+          this.jsonInit(block.blockJson);
+        },
+      };
+      Blockly.JavaScript[type] = block.generators.JavaScript;
+    });
 
     const workspaceXml = this.props.callbackGet();
     if (workspaceXml) {
@@ -110,19 +121,6 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
       blockly.style.height = `${container.offsetHeight}px`;
       Blockly.svgResize(this.workspace);
     }, 0);
-  }
-
-  static addBlocklyBlocks() {
-    [MoveBlock, PrintBlock, SleepBlock].forEach(block => {
-      const type = block.blockJson.type;
-
-      Blockly.Blocks[type] = {
-        init() {
-          this.jsonInit(block.blockJson);
-        },
-      };
-      Blockly.JavaScript[type] = block.generators.JavaScript;
-    });
   }
 
   workspaceUpdater() {
