@@ -25,17 +25,6 @@ import FileTree from '../FileTree';
 import Simulator from '../Simulator';
 import VisualEditor from '../VisualEditor';
 
-const iconStyles = {
-  smallIcon: {
-    width: 20,
-    height: 20,
-  },
-  small: {
-    width: 38,
-    height: 38,
-  },
-};
-
 const styled = withStylesMaterial(theme => ({
   root: {
     boxSizing: 'border-box',
@@ -337,8 +326,7 @@ class Ide extends React.Component<PropTypes, StateTypes> {
               <IconButton
                 variant="contained"
                 color="primary"
-                iconStyle={iconStyles.smallIcon}
-                style={iconStyles.small}
+                size="small"
                 onClick={this.addEditor}
               >
                 <CodeIcon />
@@ -348,8 +336,7 @@ class Ide extends React.Component<PropTypes, StateTypes> {
               <IconButton
                 variant="contained"
                 color="primary"
-                iconStyle={iconStyles.smallIcon}
-                style={iconStyles.small}
+                size="small"
                 onClick={this.addSimulator}
               >
                 <AddToQueueIcon />
@@ -359,8 +346,7 @@ class Ide extends React.Component<PropTypes, StateTypes> {
               <IconButton
                 variant="contained"
                 color="primary"
-                iconStyle={iconStyles.smallIcon}
-                style={iconStyles.small}
+                size="small"
                 onClick={this.addConsole}
               >
                 <NotesIcon />
@@ -370,8 +356,7 @@ class Ide extends React.Component<PropTypes, StateTypes> {
               <IconButton
                 variant="contained"
                 color="primary"
-                iconStyle={iconStyles.smallIcon}
-                style={iconStyles.small}
+                size="small"
                 onClick={this.addBlockly}
               >
                 <CallToActionIcon />
