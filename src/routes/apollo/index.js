@@ -7,7 +7,10 @@
  * LICENSE.txt file in the root directory of this source tree.
  */
 
-import React from 'react';
+// @flow
+
+import * as React from 'react';
+
 import Apollo from './Apollo';
 import Layout from '../../components/layout/Layout';
 

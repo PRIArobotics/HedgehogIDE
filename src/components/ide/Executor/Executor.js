@@ -1,19 +1,33 @@
 // @flow
 
-import React from 'react';
+import * as React from 'react';
+
+type ReceiveMessageEvent = {
+  data: any,
+  origin: string,
+  source: window,
+};
+
+type ExecutorMessage = {
+  command: string,
+  payload: any,
+};
 
 type PropTypes = {|
   code: string,
-  handlers: { [command: string]: (any, any) => void },
+  handlers: { [command: string]: (window, any) => any },
 |};
 type StateTypes = {||};
 
 class Executor extends React.Component<PropTypes, StateTypes> {
-  frameRef: React.RefObject = React.createRef();
-
-  state = {};
+  frameRef: RefObject<'iframe'> = React.createRef();
 
   componentDidMount() {
+    if (this.frameRef.current === null) {
+      // eslint-disable-next-line no-throw-literal
+      throw 'ref is null in componentDidMount';
+    }
+
     this.frameRef.current.onload = () => {
       this.sendMessage('execute', this.props.code);
     };
@@ -24,11 +38,12 @@ class Executor extends React.Component<PropTypes, StateTypes> {
     window.removeEventListener('message', this.receiveMessage);
   }
 
-  receiveMessage = ({ data, origin, source }) => {
+  receiveMessage = ({ data, origin, source }: ReceiveMessageEvent) => {
+    if (this.frameRef.current === null) return;
     if (origin !== 'null' || source !== this.frameRef.current.contentWindow)
       return;
 
-    const { command, payload } = data;
+    const { command, payload } = (data: ExecutorMessage);
 
     const handler = this.props.handlers[command];
     if (handler) {
@@ -37,6 +52,7 @@ class Executor extends React.Component<PropTypes, StateTypes> {
   };
 
   sendMessage(command: string, payload: any) {
+    if (this.frameRef.current === null) return;
     this.frameRef.current.contentWindow.postMessage({ command, payload }, '*');
   }
 

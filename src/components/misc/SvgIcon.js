@@ -1,6 +1,6 @@
 // @flow
 
-import React from 'react';
+import * as React from 'react';
 import { withStyles } from '@material-ui/styles';
 
 import Icon from '@material-ui/core/Icon';

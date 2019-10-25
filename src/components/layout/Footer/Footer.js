@@ -7,7 +7,7 @@
  * LICENSE.txt file in the root directory of this source tree.
  */
 
-import React from 'react';
+import * as React from 'react';
 import withStyles from 'isomorphic-style-loader/lib/withStyles';
 
 import Link from '../../misc/Link';

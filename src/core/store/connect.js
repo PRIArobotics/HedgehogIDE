@@ -7,7 +7,9 @@ const workerPath =
     ? require('jsstore/dist/jsstore.worker.min')
     : require('jsstore/dist/jsstore.worker');
 
-export default async function connect(schema): Promise<JsStore.Instance> {
+export default async function connect(
+  schema: Object,
+): Promise<JsStore.Instance> {
   const connection = new JsStore.Instance(new Worker(workerPath));
   await connection.initDb(schema);
   return connection;

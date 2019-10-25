@@ -9,8 +9,7 @@
 
 // @flow
 
-import React from 'react';
-import type { Node } from 'react';
+import * as React from 'react';
 import PropTypes from 'prop-types';
 import { ApolloProvider } from 'react-apollo';
 import { ThemeProvider } from '@material-ui/styles';
@@ -30,7 +29,7 @@ type ContextType = {|
 
 type Props = {|
   context: ContextType,
-  children: Node,
+  children: React.Node,
 |};
 
 const ContextRuntimeType = {

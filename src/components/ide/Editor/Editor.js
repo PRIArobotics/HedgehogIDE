@@ -1,6 +1,6 @@
 // @flow
 
-import React from 'react';
+import * as React from 'react';
 import withStyles from 'isomorphic-style-loader/lib/withStyles';
 
 import AceEditor from 'react-ace';
@@ -38,6 +38,8 @@ const ColoredIconButton = styled(({ color, ...other }) => (
 });
 
 class Editor extends React.Component<PropTypes, StateTypes> {
+  containerRef: RefObject<'div'> = React.createRef();
+  editorRef: RefObject<typeof AceEditor> = React.createRef();
   value: AceState;
 
   state = {
@@ -49,8 +51,6 @@ class Editor extends React.Component<PropTypes, StateTypes> {
   constructor(props: PropTypes) {
     super(props);
     this.value = this.props.callbackGet();
-    this.containerRef = React.createRef();
-    this.editorRef = React.createRef();
   }
 
   componentDidMount() {
@@ -67,10 +67,12 @@ class Editor extends React.Component<PropTypes, StateTypes> {
 
   handleResize = () => {
     setTimeout(() => {
-      this.setState({
-        editorHeight: `${this.containerRef.current.offsetHeight}px`,
-        editorWidth: `${this.containerRef.current.offsetWidth}px`,
-      });
+      if (this.containerRef.current !== null) {
+        this.setState({
+          editorHeight: `${this.containerRef.current.offsetHeight}px`,
+          editorWidth: `${this.containerRef.current.offsetWidth}px`,
+        });
+      }
     }, 0);
   };
 

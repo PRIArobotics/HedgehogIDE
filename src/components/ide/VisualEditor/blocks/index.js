@@ -1,9 +1,9 @@
 // @flow
 
-import { ReactElement } from 'react';
+import * as React from 'react';
 
 export type Block = {|
   blockJson: Object,
   generators: { [string]: (Object) => string },
-  toolboxBlocks: { [string]: () => ReactElement },
+  toolboxBlocks: { [string]: () => React.Node },
 |};

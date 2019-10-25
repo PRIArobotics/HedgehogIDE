@@ -1,6 +1,6 @@
 // @flow
 
-import React from 'react';
+import * as React from 'react';
 import ReactDOM from 'react-dom/server';
 import withStyles from 'isomorphic-style-loader/lib/withStyles';
 
@@ -41,10 +41,13 @@ const ColoredIconButton = styled(({ color, ...other }) => (
 });
 
 class VisualEditor extends React.Component<PropTypes, StateTypes> {
-  containerRef: React.RefObject = React.createRef();
-  blocklyRef: React.RefObject = React.createRef();
-  codeRef: React.RefObject = React.createRef();
+  containerRef: RefObject<'div'> = React.createRef();
+  blocklyRef: RefObject<'div'> = React.createRef();
+  codeRef: RefObject<'pre'> = React.createRef();
   workspace: Blockly.Workspace;
+
+  resizeAnim: IntervalID | null;
+  code: string = '';
 
   constructor(props) {
     super(props);
@@ -54,6 +57,10 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
   }
 
   componentDidMount() {
+    // eslint-disable-next-line no-throw-literal
+    if (this.codeRef.current === null) throw 'ref is null in componentDidMount';
+    const codeRefCurrent = this.codeRef.current;
+
     this.workspace = Blockly.inject(this.blocklyRef.current, {
       toolbox: this.createToolbox(),
       move: {
@@ -88,10 +95,10 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
     const { layoutNode } = this.props;
     layoutNode.setEventListener('resize', this.handleResize);
     layoutNode.setEventListener('visibility', this.handleVisibilityChange);
-    this.codeRef.current.addEventListener('transitionend', () => {
+    codeRefCurrent.addEventListener('transitionend', () => {
       if (this.resizeAnim) clearInterval(this.resizeAnim);
       this.refreshSize();
-      if (!this.state.codeCollapsed)
+      if (!this.state.codeCollapsed && this.codeRef.current !== null)
         this.codeRef.current.style.overflow = 'auto';
     });
     this.refreshSize();
@@ -241,6 +248,8 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
     setTimeout(() => {
       const container = this.containerRef.current;
       const blockly = this.blocklyRef.current;
+      if (container === null || blockly === null) return;
+
       blockly.style.width = `${container.offsetWidth}px`;
       blockly.style.height = `${container.offsetHeight}px`;
       Blockly.svgResize(this.workspace);
@@ -248,8 +257,12 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
   }
 
   workspaceUpdater() {
+    // eslint-disable-next-line no-throw-literal
+    if (this.codeRef.current === null) throw 'ref is null in componentDidMount';
+    const codeRefCurrent = this.codeRef.current;
+
     this.code = Blockly.JavaScript.workspaceToCode(this.workspace);
-    this.codeRef.current.innerHTML = this.code;
+    codeRefCurrent.innerHTML = this.code;
     const xml = Blockly.Xml.workspaceToDom(this.workspace);
     this.props.callbackSave(Blockly.Xml.domToText(xml));
   }
@@ -264,7 +277,9 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
 
   handleToggleCodeCollapsed = () => {
     this.setState(oldState => ({ codeCollapsed: !oldState.codeCollapsed }));
-    this.codeRef.current.style.overflow = 'hidden';
+    if (this.codeRef.current !== null)
+      this.codeRef.current.style.overflow = 'hidden';
+    // TODO requestAnimationFrame?
     this.resizeAnim = setInterval(() => this.refreshSize(), 17);
   };
 

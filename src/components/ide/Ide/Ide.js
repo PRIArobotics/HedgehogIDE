@@ -1,6 +1,6 @@
 // @flow
 
-import React from 'react';
+import * as React from 'react';
 import withStyles from 'isomorphic-style-loader/lib/withStyles';
 import { compose } from 'react-apollo';
 
@@ -115,9 +115,9 @@ class Ide extends React.Component<PropTypes, StateTypes> {
     }
   };
 
-  flexRef: React.RefObject = React.createRef();
-  consoleRef: React.RefObject = React.createRef();
-  simulatorRef: React.RefObject = React.createRef();
+  flexRef: RefObject<typeof FlexLayout.Layout> = React.createRef();
+  consoleRef: RefObject<typeof Console> = React.createRef();
+  simulatorRef: RefObject<typeof Simulator> = React.createRef();
 
   blocklyTabIds = new Set();
 

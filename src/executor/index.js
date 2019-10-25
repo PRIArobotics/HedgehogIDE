@@ -4,9 +4,12 @@
 const ORIGIN = __DEV__ ? 'http://localhost:3000' : 'https://ide.pria.at';
 
 // eslint-disable-next-line no-underscore-dangle
-let _source = null;
+let _source: window | null = null;
 
 const sendMessage = (command, payload) => {
+  // eslint-disable-next-line no-throw-literal
+  if (_source === null) throw 'sendMessage before execute';
+
   _source.postMessage({ command, payload }, ORIGIN);
 };
 
@@ -18,7 +21,9 @@ global.sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
 // message listener & handlers
 const handlers = {
   execute(source, code) {
-    // TODO assert _source === null
+    // eslint-disable-next-line no-throw-literal
+    if (_source !== null) throw '_source already initialized';
+
     _source = source;
 
     (async () => {

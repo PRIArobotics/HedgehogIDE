@@ -1,6 +1,6 @@
 // @flow
 
-import React from 'react';
+import * as React from 'react';
 import withStyles from 'isomorphic-style-loader/lib/withStyles';
 
 import Matter from 'matter-js';
@@ -118,7 +118,8 @@ class Robot {
 }
 
 type PropTypes = {|
-  forwardedRef: React.RefObject,
+  // eslint-disable-next-line no-use-before-define
+  forwardedRef: RefObject<typeof Simulator>,
   width: number,
   height: number,
 |};
@@ -129,7 +130,7 @@ class Simulator extends React.Component<PropTypes, StateTypes> {
   runner: Matter.Runner;
   robot: Robot;
 
-  renderTargetRef: React.RefObject = React.createRef();
+  renderTargetRef: RefObject<'div'> = React.createRef();
   renderer: Matter.Render | null = null;
 
   constructor(props) {

@@ -1,13 +1,12 @@
 // @flow
 
-import React from 'react';
-import type { Node } from 'react';
+import * as React from 'react';
 
 type PropTypes = {|
-  children: () => Promise<Node>,
+  children: () => Promise<React.Node>,
 |};
 type StateTypes = {|
-  children: Node | null,
+  children: React.Node | null,
 |};
 
 class NoSSR extends React.Component<PropTypes, StateTypes> {
