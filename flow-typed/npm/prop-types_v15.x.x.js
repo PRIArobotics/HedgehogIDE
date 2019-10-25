@@ -1,12 +1,11 @@
-// flow-typed signature: d9a983bb1ac458a256c31c139047bdbb
-// flow-typed version: 927687984d/prop-types_v15.x.x/flow_>=v0.41.x
+// flow-typed signature: cadebf9b85943ae7d76b81524404aa4c
+// flow-typed version: 84e615b60b/prop-types_v15.x.x/flow_>=v0.41.x <=v0.88.x
 
 type $npm$propTypes$ReactPropsCheckType = (
   props: any,
   propName: string,
   componentName: string,
-  href?: string,
-) => ?Error;
+  href?: string) => ?Error;
 
 declare module 'prop-types' {
   declare var array: React$PropType$Primitive<Array<any>>;
@@ -27,10 +26,10 @@ declare module 'prop-types' {
   declare var shape: React$PropType$Shape;
 
   declare function checkPropTypes<V>(
-    propTypes: $Subtype<{ [_: $Keys<V>]: $npm$propTypes$ReactPropsCheckType }>,
+    propTypes: $Subtype<{[_: $Keys<V>]: $npm$propTypes$ReactPropsCheckType}>,
     values: V,
     location: string,
     componentName: string,
-    getStack: ?() => ?string,
-  ): void;
+    getStack: ?(() => ?string)
+  ) : void;
 }

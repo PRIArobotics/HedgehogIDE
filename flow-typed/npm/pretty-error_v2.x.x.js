@@ -1,7 +1,7 @@
-// flow-typed signature: 2204693f47e9d9337c7785787e65d14b
-// flow-typed version: 5e951c7257/pretty-error_v2.x.x/flow_>=v0.25.x
+// flow-typed signature: 4eccb7bf85eafd22d6e6a2f9f50944dc
+// flow-typed version: c6154227d1/pretty-error_v2.x.x/flow_>=v0.25.x <=v0.103.x
 
-declare module 'pretty-error' {
+declare module "pretty-error" {
   declare class PrettyError {
     static constructor(): PrettyError;
     static start(): PrettyError;

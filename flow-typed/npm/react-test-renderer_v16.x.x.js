@@ -1,5 +1,5 @@
-// flow-typed signature: 9b9f4128694a7f68659d945b81fb78ff
-// flow-typed version: 46dfe79a54/react-test-renderer_v16.x.x/flow_>=v0.47.x
+// flow-typed signature: b5cf98334b892160f64c6e932b1c2bca
+// flow-typed version: c6154227d1/react-test-renderer_v16.x.x/flow_>=v0.47.x <=v0.103.x
 
 // Type definitions for react-test-renderer 16.x.x
 // Ported from: https://github.com/DefinitelyTyped/DefinitelyTyped/blob/master/types/react-test-renderer
@@ -9,13 +9,13 @@ type ReactComponentInstance = React$Component<any>;
 type ReactTestRendererJSON = {
   type: string,
   props: { [propName: string]: any },
-  children: null | ReactTestRendererJSON[],
+  children: null | ReactTestRendererJSON[]
 };
 
 type ReactTestRendererTree = ReactTestRendererJSON & {
-  nodeType: 'component' | 'host',
+  nodeType: "component" | "host",
   instance: ?ReactComponentInstance,
-  rendered: null | ReactTestRendererTree,
+  rendered: null | ReactTestRendererTree
 };
 
 type ReactTestInstance = {
@@ -31,39 +31,45 @@ type ReactTestInstance = {
 
   findAll(
     predicate: (node: ReactTestInstance) => boolean,
-    options?: { deep: boolean },
+    options?: { deep: boolean }
   ): ReactTestInstance[],
   findAllByType(
     type: React$ElementType,
-    options?: { deep: boolean },
+    options?: { deep: boolean }
   ): ReactTestInstance[],
   findAllByProps(
     props: { [propName: string]: any },
-    options?: { deep: boolean },
-  ): ReactTestInstance[],
+    options?: { deep: boolean }
+  ): ReactTestInstance[]
 };
 
 type TestRendererOptions = {
-  createNodeMock(element: React$Element<any>): any,
+  createNodeMock(element: React$Element<any>): any
 };
 
-declare module 'react-test-renderer' {
+declare module "react-test-renderer" {
   declare export type ReactTestRenderer = {
     toJSON(): null | ReactTestRendererJSON,
     toTree(): null | ReactTestRendererTree,
     unmount(nextElement?: React$Element<any>): void,
     update(nextElement: React$Element<any>): void,
     getInstance(): ?ReactComponentInstance,
-    root: ReactTestInstance,
+    root: ReactTestInstance
+  };
+
+  declare type Thenable = {
+    then(resolve: () => mixed, reject?: () => mixed): mixed,
   };
 
   declare function create(
     nextElement: React$Element<any>,
-    options?: TestRendererOptions,
+    options?: TestRendererOptions
   ): ReactTestRenderer;
+
+  declare function act(callback: () => void): Thenable;
 }
 
-declare module 'react-test-renderer/shallow' {
+declare module "react-test-renderer/shallow" {
   declare export default class ShallowRenderer {
     static createRenderer(): ShallowRenderer;
     getMountedInstance(): ReactTestInstance;

@@ -1,7 +1,7 @@
-// flow-typed signature: bac0ee66e0653772d037dc47b51a5e1f
-// flow-typed version: da30fe6876/body-parser_v1.x.x/flow_>=v0.25.x
+// flow-typed signature: e6542e2ef8be94e75e49828becb7bb49
+// flow-typed version: c6154227d1/body-parser_v1.x.x/flow_>=v0.25.x <=v0.103.x
 
-import type { Middleware, $Request, $Response } from 'express';
+import type { Middleware, $Request, $Response } from "express";
 
 declare type bodyParser$Options = {
   inflate?: boolean,
@@ -11,26 +11,26 @@ declare type bodyParser$Options = {
     req: $Request,
     res: $Response,
     buf: Buffer,
-    encoding: string,
-  ) => void,
+    encoding: string
+  ) => void
 };
 
 declare type bodyParser$OptionsText = bodyParser$Options & {
   reviver?: (key: string, value: any) => any,
-  strict?: boolean,
+  strict?: boolean
 };
 
 declare type bodyParser$OptionsJson = bodyParser$Options & {
   reviver?: (key: string, value: any) => any,
-  strict?: boolean,
+  strict?: boolean
 };
 
 declare type bodyParser$OptionsUrlencoded = bodyParser$Options & {
   extended?: boolean,
-  parameterLimit?: number,
+  parameterLimit?: number
 };
 
-declare module 'body-parser' {
+declare module "body-parser" {
   declare type Options = bodyParser$Options;
   declare type OptionsText = bodyParser$OptionsText;
   declare type OptionsJson = bodyParser$OptionsJson;
