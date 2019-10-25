@@ -4,6 +4,7 @@ import * as React from 'react';
 import withStyles from 'isomorphic-style-loader/lib/withStyles';
 
 import Tree from 'rc-tree';
+// $FlowExpectError
 import sRcTree from 'rc-tree/assets/index.css';
 
 import { Menu, MenuItem } from '@material-ui/core';
