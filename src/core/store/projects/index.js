@@ -45,7 +45,7 @@ export async function init() {
   await connection;
 }
 
-export async function getProjects(): Promise<Project[]> {
+export async function getProjects(): Promise<Array<Project>> {
   const conn = await connection;
 
   return /* await */ conn.select({
@@ -64,7 +64,7 @@ export async function getProjectById(id: number): Promise<Project> {
   );
 }
 
-export async function getProjectByName(name: string): Promise<Project[]> {
+export async function getProjectByName(name: string): Promise<Array<Project>> {
   const conn = await connection;
 
   return unique(
