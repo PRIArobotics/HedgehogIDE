@@ -18,6 +18,7 @@ import { withStyles } from '@material-ui/styles';
 
 import Link from '../../misc/Link';
 import SvgIcon from '../../misc/SvgIcon';
+
 import logoUrl from './logo.svg';
 
 const styled = withStyles(theme => ({

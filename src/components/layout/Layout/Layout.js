@@ -11,11 +11,11 @@
 
 import React from 'react';
 import type { Node } from 'react';
+import { withStyles } from '@material-ui/styles';
 
 import AppBar from '@material-ui/core/AppBar';
 import Drawer from '@material-ui/core/Drawer';
 import Divider from '@material-ui/core/Divider';
-import { withStyles } from '@material-ui/styles';
 
 import Header from '../Header';
 import Sidebar from '../Sidebar';

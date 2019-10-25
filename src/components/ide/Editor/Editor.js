@@ -4,14 +4,15 @@ import React from 'react';
 import withStyles from 'isomorphic-style-loader/lib/withStyles';
 
 import AceEditor from 'react-ace';
+import 'brace/mode/javascript';
+import 'brace/ext/language_tools';
 
 import StopIcon from '@material-ui/icons/Stop';
 import { styled } from '@material-ui/styles';
 import IconButton from '@material-ui/core/IconButton';
 import PlayArrowIcon from '@material-ui/icons/PlayArrow';
+
 import s from './Editor.scss';
-import 'brace/mode/javascript';
-import 'brace/ext/language_tools';
 
 type AceState = any;
 
