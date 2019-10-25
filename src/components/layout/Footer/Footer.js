@@ -9,8 +9,10 @@
 
 import React from 'react';
 import withStyles from 'isomorphic-style-loader/lib/withStyles';
-import s from './Footer.scss';
+
 import Link from '../../misc/Link';
+
+import s from './Footer.scss';
 
 class Footer extends React.Component {
   render() {

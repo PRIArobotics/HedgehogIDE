@@ -1,9 +1,11 @@
 // @flow
 
 import React from 'react';
+import withStyles from 'isomorphic-style-loader/lib/withStyles';
+
 import Tree from 'rc-tree';
 import sRcTree from 'rc-tree/assets/index.css';
-import withStyles from 'isomorphic-style-loader/lib/withStyles';
+
 import { Menu, MenuItem } from '@material-ui/core';
 
 import s from './FileTree.scss';

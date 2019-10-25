@@ -6,7 +6,6 @@ import { compose } from 'react-apollo';
 
 import Paper from '@material-ui/core/Paper';
 import { withStyles as withStylesMaterial } from '@material-ui/styles';
-
 import CodeIcon from '@material-ui/icons/Code';
 import AddToQueueIcon from '@material-ui/icons/AddToQueue';
 import NotesIcon from '@material-ui/icons/Notes';

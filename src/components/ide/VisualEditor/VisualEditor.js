@@ -5,12 +5,14 @@ import ReactDOM from 'react-dom/server';
 import withStyles from 'isomorphic-style-loader/lib/withStyles';
 
 import Blockly from 'blockly';
+
 import IconButton from '@material-ui/core/IconButton';
 import PlayArrowIcon from '@material-ui/icons/PlayArrow';
 import KeyboardArrowRightIcon from '@material-ui/icons/KeyboardArrowRight';
 import KeyboardArrowLeftIcon from '@material-ui/icons/KeyboardArrowLeft';
 import StopIcon from '@material-ui/icons/Stop';
 import { styled } from '@material-ui/styles';
+
 import s from './VisualEditor.scss';
 
 import MoveBlock from './blocks/MoveBlock';
