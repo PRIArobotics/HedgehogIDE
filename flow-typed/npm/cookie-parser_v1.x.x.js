@@ -1,5 +1,5 @@
-// flow-typed signature: f4490542210f56d64e3c60f4043dabb5
-// flow-typed version: dd8117f9f7/cookie-parser_v1.x.x/flow_>=v0.25.x
+// flow-typed signature: b8a1c1addc115f27a6f84f88f53b95ca
+// flow-typed version: c7321cc104/cookie-parser_v1.x.x/flow_>=v0.25.x <=v0.92.x
 
 /**
  * Flow libdef for 'cookie-parser'
@@ -21,7 +21,7 @@ declare module 'cookie-parser' {
 
   declare type express$RenderCallback = (
     err: Error | null,
-    html?: string,
+    html?: string
   ) => mixed;
 
   declare type express$CookieOptions = {
@@ -71,12 +71,12 @@ declare module 'cookie-parser' {
       port: number,
       hostname?: string,
       backlog?: number,
-      callback?: (err?: ?Error) => mixed,
+      callback?: (err?: ?Error) => mixed
     ): ?http.Server;
     listen(
       port: number,
       hostname?: string,
-      callback?: (err?: ?Error) => mixed,
+      callback?: (err?: ?Error) => mixed
     ): ?http.Server;
     listen(port: number, callback?: (err?: ?Error) => mixed): ?http.Server;
     listen(path: string, callback?: (err?: ?Error) => mixed): ?http.Server;
@@ -94,18 +94,18 @@ declare module 'cookie-parser' {
     render(
       name: string,
       optionsOrFunction: { [name: string]: mixed },
-      callback: express$RenderCallback,
+      callback: express$RenderCallback
     ): void;
     handle(
       req: http$IncomingMessage,
       res: http$ServerResponse,
-      next?: ?express$NextFunction,
+      next?: ?express$NextFunction
     ): void;
     // callable signature is not inherited
     (
       req: http$IncomingMessage,
       res: http$ServerResponse,
-      next?: ?express$NextFunction,
+      next?: ?express$NextFunction
     ): void;
   }
 
@@ -157,7 +157,7 @@ declare module 'cookie-parser' {
     handle(
       req: http$IncomingMessage,
       res: http$ServerResponse,
-      next: express$NextFunction,
+      next: express$NextFunction
     ): void;
     param(
       param: string,
@@ -165,13 +165,13 @@ declare module 'cookie-parser' {
         req: $Subtype<express$Request>,
         res: express$Response,
         next: express$NextFunction,
-        id: string,
-      ) => mixed,
+        id: string
+      ) => mixed
     ): void;
     (
       req: http$IncomingMessage,
       res: http$ServerResponse,
-      next?: ?express$NextFunction,
+      next?: ?express$NextFunction
     ): void;
   }
 
@@ -223,7 +223,7 @@ declare module 'cookie-parser' {
     download(
       path: string,
       filename?: string,
-      callback?: (err?: ?Error) => void,
+      callback?: (err?: ?Error) => void
     ): this;
     format(typesObject: { [type: string]: Function }): this;
     json(body?: mixed): this;
@@ -235,13 +235,13 @@ declare module 'cookie-parser' {
     render(
       view: string,
       locals?: { [name: string]: mixed },
-      callback?: express$RenderCallback,
+      callback?: express$RenderCallback
     ): this;
     send(body?: mixed): this;
     sendFile(
       path: string,
       options?: express$SendFileOptions,
-      callback?: (err?: ?Error) => mixed,
+      callback?: (err?: ?Error) => mixed
     ): this;
     sendStatus(statusCode: number): this;
     header(field: string, value?: string): this;
@@ -259,13 +259,13 @@ declare module 'cookie-parser' {
     | ((
         req: $Subtype<express$Request>,
         res: express$Response,
-        next: express$NextFunction,
+        next: express$NextFunction
       ) => mixed)
     | ((
         error: Error,
         req: $Subtype<express$Request>,
         res: express$Response,
-        next: express$NextFunction,
+        next: express$NextFunction
       ) => mixed);
 
   /* -------------------------- 8< ------------------------------------------------------------------ */
@@ -274,7 +274,7 @@ declare module 'cookie-parser' {
 
   declare function cookieParser(
     secret?: string | Array<string>,
-    options?: mixed,
+    options?: mixed
   ): express$Middleware;
 
   declare export default typeof cookieParser;

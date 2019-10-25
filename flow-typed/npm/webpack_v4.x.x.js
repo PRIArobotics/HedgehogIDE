@@ -1,21 +1,41 @@
-// flow-typed signature: 913544cc68b8b8e005726dd1e9689f85
-// flow-typed version: 5d209e063b/webpack_v4.x.x/flow_>=v0.71.x
+// flow-typed signature: 249ddfcae5dfea268feb3f85fbd35f97
+// flow-typed version: d14eb225e8/webpack_v4.x.x/flow_>=v0.71.x <=v0.103.x
 
 import * as http from 'http';
 import fs from 'fs';
 
 declare module 'webpack' {
-  declare class WebpackError extends Error {
+  declare class $WebpackError extends Error {
     constructor(message: string): WebpackError;
     inspect(): string;
+    details: string;
   }
 
+  declare type WebpackError = $WebpackError;
+
+  declare interface Stats {
+    hasErrors(): boolean;
+    hasWarnings(): boolean;
+    toJson(options?: StatsOptions): any;
+    toString(options?: StatsOptions & { colors?: boolean }): string;
+  }
+
+  declare type Callback = (error: WebpackError, stats: Stats) => void;
+  declare type WatchHandler = (error: WebpackError, stats: Stats) => void;
+
+  declare type Watching = {
+    close(): void,
+    invalidate(): void,
+  };
+
   declare type WebpackCompiler = {
-    // <...>
+    run(callback: Callback): void,
+    watch(options: WatchOptions, handler: WatchHandler): Watching,
   };
 
   declare type WebpackMultiCompiler = {
-    // <...>
+    run(callback: Callback): void,
+    watch(options: WatchOptions, handler: WatchHandler): Watching,
   };
 
   declare class WebpackCompilation {
@@ -61,16 +81,16 @@ declare module 'webpack' {
     | ((
         context: string,
         request: string,
-        callback: (err?: Error, result?: string) => void,
+        callback: (err?: Error, result?: string) => void
       ) => void)
     | ExternalItem
     | Array<
         | ((
             context: string,
             request: string,
-            callback: (err?: Error, result?: string) => void,
+            callback: (err?: Error, result?: string) => void
           ) => void)
-        | ExternalItem,
+        | ExternalItem
       >;
 
   declare type RuleSetCondition =
@@ -480,7 +500,7 @@ declare module 'webpack' {
         setHeaders?: (
           res: http.OutgoingMessage,
           path: string,
-          stat: fs.Stat,
+          stat: fs.Stat
         ) => void,
       },
       stats?: StatsOptions,
@@ -564,8 +584,23 @@ declare module 'webpack' {
     watchOptions?: WatchOptions,
   };
 
-  declare module.exports: (
+  declare class EnvironmentPlugin {
+    constructor(env: { [string]: mixed } | string[]): $ElementType<
+      $NonMaybeType<$PropertyType<ResolveOptions, 'plugins'>>,
+      number
+    >;
+  }
+
+  declare function builder(
     options: WebpackOptions,
-    callback: (error: WebpackError, stats: WebpackStats) => void,
-  ) => WebpackCompiler | WebpackMultiCompiler;
+    callback?: Callback
+  ): WebpackCompiler;
+  declare function builder(
+    options: WebpackOptions[],
+    callback?: Callback
+  ): WebpackMultiCompiler;
+
+  declare module.exports: typeof builder & {
+    EnvironmentPlugin: typeof EnvironmentPlugin,
+  };
 }
