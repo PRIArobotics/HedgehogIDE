@@ -44,7 +44,6 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
   containerRef: React.RefObject = React.createRef();
   blocklyRef: React.RefObject = React.createRef();
   codeRef: React.RefObject = React.createRef();
-  mountPoint: React.RefObject = React.createRef();
   workspace: Blockly.Workspace;
 
   constructor(props) {
@@ -100,7 +99,7 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
 
   createToolbox(): string {
     const toolbox = (
-      <xml ref={this.toolboxRef}>
+      <xml>
         <category name="Hedgehog" colour="120">
           {MoveBlock.toolboxBlocks.default()}
           {SleepBlock.toolboxBlocks.default()}
