@@ -1,6 +1,6 @@
 // @flow
 
-import React from 'react';
+import * as React from 'react';
 import withStyles from 'isomorphic-style-loader/lib/withStyles';
 
 import Toolbar from '@material-ui/core/Toolbar';
@@ -101,6 +101,9 @@ class Console extends React.Component<PropTypes, StateTypes> {
   }
 
   async confirmDeleteProject() {
+    // eslint-disable-next-line no-throw-literal
+    if (this.state.projectToDelete === null) throw 'no projectToDelete';
+
     try {
       await ProjectsDB.removeProject(this.state.projectToDelete);
       await this.refreshProjects();

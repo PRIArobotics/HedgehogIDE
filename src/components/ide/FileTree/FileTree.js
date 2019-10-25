@@ -1,6 +1,6 @@
 // @flow
 
-import React from 'react';
+import * as React from 'react';
 import withStyles from 'isomorphic-style-loader/lib/withStyles';
 
 import Tree from 'rc-tree';
@@ -64,7 +64,7 @@ type StateTypes = {|
 |};
 
 class FileTree extends React.Component<PropTypes, StateTypes> {
-  rootDivRef: React.RefObject = React.createRef();
+  rootDivRef: RefObject<'div'> = React.createRef();
 
   state = {
     cmOpen: false,
@@ -72,11 +72,21 @@ class FileTree extends React.Component<PropTypes, StateTypes> {
   };
 
   componentDidMount() {
+    if (this.rootDivRef.current === null) {
+      // eslint-disable-next-line no-throw-literal
+      throw 'ref is null in componentDidMount';
+    }
+
     const rootDiv = this.rootDivRef.current;
     rootDiv.addEventListener('mousemove', this.handleMouseMove);
   }
 
   componentWillUnmount() {
+    if (this.rootDivRef.current === null) {
+      // eslint-disable-next-line no-throw-literal
+      throw 'ref is null in componentDidMount';
+    }
+
     const rootDiv = this.rootDivRef.current;
     rootDiv.removeEventListener('mousemove', this.handleMouseMove);
   }

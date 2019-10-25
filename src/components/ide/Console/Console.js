@@ -1,6 +1,6 @@
 // @flow
 
-import React from 'react';
+import * as React from 'react';
 import withStyles from 'isomorphic-style-loader/lib/withStyles';
 
 // eslint-disable-next-line css-modules/no-unused-class
@@ -12,16 +12,16 @@ type ConsoleItem = {|
 |};
 
 type PropTypes = {|
-  forwardedRef: React.RefObject,
+  // eslint-disable-next-line no-use-before-define
+  forwardedRef: RefObject<typeof Console>,
 |};
 type StateTypes = {|
   consoleText: Array<ConsoleItem>,
 |};
 
 class Console extends React.Component<PropTypes, StateTypes> {
-  inputRef: React.RefObject = React.createRef();
-
-  bottomRef: React.RefObject = React.createRef();
+  inputRef: RefObject<'input'> = React.createRef();
+  bottomRef: RefObject<'div'> = React.createRef();
 
   state = {
     consoleText: [],
@@ -29,11 +29,13 @@ class Console extends React.Component<PropTypes, StateTypes> {
 
   componentDidMount() {
     this.props.forwardedRef.current = this;
-    this.bottomRef.current.scrollIntoView(false);
+    if (this.bottomRef.current !== null)
+      this.bottomRef.current.scrollIntoView(false);
   }
 
   componentDidUpdate() {
-    this.bottomRef.current.scrollIntoView(false);
+    if (this.bottomRef.current !== null)
+      this.bottomRef.current.scrollIntoView(false);
   }
 
   componentWillUnmount() {
@@ -48,6 +50,7 @@ class Console extends React.Component<PropTypes, StateTypes> {
 
   handleSubmit = e => {
     e.preventDefault();
+    if (this.inputRef.current === null) return;
     const input = this.inputRef.current.value;
     this.inputRef.current.value = '';
 

@@ -1,9 +1,9 @@
 // @flow
 
-import React from 'react';
+import * as React from 'react';
 import Blockly from 'blockly';
 
-import { Block } from '.';
+import { type Block } from '.';
 
 const PrintBlock: Block = {
   blockJson: {

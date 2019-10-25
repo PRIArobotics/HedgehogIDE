@@ -9,8 +9,9 @@
 
 // @flow
 
-import React from 'react';
+import * as React from 'react';
 import withStyles from 'isomorphic-style-loader/lib/withStyles';
+
 import s from './Admin.css';
 
 type PropTypes = {|

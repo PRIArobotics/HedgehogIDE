@@ -9,8 +9,7 @@
 
 // @flow
 
-import React from 'react';
-import type { Node } from 'react';
+import * as React from 'react';
 import { withStyles } from '@material-ui/styles';
 
 import AppBar from '@material-ui/core/AppBar';
@@ -67,7 +66,7 @@ const styled = withStyles(theme => ({
 }));
 
 type PropTypes = {|
-  children: Node,
+  children: React.Node,
   classes: Object,
   contentFill: boolean,
 |};

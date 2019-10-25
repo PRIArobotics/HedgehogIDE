@@ -9,8 +9,7 @@
 
 // @flow
 
-import React from 'react';
-import type { Node } from 'react';
+import * as React from 'react';
 
 import history from '../../core/history';
 
@@ -25,7 +24,7 @@ function isModifiedEvent(event) {
 type PropTypes = {|
   to: string,
   onClick?: Object => void,
-  children?: Node,
+  children?: React.Node,
   className?: string,
 |};
 

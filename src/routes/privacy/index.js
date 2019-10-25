@@ -7,7 +7,8 @@
  * LICENSE.txt file in the root directory of this source tree.
  */
 
-import React from 'react';
+import * as React from 'react';
+
 import Layout from '../../components/layout/Layout';
 import Page from '../../components/Page';
 import privacy from './privacy.md';

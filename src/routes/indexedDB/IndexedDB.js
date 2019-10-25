@@ -1,17 +1,22 @@
 // @flow
 
-import React from 'react';
+import * as React from 'react';
+
 import * as StateDB from '../../core/store/state';
 import * as ProjectsDB from '../../core/store/projects';
 
-export default class IndexedDB extends React.Component {
-  inputRef: React.RefObject = React.createRef();
-  state = { html: '' };
+type PropTypes = {||};
+type StateTypes = {||};
+
+export default class IndexedDB extends React.Component<PropTypes, StateTypes> {
+  inputRef: RefObject<'input'> = React.createRef();
 
   componentDidMount() {
     (async () => {
       await StateDB.init();
-      this.inputRef.current.value = await StateDB.getState('Input');
+
+      const value = await StateDB.getState('Input');
+      if (this.inputRef.current !== null) this.inputRef.current.value = value;
 
       await ProjectsDB.init();
 
@@ -36,6 +41,8 @@ export default class IndexedDB extends React.Component {
       await ProjectsDB.updateProject(p);
       console.log('updated', await ProjectsDB.getProjects());
 
+      // eslint-disable-next-line no-throw-literal
+      if (p.id === undefined) throw 'unreachable';
       console.log(await ProjectsDB.getProjectById(p.id));
       console.log(await ProjectsDB.getProjectByName('bar'));
 
@@ -44,13 +51,16 @@ export default class IndexedDB extends React.Component {
     })();
   }
 
-  handleInput = () => StateDB.setState('Input', this.inputRef.current.value);
+  handleInput = () => {
+    if (this.inputRef.current === null) return;
+
+    StateDB.setState('Input', this.inputRef.current.value);
+  };
 
   render() {
     return (
       <div>
         <h1>IndexedDB with JsStore</h1>
-        <div>{this.state.html}</div>
         <input type="text" ref={this.inputRef} onInput={this.handleInput} />
       </div>
     );
