@@ -1,5 +1,5 @@
-// flow-typed signature: fb3a12b0b067237ee76ffac531e6efea
-// flow-typed version: c6154227d1/jsonwebtoken_v8.3.x/flow_>=v0.56.x <=v0.103.x
+// flow-typed signature: a6917bccc2ed0addf099c12e33358113
+// flow-typed version: c6154227d1/jsonwebtoken_v8.3.x/flow_>=v0.104.x
 
 declare module "jsonwebtoken" {
 
@@ -22,7 +22,11 @@ declare module "jsonwebtoken" {
   }
 
   declare type Encodable = String | Buffer | Object;
-  declare type Key = { key: string | Buffer, passphrase: string | Buffer };
+  declare type Key = {
+    key: string | Buffer,
+    passphrase: string | Buffer,
+    ...
+  };
   declare type Algorithm =
     'RS256'
     | 'RS384'
@@ -46,13 +50,14 @@ declare module "jsonwebtoken" {
     subject: string,
     noTimestamp: boolean,
     header: Headers,
-    keyid: string
+    keyid: string,
+    ...
   }>;
 
-  declare type SigningOptionsWithAlgorithm<H> = SigningOptions<H> & { algorithm: Algorithm };
+  declare type SigningOptionsWithAlgorithm<H> = SigningOptions<H> & { algorithm: Algorithm, ... };
 
   declare type VerifyCallback = (err: JsonWebTokenError | NotBeforeError | TokenExpiredError | null, decoded: Payload) => void;
-  declare type VerifyOptionsWithAlgorithm = VerifyOptions & { algorithms: Array<Algorithm> };
+  declare type VerifyOptionsWithAlgorithm = VerifyOptions & { algorithms: Array<Algorithm>, ... };
   declare type VerifyOptions = $Shape<{
     algorithms: Array<Algorithm>,
     audience: string | string[],
@@ -62,12 +67,14 @@ declare module "jsonwebtoken" {
     subject: string | string[],
     clockTolerance: number,
     maxAge: string | number,
-    clockTimestamp: number
+    clockTimestamp: number,
+    ...
   }>;
 
   declare type DecodingOptions = $Shape<{
     complete: boolean,
-    json: boolean
+    json: boolean,
+    ...
   }>;
 
   declare interface Sign {
@@ -97,13 +104,19 @@ declare module "jsonwebtoken" {
     aud?: string | string[],
     exp?: number,
     iat?: number,
-    nbf?: number
+    nbf?: number,
+    ...
   }
 
   declare type Token = {
-    header: { typ: 'JWT', alg: Algorithm },
+    header: {
+      typ: 'JWT',
+      alg: Algorithm,
+      ...
+    },
     payload: Payload,
     signature?: string,
+    ...
   }
 
   declare interface Decode {
@@ -111,7 +124,7 @@ declare module "jsonwebtoken" {
 
     (jwt: string, options: DecodingOptions): Payload;
 
-    (jwt: string, options: DecodingOptions & { complete: true }): Token;
+    (jwt: string, options: DecodingOptions & { complete: true, ... }): Token;
   }
 
   declare interface Verify {
@@ -125,9 +138,9 @@ declare module "jsonwebtoken" {
 
     (jwt: string, secretOrPrivateKey: Key, options: VerifyOptionsWithAlgorithm, callback: VerifyCallback): Payload;
 
-    (jwt: string, getKey: (header: {kid: ?string}, callback: (err: ?Error, key?: string) => any) => any, callback: VerifyCallback): Payload;
+    (jwt: string, getKey: (header: { kid: ?string, ... }, callback: (err: ?Error, key?: string) => any) => any, callback: VerifyCallback): Payload;
 
-    (jwt: string, getKey: (header: {kid: ?string}, callback: (err: ?Error, key?: string) => any) => any, options: VerifyOptionsWithAlgorithm, callback: VerifyCallback): Payload;
+    (jwt: string, getKey: (header: { kid: ?string, ... }, callback: (err: ?Error, key?: string) => any) => any, options: VerifyOptionsWithAlgorithm, callback: VerifyCallback): Payload;
   }
 
   declare class TokenExpiredError extends Error {
@@ -145,6 +158,7 @@ declare module "jsonwebtoken" {
     verify: Verify,
     JsonWebTokenError: Class<WebTokenError>,
     NotBeforeError: Class<NotBeforeError>,
-    TokenExpiredError: Class<TokenExpiredError>
+    TokenExpiredError: Class<TokenExpiredError>,
+    ...
   }
 }

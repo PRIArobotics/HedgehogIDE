@@ -1,10 +1,10 @@
-// flow-typed signature: 321699c21c5b2620dff4abacc15c45bc
-// flow-typed version: c6154227d1/apollo-link-http_v1.2.x/flow_>=v0.56.x <=v0.103.x
+// flow-typed signature: e4112f7578a3de58dfdfe12b611abd11
+// flow-typed version: c6154227d1/apollo-link-http_v1.2.x/flow_>=v0.104.x
 
 // @flow
 
 declare module "apollo-link-http" {
-  declare type $Record<T, U> = {[key: $Keys<T>]: U};
+  declare type $Record<T, U> = { [key: $Keys<T>]: U, ... };
 
   declare type NextLink = (operation: Operation) => any;
 
@@ -60,12 +60,13 @@ declare module "apollo-link-http" {
   }
 
   declare export type FetchOptions = {
-    uri?: string | UriFunction;
-    fetch?: any;
-    includeExtensions?: boolean;
-    credentials?: string;
-    headers?: any;
-    fetchOptions?: any;
+    uri?: string | UriFunction,
+    fetch?: any,
+    includeExtensions?: boolean,
+    credentials?: string,
+    headers?: any,
+    fetchOptions?: any,
+    ...
   }
 
   declare export function createHttpLink(opts: FetchOptions): ApolloLink;
