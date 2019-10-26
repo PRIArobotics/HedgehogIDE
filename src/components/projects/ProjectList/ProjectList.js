@@ -39,7 +39,7 @@ type StateTypes = {|
   newProjectName: string,
 |};
 
-class Console extends React.Component<PropTypes, StateTypes> {
+class ProjectList extends React.Component<PropTypes, StateTypes> {
   state: StateTypes = {
     projects: [],
     projectToDelete: null,
@@ -242,4 +242,4 @@ class Console extends React.Component<PropTypes, StateTypes> {
   }
 }
 
-export default withStyles(s)(Console);
+export default withStyles(s)(ProjectList);
