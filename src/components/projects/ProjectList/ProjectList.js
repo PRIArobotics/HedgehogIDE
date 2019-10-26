@@ -30,22 +30,20 @@ import * as ProjectsDB from '../../../core/store/projects';
 
 import s from './ProjectList.scss';
 
+import CreateProjectDialog from './CreateProjectDialog';
 import DeleteProjectDialog from './DeleteProjectDialog';
 
 type PropTypes = {||};
 type StateTypes = {|
   projects: Array<ProjectsDB.Project>,
-  creatingProject: boolean,
-  newProjectName: string,
 |};
 
 class ProjectList extends React.Component<PropTypes, StateTypes> {
+  createRef: RefObject<typeof CreateProjectDialog> = React.createRef();
   deleteRef: RefObject<typeof DeleteProjectDialog> = React.createRef();
 
   state: StateTypes = {
     projects: [],
-    creatingProject: false,
-    newProjectName: '',
   };
 
   componentDidMount() {
@@ -60,33 +58,16 @@ class ProjectList extends React.Component<PropTypes, StateTypes> {
   }
 
   beginCreateProject() {
-    this.setState({ creatingProject: true });
+    // eslint-disable-next-line no-throw-literal
+    if (this.createRef.current === null) throw 'ref is null';
+
+    this.createRef.current.show();
   }
 
-  setNewProjectName(name: string) {
-    this.setState({ newProjectName: name.replace(/[^-\w#$%().,:; ]/g, '') });
-  }
-
-  isValidProjectName() {
-    const { projects, newProjectName } = this.state;
-    return (
-      newProjectName !== '' &&
-      projects.every(project => project.name !== newProjectName)
-    );
-  }
-
-  cancelCreateProject() {
-    this.setState({ creatingProject: false });
-  }
-
-  async confirmCreateProject() {
+  async confirmCreateProject(name: string) {
     try {
-      await ProjectsDB.createProject({ name: this.state.newProjectName });
+      await ProjectsDB.createProject({ name });
       await this.refreshProjects();
-      this.setState({
-        creatingProject: false,
-        newProjectName: '',
-      });
     } catch (ex) {
       if (!(ex instanceof ProjectsDB.ProjectError)) throw ex;
       await this.refreshProjects();
@@ -160,47 +141,11 @@ class ProjectList extends React.Component<PropTypes, StateTypes> {
               </ListItem>
             ))}
           </List>
-          <Dialog
-            open={this.state.creatingProject}
-            onClose={() => this.cancelCreateProject()}
-            aria-labelledby="create-dialog-title"
-            aria-describedby="create-dialog-description"
-          >
-            <DialogTitle id="create-dialog-title">
-              Create new project
-            </DialogTitle>
-            <DialogContent>
-              <DialogContentText id="create-dialog-description">
-                Please enter the new project&apos;s name.
-              </DialogContentText>
-              <TextField
-                autoFocus
-                margin="dense"
-                id="name"
-                label="Project Name"
-                type="text"
-                value={this.state.newProjectName}
-                onChange={event => this.setNewProjectName(event.target.value)}
-                error={!this.isValidProjectName()}
-                fullWidth
-              />
-            </DialogContent>
-            <DialogActions>
-              <Button
-                onClick={() => this.cancelCreateProject()}
-                color="secondary"
-              >
-                Cancel
-              </Button>
-              <Button
-                onClick={() => this.confirmCreateProject()}
-                color="primary"
-                disabled={!this.isValidProjectName()}
-              >
-                OK
-              </Button>
-            </DialogActions>
-          </Dialog>
+          <CreateProjectDialog
+            ref={this.createRef}
+            onCreate={name => this.confirmCreateProject(name)}
+            allProjects={this.state.projects}
+          />
           <DeleteProjectDialog
             ref={this.deleteRef}
             onDelete={project => this.confirmDeleteProject(project)}
