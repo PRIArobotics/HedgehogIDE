@@ -26,23 +26,24 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 
 import Link from '../../misc/Link';
+import * as ProjectsDB from '../../../core/store/projects';
 
 import s from './ProjectList.scss';
 
-import * as ProjectsDB from '../../../core/store/projects';
+import DeleteProjectDialog from './DeleteProjectDialog';
 
 type PropTypes = {||};
 type StateTypes = {|
   projects: Array<ProjectsDB.Project>,
-  projectToDelete: ProjectsDB.Project | null,
   creatingProject: boolean,
   newProjectName: string,
 |};
 
 class ProjectList extends React.Component<PropTypes, StateTypes> {
+  deleteRef: RefObject<typeof DeleteProjectDialog> = React.createRef();
+
   state: StateTypes = {
     projects: [],
-    projectToDelete: null,
     creatingProject: false,
     newProjectName: '',
   };
@@ -93,26 +94,19 @@ class ProjectList extends React.Component<PropTypes, StateTypes> {
   }
 
   beginDeleteProject(project: ProjectsDB.Project) {
-    this.setState({ projectToDelete: project });
-  }
-
-  cancelDeleteProject() {
-    this.setState({ projectToDelete: null });
-  }
-
-  async confirmDeleteProject() {
     // eslint-disable-next-line no-throw-literal
-    if (this.state.projectToDelete === null) throw 'no projectToDelete';
+    if (this.deleteRef.current === null) throw 'ref is null';
 
+    this.deleteRef.current.show(project);
+  }
+
+  async confirmDeleteProject(project: ProjectsDB.Project) {
     try {
-      await ProjectsDB.removeProject(this.state.projectToDelete);
-      await this.refreshProjects();
-      this.setState({ projectToDelete: null });
+      await ProjectsDB.removeProject(project);
     } catch (ex) {
       if (!(ex instanceof ProjectsDB.ProjectError)) throw ex;
-      await this.refreshProjects();
-      this.setState({ projectToDelete: null });
     }
+    await this.refreshProjects();
   }
 
   render() {
@@ -207,35 +201,10 @@ class ProjectList extends React.Component<PropTypes, StateTypes> {
               </Button>
             </DialogActions>
           </Dialog>
-          <Dialog
-            open={this.state.projectToDelete !== null}
-            onClose={() => this.cancelDeleteProject()}
-            aria-labelledby="delete-dialog-title"
-            aria-describedby="delete-dialog-description"
-          >
-            <DialogTitle id="delete-dialog-title">Confirm deletion</DialogTitle>
-            <DialogContent>
-              <DialogContentText id="delete-dialog-description">
-                Are you sure yo want to delete project &quot;
-                {(this.state.projectToDelete || {}).name}&quot;?
-              </DialogContentText>
-            </DialogContent>
-            <DialogActions>
-              <Button
-                onClick={() => this.cancelDeleteProject()}
-                color="secondary"
-              >
-                Cancel
-              </Button>
-              <Button
-                onClick={() => this.confirmDeleteProject()}
-                color="primary"
-                autoFocus
-              >
-                OK
-              </Button>
-            </DialogActions>
-          </Dialog>
+          <DeleteProjectDialog
+            ref={this.deleteRef}
+            onDelete={project => this.confirmDeleteProject(project)}
+          />
         </Paper>
       </div>
     );
