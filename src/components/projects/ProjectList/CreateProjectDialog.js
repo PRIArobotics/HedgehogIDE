@@ -13,7 +13,7 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import * as ProjectsDB from '../../../core/store/projects';
 
 type PropTypes = {|
-  onCreate: string => any,
+  onCreate: string => boolean | Promise<boolean>,
   allProjects: Array<ProjectsDB.Project>,
 |};
 type StateTypes = {|
@@ -48,13 +48,14 @@ class CreateProjectDialog extends React.Component<PropTypes, StateTypes> {
     );
   }
 
-  confirm() {
+  async confirm() {
     // eslint-disable-next-line no-throw-literal
     if (!this.state.visible) throw 'confirming when dialog is not shown';
 
-    // TODO restore behavior of not hiding if the project exists
-    this.props.onCreate(this.state.newProjectName);
-    this.setState({ visible: false, newProjectName: '' });
+    const success = await this.props.onCreate(this.state.newProjectName);
+    if (success) {
+      this.setState({ visible: false, newProjectName: '' });
+    }
   }
 
   render() {

@@ -12,7 +12,7 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import * as ProjectsDB from '../../../core/store/projects';
 
 type PropTypes = {|
-  onDelete: ProjectsDB.Project => any,
+  onDelete: ProjectsDB.Project => boolean | Promise<boolean>,
 |};
 type StateTypes = {|
   visible: boolean,
@@ -33,13 +33,16 @@ class DeleteProjectDialog extends React.Component<PropTypes, StateTypes> {
     this.setState({ visible: false });
   }
 
-  confirm() {
+  async confirm() {
     // eslint-disable-next-line no-throw-literal
     if (!this.state.visible) throw 'confirming when dialog is not shown';
     // eslint-disable-next-line no-throw-literal
     if (this.state.projectToDelete === null) throw 'no projectToDelete';
 
-    this.props.onDelete(this.state.projectToDelete);
+    // whether the deletion succeeded or not, we want to hide the dialog.
+    // Thus, ignore the result of onDelete
+    await this.props.onDelete(this.state.projectToDelete);
+    
     // we don't set the project to null because that results in a display glitch:
     // the hide animation will leave the project name visible for a split second
     this.setState({ visible: false });

@@ -64,13 +64,15 @@ class ProjectList extends React.Component<PropTypes, StateTypes> {
     this.createRef.current.show();
   }
 
-  async confirmCreateProject(name: string) {
+  async confirmCreateProject(name: string): Promise<boolean> {
     try {
       await ProjectsDB.createProject({ name });
       await this.refreshProjects();
+      return true;
     } catch (ex) {
       if (!(ex instanceof ProjectsDB.ProjectError)) throw ex;
       await this.refreshProjects();
+      return false;
     }
   }
 
@@ -81,13 +83,16 @@ class ProjectList extends React.Component<PropTypes, StateTypes> {
     this.deleteRef.current.show(project);
   }
 
-  async confirmDeleteProject(project: ProjectsDB.Project) {
+  async confirmDeleteProject(project: ProjectsDB.Project): Promise<boolean> {
     try {
       await ProjectsDB.removeProject(project);
+      await this.refreshProjects();
+      return true;
     } catch (ex) {
       if (!(ex instanceof ProjectsDB.ProjectError)) throw ex;
+      await this.refreshProjects();
+      return false;
     }
-    await this.refreshProjects();
   }
 
   render() {
