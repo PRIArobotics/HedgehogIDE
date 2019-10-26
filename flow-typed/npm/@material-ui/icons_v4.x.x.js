@@ -1,5 +1,5 @@
-// flow-typed signature: da8e44dbc4004144d5a185b9899be18a
-// flow-typed version: c6154227d1/@material-ui/icons_v4.x.x/flow_>=v0.69.x <=v0.103.x
+// flow-typed signature: cfa1aefc9e7f27753c67f625b05ab1ec
+// flow-typed version: c6154227d1/@material-ui/icons_v4.x.x/flow_>=v0.104.x
 
 /*
  * Created and maintained: https://github.com/retyui
@@ -11,7 +11,7 @@
  * More info: https://github.com/flow-typed/flow-typed/pull/3303#issuecomment-493877563
  */
 declare module '@material-ui/core/@@SvgIcon' {
-  declare type SVGElementProps = {};
+  declare type SVGElementProps = {...};
 
   // https://github.com/mui-org/material-ui/blob/4d363ad26a3da350344ef5d374841647adf9e5b0/packages/material-ui/src/index.d.ts#L54
   declare type PropTypes$Color =
@@ -38,8 +38,9 @@ declare module '@material-ui/core/@@SvgIcon' {
     titleAccess?: string,
     viewBox?: string,
     className?: string,
-    style?: {},
+    style?: {...},
     component?: mixed,
+    ...
   };
 
   declare export default React$ComponentType<SvgIconProps>;

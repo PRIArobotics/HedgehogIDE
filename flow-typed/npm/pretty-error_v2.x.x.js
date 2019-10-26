@@ -1,5 +1,5 @@
-// flow-typed signature: 4eccb7bf85eafd22d6e6a2f9f50944dc
-// flow-typed version: c6154227d1/pretty-error_v2.x.x/flow_>=v0.25.x <=v0.103.x
+// flow-typed signature: bbc510b1f7fd7b20104201bcb26ce521
+// flow-typed version: c6154227d1/pretty-error_v2.x.x/flow_>=v0.104.x
 
 declare module "pretty-error" {
   declare class PrettyError {

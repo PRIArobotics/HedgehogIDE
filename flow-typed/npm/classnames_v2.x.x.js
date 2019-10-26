@@ -1,9 +1,9 @@
-// flow-typed signature: b044e63537b6746c3cf63427819ab6d5
-// flow-typed version: c6154227d1/classnames_v2.x.x/flow_>=v0.25.x <=v0.103.x
+// flow-typed signature: a00cf41b09af4862583460529d5cfcb9
+// flow-typed version: c6154227d1/classnames_v2.x.x/flow_>=v0.104.x
 
 type $npm$classnames$Classes =
   | string
-  | { [className: string]: * }
+  | { [className: string]: *, ... }
   | false
   | void
   | null;
