@@ -3,8 +3,19 @@
 import connect from '../connect';
 
 export type Project = {|
+  id: number,
+  name: string,
+|};
+
+// optional id
+export type CreateProject = {|
   id?: number,
   name: string,
+|};
+
+// no id, all fields optional
+export type UpdateProject = {|
+  name?: string,
 |};
 
 const tblProjects = {
@@ -75,18 +86,17 @@ export async function getProjectByName(name: string): Promise<Project> {
   );
 }
 
-export async function createProject(project: Project): Promise<void> {
+export async function createProject(project: CreateProject): Promise<Project> {
   const conn = await connection;
 
   try {
-    const [{ id }] = await conn.insert({
+    const [p] = await conn.insert({
       into: 'Projects',
       values: [project],
       return: true,
     });
 
-    // eslint-disable-next-line no-param-reassign
-    project.id = id;
+    return p;
   } catch (ex) {
     // whatever happened here
     if (typeof ex !== 'object' || ex.type !== 'ConstraintError') throw ex;
@@ -95,31 +105,36 @@ export async function createProject(project: Project): Promise<void> {
   }
 }
 
-export async function updateProject(project: Project): Promise<void> {
+export async function updateProject(
+  project: Project,
+  values: UpdateProject,
+): Promise<Project> {
   const conn = await connection;
 
   // FIXME this is a workaround for https://github.com/ujjwalguptaofficial/JsStore/issues/137
-  let exists;
-  try {
-    const p = await getProjectByName(project.name);
-    exists = p.id !== project.id;
-  } catch (ex) {
-    if (!(ex instanceof ProjectError) || ex.message !== 'no project found')
-      throw ex;
-    exists = false;
+  if (values.name !== undefined) {
+    let exists;
+    try {
+      const p = await getProjectByName(values.name);
+      exists = p.id !== project.id;
+    } catch (ex) {
+      if (!(ex instanceof ProjectError) || ex.message !== 'no project found')
+        throw ex;
+      exists = false;
+    }
+    if (exists) throw new ProjectError('constraint was violated at update');
   }
-  if (exists) throw new ProjectError('constraint was violated at update');
-  // end workaround
 
   try {
-    const { id, ...values } = project;
     const rows = await conn.update({
       in: 'Projects',
       set: values,
-      where: { id },
+      where: { id: project.id },
     });
 
     if (rows !== 1) throw new ProjectError('project not found');
+
+    return { ...project, ...values };
   } catch (ex) {
     // FIXME this code is dormant due to https://github.com/ujjwalguptaofficial/JsStore/issues/137
 
@@ -133,10 +148,9 @@ export async function updateProject(project: Project): Promise<void> {
 export async function removeProject(project: Project): Promise<void> {
   const conn = await connection;
 
-  const { id } = project;
   const rows = await conn.remove({
     from: 'Projects',
-    where: { id },
+    where: { id: project.id },
   });
 
   if (rows !== 1) throw new ProjectError('project not found');

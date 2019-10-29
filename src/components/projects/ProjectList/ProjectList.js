@@ -103,10 +103,7 @@ class ProjectList extends React.Component<PropTypes, StateTypes> {
     name: string,
   ): Promise<boolean> {
     try {
-      // FIXME if updateing fails, this assignment leaves the project in a dirty state
-      // eslint-disable-next-line no-param-reassign
-      project.name = name;
-      await ProjectsDB.updateProject(project);
+      await ProjectsDB.updateProject(project, { name });
       await this.refreshProjects();
       return true;
     } catch (ex) {
