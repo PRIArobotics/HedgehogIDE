@@ -98,8 +98,13 @@ class ProjectList extends React.Component<PropTypes, StateTypes> {
     this.renameRef.current.show(project);
   }
 
-  async confirmRenameProject(project: ProjectsDB.Project, name: string): Promise<boolean> {
+  async confirmRenameProject(
+    project: ProjectsDB.Project,
+    name: string,
+  ): Promise<boolean> {
     try {
+      // FIXME if updateing fails, this assignment leaves the project in a dirty state
+      // eslint-disable-next-line no-param-reassign
       project.name = name;
       await ProjectsDB.updateProject(project);
       await this.refreshProjects();
@@ -179,7 +184,9 @@ class ProjectList extends React.Component<PropTypes, StateTypes> {
           />
           <RenameProjectDialog
             ref={this.renameRef}
-            onRename={(project, name) => this.confirmRenameProject(project, name)}
+            onRename={(project, name) =>
+              this.confirmRenameProject(project, name)
+            }
             allProjects={this.state.projects}
           />
         </Paper>

@@ -77,9 +77,7 @@ class RenameProjectDialog extends React.Component<PropTypes, StateTypes> {
         aria-labelledby="rename-dialog-title"
         aria-describedby="rename-dialog-description"
       >
-        <DialogTitle id="rename-dialog-title">
-          Rename new project
-        </DialogTitle>
+        <DialogTitle id="rename-dialog-title">Rename new project</DialogTitle>
         <DialogContent>
           <DialogContentText id="rename-dialog-description">
             Please enter the project&apos;s new name.
@@ -97,10 +95,7 @@ class RenameProjectDialog extends React.Component<PropTypes, StateTypes> {
           />
         </DialogContent>
         <DialogActions>
-          <Button
-            onClick={() => this.cancel()}
-            color="secondary"
-          >
+          <Button onClick={() => this.cancel()} color="secondary">
             Cancel
           </Button>
           <Button
