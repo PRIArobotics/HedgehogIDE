@@ -23,26 +23,23 @@ export default class IndexedDB extends React.Component<PropTypes, StateTypes> {
       /* eslint-disable no-console */
       console.log('empty', await ProjectsDB.getProjects());
 
-      const p: ProjectsDB.Project = { name: 'foo' };
-      console.log('new object', p);
+      const pCreate: ProjectsDB.CreateProject = { name: 'foo' };
+      console.log('new object', pCreate);
 
-      await ProjectsDB.createProject(p);
+      const p: ProjectsDB.Project = await ProjectsDB.createProject(pCreate);
       console.log('created', p);
 
       console.log('created', await ProjectsDB.getProjects());
 
       try {
-        await ProjectsDB.createProject(p);
+        await ProjectsDB.createProject({ ...p });
       } catch (ex) {
         //
       }
 
-      p.name = 'bar';
-      await ProjectsDB.updateProject(p);
+      await ProjectsDB.updateProject(p, { name: 'bar' });
       console.log('updated', await ProjectsDB.getProjects());
 
-      // eslint-disable-next-line no-throw-literal
-      if (p.id === undefined) throw 'unreachable';
       console.log(await ProjectsDB.getProjectById(p.id));
       console.log(await ProjectsDB.getProjectByName('bar'));
 
