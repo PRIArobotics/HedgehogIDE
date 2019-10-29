@@ -42,7 +42,7 @@ class DeleteProjectDialog extends React.Component<PropTypes, StateTypes> {
     // whether the deletion succeeded or not, we want to hide the dialog.
     // Thus, ignore the result of onDelete
     await this.props.onDelete(this.state.projectToDelete);
-    
+
     // we don't set the project to null because that results in a display glitch:
     // the hide animation will leave the project name visible for a split second
     this.setState({ visible: false });
@@ -64,17 +64,10 @@ class DeleteProjectDialog extends React.Component<PropTypes, StateTypes> {
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button
-            onClick={() => this.cancel()}
-            color="secondary"
-          >
+          <Button onClick={() => this.cancel()} color="secondary">
             Cancel
           </Button>
-          <Button
-            onClick={() => this.confirm()}
-            color="primary"
-            autoFocus
-          >
+          <Button onClick={() => this.confirm()} color="primary" autoFocus>
             OK
           </Button>
         </DialogActions>

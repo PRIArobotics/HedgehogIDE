@@ -108,8 +108,7 @@ export async function updateProject(project: Project): Promise<void> {
       throw ex;
     exists = false;
   }
-  if (exists)
-    throw new ProjectError('constraint was violated at update');
+  if (exists) throw new ProjectError('constraint was violated at update');
   // end workaround
 
   try {

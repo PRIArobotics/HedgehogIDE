@@ -39,7 +39,7 @@ class CreateProjectDialog extends React.Component<PropTypes, StateTypes> {
     this.setState({ newProjectName: name.replace(/[^-\w#$%().,:; ]/g, '') });
   }
 
-  isValidProjectName() {
+  isValid() {
     const { allProjects } = this.props;
     const { newProjectName } = this.state;
     return (
@@ -66,9 +66,7 @@ class CreateProjectDialog extends React.Component<PropTypes, StateTypes> {
         aria-labelledby="create-dialog-title"
         aria-describedby="create-dialog-description"
       >
-        <DialogTitle id="create-dialog-title">
-          Create new project
-        </DialogTitle>
+        <DialogTitle id="create-dialog-title">Create new project</DialogTitle>
         <DialogContent>
           <DialogContentText id="create-dialog-description">
             Please enter the new project&apos;s name.
@@ -81,21 +79,18 @@ class CreateProjectDialog extends React.Component<PropTypes, StateTypes> {
             type="text"
             value={this.state.newProjectName}
             onChange={event => this.setNewProjectName(event.target.value)}
-            error={!this.isValidProjectName()}
+            error={!this.isValid()}
             fullWidth
           />
         </DialogContent>
         <DialogActions>
-          <Button
-            onClick={() => this.cancel()}
-            color="secondary"
-          >
+          <Button onClick={() => this.cancel()} color="secondary">
             Cancel
           </Button>
           <Button
             onClick={() => this.confirm()}
             color="primary"
-            disabled={!this.isValidProjectName()}
+            disabled={!this.isValid()}
           >
             OK
           </Button>
