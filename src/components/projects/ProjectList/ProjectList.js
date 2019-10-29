@@ -13,9 +13,10 @@ import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import ListItemText from '@material-ui/core/ListItemText';
 import Avatar from '@material-ui/core/Avatar';
 import IconButton from '@material-ui/core/IconButton';
-import FolderIcon from '@material-ui/icons/Folder';
-import DeleteIcon from '@material-ui/icons/Delete';
 import AddIcon from '@material-ui/icons/Add';
+import DeleteIcon from '@material-ui/icons/Delete';
+import EditIcon from '@material-ui/icons/Edit';
+import FolderIcon from '@material-ui/icons/Folder';
 import RefreshIcon from '@material-ui/icons/Refresh';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
@@ -32,6 +33,7 @@ import s from './ProjectList.scss';
 
 import CreateProjectDialog from './CreateProjectDialog';
 import DeleteProjectDialog from './DeleteProjectDialog';
+import RenameProjectDialog from './RenameProjectDialog';
 
 type PropTypes = {||};
 type StateTypes = {|
@@ -41,6 +43,7 @@ type StateTypes = {|
 class ProjectList extends React.Component<PropTypes, StateTypes> {
   createRef: RefObject<typeof CreateProjectDialog> = React.createRef();
   deleteRef: RefObject<typeof DeleteProjectDialog> = React.createRef();
+  renameRef: RefObject<typeof RenameProjectDialog> = React.createRef();
 
   state: StateTypes = {
     projects: [],
@@ -95,6 +98,26 @@ class ProjectList extends React.Component<PropTypes, StateTypes> {
     }
   }
 
+  beginRenameProject(project: ProjectsDB.Project) {
+    // eslint-disable-next-line no-throw-literal
+    if (this.renameRef.current === null) throw 'ref is null';
+
+    this.renameRef.current.show(project);
+  }
+
+  async confirmRenameProject(project: ProjectsDB.Project, name: string): Promise<boolean> {
+    try {
+      project.name = name;
+      await ProjectsDB.updateProject(project);
+      await this.refreshProjects();
+      return true;
+    } catch (ex) {
+      if (!(ex instanceof ProjectsDB.ProjectError)) throw ex;
+      await this.refreshProjects();
+      return false;
+    }
+  }
+
   render() {
     return (
       <div className={s.container}>
@@ -136,6 +159,12 @@ class ProjectList extends React.Component<PropTypes, StateTypes> {
                 />
                 <ListItemSecondaryAction>
                   <IconButton
+                    aria-label={`delete project "${project.name}"`}
+                    onClick={() => this.beginRenameProject(project)}
+                  >
+                    <EditIcon />
+                  </IconButton>
+                  <IconButton
                     edge="end"
                     aria-label={`delete project "${project.name}"`}
                     onClick={() => this.beginDeleteProject(project)}
@@ -154,6 +183,11 @@ class ProjectList extends React.Component<PropTypes, StateTypes> {
           <DeleteProjectDialog
             ref={this.deleteRef}
             onDelete={project => this.confirmDeleteProject(project)}
+          />
+          <RenameProjectDialog
+            ref={this.renameRef}
+            onRename={(project, name) => this.confirmRenameProject(project, name)}
+            allProjects={this.state.projects}
           />
         </Paper>
       </div>
