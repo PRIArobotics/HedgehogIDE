@@ -64,7 +64,7 @@ export async function getProjectById(id: number): Promise<Project> {
   );
 }
 
-export async function getProjectByName(name: string): Promise<Array<Project>> {
+export async function getProjectByName(name: string): Promise<Project> {
   const conn = await connection;
 
   return unique(
