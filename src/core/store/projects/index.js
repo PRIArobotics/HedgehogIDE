@@ -98,14 +98,37 @@ export async function createProject(project: Project): Promise<void> {
 export async function updateProject(project: Project): Promise<void> {
   const conn = await connection;
 
-  const { id, ...values } = project;
-  const rows = await conn.update({
-    in: 'Projects',
-    set: values,
-    where: { id },
-  });
+  // FIXME this is a workaround for https://github.com/ujjwalguptaofficial/JsStore/issues/137
+  let exists;
+  try {
+    const p = await getProjectByName(project.name);
+    exists = p.id !== project.id;
+  } catch (ex) {
+    if (!(ex instanceof ProjectError) || ex.message !== 'no project found')
+      throw ex;
+    exists = false;
+  }
+  if (exists)
+    throw new ProjectError('constraint was violated at update');
+  // end workaround
 
-  if (rows !== 1) throw new ProjectError('project not found');
+  try {
+    const { id, ...values } = project;
+    const rows = await conn.update({
+      in: 'Projects',
+      set: values,
+      where: { id },
+    });
+
+    if (rows !== 1) throw new ProjectError('project not found');
+  } catch (ex) {
+    // FIXME this code is dormant due to https://github.com/ujjwalguptaofficial/JsStore/issues/137
+
+    // whatever happened here
+    if (typeof ex !== 'object' || ex.type !== 'ConstraintError') throw ex;
+
+    throw new ProjectError('constraint was violated at update');
+  }
 }
 
 export async function removeProject(project: Project): Promise<void> {
