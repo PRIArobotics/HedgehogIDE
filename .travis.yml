@@ -15,5 +15,6 @@ cache: yarn
 script:
   - yarn codegen
   - yarn lint
+  - yarn flow:check
   - yarn test
   - yarn build --release
