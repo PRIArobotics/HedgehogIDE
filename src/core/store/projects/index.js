@@ -111,20 +111,6 @@ export async function updateProject(
 ): Promise<Project> {
   const conn = await connection;
 
-  // FIXME this is a workaround for https://github.com/ujjwalguptaofficial/JsStore/issues/137
-  if (values.name !== undefined) {
-    let exists;
-    try {
-      const p = await getProjectByName(values.name);
-      exists = p.id !== project.id;
-    } catch (ex) {
-      if (!(ex instanceof ProjectError) || ex.message !== 'no project found')
-        throw ex;
-      exists = false;
-    }
-    if (exists) throw new ProjectError('constraint was violated at update');
-  }
-
   try {
     const rows = await conn.update({
       in: 'Projects',
@@ -136,8 +122,6 @@ export async function updateProject(
 
     return { ...project, ...values };
   } catch (ex) {
-    // FIXME this code is dormant due to https://github.com/ujjwalguptaofficial/JsStore/issues/137
-
     // whatever happened here
     if (typeof ex !== 'object' || ex.type !== 'ConstraintError') throw ex;
 
