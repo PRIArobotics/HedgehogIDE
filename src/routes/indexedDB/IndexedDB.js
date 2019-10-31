@@ -23,7 +23,7 @@ export default class IndexedDB extends React.Component<PropTypes, StateTypes> {
       /* eslint-disable no-console */
       console.log('empty', await ProjectsDB.getProjects());
 
-      const pCreate: ProjectsDB.CreateProject = { name: 'foo' };
+      const pCreate: ProjectsDB.CreateProject = { name: 'foo', files: {} };
       console.log('new object', pCreate);
 
       const p: ProjectsDB.Project = await ProjectsDB.createProject(pCreate);

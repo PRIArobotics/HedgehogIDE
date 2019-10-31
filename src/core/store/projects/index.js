@@ -2,20 +2,72 @@
 
 import connect from '../connect';
 
+export type File = {|
+  id: number,
+  content: ArrayBuffer,
+|};
+
+// optional id
+export type CreateFile = {|
+  id?: number,
+  content: ArrayBuffer,
+|};
+
+// no id, all fields optional
+export type UpdateFile = {|
+  content?: ArrayBuffer,
+|};
+
+const tblFiles = {
+  name: 'Files',
+  columns: {
+    id: {
+      primaryKey: true,
+      autoIncrement: true,
+    },
+    content: {
+      dataType: 'string',
+      notNull: true,
+    },
+  },
+};
+
+// not a JsStore record type
+// eslint-disable-next-line no-use-before-define
+export type FileTreeNode = FileNode | DirNode;
+
+export type DirectoryContents = { [name: string]: FileTreeNode };
+
+// not a JsStore record type
+export type FileNode = {|
+  type: 'file',
+  fileRef: number,
+|};
+
+// not a JsStore record type
+export type DirNode = {|
+  type: 'dir',
+  children: DirectoryContents,
+|};
+
 export type Project = {|
   id: number,
   name: string,
+  // the children of the implicit root folder
+  files: DirectoryContents,
 |};
 
 // optional id
 export type CreateProject = {|
   id?: number,
   name: string,
+  files: DirectoryContents,
 |};
 
 // no id, all fields optional
 export type UpdateProject = {|
   name?: string,
+  files?: DirectoryContents,
 |};
 
 const tblProjects = {
@@ -30,12 +82,16 @@ const tblProjects = {
       notNull: true,
       unique: true,
     },
+    files: {
+      dataType: 'object',
+      notNull: true,
+    },
   },
 };
 
 const connection = connect({
   name: 'Projects',
-  tables: [tblProjects],
+  tables: [tblFiles, tblProjects],
 });
 
 export class ProjectError extends Error {

@@ -62,7 +62,7 @@ class ProjectList extends React.Component<PropTypes, StateTypes> {
 
   async confirmCreateProject(name: string): Promise<boolean> {
     try {
-      await ProjectsDB.createProject({ name });
+      await ProjectsDB.createProject({ name, files: {} });
       await this.refreshProjects();
       return true;
     } catch (ex) {
