@@ -1,18 +1,13 @@
 import { ApolloClient } from 'apollo-client';
 import { from } from 'apollo-link';
-import { withClientState } from 'apollo-link-state';
 import { onError } from 'apollo-link-error';
 import { SchemaLink } from 'apollo-link-schema';
 import createCache from './createCache';
+import { resolvers as clientSideResolvers } from '../graphql/OnMemoryState/schema';
 
 export default function createApolloClient(schema, initialState) {
   const cache = createCache();
-
-  const stateLink = withClientState({
-    cache,
-    defaults: initialState,
-    resolvers: {},
-  });
+  cache.writeData({ data: initialState });
 
   const errorLink = onError(({ graphQLErrors, networkError }) => {
     if (graphQLErrors)
@@ -26,12 +21,13 @@ export default function createApolloClient(schema, initialState) {
 
   const schemaLink = new SchemaLink({ ...schema });
 
-  const link = from([stateLink, errorLink, schemaLink]);
+  const link = from([errorLink, schemaLink]);
 
   return new ApolloClient({
     link,
     cache,
-    ssrMode: true,
+    resolvers: clientSideResolvers,
     queryDeduplication: true,
+    ssrMode: true,
   });
 }
