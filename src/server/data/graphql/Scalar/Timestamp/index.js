@@ -3,9 +3,9 @@
 import { GraphQLScalarType } from 'graphql';
 import { Kind } from 'graphql/language';
 
-import { type GraphqlDef } from '../../../../../core/graphql/graphqlDef';
+import { type GraphqlDefShape } from '../../../../../core/graphql/graphqlDef';
 
-const def: GraphqlDef = {
+const def: GraphqlDefShape = {
   schema: [
     `
     # GraphQL cannot handle long - normal timestamp will go failed.

@@ -2,7 +2,7 @@
 
 import fetch from 'node-fetch';
 
-import { type GraphqlDef } from '../../../../../core/graphql/graphqlDef';
+import { type GraphqlDefShape } from '../../../../../core/graphql/graphqlDef';
 
 // React.js News Feed (RSS)
 const url =
@@ -13,7 +13,7 @@ let items = [];
 let lastFetchTask;
 let lastFetchTime = new Date(1970, 0, 1);
 
-const def: GraphqlDef = {
+const def: GraphqlDefShape = {
   schema: [
     `
     # A single news article from [https://reactjsnews.com/](https://reactjsnews.com/)
