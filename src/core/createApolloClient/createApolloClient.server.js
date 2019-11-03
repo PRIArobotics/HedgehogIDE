@@ -3,7 +3,7 @@ import { from } from 'apollo-link';
 import { onError } from 'apollo-link-error';
 import { SchemaLink } from 'apollo-link-schema';
 import createCache from './createCache';
-import { resolvers as clientSideResolvers } from '../graphql/OnMemoryState/schema';
+import clientSchema from '../graphql/schema';
 
 export default function createApolloClient(schema, initialState) {
   const cache = createCache();
@@ -26,7 +26,7 @@ export default function createApolloClient(schema, initialState) {
   return new ApolloClient({
     link,
     cache,
-    resolvers: clientSideResolvers,
+    resolvers: clientSchema.resolvers,
     queryDeduplication: true,
     ssrMode: true,
   });

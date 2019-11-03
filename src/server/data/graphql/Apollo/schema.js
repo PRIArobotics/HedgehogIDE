@@ -1,20 +1,7 @@
-import merge from 'lodash.merge';
+// @flow
 
-/** * Queries ** */
-import {
-  schema as ApolloSchema,
-  queries as ApolloQueries,
-  mutations as ApolloMutations,
-  subscriptions as ApolloSubscriptions,
-  resolvers as ApolloResolvers,
-} from './apollo';
+import { merge } from '../../../../core/graphql/graphqlDef';
 
-export const schema = [...ApolloSchema];
+import apollo from './apollo';
 
-export const queries = [...ApolloQueries];
-
-export const mutations = [...ApolloMutations];
-
-export const subscriptions = [...ApolloSubscriptions];
-
-export const resolvers = pubsub => merge(ApolloResolvers(pubsub));
+export default merge(apollo);

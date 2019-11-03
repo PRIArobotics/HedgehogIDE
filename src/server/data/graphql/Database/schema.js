@@ -1,31 +1,9 @@
-import merge from 'lodash.merge';
+// @flow
 
-/** * Queries ** */
-import {
-  schema as GetAllUsers,
-  queries as GetAllUsersQueries,
-  resolvers as GetAllUsersResolver,
-} from './users/GetAllUsers';
-import {
-  queries as GetLoggedInUserQueries,
-  resolvers as GetLoggedInUserResolver,
-} from './users/GetLoggedInUser';
+import { merge } from '../../../../core/graphql/graphqlDef';
 
-/** * Mutations ** */
-import {
-  schema as CreateUserInput,
-  mutation as CreateUser,
-  resolvers as CreateUserResolver,
-} from './users/CreateUser';
+import GetAllUsers from './users/GetAllUsers';
+import GetLoggedInUser from './users/GetLoggedInUser';
+import CreateUser from './users/CreateUser';
 
-export const schema = [...GetAllUsers, ...CreateUserInput];
-
-export const queries = [...GetAllUsersQueries, ...GetLoggedInUserQueries];
-
-export const mutations = [...CreateUser];
-
-export const resolvers = merge(
-  GetAllUsersResolver,
-  GetLoggedInUserResolver,
-  CreateUserResolver,
-);
+export default merge(GetAllUsers, GetLoggedInUser, CreateUser);

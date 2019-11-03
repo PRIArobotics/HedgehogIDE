@@ -1,10 +1,7 @@
-import merge from 'lodash.merge';
+// @flow
 
-import {
-  schema as TimestampSchema,
-  resolvers as TimestampResolvers,
-} from './Timestamp';
+import { merge } from '../../../../core/graphql/graphqlDef';
 
-export const schema = [...TimestampSchema];
+import Timestamp from './Timestamp';
 
-export const resolvers = merge(TimestampResolvers);
+export default merge(Timestamp);

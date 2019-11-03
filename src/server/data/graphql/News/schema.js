@@ -1,14 +1,7 @@
-import merge from 'lodash.merge';
+// @flow
 
-/** * Queries ** */
-import {
-  schema as GetAllReactJSNews,
-  queries as GetAllReactJSNewsQueries,
-  resolvers as GetAllReactJSNewsResolver,
-} from './reactjsnews.com/GetAllReactJSNews';
+import { merge } from '../../../../core/graphql/graphqlDef';
 
-export const schema = [...GetAllReactJSNews];
+import GetAllReactJSNews from './reactjsnews.com/GetAllReactJSNews';
 
-export const queries = [...GetAllReactJSNewsQueries];
-
-export const resolvers = merge(GetAllReactJSNewsResolver);
+export default merge(GetAllReactJSNews);

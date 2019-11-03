@@ -1,55 +1,61 @@
-export const schema = [
-  `
-  type Value {
-    data: String!
-  }
-`,
-];
+// @flow
 
-export const queries = [
-  `
-  apolloQuery: Value!
-`,
-];
+import { PubSub } from 'graphql-subscriptions';
 
-export const mutations = [
-  `
-  apolloMutation: Value!
-`,
-];
+import { type GraphqlDef } from '../../../../core/graphql/graphqlDef';
 
-export const subscriptions = [
-  `
-  apolloSubscription: Value!
-`,
-];
+const def: GraphqlDef = {
+  schema: [
+    `
+    type Value {
+      data: String!
+    }
+    `,
+  ],
+  queries: [
+    `
+    apolloQuery: Value!
+    `,
+  ],
+  mutations: [
+    `
+    apolloMutation: Value!
+    `,
+  ],
+  subscriptions: [
+    `
+    apolloSubscription: Value!
+    `,
+  ],
+  resolvers: (pubsub: PubSub) => ({
+    RootQuery: {
+      async apolloQuery() {
+        function sleep(ms) {
+          return new Promise(resolve => setTimeout(resolve, ms));
+        }
 
-export const resolvers = pubsub => ({
-  RootQuery: {
-    async apolloQuery() {
-      function sleep(ms) {
-        return new Promise(resolve => setTimeout(resolve, ms));
-      }
-
-      await sleep(500);
-      return { data: `Hello ${new Date()}` };
+        await sleep(500);
+        return { data: `Hello ${new Date().toString()}` };
+      },
     },
-  },
-  Mutation: {
-    async apolloMutation() {
-      function sleep(ms) {
-        return new Promise(resolve => setTimeout(resolve, ms));
-      }
+    Mutation: {
+      async apolloMutation() {
+        function sleep(ms) {
+          return new Promise(resolve => setTimeout(resolve, ms));
+        }
 
-      await sleep(500);
-      const msg = { data: `Hello ${new Date()}` };
-      pubsub.publish('apolloChannel', { apolloSubscription: msg });
-      return msg;
+        await sleep(500);
+        const msg = { data: `Hello ${new Date().toString()}` };
+        pubsub.publish('apolloChannel', { apolloSubscription: msg });
+        return msg;
+      },
     },
-  },
-  Subscription: {
-    apolloSubscription: {
-      subscribe: () => pubsub.asyncIterator('apolloChannel'),
+    Subscription: {
+      apolloSubscription: {
+        subscribe: () => pubsub.asyncIterator('apolloChannel'),
+      },
     },
-  },
-});
+  }),
+};
+
+export default def;
