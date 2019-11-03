@@ -1,50 +1,19 @@
-/**
- * React Starter Kit (https://www.reactstarterkit.com/)
- *
- * Copyright © 2014-present Kriasoft, LLC. All rights reserved.
- *
- * This source code is licensed under the MIT license found in the
- * LICENSE.txt file in the root directory of this source tree.
- */
+// @flow
 
-import merge from 'lodash.merge';
 import { PubSub } from 'graphql-subscriptions';
 
-import {
-  schema as ApolloSchema,
-  resolvers as ApolloResolvers,
-  mutations as ApolloMutations,
-  queries as ApolloQueries,
-  subscriptions as ApolloSubscriptions,
-} from './graphql/Apollo/schema';
+import { type GraphqlDef, merge } from '../../core/graphql/graphqlDef';
 
-import {
-  schema as NewsSchema,
-  resolvers as NewsResolvers,
-  queries as NewsQueries,
-} from './graphql/News/schema';
+import Apollo from './graphql/Apollo/schema';
+import News from './graphql/News/schema';
+import Database from './graphql/Database/schema';
+import Scalar from './graphql/Scalar/Timestamp';
+import OnMemoryState from '../../core/graphql/OnMemoryState/schema';
 
-import {
-  schema as DatabaseSchema,
-  resolvers as DatabaseResolvers,
-  mutations as DatabaseMutations,
-  queries as DatabaseQueries,
-} from './graphql/Database/schema';
-
-import {
-  schema as TimestampSchema,
-  resolvers as TimestampResolvers,
-} from './graphql/Scalar/Timestamp';
-
-import {
-  schema as OnMemoryStateSchema,
-  queries as OnMemoryStateQueries,
-  mutations as OnMemoryStateMutations,
-} from '../../core/graphql/OnMemoryState/schema';
+const def: GraphqlDef = merge(Apollo, News, Database, Scalar, OnMemoryState);
 
 const RootQuery = [
   `
-  
   # # React-Starter-Kit Querying API
   # ### This GraphQL schema was built with [Apollo GraphQL-Tools](https://github.com/apollographql/graphql-tools)
   # _Build, mock, and stitch a GraphQL schema using the schema language_
@@ -55,12 +24,9 @@ const RootQuery = [
   # 2. [Mock your GraphQL API](https://www.apollographql.com/docs/graphql-tools/mocking.html) with fine-grained per-type mocking
   # 3. Automatically [stitch multiple schemas together](https://www.apollographql.com/docs/graphql-tools/schema-stitching.html) into one larger API
   type RootQuery {
-    ${ApolloQueries}
-    ${NewsQueries}
-    ${DatabaseQueries}
-    ${OnMemoryStateQueries}
+    ${def.queries}
   }
-`,
+  `,
 ];
 
 const Mutation = [
@@ -75,57 +41,40 @@ const Mutation = [
   # 2. [Mock your GraphQL API](https://www.apollographql.com/docs/graphql-tools/mocking.html) with fine-grained per-type mocking
   # 3. Automatically [stitch multiple schemas together](https://www.apollographql.com/docs/graphql-tools/schema-stitching.html) into one larger API
   type Mutation {
-    ${ApolloMutations}
-    ${DatabaseMutations}
-    ${OnMemoryStateMutations}
+    ${def.mutations}
   }
-`,
+  `,
 ];
 
 const Subscription = [
   `
   type Subscription {
-    ${ApolloSubscriptions}
+    ${def.subscriptions}
   }
-`,
+  `,
 ];
 
 const SchemaDefinition = [
   `
-  
   schema {
     query: RootQuery
     mutation: Mutation
     subscription: Subscription
   }
-`,
+  `,
 ];
-
-// Merge all of the resolver objects together
-// Put schema together into one array of schema strings
-const resolvers = pubsub =>
-  merge(
-    ApolloResolvers(pubsub),
-    NewsResolvers,
-    DatabaseResolvers,
-    TimestampResolvers,
-  );
 
 const schema = [
   ...SchemaDefinition,
-  ...TimestampSchema,
   ...RootQuery,
   ...Mutation,
   ...Subscription,
 
-  ...ApolloSchema,
-  ...NewsSchema,
-  ...DatabaseSchema,
-  ...OnMemoryStateSchema,
+  ...def.schema,
 ];
 
 export default {
   typeDefs: schema,
-  resolvers: resolvers(new PubSub()),
-  ...(__DEV__ ? { log: e => console.error(e.stack) } : {}),
+  resolvers: def.resolvers(new PubSub()),
+  ...(__DEV__ ? { log: (e: Error) => console.error(e.stack) } : {}),
 };

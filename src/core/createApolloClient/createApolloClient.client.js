@@ -6,7 +6,7 @@ import { HttpLink } from 'apollo-link-http';
 import { WebSocketLink } from 'apollo-link-ws';
 // import apolloLogger from 'apollo-link-logger';
 import createCache from './createCache';
-import { resolvers as clientSideResolvers } from '../graphql/OnMemoryState/schema';
+import clientSchema from '../graphql/schema';
 
 export default function createApolloClient() {
   const cache = createCache().restore(window.App.cache);
@@ -52,7 +52,7 @@ export default function createApolloClient() {
   return new ApolloClient({
     link,
     cache,
-    resolvers: clientSideResolvers,
+    resolvers: clientSchema.resolvers,
     queryDeduplication: true,
     connectToDevTools: true,
   });

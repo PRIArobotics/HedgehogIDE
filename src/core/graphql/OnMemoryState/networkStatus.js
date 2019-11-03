@@ -1,41 +1,45 @@
-export const defaults = {
-  networkStatus: {
-    __typename: 'NetworkStatus',
-    isConnected: true,
-  },
-};
+// @flow
 
-export const resolvers = {
-  Mutation: {
-    updateNetworkStatus: (_, { isConnected }, { cache }) => {
-      const data = {
-        networkStatus: {
-          __typename: 'NetworkStatus',
-          isConnected,
-        },
-      };
-      cache.writeData({ data });
-      return null;
+import { type GraphqlDef } from '../graphqlDef';
+
+const def: GraphqlDef = {
+  schema: [
+    `
+    type NetworkStatus {
+      isConnected: Boolean!
+    }
+    `,
+  ],
+  queries: [
+    `
+    networkStatus: NetworkStatus!
+    `,
+  ],
+  mutations: [
+    `
+    updateNetworkStatus(isConnected: Boolean): NetworkStatus!
+    `,
+  ],
+  resolvers: () => ({
+    Mutation: {
+      updateNetworkStatus: (_, { isConnected }, { cache }) => {
+        const data = {
+          networkStatus: {
+            __typename: 'NetworkStatus',
+            isConnected,
+          },
+        };
+        cache.writeData({ data });
+        return null;
+      },
+    },
+  }),
+  defaults: {
+    networkStatus: {
+      __typename: 'NetworkStatus',
+      isConnected: true,
     },
   },
 };
 
-export const schema = [
-  `
-  type NetworkStatus {
-    isConnected: Boolean!
-  }
-`,
-];
-
-export const queries = [
-  `
-  networkStatus: NetworkStatus!
-`,
-];
-
-export const mutations = [
-  `
-  updateNetworkStatus(isConnected: Boolean): NetworkStatus!
-`,
-];
+export default def;
