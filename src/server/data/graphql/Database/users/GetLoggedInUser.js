@@ -2,9 +2,9 @@
 
 import { User, UserClaim, UserLogin, UserProfile } from '../../../models';
 
-import { type GraphqlDef } from '../../../../../core/graphql/graphqlDef';
+import { type GraphqlDefShape } from '../../../../../core/graphql/graphqlDef';
 
-const def: GraphqlDef = {
+const def: GraphqlDefShape = {
   queries: [
     `
     # Retrieves information about the currently logged-in user

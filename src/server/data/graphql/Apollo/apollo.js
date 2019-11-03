@@ -2,9 +2,9 @@
 
 import { PubSub } from 'graphql-subscriptions';
 
-import { type GraphqlDef } from '../../../../core/graphql/graphqlDef';
+import { type GraphqlDefShape } from '../../../../core/graphql/graphqlDef';
 
-const def: GraphqlDef = {
+const def: GraphqlDefShape = {
   schema: [
     `
     type Value {

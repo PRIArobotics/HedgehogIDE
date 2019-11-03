@@ -1,8 +1,8 @@
 // @flow
 
-import { type GraphqlDef } from '../graphqlDef';
+import { type GraphqlDefShape } from '../graphqlDef';
 
-const def: GraphqlDef = {
+const def: GraphqlDefShape = {
   schema: [
     `
     type NetworkStatus {

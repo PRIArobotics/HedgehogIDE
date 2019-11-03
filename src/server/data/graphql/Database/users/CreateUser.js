@@ -2,9 +2,9 @@
 
 import { User, UserProfile } from '../../../models';
 
-import { type GraphqlDef } from '../../../../../core/graphql/graphqlDef';
+import { type GraphqlDefShape } from '../../../../../core/graphql/graphqlDef';
 
-const def: GraphqlDef = {
+const def: GraphqlDefShape = {
   schema: [
     `
     # User profile data for creating a new local database user account
