@@ -4,13 +4,10 @@ import { PubSub } from 'graphql-subscriptions';
 
 import { type GraphqlDef, merge } from '../../core/graphql/graphqlDef';
 
-import Apollo from './graphql/Apollo/schema';
-import News from './graphql/News/schema';
-import Database from './graphql/Database/schema';
-import Scalar from './graphql/Scalar/Timestamp';
-import OnMemoryState from '../../core/graphql/OnMemoryState/schema';
+import Server from './graphql/schema';
+import Core from '../../core/graphql/schema';
 
-const def: GraphqlDef = merge(Apollo, News, Database, Scalar, OnMemoryState);
+const def: GraphqlDef = merge(Server, Core);
 
 const RootQuery = [
   `
