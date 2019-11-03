@@ -5,7 +5,6 @@ import withStyles from 'isomorphic-style-loader/lib/withStyles';
 
 import { graphql, compose } from 'react-apollo';
 import type { OperationComponent } from 'react-apollo';
-// $FlowExpectError
 import Button from '@material-ui/core/Button';
 // $FlowExpectError
 import query from './query.graphql';
