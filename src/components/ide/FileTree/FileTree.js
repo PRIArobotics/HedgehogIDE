@@ -106,11 +106,13 @@ class FileTree extends React.Component<PropTypes, StateTypes> {
         return {
           key,
           title,
+          isLeaf: true,
         };
       else
         return {
           key,
           title,
+          isLeaf: false,
           children: visitChildren(key, node.children),
         }
     };
@@ -123,6 +125,7 @@ class FileTree extends React.Component<PropTypes, StateTypes> {
       {
         key: '/',
         title: name,
+        isLeaf: false,
         children: visitChildren('', files),
       },
     ];
