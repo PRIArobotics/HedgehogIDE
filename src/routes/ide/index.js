@@ -16,7 +16,7 @@ async function action(context, params) {
     chunks: ['ide'],
     component: (
       <Layout contentFill>
-        <NoSSR key="ide">{showIde}</NoSSR>
+        <NoSSR key={`ide-${projectName}`}>{showIde}</NoSSR>
       </Layout>
     ),
   };
