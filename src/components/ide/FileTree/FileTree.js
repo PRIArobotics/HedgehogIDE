@@ -21,7 +21,7 @@ export type TreeNodeProps = {
   data: {|
     path: Array<string>,
   |},
-  children?: Array<TreeNodeProps>,
+  children: Array<TreeNodeProps>,
 };
 
 /*
@@ -135,6 +135,7 @@ class FileTree extends React.Component<PropTypes, StateTypes> {
           data: {
             path,
           },
+          children: [],
         };
       else
         return {
