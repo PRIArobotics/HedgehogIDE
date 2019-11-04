@@ -5,41 +5,78 @@ import * as React from 'react';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 
+import type { TreeNodeProps } from './FileTree';
+
+export type FileAction = 'CREATE_FOLDER' | 'CREATE_FILE' | 'RENAME' | 'DELETE';
+
 type PropTypes = {|
+  onFileAction: (TreeNodeProps, FileAction) => void | Promise<void>,
 |};
 type StateTypes = {|
   visible: boolean,
-  anchor: HTMLElement | null,
+  config: {|
+    anchor: HTMLElement,
+    node: TreeNodeProps,
+  |} | null,
 |};
 
 class FileMenu extends React.Component<PropTypes, StateTypes> {
   state: StateTypes = {
     visible: false,
-    anchor: null,
+    config: null,
   };
 
-  show(anchor: HTMLElement) {
-    this.setState({ visible: true, anchor });
+  show(anchor: HTMLElement, node: TreeNodeProps) {
+    this.setState({ visible: true, config: { anchor, node } });
   }
 
   hide() {
     this.setState({ visible: false });
   }
 
+  action(action: FileAction) {
+    // eslint-disable-next-line no-throw-literal
+    if (this.state.config === null) throw 'config is null';
+    const { node } = this.state.config;
+
+    this.hide();
+    this.props.onFileAction(node, action);
+  }
+
   render() {
+    const [anchor, isRoot, isLeaf] =
+      this.state.config === null
+        ? [null, null, null]
+        : [
+            this.state.config.anchor,
+            this.state.config.node.data.path.length === 0,
+            this.state.config.node.isLeaf,
+          ];
+
     return (
       <Menu
-        anchorEl={this.state.anchor}
+        anchorEl={anchor}
         keepMounted
         open={this.state.visible}
         onClose={() => this.hide()}
       >
-        <MenuItem onClick={() => this.hide()}>New Folder</MenuItem>
-        <MenuItem onClick={() => this.hide()}>New File</MenuItem>
-        <MenuItem onClick={() => this.hide()}>Rename</MenuItem>
-        <MenuItem onClick={() => this.hide()}>Delete</MenuItem>
+        <MenuItem
+          onClick={() => this.action('CREATE_FOLDER')}
+          disabled={isLeaf}
+        >
+          New Folder
+        </MenuItem>
+        <MenuItem onClick={() => this.action('CREATE_FILE')} disabled={isLeaf}>
+          New File
+        </MenuItem>
+        <MenuItem onClick={() => this.action('RENAME')} disabled={isRoot}>
+          Rename
+        </MenuItem>
+        <MenuItem onClick={() => this.action('DELETE')} disabled={isRoot}>
+          Delete
+        </MenuItem>
       </Menu>
-);
+    );
   }
 }
 

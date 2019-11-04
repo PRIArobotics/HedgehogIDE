@@ -10,8 +10,19 @@ import sRcTree from 'rc-tree/assets/index.css';
 import s from './FileTree.scss';
 
 import FileMenu from './FileMenu';
+import type { FileAction } from './FileMenu';
 
 import * as ProjectsDB from '../../../core/store/projects';
+
+export type TreeNodeProps = {
+  key: string,
+  title: string,
+  isLeaf: boolean,
+  data: {|
+    path: Array<string>,
+  |},
+  children?: Array<TreeNodeProps>,
+};
 
 /*
 --- rc-tree BUG ---
@@ -88,16 +99,32 @@ class FileTree extends React.Component<PropTypes, StateTypes> {
 
     // eslint-disable-next-line no-throw-literal
     if (this.menuRef.current === null) throw 'ref is null';
-    this.menuRef.current.show(this.menuAnchor);
+    this.menuRef.current.show(this.menuAnchor, event.node.props);
   };
 
   handleTreeExpand = expandedKeys => {
     this.props.callbackSave({ expandedKeys });
   };
 
-  getTreeData() {
-    const visitNode = (path: Array<string>, node: ProjectsDB.FileTreeNode) => {
-      const key = '/' + path.join('/');
+  handleFileAction(node: TreeNodeProps, action: FileAction) {
+    // TODO
+  }
+
+  getTreeData(): Array<TreeNodeProps> {
+    const visitChildren = (
+      path: Array<string>,
+      children: ProjectsDB.DirectoryContents,
+    ): Array<TreeNodeProps> =>
+      Object.entries(children).map(([name, node]) =>
+        // eslint-disable-next-line no-use-before-define
+        visitNode([...path, name], ((node: any): ProjectsDB.FileTreeNode)),
+      );
+
+    const visitNode = (
+      path: Array<string>,
+      node: ProjectsDB.FileTreeNode,
+    ): TreeNodeProps => {
+      const key = `/${path.join('/')}`;
       const title = path[path.length - 1];
 
       if (node.type === 'file')
@@ -118,14 +145,10 @@ class FileTree extends React.Component<PropTypes, StateTypes> {
             path,
           },
           children: visitChildren(path, node.children),
-        }
+        };
     };
 
-    const visitChildren = (path: Array<string>, children: ProjectsDB.DirectoryContents) =>
-      Object.entries(children).map(([name, node]) =>
-          visitNode([...path, name], ((node: any): ProjectsDB.FileTreeNode)));
-
-    const visitRoot = (project: ProjectsDB.Project) => [
+    const visitRoot = (project: ProjectsDB.Project): Array<TreeNodeProps> => [
       {
         key: '/',
         title: project.name,
@@ -158,7 +181,10 @@ class FileTree extends React.Component<PropTypes, StateTypes> {
           onExpand={this.handleTreeExpand}
           treeData={this.getTreeData()}
         />
-        <FileMenu ref={this.menuRef} />
+        <FileMenu
+          ref={this.menuRef}
+          onFileAction={(node, action) => this.handleFileAction(node, action)}
+        />
       </div>
     );
   }
