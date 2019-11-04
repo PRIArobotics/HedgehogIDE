@@ -139,7 +139,7 @@ class Ide extends React.Component<PropTypes, StateTypes> {
   constructor(props: PropTypes) {
     super(props);
 
-    (async() => {
+    (async () => {
       const project = await ProjectsDB.getProjectByName(props.projectName);
       this.setState({ project });
     })();
