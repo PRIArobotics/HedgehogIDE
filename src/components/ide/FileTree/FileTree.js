@@ -7,9 +7,9 @@ import Tree from 'rc-tree';
 // $FlowExpectError
 import sRcTree from 'rc-tree/assets/index.css';
 
-import { Menu, MenuItem } from '@material-ui/core';
-
 import s from './FileTree.scss';
+
+import FileMenu from './FileMenu';
 
 /*
 --- rc-tree BUG ---
@@ -60,15 +60,16 @@ type PropTypes = {|
   callbackGet: () => FileTreeState,
 |};
 type StateTypes = {|
-  cmOpen: boolean,
   selectedKeys: Array<string>,
 |};
 
 class FileTree extends React.Component<PropTypes, StateTypes> {
   rootDivRef: RefObject<'div'> = React.createRef();
+  menuRef: RefObject<typeof FileMenu> = React.createRef();
+
+  menuAnchor: HTMLElement | null = null;
 
   state = {
-    cmOpen: false,
     selectedKeys: [],
   };
 
@@ -93,7 +94,7 @@ class FileTree extends React.Component<PropTypes, StateTypes> {
   }
 
   handleMouseMove = e => {
-    anchorEl = e.target;
+    this.menuAnchor = e.target;
   };
 
   handleTreeSelect = (selectedKeys, info) => {
@@ -110,18 +111,18 @@ class FileTree extends React.Component<PropTypes, StateTypes> {
 
   handleTreeRightClick = (event, node) => {
     // TODO only right click supported for opening context menu
+
     this.setState({
-      cmOpen: true,
       selectedKeys: [event.node.props.eventKey],
     });
+
+    // eslint-disable-next-line no-throw-literal
+    if (this.menuRef.current === null) throw 'ref is null';
+    this.menuRef.current.show(this.menuAnchor);
   };
 
   handleTreeExpand = expandedKeys => {
     this.props.callbackSave({ expandedKeys });
-  };
-
-  handleContextMenuClose = () => {
-    this.setState({ cmOpen: false });
   };
 
   render() {
@@ -142,18 +143,7 @@ class FileTree extends React.Component<PropTypes, StateTypes> {
           onExpand={this.handleTreeExpand}
           treeData={treeData}
         />
-        <Menu
-          id="simple-menu"
-          anchorEl={anchorEl}
-          keepMounted
-          open={this.state.cmOpen}
-          onClose={this.handleContextMenuClose}
-        >
-          <MenuItem onClick={this.handleContextMenuClose}>New Folder</MenuItem>
-          <MenuItem onClick={this.handleContextMenuClose}>New File</MenuItem>
-          <MenuItem onClick={this.handleContextMenuClose}>Rename</MenuItem>
-          <MenuItem onClick={this.handleContextMenuClose}>Delete</MenuItem>
-        </Menu>
+        <FileMenu ref={this.menuRef} />
       </div>
     );
   }

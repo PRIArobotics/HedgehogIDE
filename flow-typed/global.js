@@ -23,6 +23,8 @@ declare module '@material-ui/core/Icon' { declare module.exports: any; }
 declare module '@material-ui/core/IconButton' { declare module.exports: any; }
 declare module '@material-ui/core/List' { declare module.exports: any; }
 declare module '@material-ui/core/ListItem' { declare module.exports: any; }
+declare module '@material-ui/core/Menu' { declare module.exports: any; }
+declare module '@material-ui/core/MenuItem' { declare module.exports: any; }
 declare module '@material-ui/core/ListItemAvatar' { declare module.exports: any; }
 declare module '@material-ui/core/ListItemIcon' { declare module.exports: any; }
 declare module '@material-ui/core/ListItemSecondaryAction' { declare module.exports: any; }
