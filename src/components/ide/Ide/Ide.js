@@ -24,6 +24,8 @@ import FileTree from '../FileTree';
 import Simulator from '../Simulator';
 import VisualEditor from '../VisualEditor';
 
+import * as ProjectsDB from '../../../core/store/projects';
+
 const styled = withStylesMaterial(theme => ({
   root: {
     boxSizing: 'border-box',
@@ -67,6 +69,7 @@ type PropTypes = {|
   projectName: string,
 |};
 type StateTypes = {|
+  project: ProjectsDB.Project | null,
   runningCode: string | null,
 |};
 
@@ -122,6 +125,7 @@ class Ide extends React.Component<PropTypes, StateTypes> {
   blocklyTabIds = new Set();
 
   state = {
+    project: null,
     runningCode: null,
   };
 
@@ -134,6 +138,11 @@ class Ide extends React.Component<PropTypes, StateTypes> {
 
   constructor(props: PropTypes) {
     super(props);
+
+    (async() => {
+      const project = await ProjectsDB.getProjectByName(props.projectName);
+      this.setState({ project });
+    })();
 
     const json = localStorage.getItem('IDELayout');
     if (json) {
@@ -317,6 +326,10 @@ class Ide extends React.Component<PropTypes, StateTypes> {
 
   render() {
     const { classes } = this.props;
+    const { project } = this.state;
+
+    if (project === null) return null;
+
     return (
       <div className={classes.root}>
         <Paper className={classes.navContainer} square>
@@ -364,6 +377,7 @@ class Ide extends React.Component<PropTypes, StateTypes> {
             <hr />
           </div>
           <FileTree
+            project={this.state.project}
             callbackSave={this.fileTreeSave}
             callbackGet={this.fileTreeGet}
           />
