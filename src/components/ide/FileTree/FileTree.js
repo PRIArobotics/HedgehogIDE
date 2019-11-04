@@ -96,39 +96,48 @@ class FileTree extends React.Component<PropTypes, StateTypes> {
   };
 
   getTreeData() {
-    const { name, files } = this.props.project;
-
-    const visitNode = (prefix: string, name: string, node: ProjectsDB.FileTreeNode) => {
-      const key = `${prefix}/${name}`;
-      const title = name;
+    const visitNode = (path: Array<string>, node: ProjectsDB.FileTreeNode) => {
+      const key = '/' + path.join('/');
+      const title = path[path.length - 1];
 
       if (node.type === 'file')
         return {
           key,
           title,
           isLeaf: true,
+          data: {
+            path,
+          },
         };
       else
         return {
           key,
           title,
           isLeaf: false,
-          children: visitChildren(key, node.children),
+          data: {
+            path,
+          },
+          children: visitChildren(path, node.children),
         }
     };
 
-    const visitChildren = (prefix: string, children: ProjectsDB.DirectoryContents) =>
+    const visitChildren = (path: Array<string>, children: ProjectsDB.DirectoryContents) =>
       Object.entries(children).map(([name, node]) =>
-          visitNode(prefix, name, ((node: any): ProjectsDB.FileTreeNode)));
+          visitNode([...path, name], ((node: any): ProjectsDB.FileTreeNode)));
 
-    return [
+    const visitRoot = (project: ProjectsDB.Project) => [
       {
         key: '/',
-        title: name,
+        title: project.name,
         isLeaf: false,
-        children: visitChildren('', files),
+        data: {
+          path: [],
+        },
+        children: visitChildren([], project.files),
       },
     ];
+
+    return visitRoot(this.props.project);
   }
 
   render() {
