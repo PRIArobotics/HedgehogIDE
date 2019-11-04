@@ -11,6 +11,8 @@ import s from './FileTree.scss';
 
 import FileMenu from './FileMenu';
 
+import * as ProjectsDB from '../../../core/store/projects';
+
 /*
 --- rc-tree BUG ---
 Open all Nodes (or one child node), then close the root node.
@@ -18,44 +20,12 @@ After reloading, the root node will open even though it is not
 defined in the localstorage.
 */
 
-// TODO get rid of dummy tree
-const treeData = [
-  {
-    key: '0-0',
-    title: 'Root',
-    children: [
-      {
-        key: '0-0-0',
-        title: 'Folder #1',
-        children: [{ key: '0-0-0-0', title: 'File #1' }],
-      },
-      {
-        key: '0-0-1',
-        title: 'Folder #2',
-        children: [
-          { key: '0-0-1-0', title: 'File #2' },
-          { key: '0-0-1-1', title: 'File #3' },
-          {
-            key: '0-0-1-2',
-            title: 'Folder #3',
-            children: [
-              { key: '0-0-1-2-0', title: 'File #4' },
-              { key: '0-0-1-2-1', title: 'File #5' },
-            ],
-          },
-        ],
-      },
-    ],
-  },
-];
-
-let anchorEl = null;
-
 type FileTreeState = {|
   expandedKeys: Array<string>,
 |};
 
 type PropTypes = {|
+  project: ProjectsDB.Project,
   callbackSave: (state: FileTreeState) => void,
   callbackGet: () => FileTreeState,
 |};
@@ -125,6 +95,39 @@ class FileTree extends React.Component<PropTypes, StateTypes> {
     this.props.callbackSave({ expandedKeys });
   };
 
+  getTreeData() {
+    const { name, files } = this.props.project;
+
+    const visitNode = (prefix: string, name: string, node: ProjectsDB.FileTreeNode) => {
+      const key = `${prefix}/${name}`;
+      const title = name;
+
+      if (node.type === 'file')
+        return {
+          key,
+          title,
+        };
+      else
+        return {
+          key,
+          title,
+          children: visitChildren(key, node.children),
+        }
+    };
+
+    const visitChildren = (prefix: string, children: ProjectsDB.DirectoryContents) =>
+      Object.entries(children).map(([name, node]) =>
+          visitNode(prefix, name, ((node: any): ProjectsDB.FileTreeNode)));
+
+    return [
+      {
+        key: '/',
+        title: name,
+        children: visitChildren('', files),
+      },
+    ];
+  }
+
   render() {
     return (
       <div ref={this.rootDivRef} className={s.root}>
@@ -141,7 +144,7 @@ class FileTree extends React.Component<PropTypes, StateTypes> {
           onRightClick={this.handleTreeRightClick}
           selectedKeys={this.state.selectedKeys}
           onExpand={this.handleTreeExpand}
-          treeData={treeData}
+          treeData={this.getTreeData()}
         />
         <FileMenu ref={this.menuRef} />
       </div>
