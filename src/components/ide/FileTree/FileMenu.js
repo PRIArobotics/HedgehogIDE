@@ -5,18 +5,18 @@ import * as React from 'react';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 
-import type { TreeNodeProps } from './FileTree';
+import type { RcTreeNodeEvent } from './RcTreeTypes';
 
 export type FileAction = 'CREATE_FOLDER' | 'CREATE_FILE' | 'RENAME' | 'DELETE';
 
 type PropTypes = {|
-  onFileAction: (TreeNodeProps, FileAction) => void | Promise<void>,
+  onFileAction: (RcTreeNodeEvent, FileAction) => void | Promise<void>,
 |};
 type StateTypes = {|
   visible: boolean,
   config: {|
     anchor: HTMLElement,
-    node: TreeNodeProps,
+    node: RcTreeNodeEvent,
   |} | null,
 |};
 
@@ -26,7 +26,7 @@ class FileMenu extends React.Component<PropTypes, StateTypes> {
     config: null,
   };
 
-  show(anchor: HTMLElement, node: TreeNodeProps) {
+  show(anchor: HTMLElement, node: RcTreeNodeEvent) {
     this.setState({ visible: true, config: { anchor, node } });
   }
 
@@ -49,8 +49,8 @@ class FileMenu extends React.Component<PropTypes, StateTypes> {
         ? [null, null, null]
         : [
             this.state.config.anchor,
-            this.state.config.node.data.path.length === 0,
-            this.state.config.node.isLeaf,
+            this.state.config.node.props.data.path.length === 0,
+            this.state.config.node.props.isLeaf,
           ];
 
     return (

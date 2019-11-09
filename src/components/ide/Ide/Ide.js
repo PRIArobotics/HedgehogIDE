@@ -26,7 +26,8 @@ import VisualEditor from '../VisualEditor';
 
 import * as ProjectsDB from '../../../core/store/projects';
 
-import type { TreeNodeProps, FileAction } from '../FileTree/FileTree';
+import type { FileAction } from '../FileTree/FileTree';
+import type { RcTreeNodeEvent } from '../FileTree/RcTreeTypes';
 import CreateFileDialog from '../FileTree/CreateFileDialog';
 import CreateFolderDialog from '../FileTree/CreateFolderDialog';
 
@@ -333,20 +334,20 @@ class Ide extends React.Component<PropTypes, StateTypes> {
     this.setState({ runningCode: null });
   };
 
-  handleFileAction(node: TreeNodeProps, action: FileAction) {
+  handleFileAction(node: RcTreeNodeEvent, action: FileAction) {
     // TODO
-    console.log(node.data.path, action);
+    console.log(node.props.data.path, action);
     this.beginCreateFolder(node);
   }
 
-  beginCreateFolder(parentNode: TreeNodeProps) {
+  beginCreateFolder(parentNode: RcTreeNodeEvent) {
     // eslint-disable-next-line no-throw-literal
     if (this.createFolderRef.current === null) throw 'ref is null';
 
     this.createFolderRef.current.show(parentNode);
   }
 
-  async confirmCreateFolder(parentNode: TreeNodeProps, name: string): Promise<boolean> {
+  async confirmCreateFolder(parentNode: RcTreeNodeEvent, name: string): Promise<boolean> {
     // eslint-disable-next-line no-throw-literal
     if (this.state.project === null) throw 'unreachable';
 

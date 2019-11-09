@@ -11,19 +11,11 @@ import s from './FileTree.scss';
 
 import FileMenu from './FileMenu';
 import type { FileAction } from './FileMenu';
+import type { RcDataNode, RcTreeNodeEvent, RcNodeEventInfo } from './RcTreeTypes';
 
 import * as ProjectsDB from '../../../core/store/projects';
 
 export type { FileAction };
-export type TreeNodeProps = {
-  key: string,
-  title: string,
-  isLeaf: boolean,
-  data: {|
-    path: Array<string>,
-  |},
-  children: Array<TreeNodeProps>,
-};
 
 /*
 --- rc-tree BUG ---
@@ -38,7 +30,7 @@ type FileTreeState = {|
 
 type PropTypes = {|
   project: ProjectsDB.Project,
-  onFileAction: (TreeNodeProps, FileAction) => void | Promise<void>,
+  onFileAction: (RcTreeNodeEvent, FileAction) => void | Promise<void>,
   callbackSave: (state: FileTreeState) => void,
   callbackGet: () => FileTreeState,
 |};
@@ -80,39 +72,39 @@ class FileTree extends React.Component<PropTypes, StateTypes> {
     this.menuAnchor = e.target;
   };
 
-  handleTreeSelect = (selectedKeys, info) => {
-    this.setState({ selectedKeys: [info.node.props.eventKey] });
+  handleTreeSelect = (selectedKeys: Array<string>, { node }: RcNodeEventInfo<>) => {
+    this.setState({ selectedKeys });
   };
 
   // TODO implement moving files/directories via drag & drop
 
-  // handleTreeDragStart = (event, node) => {
+  // handleTreeDragStart = ({ node }: RcNodeEventInfo<>) => {
   // };
 
-  // handleTreeDragEnd = (event, node) => {
+  // handleTreeDragEnd = ({ node }: RcNodeEventInfo<>) => {
   // };
 
-  handleTreeRightClick = (event, node) => {
+  handleTreeRightClick = ({ node }: RcNodeEventInfo<>) => {
     // TODO only right click supported for opening context menu
 
     this.setState({
-      selectedKeys: [event.node.props.eventKey],
+      selectedKeys: [node.props.eventKey],
     });
 
     // eslint-disable-next-line no-throw-literal
     if (this.menuRef.current === null) throw 'ref is null';
-    this.menuRef.current.show(this.menuAnchor, event.node.props);
+    this.menuRef.current.show(this.menuAnchor, node);
   };
 
-  handleTreeExpand = expandedKeys => {
+  handleTreeExpand = (expandedKeys: Array<string>, { node }: RcNodeEventInfo<>) => {
     this.props.callbackSave({ expandedKeys });
   };
 
-  getTreeData(): Array<TreeNodeProps> {
+  getTreeData(): Array<RcDataNode> {
     const visitChildren = (
       path: Array<string>,
       children: ProjectsDB.DirectoryContents,
-    ): Array<TreeNodeProps> =>
+    ): Array<RcDataNode> =>
       Object.entries(children).map(([name, node]) =>
         // eslint-disable-next-line no-use-before-define
         visitNode([...path, name], ((node: any): ProjectsDB.FileTreeNode)),
@@ -121,7 +113,7 @@ class FileTree extends React.Component<PropTypes, StateTypes> {
     const visitNode = (
       path: Array<string>,
       node: ProjectsDB.FileTreeNode,
-    ): TreeNodeProps => {
+    ): RcDataNode => {
       const key = `/${path.join('/')}`;
       const title = path[path.length - 1];
 
@@ -147,7 +139,7 @@ class FileTree extends React.Component<PropTypes, StateTypes> {
         };
     };
 
-    const visitRoot = (project: ProjectsDB.Project): Array<TreeNodeProps> => [
+    const visitRoot = (project: ProjectsDB.Project): Array<RcDataNode> => [
       {
         key: '/',
         title: project.name,

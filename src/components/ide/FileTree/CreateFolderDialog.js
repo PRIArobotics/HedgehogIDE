@@ -12,14 +12,14 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 
 import * as ProjectsDB from '../../../core/store/projects';
 
-import type { TreeNodeProps } from './FileTree';
+import type { RcTreeNodeEvent } from './RcTreeTypes';
 
 type PropTypes = {|
-  onCreate: (TreeNodeProps, string) => boolean | Promise<boolean>,
+  onCreate: (RcTreeNodeEvent, string) => boolean | Promise<boolean>,
 |};
 type StateTypes = {|
   visible: boolean,
-  parentNode: TreeNodeProps | null,
+  parentNode: RcTreeNodeEvent | null,
   newFolderName: string,
 |};
 
@@ -30,7 +30,7 @@ class CreateFolderDialog extends React.Component<PropTypes, StateTypes> {
     newFolderName: '',
   };
 
-  show(parentNode: TreeNodeProps) {
+  show(parentNode: RcTreeNodeEvent) {
     this.setState({ visible: true, parentNode });
   }
 
@@ -50,7 +50,7 @@ class CreateFolderDialog extends React.Component<PropTypes, StateTypes> {
 
     return (
       newFolderName !== '' &&
-      parentNode.children.every(node => node.props.title !== newFolderName)
+      parentNode.props.children.every(node => node.props.title !== newFolderName)
     );
   }
 
