@@ -26,6 +26,10 @@ import VisualEditor from '../VisualEditor';
 
 import * as ProjectsDB from '../../../core/store/projects';
 
+import type { TreeNodeProps, FileAction } from '../FileTree/FileTree';
+import CreateFileDialog from '../FileTree/CreateFileDialog';
+import CreateFolderDialog from '../FileTree/CreateFolderDialog';
+
 const styled = withStylesMaterial(theme => ({
   root: {
     boxSizing: 'border-box',
@@ -122,6 +126,9 @@ class Ide extends React.Component<PropTypes, StateTypes> {
   consoleRef: RefObject<typeof Console> = React.createRef();
   simulatorRef: RefObject<typeof Simulator> = React.createRef();
 
+  createFileRef: RefObject<typeof CreateFileDialog> = React.createRef();
+  createFolderRef: RefObject<typeof CreateFolderDialog> = React.createRef();
+
   blocklyTabIds = new Set();
 
   state = {
@@ -139,10 +146,7 @@ class Ide extends React.Component<PropTypes, StateTypes> {
   constructor(props: PropTypes) {
     super(props);
 
-    (async () => {
-      const project = await ProjectsDB.getProjectByName(props.projectName);
-      this.setState({ project });
-    })();
+    this.refreshProject();
 
     const json = localStorage.getItem('IDELayout');
     if (json) {
@@ -157,6 +161,11 @@ class Ide extends React.Component<PropTypes, StateTypes> {
       });
     }
   }
+
+  async refreshProject() {
+    const project = await ProjectsDB.getProjectByName(this.props.projectName);
+    this.setState({ project });
+}
 
   save() {
     const {
@@ -324,6 +333,45 @@ class Ide extends React.Component<PropTypes, StateTypes> {
     this.setState({ runningCode: null });
   };
 
+  handleFileAction(node: TreeNodeProps, action: FileAction) {
+    // TODO
+    console.log(node.data.path, action);
+    this.beginCreateFolder(node);
+  }
+
+  beginCreateFolder(parentNode: TreeNodeProps) {
+    // eslint-disable-next-line no-throw-literal
+    if (this.createFolderRef.current === null) throw 'ref is null';
+
+    this.createFolderRef.current.show(parentNode);
+  }
+
+  async confirmCreateFolder(parentNode: TreeNodeProps, name: string): Promise<boolean> {
+    // eslint-disable-next-line no-throw-literal
+    if (this.state.project === null) throw 'unreachable';
+
+    try {
+      const files = {
+        ...this.state.project.files,
+        [name]: {
+          type: 'dir',
+          children: [],
+        },
+      }
+
+      const project = await ProjectsDB.updateProject(
+        this.state.project,
+        { files },
+      );
+      await this.refreshProject();
+      return true;
+    } catch (ex) {
+      if (!(ex instanceof ProjectsDB.ProjectError)) throw ex;
+      await this.refreshProject();
+      return false;
+    }
+  }
+
   render() {
     const { classes } = this.props;
     const { project } = this.state;
@@ -378,8 +426,13 @@ class Ide extends React.Component<PropTypes, StateTypes> {
           </div>
           <FileTree
             project={this.state.project}
+            onFileAction={(node, action) => this.handleFileAction(node, action)}
             callbackSave={this.fileTreeSave}
             callbackGet={this.fileTreeGet}
+          />
+          <CreateFolderDialog
+            ref={this.createFolderRef}
+            onCreate={(parentNode, name) => this.confirmCreateFolder(parentNode, name)}
           />
         </Paper>
         <Paper className={classes.editorContainer} square>

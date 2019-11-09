@@ -14,6 +14,7 @@ import type { FileAction } from './FileMenu';
 
 import * as ProjectsDB from '../../../core/store/projects';
 
+export type { FileAction };
 export type TreeNodeProps = {
   key: string,
   title: string,
@@ -37,6 +38,7 @@ type FileTreeState = {|
 
 type PropTypes = {|
   project: ProjectsDB.Project,
+  onFileAction: (TreeNodeProps, FileAction) => void | Promise<void>,
   callbackSave: (state: FileTreeState) => void,
   callbackGet: () => FileTreeState,
 |};
@@ -105,10 +107,6 @@ class FileTree extends React.Component<PropTypes, StateTypes> {
   handleTreeExpand = expandedKeys => {
     this.props.callbackSave({ expandedKeys });
   };
-
-  handleFileAction(node: TreeNodeProps, action: FileAction) {
-    // TODO
-  }
 
   getTreeData(): Array<TreeNodeProps> {
     const visitChildren = (
@@ -184,7 +182,7 @@ class FileTree extends React.Component<PropTypes, StateTypes> {
         />
         <FileMenu
           ref={this.menuRef}
-          onFileAction={(node, action) => this.handleFileAction(node, action)}
+          onFileAction={this.props.onFileAction}
         />
       </div>
     );
