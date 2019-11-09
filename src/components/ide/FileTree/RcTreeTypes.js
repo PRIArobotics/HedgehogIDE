@@ -16,8 +16,9 @@ type RcTreeNodeProps = {
   data: {|
     path: Array<string>,
   |},
+  // eslint-disable-next-line no-use-before-define
   children: Array<RcTreeNode>,
-}
+};
 
 export type RcTreeNode = {
   key: string,

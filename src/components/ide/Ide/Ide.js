@@ -166,7 +166,7 @@ class Ide extends React.Component<PropTypes, StateTypes> {
   async refreshProject() {
     const project = await ProjectsDB.getProjectByName(this.props.projectName);
     this.setState({ project });
-}
+  }
 
   save() {
     const {
@@ -336,7 +336,6 @@ class Ide extends React.Component<PropTypes, StateTypes> {
 
   handleFileAction(node: RcTreeNodeEvent, action: FileAction) {
     // TODO
-    console.log(node.props.data.path, action);
     this.beginCreateFolder(node);
   }
 
@@ -347,7 +346,10 @@ class Ide extends React.Component<PropTypes, StateTypes> {
     this.createFolderRef.current.show(parentNode);
   }
 
-  async confirmCreateFolder(parentNode: RcTreeNodeEvent, name: string): Promise<boolean> {
+  async confirmCreateFolder(
+    parentNode: RcTreeNodeEvent,
+    name: string,
+  ): Promise<boolean> {
     // eslint-disable-next-line no-throw-literal
     if (this.state.project === null) throw 'unreachable';
 
@@ -358,12 +360,11 @@ class Ide extends React.Component<PropTypes, StateTypes> {
           type: 'dir',
           children: [],
         },
-      }
+      };
 
-      const project = await ProjectsDB.updateProject(
-        this.state.project,
-        { files },
-      );
+      const project = await ProjectsDB.updateProject(this.state.project, {
+        files,
+      });
       await this.refreshProject();
       return true;
     } catch (ex) {
@@ -433,7 +434,9 @@ class Ide extends React.Component<PropTypes, StateTypes> {
           />
           <CreateFolderDialog
             ref={this.createFolderRef}
-            onCreate={(parentNode, name) => this.confirmCreateFolder(parentNode, name)}
+            onCreate={(parentNode, name) =>
+              this.confirmCreateFolder(parentNode, name)
+            }
           />
         </Paper>
         <Paper className={classes.editorContainer} square>

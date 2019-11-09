@@ -10,8 +10,6 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 
-import * as ProjectsDB from '../../../core/store/projects';
-
 import type { RcTreeNodeEvent } from './RcTreeTypes';
 
 type PropTypes = {|
@@ -50,7 +48,9 @@ class CreateFolderDialog extends React.Component<PropTypes, StateTypes> {
 
     return (
       newFolderName !== '' &&
-      parentNode.props.children.every(node => node.props.title !== newFolderName)
+      parentNode.props.children.every(
+        node => node.props.title !== newFolderName,
+      )
     );
   }
 
@@ -63,7 +63,7 @@ class CreateFolderDialog extends React.Component<PropTypes, StateTypes> {
     // eslint-disable-next-line no-throw-literal
     if (parentNode === null) throw 'unreachable';
 
-    const success = await this.props.onCreate(parentNode, this.state.newFolderName);
+    const success = await this.props.onCreate(parentNode, newFolderName);
     if (success) {
       this.setState({ visible: false, newFolderName: '' });
     }
@@ -77,7 +77,9 @@ class CreateFolderDialog extends React.Component<PropTypes, StateTypes> {
         aria-labelledby="create-folder-dialog-title"
         aria-describedby="create-folder-dialog-description"
       >
-        <DialogTitle id="create-folder-dialog-title">Create new folder</DialogTitle>
+        <DialogTitle id="create-folder-dialog-title">
+          Create new folder
+        </DialogTitle>
         <DialogContent>
           <DialogContentText id="create-folder-dialog-description">
             Please enter the new folder&apos;s name.

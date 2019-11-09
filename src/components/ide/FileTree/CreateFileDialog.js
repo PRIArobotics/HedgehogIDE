@@ -10,8 +10,6 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 
-import * as ProjectsDB from '../../../core/store/projects';
-
 import type { RcTreeNodeEvent } from './RcTreeTypes';
 
 type PropTypes = {|
@@ -63,7 +61,7 @@ class CreateFileDialog extends React.Component<PropTypes, StateTypes> {
     // eslint-disable-next-line no-throw-literal
     if (parentNode === null) throw 'unreachable';
 
-    const success = await this.props.onCreate(parentNode, this.state.newFileName);
+    const success = await this.props.onCreate(parentNode, newFileName);
     if (success) {
       this.setState({ visible: false, newFileName: '' });
     }
