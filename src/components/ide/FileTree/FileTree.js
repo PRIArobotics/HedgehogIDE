@@ -11,7 +11,11 @@ import s from './FileTree.scss';
 
 import FileMenu from './FileMenu';
 import type { FileAction } from './FileMenu';
-import type { RcDataNode, RcTreeNodeEvent, RcNodeEventInfo } from './RcTreeTypes';
+import type {
+  RcDataNode,
+  RcTreeNodeEvent,
+  RcNodeEventInfo,
+} from './RcTreeTypes';
 
 import * as ProjectsDB from '../../../core/store/projects';
 
@@ -72,7 +76,10 @@ class FileTree extends React.Component<PropTypes, StateTypes> {
     this.menuAnchor = e.target;
   };
 
-  handleTreeSelect = (selectedKeys: Array<string>, { node }: RcNodeEventInfo<>) => {
+  handleTreeSelect = (
+    selectedKeys: Array<string>,
+    { node }: RcNodeEventInfo<>,
+  ) => {
     this.setState({ selectedKeys });
   };
 
@@ -96,7 +103,10 @@ class FileTree extends React.Component<PropTypes, StateTypes> {
     this.menuRef.current.show(this.menuAnchor, node);
   };
 
-  handleTreeExpand = (expandedKeys: Array<string>, { node }: RcNodeEventInfo<>) => {
+  handleTreeExpand = (
+    expandedKeys: Array<string>,
+    { node }: RcNodeEventInfo<>,
+  ) => {
     this.props.callbackSave({ expandedKeys });
   };
 
@@ -172,10 +182,7 @@ class FileTree extends React.Component<PropTypes, StateTypes> {
           onExpand={this.handleTreeExpand}
           treeData={this.getTreeData()}
         />
-        <FileMenu
-          ref={this.menuRef}
-          onFileAction={this.props.onFileAction}
-        />
+        <FileMenu ref={this.menuRef} onFileAction={this.props.onFileAction} />
       </div>
     );
   }
