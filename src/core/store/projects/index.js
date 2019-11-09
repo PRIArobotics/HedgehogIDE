@@ -54,6 +54,8 @@ export type Project = {|
   id: number,
   name: string,
   // the children of the implicit root folder
+  // TODO with this data model, how to detect concurrent modifications?
+  // there is no unique constraint on file paths!
   files: DirectoryContents,
 |};
 
