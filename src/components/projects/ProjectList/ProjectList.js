@@ -62,7 +62,7 @@ class ProjectList extends React.Component<PropTypes, StateTypes> {
 
   async confirmCreateProject(name: string): Promise<boolean> {
     try {
-      await ProjectsDB.createProject({ name, files: {} });
+      await ProjectsDB.createProject(name);
       await this.refreshProjects();
       return true;
     } catch (ex) {
@@ -103,7 +103,7 @@ class ProjectList extends React.Component<PropTypes, StateTypes> {
     name: string,
   ): Promise<boolean> {
     try {
-      await ProjectsDB.updateProject(project, { name });
+      await ProjectsDB.renameProject(project, name);
       await this.refreshProjects();
       return true;
     } catch (ex) {
@@ -138,10 +138,10 @@ class ProjectList extends React.Component<PropTypes, StateTypes> {
           <List>
             {this.state.projects.map(project => (
               <ListItem
-                key={project.id}
+                key={project}
                 button
                 component={Link}
-                to={`/projects/${project.name}`}
+                to={`/projects/${project}`}
               >
                 <ListItemAvatar>
                   <Avatar>
@@ -149,19 +149,19 @@ class ProjectList extends React.Component<PropTypes, StateTypes> {
                   </Avatar>
                 </ListItemAvatar>
                 <ListItemText
-                  primary={project.name}
+                  primary={project}
                   // secondary="Secondary text"
                 />
                 <ListItemSecondaryAction>
                   <IconButton
-                    aria-label={`delete project "${project.name}"`}
+                    aria-label={`delete project "${project}"`}
                     onClick={() => this.beginRenameProject(project)}
                   >
                     <EditIcon />
                   </IconButton>
                   <IconButton
                     edge="end"
-                    aria-label={`delete project "${project.name}"`}
+                    aria-label={`delete project "${project}"`}
                     onClick={() => this.beginDeleteProject(project)}
                   >
                     <DeleteIcon />

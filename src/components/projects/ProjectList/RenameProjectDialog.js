@@ -33,7 +33,7 @@ class RenameProjectDialog extends React.Component<PropTypes, StateTypes> {
     this.setState({
       visible: true,
       projectToRename,
-      newProjectName: projectToRename.name,
+      newProjectName: projectToRename,
     });
   }
 
@@ -50,7 +50,7 @@ class RenameProjectDialog extends React.Component<PropTypes, StateTypes> {
     const { newProjectName } = this.state;
     return (
       newProjectName !== '' &&
-      allProjects.every(project => project.name !== newProjectName)
+      allProjects.every(project => project !== newProjectName)
     );
   }
 
