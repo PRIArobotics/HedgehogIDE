@@ -13,27 +13,27 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import * as ProjectsDB from '../../../core/store/projects';
 
 type PropTypes = {|
-  onRename: (ProjectsDB.Project, string) => boolean | Promise<boolean>,
-  allProjects: Array<ProjectsDB.Project>,
+  onRename: (ProjectsDB.ProjectName, string) => boolean | Promise<boolean>,
+  allProjects: Array<ProjectsDB.ProjectName>,
 |};
 type StateTypes = {|
   visible: boolean,
-  projectToRename: ProjectsDB.Project | null,
+  projectName: ProjectsDB.ProjectName | null,
   newProjectName: string,
 |};
 
 class RenameProjectDialog extends React.Component<PropTypes, StateTypes> {
   state: StateTypes = {
     visible: false,
-    projectToRename: null,
+    projectName: null,
     newProjectName: '',
   };
 
-  show(projectToRename: ProjectsDB.Project) {
+  show(projectName: ProjectsDB.ProjectName) {
     this.setState({
       visible: true,
-      projectToRename,
-      newProjectName: projectToRename,
+      projectName,
+      newProjectName: projectName,
     });
   }
 
@@ -58,10 +58,10 @@ class RenameProjectDialog extends React.Component<PropTypes, StateTypes> {
     // eslint-disable-next-line no-throw-literal
     if (!this.state.visible) throw 'confirming when dialog is not shown';
     // eslint-disable-next-line no-throw-literal
-    if (this.state.projectToRename === null) throw 'no projectToRename';
+    if (this.state.projectName === null) throw 'no projectName';
 
     const success = await this.props.onRename(
-      this.state.projectToRename,
+      this.state.projectName,
       this.state.newProjectName,
     );
     if (success) {
@@ -77,7 +77,7 @@ class RenameProjectDialog extends React.Component<PropTypes, StateTypes> {
         aria-labelledby="rename-dialog-title"
         aria-describedby="rename-dialog-description"
       >
-        <DialogTitle id="rename-dialog-title">Rename new project</DialogTitle>
+        <DialogTitle id="rename-dialog-title">Rename project</DialogTitle>
         <DialogContent>
           <DialogContentText id="rename-dialog-description">
             Please enter the project&apos;s new name.
