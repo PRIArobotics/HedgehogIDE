@@ -5473,6 +5473,11 @@ es6-promisify@^5.0.0:
   dependencies:
     es6-promise "^4.0.3"
 
+es6-promisify@^6.0.1:
+  version "6.0.2"
+  resolved "https://registry.yarnpkg.com/es6-promisify/-/es6-promisify-6.0.2.tgz#525c23725b8510f5f1f2feb5a1fbad93a93e29b4"
+  integrity sha512-eO6vFm0JvqGzjWIQA6QVKjxpmELfhWbDUWHm1rPfIbn55mhKPiAa5xpLmQWJrNa629ZIeQ8ZvMAi13kvrjK6Mg==
+
 escape-html@~1.0.3:
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/escape-html/-/escape-html-1.0.3.tgz#0258eae4d3d0c0974de1c169188ef0051d1d1988"
@@ -6125,6 +6130,14 @@ filename-regex@^2.0.0:
   version "2.0.1"
   resolved "https://registry.yarnpkg.com/filename-regex/-/filename-regex-2.0.1.tgz#c1c4b9bee3e09725ddb106b75c1e301fe2f18b26"
   integrity sha1-wcS5vuPglyXdsQa3XB4wH+LxiyY=
+
+filer@^1.1.2:
+  version "1.1.2"
+  resolved "https://registry.yarnpkg.com/filer/-/filer-1.1.2.tgz#a5e70135c62f357b0645e3e17251779a194e5e45"
+  integrity sha512-5jgeVMkGWepDprvJMkoogIj0O77sqDYm/yjgcWsKKKBMlK4ubb7q9DJlzDHLNyeNpRYwXvzDbk2gFoOu1keoeQ==
+  dependencies:
+    es6-promisify "^6.0.1"
+    minimatch "^3.0.4"
 
 fileset@^2.0.3:
   version "2.0.3"
