@@ -14,7 +14,7 @@ import * as ProjectsDB from '../../../core/store/projects';
 
 type PropTypes = {|
   onCreate: string => boolean | Promise<boolean>,
-  allProjects: Array<ProjectsDB.Project>,
+  allProjects: Array<ProjectsDB.ProjectName>,
 |};
 type StateTypes = {|
   visible: boolean,

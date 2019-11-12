@@ -30,7 +30,7 @@ import RenameProjectDialog from './RenameProjectDialog';
 
 type PropTypes = {||};
 type StateTypes = {|
-  projects: Array<ProjectsDB.Project>,
+  projects: Array<ProjectsDB.ProjectName>,
 |};
 
 class ProjectList extends React.Component<PropTypes, StateTypes> {
@@ -72,16 +72,16 @@ class ProjectList extends React.Component<PropTypes, StateTypes> {
     }
   }
 
-  beginDeleteProject(project: ProjectsDB.Project) {
+  beginDeleteProject(projectName: ProjectsDB.ProjectName) {
     // eslint-disable-next-line no-throw-literal
     if (this.deleteRef.current === null) throw 'ref is null';
 
-    this.deleteRef.current.show(project);
+    this.deleteRef.current.show(projectName);
   }
 
-  async confirmDeleteProject(project: ProjectsDB.Project): Promise<boolean> {
+  async confirmDeleteProject(projectName: ProjectsDB.ProjectName): Promise<boolean> {
     try {
-      await ProjectsDB.removeProject(project);
+      await ProjectsDB.removeProject(projectName);
       await this.refreshProjects();
       return true;
     } catch (ex) {
@@ -91,19 +91,19 @@ class ProjectList extends React.Component<PropTypes, StateTypes> {
     }
   }
 
-  beginRenameProject(project: ProjectsDB.Project) {
+  beginRenameProject(projectName: ProjectsDB.ProjectName) {
     // eslint-disable-next-line no-throw-literal
     if (this.renameRef.current === null) throw 'ref is null';
 
-    this.renameRef.current.show(project);
+    this.renameRef.current.show(projectName);
   }
 
   async confirmRenameProject(
-    project: ProjectsDB.Project,
-    name: string,
+    projectName: ProjectsDB.ProjectName,
+    newName: string,
   ): Promise<boolean> {
     try {
-      await ProjectsDB.renameProject(project, name);
+      await ProjectsDB.renameProject(projectName, newName);
       await this.refreshProjects();
       return true;
     } catch (ex) {
@@ -136,12 +136,12 @@ class ProjectList extends React.Component<PropTypes, StateTypes> {
             </IconButton>
           </Toolbar>
           <List>
-            {this.state.projects.map(project => (
+            {this.state.projects.map(projectName => (
               <ListItem
-                key={project}
+                key={projectName}
                 button
                 component={Link}
-                to={`/projects/${project}`}
+                to={`/projects/${projectName}`}
               >
                 <ListItemAvatar>
                   <Avatar>
@@ -149,20 +149,20 @@ class ProjectList extends React.Component<PropTypes, StateTypes> {
                   </Avatar>
                 </ListItemAvatar>
                 <ListItemText
-                  primary={project}
+                  primary={projectName}
                   // secondary="Secondary text"
                 />
                 <ListItemSecondaryAction>
                   <IconButton
-                    aria-label={`delete project "${project}"`}
-                    onClick={() => this.beginRenameProject(project)}
+                    aria-label={`delete project "${projectName}"`}
+                    onClick={() => this.beginRenameProject(projectName)}
                   >
                     <EditIcon />
                   </IconButton>
                   <IconButton
                     edge="end"
-                    aria-label={`delete project "${project}"`}
-                    onClick={() => this.beginDeleteProject(project)}
+                    aria-label={`delete project "${projectName}"`}
+                    onClick={() => this.beginDeleteProject(projectName)}
                   >
                     <DeleteIcon />
                   </IconButton>
@@ -177,12 +177,12 @@ class ProjectList extends React.Component<PropTypes, StateTypes> {
           />
           <DeleteProjectDialog
             ref={this.deleteRef}
-            onDelete={project => this.confirmDeleteProject(project)}
+            onDelete={projectName => this.confirmDeleteProject(projectName)}
           />
           <RenameProjectDialog
             ref={this.renameRef}
-            onRename={(project, name) =>
-              this.confirmRenameProject(project, name)
+            onRename={(projectName, newName) =>
+              this.confirmRenameProject(projectName, newName)
             }
             allProjects={this.state.projects}
           />

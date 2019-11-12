@@ -7,13 +7,13 @@ const sh = new fs.Shell();
 
 // it's just a string,
 // but using this indicates that this should be an existing directory
-export type Project = string;
+export type ProjectName = string;
 
 export class ProjectError extends Error {
   name = 'ProjectError';
 }
 
-export async function getProjects(): Promise<Array<Project>> {
+export async function getProjects(): Promise<Array<ProjectName>> {
   return /* await */ fs.promises.readdir('/');
 }
 
@@ -29,11 +29,11 @@ export async function createProject(name: string): Promise<void> {
 }
 
 export async function renameProject(
-  project: Project,
+  projectName: ProjectName,
   name: string,
 ): Promise<void> {
   try {
-    await fs.promises.rename(`/${project}`, `/${name}`);
+    await fs.promises.rename(`/${projectName}`, `/${name}`);
   } catch (ex) {
     if(ex instanceof filer.Errors.ENOENT)
       throw new ProjectError('Project does no longer exist');
@@ -44,10 +44,10 @@ export async function renameProject(
   }
 }
 
-export async function removeProject(project: Project): Promise<void> {
+export async function removeProject(projectName: ProjectName): Promise<void> {
   try {
     // use Shell.rm as it's recursive
-    await sh.promises.rm(project);
+    await sh.promises.rm(projectName);
   } catch (ex) {
     if(ex instanceof filer.Errors.ENOENT)
       throw new ProjectError('Project does no longer exist');

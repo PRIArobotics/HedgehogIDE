@@ -1,6 +1,6 @@
 // @flow
 
-export type { Project } from './project';
+export type { ProjectName } from './project';
 export {
   ProjectError,
   getProjects,

@@ -12,21 +12,21 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import * as ProjectsDB from '../../../core/store/projects';
 
 type PropTypes = {|
-  onDelete: ProjectsDB.Project => boolean | Promise<boolean>,
+  onDelete: ProjectsDB.ProjectName => boolean | Promise<boolean>,
 |};
 type StateTypes = {|
   visible: boolean,
-  projectToDelete: ProjectsDB.Project | null,
+  projectName: ProjectsDB.ProjectName | null,
 |};
 
 class DeleteProjectDialog extends React.Component<PropTypes, StateTypes> {
   state: StateTypes = {
     visible: false,
-    projectToDelete: null,
+    projectName: null,
   };
 
-  show(projectToDelete: ProjectsDB.Project) {
-    this.setState({ visible: true, projectToDelete });
+  show(projectName: ProjectsDB.ProjectName) {
+    this.setState({ visible: true, projectName });
   }
 
   cancel() {
@@ -37,11 +37,11 @@ class DeleteProjectDialog extends React.Component<PropTypes, StateTypes> {
     // eslint-disable-next-line no-throw-literal
     if (!this.state.visible) throw 'confirming when dialog is not shown';
     // eslint-disable-next-line no-throw-literal
-    if (this.state.projectToDelete === null) throw 'no projectToDelete';
+    if (this.state.projectName === null) throw 'no projectToDelete';
 
     // whether the deletion succeeded or not, we want to hide the dialog.
     // Thus, ignore the result of onDelete
-    await this.props.onDelete(this.state.projectToDelete);
+    await this.props.onDelete(this.state.projectName);
 
     // we don't set the project to null because that results in a display glitch:
     // the hide animation will leave the project name visible for a split second
@@ -60,7 +60,7 @@ class DeleteProjectDialog extends React.Component<PropTypes, StateTypes> {
         <DialogContent>
           <DialogContentText id="delete-dialog-description">
             Are you sure yo want to delete project &quot;
-            {this.state.projectToDelete}&quot;?
+            {this.state.projectName}&quot;?
           </DialogContentText>
         </DialogContent>
         <DialogActions>
