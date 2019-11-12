@@ -2,8 +2,8 @@
 
 import filer from 'filer';
 
-const fs = filer.fs.promises;
-const sh = new filer.fs.Shell().promises;
+const fs = filer.fs;
+const sh = new fs.Shell();
 
 // it's just a string,
 // but using this indicates that this should be an existing directory
@@ -14,12 +14,12 @@ export class ProjectError extends Error {
 }
 
 export async function getProjects(): Promise<Array<Project>> {
-  return /* await */ fs.readdir('/');
+  return /* await */ fs.promises.readdir('/');
 }
 
 export async function createProject(name: string): Promise<void> {
   try {
-    await fs.mkdir(`/${name}`);
+    await fs.promises.mkdir(`/${name}`);
   } catch (ex) {
     if(ex instanceof filer.Errors.EEXIST)
       throw new ProjectError('Project name is already in use');
@@ -33,7 +33,7 @@ export async function renameProject(
   name: string,
 ): Promise<void> {
   try {
-    await fs.rename(`/${project}`, `/${name}`);
+    await fs.promises.rename(`/${project}`, `/${name}`);
   } catch (ex) {
     if(ex instanceof filer.Errors.ENOENT)
       throw new ProjectError('Project does no longer exist');
@@ -47,7 +47,7 @@ export async function renameProject(
 export async function removeProject(project: Project): Promise<void> {
   try {
     // use Shell.rm as it's recursive
-    await sh.rm(project);
+    await sh.promises.rm(project);
   } catch (ex) {
     if(ex instanceof filer.Errors.ENOENT)
       throw new ProjectError('Project does no longer exist');
