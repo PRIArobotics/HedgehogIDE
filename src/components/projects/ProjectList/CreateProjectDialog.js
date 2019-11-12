@@ -44,7 +44,7 @@ class CreateProjectDialog extends React.Component<PropTypes, StateTypes> {
     const { newProjectName } = this.state;
     return (
       newProjectName !== '' &&
-      allProjects.every(project => project.name !== newProjectName)
+      allProjects.every(project => project !== newProjectName)
     );
   }
 

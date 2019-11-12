@@ -60,7 +60,7 @@ class DeleteProjectDialog extends React.Component<PropTypes, StateTypes> {
         <DialogContent>
           <DialogContentText id="delete-dialog-description">
             Are you sure yo want to delete project &quot;
-            {(this.state.projectToDelete || {}).name}&quot;?
+            {this.state.projectToDelete}&quot;?
           </DialogContentText>
         </DialogContent>
         <DialogActions>
