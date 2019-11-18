@@ -6,7 +6,7 @@ const fs = filer.fs;
 const sh = new fs.Shell();
 
 // it's just a string,
-// but using this indicates that this should be an existing directory
+// but using this indicates that this should be an existing directory.
 export type ProjectName = string;
 
 export type ProjectShell = any;
