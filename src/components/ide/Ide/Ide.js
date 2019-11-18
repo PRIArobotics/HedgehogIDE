@@ -17,6 +17,8 @@ import FlexLayout from 'flexlayout-react';
 // eslint-disable-next-line css-modules/no-unused-class
 import FlexLayoutTheme from './flex_layout_ide.css';
 
+import { Path } from 'filer';
+
 import Console from '../Console';
 import Editor from '../Editor';
 import Executor from '../Executor';
@@ -71,10 +73,11 @@ type PersistentState = {|
 
 type PropTypes = {|
   classes: Object,
-  projectName: string,
+  projectName: ProjectsDB.ProjectName,
 |};
 type StateTypes = {|
-  project: ProjectsDB.Project | null,
+  projectShell: ProjectsDB.ProjectShell | null,
+  files: Array<any> | null,
   runningCode: string | null,
 |};
 
@@ -133,7 +136,8 @@ class Ide extends React.Component<PropTypes, StateTypes> {
   blocklyTabIds = new Set();
 
   state = {
-    project: null,
+    projectShell: null,
+    files: null,
     runningCode: null,
   };
 
@@ -164,8 +168,9 @@ class Ide extends React.Component<PropTypes, StateTypes> {
   }
 
   async refreshProject() {
-    const project = await ProjectsDB.getProjectByName(this.props.projectName);
-    this.setState({ project });
+    const projectShell = await ProjectsDB.getProjectShell(this.props.projectName);
+    const files = await projectShell.promises.ls('.', { recursive: true });
+    this.setState({ projectShell, files });
   }
 
   save() {
@@ -351,34 +356,32 @@ class Ide extends React.Component<PropTypes, StateTypes> {
     name: string,
   ): Promise<boolean> {
     // eslint-disable-next-line no-throw-literal
-    if (this.state.project === null) throw 'unreachable';
+    if (this.state.projectShell === null) throw 'unreachable';
+
+    const { projectShell } = this.state;
 
     try {
-      const files = {
-        ...this.state.project.files,
-        [name]: {
-          type: 'dir',
-          children: [],
-        },
-      };
-
-      const project = await ProjectsDB.updateProject(this.state.project, {
-        files,
-      });
+      const path = Path.resolve(
+        projectShell.pwd(),
+        `${parentNode.props.eventKey}/${name}`,
+      );
+      await projectShell.promises.mkdirp(path);
       await this.refreshProject();
       return true;
     } catch (ex) {
-      if (!(ex instanceof ProjectsDB.ProjectError)) throw ex;
-      await this.refreshProject();
-      return false;
+      if (ex instanceof ProjectsDB.ProjectError) {
+        await this.refreshProject();
+        return false;
+      }
+      throw ex;
     }
   }
 
   render() {
-    const { classes } = this.props;
-    const { project } = this.state;
+    const { classes, projectName } = this.props;
+    const { files } = this.state;
 
-    if (project === null) return null;
+    if (files === null) return null;
 
     return (
       <div className={classes.root}>
@@ -427,7 +430,8 @@ class Ide extends React.Component<PropTypes, StateTypes> {
             <hr />
           </div>
           <FileTree
-            project={this.state.project}
+            projectName={projectName}
+            files={files}
             onFileAction={(node, action) => this.handleFileAction(node, action)}
             callbackSave={this.fileTreeSave}
             callbackGet={this.fileTreeGet}

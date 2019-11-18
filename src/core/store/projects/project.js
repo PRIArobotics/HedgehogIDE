@@ -9,6 +9,8 @@ const sh = new fs.Shell();
 // but using this indicates that this should be an existing directory
 export type ProjectName = string;
 
+export type ProjectShell = any;
+
 export class ProjectError extends Error {
   name = 'ProjectError';
 }
@@ -51,6 +53,19 @@ export async function removeProject(projectName: ProjectName): Promise<void> {
   } catch (ex) {
     if(ex instanceof filer.Errors.ENOENT)
       throw new ProjectError('Project does no longer exist');
+    console.error(ex);
+    throw ex;
+    }
+}
+
+export async function getProjectShell(projectName: ProjectName): Promise<ProjectShell> {
+  try {
+    const sh = new filer.fs.Shell();
+    await sh.promises.cd(`/${projectName}`);
+    return sh;
+  } catch (ex) {
+    if(ex instanceof filer.Errors.ENOTDIR)
+      throw new ProjectError('Project does not exist');
     console.error(ex);
     throw ex;
     }
