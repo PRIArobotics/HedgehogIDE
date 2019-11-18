@@ -35,7 +35,7 @@ class CreateFileDialog extends React.Component<PropTypes, StateTypes> {
   };
 
   show(parentNode: RcTreeNodeEvent, type: 'FILE' | 'DIRECTORY') {
-    this.setState({ visible: true, parentNode, type });
+    this.setState({ visible: true, parentNode, type, newFileName: '' });
   }
 
   cancel() {
