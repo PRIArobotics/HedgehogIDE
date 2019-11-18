@@ -31,6 +31,7 @@ import { Project, ProjectError } from '../../../core/store/projects';
 import type { FileAction } from '../FileTree/FileTree';
 import type { RcTreeNodeEvent } from '../FileTree/RcTreeTypes';
 import CreateFileDialog from '../FileTree/CreateFileDialog';
+import RenameFileDialog from '../FileTree/RenameFileDialog';
 
 const styled = withStylesMaterial(theme => ({
   root: {
@@ -130,6 +131,7 @@ class Ide extends React.Component<PropTypes, StateTypes> {
   simulatorRef: RefObject<typeof Simulator> = React.createRef();
 
   createFileRef: RefObject<typeof CreateFileDialog> = React.createRef();
+  renameFileRef: RefObject<typeof RenameFileDialog> = React.createRef();
 
   blocklyTabIds = new Set();
 
@@ -346,9 +348,8 @@ class Ide extends React.Component<PropTypes, StateTypes> {
         this.beginCreateFile(node, 'FILE');
         break;
       case 'RENAME':
-        // TODO
-        // eslint-disable-next-line no-throw-literal
-        throw 'unimplemented';
+        this.beginRenameFile(node);
+        break;
       case 'DELETE':
         // TODO
         // eslint-disable-next-line no-throw-literal
@@ -388,6 +389,58 @@ class Ide extends React.Component<PropTypes, StateTypes> {
       if (ex instanceof filer.Errors.EEXIST) {
         await this.refreshProject();
         return false;
+      }
+      console.error(ex);
+      throw ex;
+    }
+  }
+
+  beginRenameFile(file: RcTreeNodeEvent) {
+    // split off the './' at the start and the file name at the end
+    const path = file.props.eventKey.split('/').slice(1, -1);
+
+    // eslint-disable-next-line no-throw-literal
+    if (this.state.files === null) throw 'unreachable';
+    let files = this.state.files;
+
+    // determine the files that are siblings of the event target
+    for (let fragment of path) {
+      const child = files.find(child => child.name === fragment);
+      if (child === undefined) throw 'unreachable';
+      files = child.contents;
+    }
+
+    // eslint-disable-next-line no-throw-literal
+    if (this.renameFileRef.current === null) throw 'ref is null';
+    this.renameFileRef.current.show(file, files);
+  }
+
+  async confirmRenameFile(
+    file: RcTreeNodeEvent,
+    newName: string,
+  ): Promise<boolean> {
+    // eslint-disable-next-line no-throw-literal
+    if (this.state.project === null) throw 'unreachable';
+
+    const { project } = this.state;
+
+    try {
+      const path = project.resolve(file.props.eventKey);
+      const newPath = project.resolve(file.props.eventKey, '..', newName);
+
+      await fs.promises.rename(path, newPath);
+
+      await this.refreshProject();
+      return true;
+    } catch (ex) {
+      if (ex instanceof filer.Errors.EEXIST) {
+        await this.refreshProject();
+        return false;
+      }
+      if (ex instanceof filer.Errors.ENOENT) {
+        await this.refreshProject();
+        // close the dialog, the file is gone
+        return true;
       }
       console.error(ex);
       throw ex;
@@ -457,6 +510,12 @@ class Ide extends React.Component<PropTypes, StateTypes> {
             ref={this.createFileRef}
             onCreate={(parentNode, name, type) =>
               this.confirmCreateFile(parentNode, name, type)
+            }
+          />
+          <RenameFileDialog
+            ref={this.renameFileRef}
+            onRename={(file, name) =>
+              this.confirmRenameFile(file, name)
             }
           />
         </Paper>
