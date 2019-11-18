@@ -340,8 +340,54 @@ class Ide extends React.Component<PropTypes, StateTypes> {
   };
 
   handleFileAction(node: RcTreeNodeEvent, action: FileAction) {
-    // TODO
-    this.beginCreateFolder(node);
+    switch (action) {
+      case 'CREATE_FOLDER':
+        this.beginCreateFolder(node);
+        break;
+      case 'CREATE_FILE':
+        this.beginCreateFile(node);
+        break;
+      case 'RENAME':
+        // TODO
+      case 'DELETE':
+        // TODO
+      default:
+        throw 'unimplemented';
+    }
+  }
+
+  beginCreateFile(parentNode: RcTreeNodeEvent) {
+    // eslint-disable-next-line no-throw-literal
+    if (this.createFileRef.current === null) throw 'ref is null';
+
+    this.createFileRef.current.show(parentNode);
+  }
+
+  async confirmCreateFile(
+    parentNode: RcTreeNodeEvent,
+    name: string,
+  ): Promise<boolean> {
+    // eslint-disable-next-line no-throw-literal
+    if (this.state.projectShell === null) throw 'unreachable';
+
+    const { projectShell } = this.state;
+
+    try {
+      const path = Path.resolve(
+        projectShell.pwd(),
+        `${parentNode.props.eventKey}/${name}`,
+      );
+      // TODO this does not error if the file does exist
+      await projectShell.promises.touch(`${parentNode.props.eventKey}/${name}`);
+      await this.refreshProject();
+      return true;
+    } catch (ex) {
+      if (ex instanceof ProjectsDB.ProjectError) {
+        await this.refreshProject();
+        return false;
+      }
+      throw ex;
+    }
   }
 
   beginCreateFolder(parentNode: RcTreeNodeEvent) {
@@ -435,6 +481,12 @@ class Ide extends React.Component<PropTypes, StateTypes> {
             onFileAction={(node, action) => this.handleFileAction(node, action)}
             callbackSave={this.fileTreeSave}
             callbackGet={this.fileTreeGet}
+          />
+          <CreateFileDialog
+            ref={this.createFileRef}
+            onCreate={(parentNode, name) =>
+              this.confirmCreateFile(parentNode, name)
+            }
           />
           <CreateFolderDialog
             ref={this.createFolderRef}
