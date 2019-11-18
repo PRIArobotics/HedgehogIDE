@@ -32,6 +32,9 @@ import type { FileAction } from '../FileTree/FileTree';
 import type { RcTreeNodeEvent } from '../FileTree/RcTreeTypes';
 import CreateFileDialog from '../FileTree/CreateFileDialog';
 import RenameFileDialog from '../FileTree/RenameFileDialog';
+import DeleteFileDialog from '../FileTree/DeleteFileDialog';
+
+const sh = new fs.Shell();
 
 const styled = withStylesMaterial(theme => ({
   root: {
@@ -132,6 +135,7 @@ class Ide extends React.Component<PropTypes, StateTypes> {
 
   createFileRef: RefObject<typeof CreateFileDialog> = React.createRef();
   renameFileRef: RefObject<typeof RenameFileDialog> = React.createRef();
+  deleteFileRef: RefObject<typeof DeleteFileDialog> = React.createRef();
 
   blocklyTabIds = new Set();
 
@@ -351,9 +355,8 @@ class Ide extends React.Component<PropTypes, StateTypes> {
         this.beginRenameFile(node);
         break;
       case 'DELETE':
-        // TODO
-        // eslint-disable-next-line no-throw-literal
-        throw 'unimplemented';
+        this.beginDeleteFile(node);
+        break;
       default:
         // eslint-disable-next-line no-throw-literal
         throw 'unreachable';
@@ -447,6 +450,41 @@ class Ide extends React.Component<PropTypes, StateTypes> {
     }
   }
 
+  beginDeleteFile(file: RcTreeNodeEvent) {
+    // eslint-disable-next-line no-throw-literal
+    if (this.deleteFileRef.current === null) throw 'ref is null';
+
+    this.deleteFileRef.current.show(file);
+  }
+
+  async confirmDeleteFile(file: RcTreeNodeEvent): Promise<boolean> {
+    // eslint-disable-next-line no-throw-literal
+    if (this.state.project === null) throw 'unreachable';
+
+    const { project } = this.state;
+
+    try {
+      const path = project.resolve(file.props.eventKey);
+
+      await sh.promises.rm(path, { recursive: true });
+
+      await this.refreshProject();
+      return true;
+    } catch (ex) {
+      if (ex instanceof filer.Errors.EEXIST) {
+        await this.refreshProject();
+        return false;
+      }
+      if (ex instanceof filer.Errors.ENOENT) {
+        await this.refreshProject();
+        // close the dialog, the file is gone
+        return true;
+      }
+      console.error(ex);
+      throw ex;
+    }
+  }
+
   render() {
     const { classes, projectName } = this.props;
     const { files } = this.state;
@@ -516,6 +554,12 @@ class Ide extends React.Component<PropTypes, StateTypes> {
             ref={this.renameFileRef}
             onRename={(file, name) =>
               this.confirmRenameFile(file, name)
+            }
+          />
+          <DeleteFileDialog
+            ref={this.deleteFileRef}
+            onDelete={file =>
+              this.confirmDeleteFile(file)
             }
           />
         </Paper>
