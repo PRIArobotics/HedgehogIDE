@@ -121,10 +121,7 @@ class FileTree extends React.Component<PropTypes, StateTypes> {
         visitNode(path, child),
       );
 
-    const visitNode = (
-      path: string,
-      node: any,
-    ): RcDataNode => {
+    const visitNode = (path: string, node: any): RcDataNode => {
       const { name: title, type, contents } = node;
       const key = `${path}/${title}`;
       const isLeaf = !node.isDirectory();

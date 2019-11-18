@@ -1,8 +1,7 @@
 // @flow
 
-import filer from 'filer';
+import filer, { fs } from 'filer';
 
-const fs = filer.fs;
 const sh = new fs.Shell();
 
 // it's just a string,
@@ -23,7 +22,7 @@ export async function createProject(name: string): Promise<void> {
   try {
     await fs.promises.mkdir(`/${name}`);
   } catch (ex) {
-    if(ex instanceof filer.Errors.EEXIST)
+    if (ex instanceof filer.Errors.EEXIST)
       throw new ProjectError('Project name is already in use');
     console.error(ex);
     throw ex;
@@ -37,9 +36,9 @@ export async function renameProject(
   try {
     await fs.promises.rename(`/${projectName}`, `/${name}`);
   } catch (ex) {
-    if(ex instanceof filer.Errors.ENOENT)
+    if (ex instanceof filer.Errors.ENOENT)
       throw new ProjectError('Project does no longer exist');
-    if(ex instanceof filer.Errors.EEXIST)
+    if (ex instanceof filer.Errors.EEXIST)
       throw new ProjectError('Project name is already in use');
     console.error(ex);
     throw ex;
@@ -51,22 +50,25 @@ export async function removeProject(projectName: ProjectName): Promise<void> {
     // use Shell.rm as it's recursive
     await sh.promises.rm(projectName);
   } catch (ex) {
-    if(ex instanceof filer.Errors.ENOENT)
+    if (ex instanceof filer.Errors.ENOENT)
       throw new ProjectError('Project does no longer exist');
     console.error(ex);
     throw ex;
-    }
+  }
 }
 
-export async function getProjectShell(projectName: ProjectName): Promise<ProjectShell> {
+export async function getProjectShell(
+  projectName: ProjectName,
+): Promise<ProjectShell> {
   try {
+    // eslint-disable-next-line no-shadow
     const sh = new filer.fs.Shell();
     await sh.promises.cd(`/${projectName}`);
     return sh;
   } catch (ex) {
-    if(ex instanceof filer.Errors.ENOTDIR)
+    if (ex instanceof filer.Errors.ENOTDIR)
       throw new ProjectError('Project does not exist');
     console.error(ex);
     throw ex;
-    }
+  }
 }

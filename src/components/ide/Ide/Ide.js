@@ -13,11 +13,11 @@ import CallToActionIcon from '@material-ui/icons/CallToAction';
 import IconButton from '@material-ui/core/IconButton';
 import Tooltip from '@material-ui/core/Tooltip';
 
+import { Path } from 'filer';
+
 import FlexLayout from 'flexlayout-react';
 // eslint-disable-next-line css-modules/no-unused-class
 import FlexLayoutTheme from './flex_layout_ide.css';
-
-import { Path } from 'filer';
 
 import Console from '../Console';
 import Editor from '../Editor';
@@ -168,7 +168,9 @@ class Ide extends React.Component<PropTypes, StateTypes> {
   }
 
   async refreshProject() {
-    const projectShell = await ProjectsDB.getProjectShell(this.props.projectName);
+    const projectShell = await ProjectsDB.getProjectShell(
+      this.props.projectName,
+    );
     const files = await projectShell.promises.ls('.', { recursive: true });
     this.setState({ projectShell, files });
   }
@@ -349,10 +351,15 @@ class Ide extends React.Component<PropTypes, StateTypes> {
         break;
       case 'RENAME':
         // TODO
+        // eslint-disable-next-line no-throw-literal
+        throw 'unimplemented';
       case 'DELETE':
         // TODO
-      default:
+        // eslint-disable-next-line no-throw-literal
         throw 'unimplemented';
+      default:
+        // eslint-disable-next-line no-throw-literal
+        throw 'unreachable';
     }
   }
 
