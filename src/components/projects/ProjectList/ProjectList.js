@@ -79,7 +79,9 @@ class ProjectList extends React.Component<PropTypes, StateTypes> {
     this.deleteRef.current.show(projectName);
   }
 
-  async confirmDeleteProject(projectName: ProjectsDB.ProjectName): Promise<boolean> {
+  async confirmDeleteProject(
+    projectName: ProjectsDB.ProjectName,
+  ): Promise<boolean> {
     try {
       await ProjectsDB.removeProject(projectName);
       await this.refreshProjects();
