@@ -31,7 +31,6 @@ import { Project, ProjectError } from '../../../core/store/projects';
 import type { FileAction } from '../FileTree/FileTree';
 import type { RcTreeNodeEvent } from '../FileTree/RcTreeTypes';
 import CreateFileDialog from '../FileTree/CreateFileDialog';
-import CreateFolderDialog from '../FileTree/CreateFolderDialog';
 
 const styled = withStylesMaterial(theme => ({
   root: {
@@ -131,7 +130,6 @@ class Ide extends React.Component<PropTypes, StateTypes> {
   simulatorRef: RefObject<typeof Simulator> = React.createRef();
 
   createFileRef: RefObject<typeof CreateFileDialog> = React.createRef();
-  createFolderRef: RefObject<typeof CreateFolderDialog> = React.createRef();
 
   blocklyTabIds = new Set();
 
@@ -342,10 +340,10 @@ class Ide extends React.Component<PropTypes, StateTypes> {
   handleFileAction(node: RcTreeNodeEvent, action: FileAction) {
     switch (action) {
       case 'CREATE_FOLDER':
-        this.beginCreateFolder(node);
+        this.beginCreateFile(node, 'DIRECTORY');
         break;
       case 'CREATE_FILE':
-        this.beginCreateFile(node);
+        this.beginCreateFile(node, 'FILE');
         break;
       case 'RENAME':
         // TODO
@@ -361,16 +359,17 @@ class Ide extends React.Component<PropTypes, StateTypes> {
     }
   }
 
-  beginCreateFile(parentNode: RcTreeNodeEvent) {
+  beginCreateFile(parentNode: RcTreeNodeEvent, type: 'FILE' | 'DIRECTORY') {
     // eslint-disable-next-line no-throw-literal
     if (this.createFileRef.current === null) throw 'ref is null';
 
-    this.createFileRef.current.show(parentNode);
+    this.createFileRef.current.show(parentNode, type);
   }
 
   async confirmCreateFile(
     parentNode: RcTreeNodeEvent,
     name: string,
+    type: 'FILE' | 'DIRECTORY',
   ): Promise<boolean> {
     // eslint-disable-next-line no-throw-literal
     if (this.state.project === null) throw 'unreachable';
@@ -379,38 +378,10 @@ class Ide extends React.Component<PropTypes, StateTypes> {
 
     try {
       const path = project.resolve(parentNode.props.eventKey, name);
-      await fs.promises.mknod(path, 'FILE');
-      await this.refreshProject();
-      return true;
-    } catch (ex) {
-      if (ex instanceof filer.Errors.EEXIST) {
-        await this.refreshProject();
-        return false;
-      }
-      console.error(ex);
-      throw ex;
-    }
-  }
 
-  beginCreateFolder(parentNode: RcTreeNodeEvent) {
-    // eslint-disable-next-line no-throw-literal
-    if (this.createFolderRef.current === null) throw 'ref is null';
+      if (type === 'FILE') await fs.promises.mknod(path, 'FILE');
+      else await fs.promises.mkdir(path);
 
-    this.createFolderRef.current.show(parentNode);
-  }
-
-  async confirmCreateFolder(
-    parentNode: RcTreeNodeEvent,
-    name: string,
-  ): Promise<boolean> {
-    // eslint-disable-next-line no-throw-literal
-    if (this.state.project === null) throw 'unreachable';
-
-    const { project } = this.state;
-
-    try {
-      const path = project.resolve(parentNode.props.eventKey, name);
-      await fs.promises.mkdir(path);
       await this.refreshProject();
       return true;
     } catch (ex) {
@@ -484,14 +455,8 @@ class Ide extends React.Component<PropTypes, StateTypes> {
           />
           <CreateFileDialog
             ref={this.createFileRef}
-            onCreate={(parentNode, name) =>
-              this.confirmCreateFile(parentNode, name)
-            }
-          />
-          <CreateFolderDialog
-            ref={this.createFolderRef}
-            onCreate={(parentNode, name) =>
-              this.confirmCreateFolder(parentNode, name)
+            onCreate={(parentNode, name, type) =>
+              this.confirmCreateFile(parentNode, name, type)
             }
           />
         </Paper>
