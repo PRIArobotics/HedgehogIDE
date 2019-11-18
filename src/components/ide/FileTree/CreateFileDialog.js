@@ -13,11 +13,12 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import type { RcTreeNodeEvent } from './RcTreeTypes';
 
 type PropTypes = {|
-  onCreate: (RcTreeNodeEvent, string) => boolean | Promise<boolean>,
+  onCreate: (RcTreeNodeEvent, string, 'FILE' | 'DIRECTORY') => boolean | Promise<boolean>,
 |};
 type StateTypes = {|
   visible: boolean,
   parentNode: RcTreeNodeEvent | null,
+  type: 'FILE' | 'DIRECTORY',
   newFileName: string,
 |};
 
@@ -25,11 +26,12 @@ class CreateFileDialog extends React.Component<PropTypes, StateTypes> {
   state: StateTypes = {
     visible: false,
     parentNode: null,
+    type: 'FILE',
     newFileName: '',
   };
 
-  show(parentNode: RcTreeNodeEvent) {
-    this.setState({ visible: true, parentNode });
+  show(parentNode: RcTreeNodeEvent, type: 'FILE' | 'DIRECTORY') {
+    this.setState({ visible: true, parentNode, type });
   }
 
   cancel() {
@@ -56,18 +58,23 @@ class CreateFileDialog extends React.Component<PropTypes, StateTypes> {
     // eslint-disable-next-line no-throw-literal
     if (!this.state.visible) throw 'confirming when dialog is not shown';
 
-    const { parentNode, newFileName } = this.state;
+    const { parentNode, newFileName, type } = this.state;
 
     // eslint-disable-next-line no-throw-literal
     if (parentNode === null) throw 'unreachable';
 
-    const success = await this.props.onCreate(parentNode, newFileName);
+    const success = await this.props.onCreate(parentNode, newFileName, type);
     if (success) {
-      this.setState({ visible: false, newFileName: '' });
+      this.setState({ visible: false });
     }
   }
 
   render() {
+    const [label, placeholder] =
+      this.state.type === 'FILE'
+      ? ['file', 'file.js']
+      : ['folder', 'folder'];
+
     return (
       <Dialog
         open={this.state.visible}
@@ -75,16 +82,16 @@ class CreateFileDialog extends React.Component<PropTypes, StateTypes> {
         aria-labelledby="create-file-dialog-title"
         aria-describedby="create-file-dialog-description"
       >
-        <DialogTitle id="create-file-dialog-title">Create new file</DialogTitle>
+        <DialogTitle id="create-file-dialog-title">Create new {label}</DialogTitle>
         <DialogContent>
           <DialogContentText id="create-file-dialog-description">
-            Please enter the new file&apos;s name.
+            Please enter the new {label}&apos;s name.
           </DialogContentText>
           <TextField
             autoFocus
             margin="dense"
             id="name"
-            label="file.js"
+            label={placeholder}
             type="text"
             value={this.state.newFileName}
             onChange={event => this.setNewFileName(event.target.value)}
