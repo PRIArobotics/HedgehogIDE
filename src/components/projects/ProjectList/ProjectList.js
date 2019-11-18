@@ -20,7 +20,7 @@ import FolderIcon from '@material-ui/icons/Folder';
 import RefreshIcon from '@material-ui/icons/Refresh';
 
 import Link from '../../misc/Link';
-import * as ProjectsDB from '../../../core/store/projects';
+import { Project, ProjectError } from '../../../core/store/projects';
 
 import s from './ProjectList.scss';
 
@@ -30,7 +30,7 @@ import RenameProjectDialog from './RenameProjectDialog';
 
 type PropTypes = {||};
 type StateTypes = {|
-  projects: Array<ProjectsDB.ProjectName>,
+  projects: Array<Project>,
 |};
 
 class ProjectList extends React.Component<PropTypes, StateTypes> {
@@ -49,7 +49,7 @@ class ProjectList extends React.Component<PropTypes, StateTypes> {
   }
 
   async refreshProjects() {
-    const projects = await ProjectsDB.getProjects();
+    const projects = await Project.getProjects();
     this.setState({ projects });
   }
 
@@ -62,54 +62,52 @@ class ProjectList extends React.Component<PropTypes, StateTypes> {
 
   async confirmCreateProject(name: string): Promise<boolean> {
     try {
-      await ProjectsDB.createProject(name);
+      await Project.createProject(name);
       await this.refreshProjects();
       return true;
     } catch (ex) {
-      if (!(ex instanceof ProjectsDB.ProjectError)) throw ex;
+      if (!(ex instanceof ProjectError)) throw ex;
       await this.refreshProjects();
       return false;
     }
   }
 
-  beginDeleteProject(projectName: ProjectsDB.ProjectName) {
+  beginDeleteProject(project: Project) {
     // eslint-disable-next-line no-throw-literal
     if (this.deleteRef.current === null) throw 'ref is null';
 
-    this.deleteRef.current.show(projectName);
+    this.deleteRef.current.show(project);
   }
 
-  async confirmDeleteProject(
-    projectName: ProjectsDB.ProjectName,
-  ): Promise<boolean> {
+  async confirmDeleteProject(project: Project): Promise<boolean> {
     try {
-      await ProjectsDB.removeProject(projectName);
+      await project.delete();
       await this.refreshProjects();
       return true;
     } catch (ex) {
-      if (!(ex instanceof ProjectsDB.ProjectError)) throw ex;
+      if (!(ex instanceof ProjectError)) throw ex;
       await this.refreshProjects();
       return false;
     }
   }
 
-  beginRenameProject(projectName: ProjectsDB.ProjectName) {
+  beginRenameProject(project: Project) {
     // eslint-disable-next-line no-throw-literal
     if (this.renameRef.current === null) throw 'ref is null';
 
-    this.renameRef.current.show(projectName);
+    this.renameRef.current.show(project);
   }
 
   async confirmRenameProject(
-    projectName: ProjectsDB.ProjectName,
+    project: Project,
     newName: string,
   ): Promise<boolean> {
     try {
-      await ProjectsDB.renameProject(projectName, newName);
+      await project.rename(newName);
       await this.refreshProjects();
       return true;
     } catch (ex) {
-      if (!(ex instanceof ProjectsDB.ProjectError)) throw ex;
+      if (!(ex instanceof ProjectError)) throw ex;
       await this.refreshProjects();
       return false;
     }
@@ -138,12 +136,12 @@ class ProjectList extends React.Component<PropTypes, StateTypes> {
             </IconButton>
           </Toolbar>
           <List>
-            {this.state.projects.map(projectName => (
+            {this.state.projects.map(project => (
               <ListItem
-                key={projectName}
+                key={project.name}
                 button
                 component={Link}
-                to={`/projects/${projectName}`}
+                to={`/projects/${project.name}`}
               >
                 <ListItemAvatar>
                   <Avatar>
@@ -151,20 +149,20 @@ class ProjectList extends React.Component<PropTypes, StateTypes> {
                   </Avatar>
                 </ListItemAvatar>
                 <ListItemText
-                  primary={projectName}
+                  primary={project.name}
                   // secondary="Secondary text"
                 />
                 <ListItemSecondaryAction>
                   <IconButton
-                    aria-label={`delete project "${projectName}"`}
-                    onClick={() => this.beginRenameProject(projectName)}
+                    aria-label={`delete project "${project.name}"`}
+                    onClick={() => this.beginRenameProject(project)}
                   >
                     <EditIcon />
                   </IconButton>
                   <IconButton
                     edge="end"
-                    aria-label={`delete project "${projectName}"`}
-                    onClick={() => this.beginDeleteProject(projectName)}
+                    aria-label={`delete project "${project.name}"`}
+                    onClick={() => this.beginDeleteProject(project)}
                   >
                     <DeleteIcon />
                   </IconButton>
@@ -174,17 +172,17 @@ class ProjectList extends React.Component<PropTypes, StateTypes> {
           </List>
           <CreateProjectDialog
             ref={this.createRef}
-            onCreate={name => this.confirmCreateProject(name)}
+            onCreate={project => this.confirmCreateProject(project)}
             allProjects={this.state.projects}
           />
           <DeleteProjectDialog
             ref={this.deleteRef}
-            onDelete={projectName => this.confirmDeleteProject(projectName)}
+            onDelete={project => this.confirmDeleteProject(project)}
           />
           <RenameProjectDialog
             ref={this.renameRef}
-            onRename={(projectName, newName) =>
-              this.confirmRenameProject(projectName, newName)
+            onRename={(project, newName) =>
+              this.confirmRenameProject(project, newName)
             }
             allProjects={this.state.projects}
           />

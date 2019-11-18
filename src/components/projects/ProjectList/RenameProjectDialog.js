@@ -10,30 +10,30 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 
-import * as ProjectsDB from '../../../core/store/projects';
+import { Project } from '../../../core/store/projects';
 
 type PropTypes = {|
-  onRename: (ProjectsDB.ProjectName, string) => boolean | Promise<boolean>,
-  allProjects: Array<ProjectsDB.ProjectName>,
+  onRename: (Project, string) => boolean | Promise<boolean>,
+  allProjects: Array<Project>,
 |};
 type StateTypes = {|
   visible: boolean,
-  projectName: ProjectsDB.ProjectName | null,
+  project: Project | null,
   newProjectName: string,
 |};
 
 class RenameProjectDialog extends React.Component<PropTypes, StateTypes> {
   state: StateTypes = {
     visible: false,
-    projectName: null,
+    project: null,
     newProjectName: '',
   };
 
-  show(projectName: ProjectsDB.ProjectName) {
+  show(project: Project) {
     this.setState({
       visible: true,
-      projectName,
-      newProjectName: projectName,
+      project,
+      newProjectName: project.name,
     });
   }
 
@@ -50,7 +50,7 @@ class RenameProjectDialog extends React.Component<PropTypes, StateTypes> {
     const { newProjectName } = this.state;
     return (
       newProjectName !== '' &&
-      allProjects.every(project => project !== newProjectName)
+      allProjects.every(project => project.name !== newProjectName)
     );
   }
 
@@ -58,10 +58,10 @@ class RenameProjectDialog extends React.Component<PropTypes, StateTypes> {
     // eslint-disable-next-line no-throw-literal
     if (!this.state.visible) throw 'confirming when dialog is not shown';
     // eslint-disable-next-line no-throw-literal
-    if (this.state.projectName === null) throw 'no projectName';
+    if (this.state.project === null) throw 'no project';
 
     const success = await this.props.onRename(
-      this.state.projectName,
+      this.state.project,
       this.state.newProjectName,
     );
     if (success) {
