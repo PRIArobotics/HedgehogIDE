@@ -1,10 +1,11 @@
 // @flow
 
-export type { ProjectName } from './project';
+export type { ProjectName, ProjectShell } from './project';
 export {
   ProjectError,
   getProjects,
   createProject,
   renameProject,
   removeProject,
+  getProjectShell,
 } from './project';

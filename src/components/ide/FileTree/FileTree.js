@@ -33,7 +33,8 @@ type FileTreeState = {|
 |};
 
 type PropTypes = {|
-  project: ProjectsDB.Project,
+  projectName: ProjectsDB.ProjectName,
+  files: Array<any>,
   onFileAction: (RcTreeNodeEvent, FileAction) => void | Promise<void>,
   callbackSave: (state: FileTreeState) => void,
   callbackGet: () => FileTreeState,
@@ -112,56 +113,35 @@ class FileTree extends React.Component<PropTypes, StateTypes> {
 
   getTreeData(): Array<RcDataNode> {
     const visitChildren = (
-      path: Array<string>,
-      children: ProjectsDB.DirectoryContents,
+      path: string,
+      children: Array<any>,
     ): Array<RcDataNode> =>
-      Object.entries(children).map(([name, node]) =>
+      children.map(child =>
         // eslint-disable-next-line no-use-before-define
-        visitNode([...path, name], ((node: any): ProjectsDB.FileTreeNode)),
+        visitNode(path, child),
       );
 
     const visitNode = (
-      path: Array<string>,
-      node: ProjectsDB.FileTreeNode,
+      path: string,
+      node: any,
     ): RcDataNode => {
-      const key = `/${path.join('/')}`;
-      const title = path[path.length - 1];
-
-      if (node.type === 'file')
-        return {
-          key,
-          title,
-          isLeaf: true,
-          data: {
-            path,
-          },
-          children: [],
-        };
-      else
-        return {
-          key,
-          title,
-          isLeaf: false,
-          data: {
-            path,
-          },
-          children: visitChildren(path, node.children),
-        };
+      const { name: title, type, contents } = node;
+      const key = `${path}/${title}`;
+      const isLeaf = node.type !== 'DIRECTORY';
+      const children = isLeaf ? [] : visitChildren(key, contents);
+      return { key, title, isLeaf, children };
     };
 
-    const visitRoot = (project: ProjectsDB.Project): Array<RcDataNode> => [
+    const { projectName, files } = this.props;
+
+    return [
       {
-        key: '/',
-        title: project.name,
+        key: '.',
+        title: projectName,
         isLeaf: false,
-        data: {
-          path: [],
-        },
-        children: visitChildren([], project.files),
+        children: visitChildren('.', files),
       },
     ];
-
-    return visitRoot(this.props.project);
   }
 
   render() {

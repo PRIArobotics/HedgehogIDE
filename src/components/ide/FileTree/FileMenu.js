@@ -49,7 +49,7 @@ class FileMenu extends React.Component<PropTypes, StateTypes> {
         ? [null, null, null]
         : [
             this.state.config.anchor,
-            this.state.config.node.props.data.path.length === 0,
+            this.state.config.node.props.eventKey === '.',
             this.state.config.node.props.isLeaf,
           ];
 

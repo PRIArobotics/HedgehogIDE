@@ -4,18 +4,12 @@ export type RcDataNode = {
   key: string,
   title: string,
   isLeaf: boolean,
-  data: {|
-    path: Array<string>,
-  |},
   children: Array<RcDataNode>,
 };
 
 type RcTreeNodeProps = {
   title: string,
   isLeaf: boolean,
-  data: {|
-    path: Array<string>,
-  |},
   // eslint-disable-next-line no-use-before-define
   children: Array<RcTreeNode>,
 };
