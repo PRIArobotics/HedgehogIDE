@@ -17,8 +17,6 @@ import type {
   RcNodeEventInfo,
 } from './RcTreeTypes';
 
-import * as ProjectsDB from '../../../core/store/projects';
-
 export type { FileAction };
 
 /*
@@ -33,7 +31,7 @@ type FileTreeState = {|
 |};
 
 type PropTypes = {|
-  projectName: ProjectsDB.ProjectName,
+  projectName: string,
   files: Array<any>,
   onFileAction: (RcTreeNodeEvent, FileAction) => void | Promise<void>,
   callbackSave: (state: FileTreeState) => void,

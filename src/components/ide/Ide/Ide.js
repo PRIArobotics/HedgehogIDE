@@ -13,7 +13,7 @@ import CallToActionIcon from '@material-ui/icons/CallToAction';
 import IconButton from '@material-ui/core/IconButton';
 import Tooltip from '@material-ui/core/Tooltip';
 
-import { Path } from 'filer';
+import filer, { fs } from 'filer';
 
 import FlexLayout from 'flexlayout-react';
 // eslint-disable-next-line css-modules/no-unused-class
@@ -26,7 +26,7 @@ import FileTree from '../FileTree';
 import Simulator from '../Simulator';
 import VisualEditor from '../VisualEditor';
 
-import * as ProjectsDB from '../../../core/store/projects';
+import { Project, ProjectError } from '../../../core/store/projects';
 
 import type { FileAction } from '../FileTree/FileTree';
 import type { RcTreeNodeEvent } from '../FileTree/RcTreeTypes';
@@ -73,10 +73,10 @@ type PersistentState = {|
 
 type PropTypes = {|
   classes: Object,
-  projectName: ProjectsDB.ProjectName,
+  projectName: string,
 |};
 type StateTypes = {|
-  projectShell: ProjectsDB.ProjectShell | null,
+  project: Project | null,
   files: Array<any> | null,
   runningCode: string | null,
 |};
@@ -136,7 +136,7 @@ class Ide extends React.Component<PropTypes, StateTypes> {
   blocklyTabIds = new Set();
 
   state = {
-    projectShell: null,
+    project: null,
     files: null,
     runningCode: null,
   };
@@ -168,11 +168,9 @@ class Ide extends React.Component<PropTypes, StateTypes> {
   }
 
   async refreshProject() {
-    const projectShell = await ProjectsDB.getProjectShell(
-      this.props.projectName,
-    );
-    const files = await projectShell.promises.ls('.', { recursive: true });
-    this.setState({ projectShell, files });
+    const project = await Project.getProject(this.props.projectName);
+    const files = await project.getFiles();
+    this.setState({ project, files });
   }
 
   save() {
@@ -375,24 +373,21 @@ class Ide extends React.Component<PropTypes, StateTypes> {
     name: string,
   ): Promise<boolean> {
     // eslint-disable-next-line no-throw-literal
-    if (this.state.projectShell === null) throw 'unreachable';
+    if (this.state.project === null) throw 'unreachable';
 
-    const { projectShell } = this.state;
+    const { project } = this.state;
 
     try {
-      const path = Path.resolve(
-        projectShell.pwd(),
-        `${parentNode.props.eventKey}/${name}`,
-      );
-      // TODO this does not error if the file does exist
-      await projectShell.promises.touch(`${parentNode.props.eventKey}/${name}`);
+      const path = project.resolve(parentNode.props.eventKey, name);
+      await fs.promises.mknod(path, 'FILE');
       await this.refreshProject();
       return true;
     } catch (ex) {
-      if (ex instanceof ProjectsDB.ProjectError) {
+      if (ex instanceof filer.Errors.EEXIST) {
         await this.refreshProject();
         return false;
       }
+      console.error(ex);
       throw ex;
     }
   }
@@ -409,23 +404,21 @@ class Ide extends React.Component<PropTypes, StateTypes> {
     name: string,
   ): Promise<boolean> {
     // eslint-disable-next-line no-throw-literal
-    if (this.state.projectShell === null) throw 'unreachable';
+    if (this.state.project === null) throw 'unreachable';
 
-    const { projectShell } = this.state;
+    const { project } = this.state;
 
     try {
-      const path = Path.resolve(
-        projectShell.pwd(),
-        `${parentNode.props.eventKey}/${name}`,
-      );
-      await projectShell.promises.mkdirp(path);
+      const path = project.resolve(parentNode.props.eventKey, name);
+      await fs.promises.mkdir(path);
       await this.refreshProject();
       return true;
     } catch (ex) {
-      if (ex instanceof ProjectsDB.ProjectError) {
+      if (ex instanceof filer.Errors.EEXIST) {
         await this.refreshProject();
         return false;
       }
+      console.error(ex);
       throw ex;
     }
   }

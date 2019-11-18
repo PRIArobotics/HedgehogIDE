@@ -4,71 +4,84 @@ import filer, { fs } from 'filer';
 
 const sh = new fs.Shell();
 
-// it's just a string,
-// but using this indicates that this should be an existing directory.
-export type ProjectName = string;
-
-export type ProjectShell = any;
-
 export class ProjectError extends Error {
   name = 'ProjectError';
 }
 
-export async function getProjects(): Promise<Array<ProjectName>> {
-  return /* await */ fs.promises.readdir('/');
-}
+export class Project {
+  name: string;
 
-export async function createProject(name: string): Promise<void> {
-  try {
-    await fs.promises.mkdir(`/${name}`);
-  } catch (ex) {
-    if (ex instanceof filer.Errors.EEXIST)
-      throw new ProjectError('Project name is already in use');
-    console.error(ex);
-    throw ex;
+  constructor(name: string) {
+    this.name = name;
   }
-}
 
-export async function renameProject(
-  projectName: ProjectName,
-  name: string,
-): Promise<void> {
-  try {
-    await fs.promises.rename(`/${projectName}`, `/${name}`);
-  } catch (ex) {
-    if (ex instanceof filer.Errors.ENOENT)
-      throw new ProjectError('Project does no longer exist');
-    if (ex instanceof filer.Errors.EEXIST)
-      throw new ProjectError('Project name is already in use');
-    console.error(ex);
-    throw ex;
+  static async getProjects(): Promise<Array<Project>> {
+    const projectNames = await fs.promises.readdir('/');
+    return projectNames.map(name => new Project(name));
   }
-}
 
-export async function removeProject(projectName: ProjectName): Promise<void> {
-  try {
-    // use Shell.rm as it's recursive
-    await sh.promises.rm(projectName);
-  } catch (ex) {
-    if (ex instanceof filer.Errors.ENOENT)
-      throw new ProjectError('Project does no longer exist');
-    console.error(ex);
-    throw ex;
+  static async getProject(name: string): Promise<Project> {
+    try {
+      const path = filer.path.resolve('/', name);
+      await fs.promises.stat(path);
+      return new Project(name);
+    } catch (ex) {
+      if (ex instanceof filer.Errors.ENOENT)
+        throw new ProjectError(`Project "${name}" does not exist`);
+      console.error(ex);
+      throw ex;
+    }
   }
-}
 
-export async function getProjectShell(
-  projectName: ProjectName,
-): Promise<ProjectShell> {
-  try {
-    // eslint-disable-next-line no-shadow
-    const sh = new filer.fs.Shell();
-    await sh.promises.cd(`/${projectName}`);
-    return sh;
-  } catch (ex) {
-    if (ex instanceof filer.Errors.ENOTDIR)
-      throw new ProjectError('Project does not exist');
-    console.error(ex);
-    throw ex;
+  static async createProject(name: string): Promise<Project> {
+    try {
+      const path = filer.path.resolve('/', name);
+      await fs.promises.mkdir(path);
+      return new Project(name);
+    } catch (ex) {
+      if (ex instanceof filer.Errors.EEXIST)
+        throw new ProjectError(`Project "${name}" does already exist`);
+      console.error(ex);
+      throw ex;
+    }
+  }
+
+  resolve(...fragments: Array<string>): string {
+    return filer.path.resolve('/', this.name, ...fragments);
+  }
+
+  get path(): string {
+    return this.resolve();
+  }
+
+  async getFiles(): Promise<Array<any>> {
+    return sh.promises.ls(this.path, { recursive: true });
+  }
+
+  async rename(newName: string): Promise<void> {
+    try {
+      const newPath = filer.path.resolve('/', newName);
+      await fs.promises.rename(this.path, newPath);
+      this.name = newName;
+    } catch (ex) {
+      if (ex instanceof filer.Errors.ENOENT)
+        throw new ProjectError(`Project "${this.name}" does no longer exist`);
+      if (ex instanceof filer.Errors.EEXIST)
+        throw new ProjectError(`Project "${newName}" does already exist`);
+      console.error(ex);
+      throw ex;
+    }
+  }
+
+  async delete(): Promise<void> {
+    try {
+      // use Shell.rm as it supports recursive removal
+      await sh.promises.rm(this.path, { recursive: true });
+    } catch (ex) {
+      if (ex instanceof filer.Errors.ENOENT)
+        throw new ProjectError(`Project "${this.name}" does no longer exist`);
+      console.error(ex);
+      throw ex;
+    }
   }
 }

@@ -10,11 +10,11 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 
-import * as ProjectsDB from '../../../core/store/projects';
+import { Project } from '../../../core/store/projects';
 
 type PropTypes = {|
   onCreate: string => boolean | Promise<boolean>,
-  allProjects: Array<ProjectsDB.ProjectName>,
+  allProjects: Array<Project>,
 |};
 type StateTypes = {|
   visible: boolean,
@@ -44,7 +44,7 @@ class CreateProjectDialog extends React.Component<PropTypes, StateTypes> {
     const { newProjectName } = this.state;
     return (
       newProjectName !== '' &&
-      allProjects.every(project => project !== newProjectName)
+      allProjects.every(project => project.name !== newProjectName)
     );
   }
 
