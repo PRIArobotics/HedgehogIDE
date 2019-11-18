@@ -404,14 +404,15 @@ class Ide extends React.Component<PropTypes, StateTypes> {
 
     // eslint-disable-next-line no-throw-literal
     if (this.state.files === null) throw 'unreachable';
-    let files = this.state.files;
+    let { files } = this.state;
 
     // determine the files that are siblings of the event target
-    for (let fragment of path) {
-      const child = files.find(child => child.name === fragment);
+    path.forEach(fragment => {
+      const child = files.find(c => c.name === fragment);
+      // eslint-disable-next-line no-throw-literal
       if (child === undefined) throw 'unreachable';
       files = child.contents;
-    }
+    });
 
     // eslint-disable-next-line no-throw-literal
     if (this.renameFileRef.current === null) throw 'ref is null';
@@ -552,15 +553,11 @@ class Ide extends React.Component<PropTypes, StateTypes> {
           />
           <RenameFileDialog
             ref={this.renameFileRef}
-            onRename={(file, name) =>
-              this.confirmRenameFile(file, name)
-            }
+            onRename={(file, name) => this.confirmRenameFile(file, name)}
           />
           <DeleteFileDialog
             ref={this.deleteFileRef}
-            onDelete={file =>
-              this.confirmDeleteFile(file)
-            }
+            onDelete={file => this.confirmDeleteFile(file)}
           />
         </Paper>
         <Paper className={classes.editorContainer} square>

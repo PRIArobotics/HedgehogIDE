@@ -74,8 +74,9 @@ class RenameFileDialog extends React.Component<PropTypes, StateTypes> {
   }
 
   render() {
-    const [label, placeholder] =
-      (this.state.file === null ? true : this.state.file.props.isLeaf)
+    const [label, placeholder] = (this.state.file === null
+    ? true
+    : this.state.file.props.isLeaf)
       ? ['file', 'file.js']
       : ['folder', 'folder'];
 

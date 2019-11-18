@@ -49,8 +49,9 @@ class DeleteFileDialog extends React.Component<PropTypes, StateTypes> {
   }
 
   render() {
-    const label =
-      (this.state.file === null ? true : this.state.file.props.isLeaf)
+    const label = (this.state.file === null
+    ? true
+    : this.state.file.props.isLeaf)
       ? 'file'
       : 'folder';
     const name = this.state.file === null ? '' : this.state.file.props.title;
@@ -62,7 +63,9 @@ class DeleteFileDialog extends React.Component<PropTypes, StateTypes> {
         aria-labelledby="delete-file-dialog-title"
         aria-describedby="delete-file-dialog-description"
       >
-        <DialogTitle id="delete-file-dialog-title">Confirm deletion</DialogTitle>
+        <DialogTitle id="delete-file-dialog-title">
+          Confirm deletion
+        </DialogTitle>
         <DialogContent>
           <DialogContentText id="delete-file-dialog-description">
             Are you sure yo want to delete {label} &quot;{name}&quot;?
