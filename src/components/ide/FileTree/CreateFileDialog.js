@@ -13,7 +13,11 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import type { RcTreeNodeEvent } from './RcTreeTypes';
 
 type PropTypes = {|
-  onCreate: (RcTreeNodeEvent, string, 'FILE' | 'DIRECTORY') => boolean | Promise<boolean>,
+  onCreate: (
+    RcTreeNodeEvent,
+    string,
+    'FILE' | 'DIRECTORY',
+  ) => boolean | Promise<boolean>,
 |};
 type StateTypes = {|
   visible: boolean,
@@ -71,9 +75,7 @@ class CreateFileDialog extends React.Component<PropTypes, StateTypes> {
 
   render() {
     const [label, placeholder] =
-      this.state.type === 'FILE'
-      ? ['file', 'file.js']
-      : ['folder', 'folder'];
+      this.state.type === 'FILE' ? ['file', 'file.js'] : ['folder', 'folder'];
 
     return (
       <Dialog
@@ -82,7 +84,9 @@ class CreateFileDialog extends React.Component<PropTypes, StateTypes> {
         aria-labelledby="create-file-dialog-title"
         aria-describedby="create-file-dialog-description"
       >
-        <DialogTitle id="create-file-dialog-title">Create new {label}</DialogTitle>
+        <DialogTitle id="create-file-dialog-title">
+          Create new {label}
+        </DialogTitle>
         <DialogContent>
           <DialogContentText id="create-file-dialog-description">
             Please enter the new {label}&apos;s name.
