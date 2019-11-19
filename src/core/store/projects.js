@@ -96,6 +96,11 @@ export class Project {
     return sh.promises.ls(this.path, { recursive: true });
   }
 
+  async getUid(): Promise<string> {
+    const { node: uid } = await fs.promises.stat(this.path);
+    return uid;
+  }
+
   async rename(newName: string): Promise<void> {
     try {
       const newPath = filer.path.resolve('/', newName);
