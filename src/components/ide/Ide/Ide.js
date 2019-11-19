@@ -29,7 +29,7 @@ import VisualEditor from '../VisualEditor';
 import type { FilerRecursiveStatInfo, FilerRecursiveDirectoryInfo } from '../../../core/store/projects';
 import { Project, ProjectError } from '../../../core/store/projects';
 
-import type { FileAction } from '../FileTree/FileTree';
+import type { FileAction, ControlledState as FileTreeState } from '../FileTree/FileTree';
 import type { RcTreeNodeEvent } from '../FileTree/RcTreeTypes';
 import CreateFileDialog from '../FileTree/CreateFileDialog';
 import RenameFileDialog from '../FileTree/RenameFileDialog';
@@ -70,7 +70,6 @@ const defaultLayout = {
 
 type PersistentState = {|
   layoutState: FlexLayout.Model,
-  fileTreeState: Object,
   blocklyState: Object,
   aceState: Object,
 |};
@@ -82,6 +81,7 @@ type PropTypes = {|
 type StateTypes = {|
   project: Project | null,
   files: Array<FilerRecursiveStatInfo> | null,
+  fileTreeState: FileTreeState,
   runningCode: string | null,
 |};
 
@@ -143,12 +143,12 @@ class Ide extends React.Component<PropTypes, StateTypes> {
   state = {
     project: null,
     files: null,
+    fileTreeState: {},
     runningCode: null,
   };
 
   persistentState: PersistentState = {
     layoutState: FlexLayout.Model.fromJson(defaultLayout),
-    fileTreeState: {},
     blocklyState: {},
     aceState: {},
   };
@@ -160,12 +160,11 @@ class Ide extends React.Component<PropTypes, StateTypes> {
 
     const json = localStorage.getItem('IDELayout');
     if (json) {
-      const { layoutState, fileTreeState, blocklyState, aceState } = JSON.parse(
+      const { layoutState, blocklyState, aceState } = JSON.parse(
         json,
       );
       Object.assign(this.persistentState, {
         layoutState: FlexLayout.Model.fromJson(layoutState),
-        fileTreeState,
         blocklyState,
         aceState,
       });
@@ -175,13 +174,16 @@ class Ide extends React.Component<PropTypes, StateTypes> {
   async refreshProject() {
     const project = await Project.getProject(this.props.projectName);
     const files = await project.getFiles();
-    this.setState({ project, files });
+
+    const json = localStorage.getItem('FileTreeState');
+    const fileTreeState = json ? JSON.parse(json) : {};
+
+    this.setState({ project, files, fileTreeState });
   }
 
   save() {
     const {
       layoutState,
-      fileTreeState,
       blocklyState,
       aceState,
     } = this.persistentState;
@@ -189,7 +191,6 @@ class Ide extends React.Component<PropTypes, StateTypes> {
       'IDELayout',
       JSON.stringify({
         layoutState: layoutState.toJson(),
-        fileTreeState,
         blocklyState,
         aceState,
       }),
@@ -235,11 +236,9 @@ class Ide extends React.Component<PropTypes, StateTypes> {
     }
   }
 
-  fileTreeGet = () => this.persistentState.fileTreeState;
-
-  fileTreeSave = fileTreeState => {
-    this.persistentState.fileTreeState = fileTreeState;
-    this.save();
+  handleFileTreeUpdate(fileTreeState: FileTreeState) {
+    this.setState({ fileTreeState });
+    localStorage.setItem('FileTreeState', JSON.stringify(fileTreeState));
   };
 
   blocklyGet = id => this.persistentState.blocklyState[id];
@@ -544,9 +543,9 @@ class Ide extends React.Component<PropTypes, StateTypes> {
           <FileTree
             projectName={projectName}
             files={files}
+            {...this.state.fileTreeState}
             onFileAction={(node, action) => this.handleFileAction(node, action)}
-            callbackSave={this.fileTreeSave}
-            callbackGet={this.fileTreeGet}
+            onUpdate={state => this.handleFileTreeUpdate(state)}
           />
           <CreateFileDialog
             ref={this.createFileRef}
