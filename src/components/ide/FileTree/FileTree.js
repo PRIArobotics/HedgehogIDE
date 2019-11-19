@@ -28,16 +28,16 @@ After reloading, the root node will open even though it is not
 defined in the localstorage.
 */
 
-type FileTreeState = {|
+export type ControlledState = $Shape<{|
   expandedKeys: Array<string>,
-|};
+|}>;
 
 type PropTypes = {|
   projectName: string,
   files: Array<FilerRecursiveStatInfo>,
+  expandedKeys: Array<string>,
   onFileAction: (RcTreeNodeEvent, FileAction) => void | Promise<void>,
-  callbackSave: (state: FileTreeState) => void,
-  callbackGet: () => FileTreeState,
+  onUpdate: (state: ControlledState) => void | Promise<void>,
 |};
 type StateTypes = {|
   selectedKeys: Array<string>,
@@ -86,11 +86,11 @@ class FileTree extends React.Component<PropTypes, StateTypes> {
 
   // TODO implement moving files/directories via drag & drop
 
-  // handleTreeDragStart = ({ node }: RcNodeEventInfo<>) => {
-  // };
+  handleTreeDragStart = ({ node }: RcNodeEventInfo<>) => {
+  };
 
-  // handleTreeDragEnd = ({ node }: RcNodeEventInfo<>) => {
-  // };
+  handleTreeDragEnd = ({ node }: RcNodeEventInfo<>) => {
+  };
 
   handleTreeRightClick = ({ node }: RcNodeEventInfo<>) => {
     // TODO only right click supported for opening context menu
@@ -108,7 +108,7 @@ class FileTree extends React.Component<PropTypes, StateTypes> {
     expandedKeys: Array<string>,
     { node }: RcNodeEventInfo<>,
   ) => {
-    this.props.callbackSave({ expandedKeys });
+    this.props.onUpdate({ expandedKeys });
   };
 
   getTreeData(): Array<RcDataNode> {
@@ -157,10 +157,10 @@ class FileTree extends React.Component<PropTypes, StateTypes> {
           checkable={false}
           selectable
           draggable
-          defaultExpandedKeys={this.props.callbackGet().expandedKeys}
+          expandedKeys={this.props.expandedKeys}
           onSelect={this.handleTreeSelect}
-          // onDragStart={this.handleTreeDragStart}
-          // onDragEnd={this.handleTreeDragEnd}
+          onDragStart={this.handleTreeDragStart}
+          onDragEnd={this.handleTreeDragEnd}
           onRightClick={this.handleTreeRightClick}
           selectedKeys={this.state.selectedKeys}
           onExpand={this.handleTreeExpand}
