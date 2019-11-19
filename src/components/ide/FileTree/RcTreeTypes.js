@@ -25,6 +25,6 @@ export type RcTreeNodeEvent = {
   },
 };
 
-export type RcNodeEventInfo<T = any> = T & {
+export type RcNodeEventInfo<+T = void> = T & {
   node: RcTreeNodeEvent,
 };
