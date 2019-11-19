@@ -10,6 +10,8 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 
+import type { FilerStatInfo } from '../../../core/store/projects';
+
 import type { RcTreeNodeEvent } from './RcTreeTypes';
 
 type PropTypes = {|
@@ -18,7 +20,7 @@ type PropTypes = {|
 type StateTypes = {|
   visible: boolean,
   file: RcTreeNodeEvent | null,
-  siblingNodes: Array<any> | null,
+  siblingNodes: Array<FilerStatInfo> | null,
   newFileName: string,
 |};
 
@@ -30,7 +32,7 @@ class RenameFileDialog extends React.Component<PropTypes, StateTypes> {
     newFileName: '',
   };
 
-  show(file: RcTreeNodeEvent, siblingNodes: Array<any>) {
+  show(file: RcTreeNodeEvent, siblingNodes: Array<FilerStatInfo>) {
     this.setState({
       visible: true,
       file,
