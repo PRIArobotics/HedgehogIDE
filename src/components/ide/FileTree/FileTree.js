@@ -9,7 +9,10 @@ import sRcTree from 'rc-tree/assets/index.css';
 
 import s from './FileTree.scss';
 
-import type { FilerRecursiveStatInfo, FilerRecursiveDirectoryInfo } from '../../../core/store/projects';
+import type {
+  FilerRecursiveStatInfo,
+  FilerRecursiveDirectoryInfo,
+} from '../../../core/store/projects';
 
 import FileMenu from './FileMenu';
 import type { FileAction } from './FileMenu';
@@ -86,11 +89,9 @@ class FileTree extends React.Component<PropTypes, StateTypes> {
 
   // TODO implement moving files/directories via drag & drop
 
-  handleTreeDragStart = ({ node }: RcNodeEventInfo<>) => {
-  };
+  handleTreeDragStart = ({ node }: RcNodeEventInfo<>) => {};
 
-  handleTreeDragEnd = ({ node }: RcNodeEventInfo<>) => {
-  };
+  handleTreeDragEnd = ({ node }: RcNodeEventInfo<>) => {};
 
   handleTreeRightClick = ({ node }: RcNodeEventInfo<>) => {
     // TODO only right click supported for opening context menu
@@ -121,7 +122,10 @@ class FileTree extends React.Component<PropTypes, StateTypes> {
         visitNode(path, child),
       );
 
-    const visitNode = (path: string, node: FilerRecursiveStatInfo): RcDataNode => {
+    const visitNode = (
+      path: string,
+      node: FilerRecursiveStatInfo,
+    ): RcDataNode => {
       const { name: title } = node;
       const key = `${path}/${title}`;
       const isLeaf = !node.isDirectory();

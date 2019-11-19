@@ -26,10 +26,16 @@ import FileTree from '../FileTree';
 import Simulator from '../Simulator';
 import VisualEditor from '../VisualEditor';
 
-import type { FilerRecursiveStatInfo, FilerRecursiveDirectoryInfo } from '../../../core/store/projects';
+import type {
+  FilerRecursiveStatInfo,
+  FilerRecursiveDirectoryInfo,
+} from '../../../core/store/projects';
 import { Project, ProjectError } from '../../../core/store/projects';
 
-import type { FileAction, ControlledState as FileTreeState } from '../FileTree/FileTree';
+import type {
+  FileAction,
+  ControlledState as FileTreeState,
+} from '../FileTree/FileTree';
 import type { RcTreeNodeEvent } from '../FileTree/RcTreeTypes';
 import CreateFileDialog from '../FileTree/CreateFileDialog';
 import RenameFileDialog from '../FileTree/RenameFileDialog';
@@ -160,9 +166,7 @@ class Ide extends React.Component<PropTypes, StateTypes> {
 
     const json = localStorage.getItem('IDELayout');
     if (json) {
-      const { layoutState, blocklyState, aceState } = JSON.parse(
-        json,
-      );
+      const { layoutState, blocklyState, aceState } = JSON.parse(json);
       Object.assign(this.persistentState, {
         layoutState: FlexLayout.Model.fromJson(layoutState),
         blocklyState,
@@ -182,11 +186,7 @@ class Ide extends React.Component<PropTypes, StateTypes> {
   }
 
   save() {
-    const {
-      layoutState,
-      blocklyState,
-      aceState,
-    } = this.persistentState;
+    const { layoutState, blocklyState, aceState } = this.persistentState;
     localStorage.setItem(
       'IDELayout',
       JSON.stringify({
@@ -239,7 +239,7 @@ class Ide extends React.Component<PropTypes, StateTypes> {
   handleFileTreeUpdate(fileTreeState: FileTreeState) {
     this.setState({ fileTreeState });
     localStorage.setItem('FileTreeState', JSON.stringify(fileTreeState));
-  };
+  }
 
   blocklyGet = id => this.persistentState.blocklyState[id];
 
