@@ -9,6 +9,8 @@ import sRcTree from 'rc-tree/assets/index.css';
 
 import s from './FileTree.scss';
 
+import type { FilerRecursiveStatInfo, FilerRecursiveDirectoryInfo } from '../../../core/store/projects';
+
 import FileMenu from './FileMenu';
 import type { FileAction } from './FileMenu';
 import type {
@@ -32,7 +34,7 @@ type FileTreeState = {|
 
 type PropTypes = {|
   projectName: string,
-  files: Array<any>,
+  files: Array<FilerRecursiveStatInfo>,
   onFileAction: (RcTreeNodeEvent, FileAction) => void | Promise<void>,
   callbackSave: (state: FileTreeState) => void,
   callbackGet: () => FileTreeState,
@@ -112,18 +114,25 @@ class FileTree extends React.Component<PropTypes, StateTypes> {
   getTreeData(): Array<RcDataNode> {
     const visitChildren = (
       path: string,
-      children: Array<any>,
+      children: Array<FilerRecursiveStatInfo>,
     ): Array<RcDataNode> =>
       children.map(child =>
         // eslint-disable-next-line no-use-before-define
         visitNode(path, child),
       );
 
-    const visitNode = (path: string, node: any): RcDataNode => {
-      const { name: title, contents } = node;
+    const visitNode = (path: string, node: FilerRecursiveStatInfo): RcDataNode => {
+      const { name: title } = node;
       const key = `${path}/${title}`;
       const isLeaf = !node.isDirectory();
-      const children = isLeaf ? [] : visitChildren(key, contents);
+      let children;
+      if (isLeaf) {
+        children = [];
+      } else {
+        // $FlowExpectError
+        const dirNode: FilerRecursiveDirectoryInfo = node;
+        children = visitChildren(key, dirNode.contents);
+      }
       return { key, title, isLeaf, children };
     };
 

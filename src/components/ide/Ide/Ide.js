@@ -26,6 +26,7 @@ import FileTree from '../FileTree';
 import Simulator from '../Simulator';
 import VisualEditor from '../VisualEditor';
 
+import type { FilerRecursiveStatInfo, FilerRecursiveDirectoryInfo } from '../../../core/store/projects';
 import { Project, ProjectError } from '../../../core/store/projects';
 
 import type { FileAction } from '../FileTree/FileTree';
@@ -80,7 +81,7 @@ type PropTypes = {|
 |};
 type StateTypes = {|
   project: Project | null,
-  files: Array<any> | null,
+  files: Array<FilerRecursiveStatInfo> | null,
   runningCode: string | null,
 |};
 
@@ -410,8 +411,10 @@ class Ide extends React.Component<PropTypes, StateTypes> {
     path.forEach(fragment => {
       const child = files.find(c => c.name === fragment);
       // eslint-disable-next-line no-throw-literal
-      if (child === undefined) throw 'unreachable';
-      files = child.contents;
+      if (child === undefined || !child.isDirectory()) throw 'unreachable';
+      // $FlowExpectError
+      const childDir: FilerRecursiveDirectoryInfo = child;
+      files = childDir.contents;
     });
 
     // eslint-disable-next-line no-throw-literal
