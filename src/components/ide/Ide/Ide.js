@@ -75,7 +75,6 @@ const defaultLayout = {
 };
 
 type PersistentState = {|
-  layoutState: FlexLayout.Model,
   blocklyState: Object,
   aceState: Object,
 |};
@@ -88,6 +87,7 @@ type StateTypes = {|
   project: Project | null,
   files: Array<FilerRecursiveStatInfo> | null,
   fileTreeState: FileTreeState,
+  layoutState: FlexLayout.Model,
   runningCode: string | null,
 |};
 
@@ -150,11 +150,11 @@ class Ide extends React.Component<PropTypes, StateTypes> {
     project: null,
     files: null,
     fileTreeState: {},
+    layoutState: FlexLayout.Model.fromJson(defaultLayout),
     runningCode: null,
   };
 
   persistentState: PersistentState = {
-    layoutState: FlexLayout.Model.fromJson(defaultLayout),
     blocklyState: {},
     aceState: {},
   };
@@ -166,9 +166,8 @@ class Ide extends React.Component<PropTypes, StateTypes> {
 
     const json = localStorage.getItem('IDELayout');
     if (json) {
-      const { layoutState, blocklyState, aceState } = JSON.parse(json);
+      const { blocklyState, aceState } = JSON.parse(json);
       Object.assign(this.persistentState, {
-        layoutState: FlexLayout.Model.fromJson(layoutState),
         blocklyState,
         aceState,
       });
@@ -182,15 +181,19 @@ class Ide extends React.Component<PropTypes, StateTypes> {
     const json = localStorage.getItem('FileTreeState');
     const fileTreeState = json ? JSON.parse(json) : {};
 
-    this.setState({ project, files, fileTreeState });
+    const json2 = localStorage.getItem('FlexLayoutState');
+    const layoutState = FlexLayout.Model.fromJson(
+      json2 ? JSON.parse(json2) : defaultLayout,
+    );
+
+    this.setState({ project, files, fileTreeState, layoutState });
   }
 
   save() {
-    const { layoutState, blocklyState, aceState } = this.persistentState;
+    const { blocklyState, aceState } = this.persistentState;
     localStorage.setItem(
       'IDELayout',
       JSON.stringify({
-        layoutState: layoutState.toJson(),
         blocklyState,
         aceState,
       }),
@@ -200,7 +203,7 @@ class Ide extends React.Component<PropTypes, StateTypes> {
   getNodes() {
     const nodes = {};
 
-    this.persistentState.layoutState.visitNodes(node => {
+    this.state.layoutState.visitNodes(node => {
       nodes[node.getId()] = node;
     });
 
@@ -209,14 +212,14 @@ class Ide extends React.Component<PropTypes, StateTypes> {
 
   addNode(nodeJson) {
     const nodes = this.getNodes();
-    const active = this.persistentState.layoutState.getActiveTabset();
+    const active = this.state.layoutState.getActiveTabset();
 
     if (
       active !== undefined &&
       active.getId() in nodes &&
       nodes[active.getId()].getType() === 'tabset'
     ) {
-      this.persistentState.layoutState.doAction(
+      this.state.layoutState.doAction(
         FlexLayout.Actions.addNode(
           nodeJson,
           active.getId(),
@@ -225,10 +228,10 @@ class Ide extends React.Component<PropTypes, StateTypes> {
         ),
       );
     } else {
-      this.persistentState.layoutState.doAction(
+      this.state.layoutState.doAction(
         FlexLayout.Actions.addNode(
           nodeJson,
-          this.persistentState.layoutState.getRoot().getId(),
+          this.state.layoutState.getRoot().getId(),
           FlexLayout.DockLocation.RIGHT,
           -1,
         ),
@@ -240,6 +243,13 @@ class Ide extends React.Component<PropTypes, StateTypes> {
     this.setState({ fileTreeState });
     localStorage.setItem('FileTreeState', JSON.stringify(fileTreeState));
   }
+
+  handleLayoutUpdate = () => {
+    localStorage.setItem(
+      'FlexLayoutState',
+      JSON.stringify(this.state.layoutState.toJson()),
+    );
+  };
 
   blocklyGet = id => this.persistentState.blocklyState[id];
 
@@ -255,17 +265,11 @@ class Ide extends React.Component<PropTypes, StateTypes> {
     this.save();
   };
 
-  handleLayoutModelChange = () => {
-    this.save();
-  };
-
   addSimulator = () => {
     const nodes = this.getNodes();
     if ('sim' in nodes) {
       // TODO assert `nodes.sim.getType() === 'tab'`
-      this.persistentState.layoutState.doAction(
-        FlexLayout.Actions.selectTab('sim'),
-      );
+      this.state.layoutState.doAction(FlexLayout.Actions.selectTab('sim'));
     } else {
       this.addNode({
         id: 'sim',
@@ -288,9 +292,7 @@ class Ide extends React.Component<PropTypes, StateTypes> {
     const nodes = this.getNodes();
     if ('console' in nodes) {
       // TODO assert `nodes.console.getType() === 'tab'`
-      this.persistentState.layoutState.doAction(
-        FlexLayout.Actions.selectTab('console'),
-      );
+      this.state.layoutState.doAction(FlexLayout.Actions.selectTab('console'));
     } else {
       this.addNode({
         id: 'console',
@@ -564,11 +566,11 @@ class Ide extends React.Component<PropTypes, StateTypes> {
         </Paper>
         <Paper className={classes.editorContainer} square>
           <FlexLayout.Layout
-            model={this.persistentState.layoutState}
+            model={this.state.layoutState}
             ref={this.flexRef}
             factory={this.factory}
             classNameMapper={className => FlexLayoutTheme[className]}
-            onModelChange={this.handleLayoutModelChange}
+            onModelChange={this.handleLayoutUpdate}
           />
         </Paper>
         {this.state.runningCode ? (
