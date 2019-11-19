@@ -6,31 +6,31 @@ const sh = new fs.Shell();
 
 // for the IDE relevant fields of fs.stat() results
 export interface FilerStatInfo {
-  +node: string,     // internal node id (unique)
-  // dev: string,      // file system name
-  +name: string,     // the entry's name (basename)
-  // size: number,     // file size in bytes
-  // nlinks: number,   // number of links
-  // atime: date,      // last access time as JS Date Object
-  // mtime: date,      // last modified time as JS Date Object
-  // ctime: date,      // creation time as JS Date Object
-  // atimeMs: number,  // last access time as Unix Timestamp
-  // mtimeMs: number,  // last modified time as Unix Timestamp
-  // ctimeMs: number,  // creation time as Unix Timestamp
-  +type: 'FILE' | 'DIRECTORY' | 'SYMLINK',  // file type
-  // gid: number,      // group name
-  // uid: number,      // owner name
-  // mode: number,     // permissions
-  // version: number,  // version of the node
+  +node: string; // internal node id (unique)
+  // dev: string; // file system name
+  +name: string; // the entry's name (basename)
+  // size: number; // file size in bytes
+  // nlinks: number; // number of links
+  // atime: date; // last access time as JS Date Object
+  // mtime: date; // last modified time as JS Date Object
+  // ctime: date; // creation time as JS Date Object
+  // atimeMs: number; // last access time as Unix Timestamp
+  // mtimeMs: number; // last modified time as Unix Timestamp
+  // ctimeMs: number; // creation time as Unix Timestamp
+  +type: 'FILE' | 'DIRECTORY' | 'SYMLINK'; // file type
+  // gid: number; // group name
+  // uid: number; // owner name
+  // mode: number; // permissions
+  // version: number; // version of the node
 
-  isFile(): boolean,             // Returns true if the node is a file.
-  isDirectory(): boolean,        // Returns true if the node is a directory.
-  // isBlockDevice(): boolean,      // Not implemented, returns false.
-  // isCharacterDevice(): boolean,  // Not implemented, returns false.
-  isSymbolicLink(): boolean,     // Returns true if the node is a symbolic link.
-  // isFIFO(): boolean,             // Not implemented, returns false.
-  // isSocket(): boolean,           // Not implemented, returns false.
-};
+  isFile(): boolean; // Returns true if the node is a file.
+  isDirectory(): boolean; // Returns true if the node is a directory.
+  // isBlockDevice(): boolean; // Not implemented, returns false.
+  // isCharacterDevice(): boolean; // Not implemented, returns false.
+  isSymbolicLink(): boolean; // Returns true if the node is a symbolic link.
+  // isFIFO(): boolean; // Not implemented, returns false.
+  // isSocket(): boolean; // Not implemented, returns false.
+}
 
 export type FilerRecursiveDirectoryInfo = FilerStatInfo & {
   // contents are added for sh.ls()
@@ -38,7 +38,9 @@ export type FilerRecursiveDirectoryInfo = FilerStatInfo & {
   +contents: Array<FilerRecursiveStatInfo>,
 };
 
-export type FilerRecursiveStatInfo = FilerRecursiveDirectoryInfo | FilerStatInfo;
+export type FilerRecursiveStatInfo =
+  | FilerRecursiveDirectoryInfo
+  | FilerStatInfo;
 
 export class ProjectError extends Error {
   name = 'ProjectError';
