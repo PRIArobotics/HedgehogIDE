@@ -86,6 +86,7 @@ type PropTypes = {|
 type StateTypes = {|
   project: Project | null,
   files: Array<FilerRecursiveStatInfo> | null,
+  projectUid: string | null,
   fileTreeState: FileTreeState,
   layoutState: FlexLayout.Model,
   runningCode: string | null,
@@ -149,6 +150,7 @@ class Ide extends React.Component<PropTypes, StateTypes> {
   state = {
     project: null,
     files: null,
+    projectUid: null,
     fileTreeState: {},
     layoutState: FlexLayout.Model.fromJson(defaultLayout),
     runningCode: null,
@@ -177,16 +179,17 @@ class Ide extends React.Component<PropTypes, StateTypes> {
   async refreshProject() {
     const project = await Project.getProject(this.props.projectName);
     const files = await project.getFiles();
+    const projectUid = await project.getUid();
 
-    const json = localStorage.getItem('FileTreeState');
+    const json = localStorage.getItem(`FileTreeState-${projectUid}`);
     const fileTreeState = json ? JSON.parse(json) : {};
 
-    const json2 = localStorage.getItem('FlexLayoutState');
+    const json2 = localStorage.getItem(`FlexLayoutState-${projectUid}`);
     const layoutState = FlexLayout.Model.fromJson(
       json2 ? JSON.parse(json2) : defaultLayout,
     );
 
-    this.setState({ project, files, fileTreeState, layoutState });
+    this.setState({ project, files, projectUid, fileTreeState, layoutState });
   }
 
   save() {
@@ -240,14 +243,27 @@ class Ide extends React.Component<PropTypes, StateTypes> {
   }
 
   handleFileTreeUpdate(fileTreeState: FileTreeState) {
-    this.setState({ fileTreeState });
-    localStorage.setItem('FileTreeState', JSON.stringify(fileTreeState));
+    this.setState({ fileTreeState }, () => {
+      // eslint-disable-next-line no-throw-literal
+      if (this.state.projectUid === null) throw 'projectUid is null';
+      // eslint-disable-next-line no-shadow
+      const { projectUid, fileTreeState } = this.state;
+
+      localStorage.setItem(
+        `FileTreeState-${projectUid}`,
+        JSON.stringify(fileTreeState),
+      );
+    });
   }
 
   handleLayoutUpdate = () => {
+    // eslint-disable-next-line no-throw-literal
+    if (this.state.projectUid === null) throw 'projectUid is null';
+    const { projectUid, layoutState } = this.state;
+
     localStorage.setItem(
-      'FlexLayoutState',
-      JSON.stringify(this.state.layoutState.toJson()),
+      `FlexLayoutState-${projectUid}`,
+      JSON.stringify(layoutState.toJson()),
     );
   };
 
