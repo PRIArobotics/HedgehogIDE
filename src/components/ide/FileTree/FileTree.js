@@ -14,8 +14,7 @@ import type {
   FilerRecursiveDirectoryInfo,
 } from '../../../core/store/projects';
 
-import FileMenu from './FileMenu';
-import type { FileAction } from './FileMenu';
+import FileMenu, { type FileAction } from './FileMenu';
 import type {
   RcDataNode,
   RcTreeNodeEvent,
