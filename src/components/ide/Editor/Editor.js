@@ -19,8 +19,8 @@ type AceState = any;
 type PropTypes = {|
   callbackSave: (state: AceState) => void,
   callbackGet: () => AceState,
-  callbackRun: (code: string) => void,
-  callbackStop: () => void,
+  onExecute: (code: string) => void | Promise<void>,
+  onTerminate: () => void | Promise<void>,
   running: boolean,
   layoutNode: any,
 |};
@@ -76,14 +76,6 @@ class Editor extends React.Component<PropTypes, StateTypes> {
     }, 0);
   };
 
-  handleRunCode = () => {
-    this.props.callbackRun(this.value);
-  };
-
-  handleStopCode = () => {
-    this.props.callbackStop();
-  };
-
   render() {
     // not rendering directly after the component was mounted
     // somehow fixes a strange display bug.
@@ -94,7 +86,7 @@ class Editor extends React.Component<PropTypes, StateTypes> {
         <div className={s.sidebar}>
           {this.props.running ? (
             <ColoredIconButton
-              onClick={this.handleStopCode}
+              onClick={() => this.props.onTerminate()}
               disableRipple
               color="red"
             >
@@ -102,7 +94,7 @@ class Editor extends React.Component<PropTypes, StateTypes> {
             </ColoredIconButton>
           ) : (
             <ColoredIconButton
-              onClick={this.handleRunCode}
+              onClick={() => this.props.onExecute(this.value)}
               disableRipple
               color="limegreen"
             >

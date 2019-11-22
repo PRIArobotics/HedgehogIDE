@@ -25,8 +25,8 @@ type PropTypes = {|
   layoutNode: any,
   callbackSave: (state: BlocklyState) => void,
   callbackGet: () => BlocklyState,
-  callbackRun: (code: string) => void,
-  callbackStop: () => void,
+  onExecute: (code: string) => void | Promise<void>,
+  onTerminate: () => void | Promise<void>,
   running: boolean,
 |};
 type StateTypes = {|
@@ -267,14 +267,6 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
     this.props.callbackSave(Blockly.Xml.domToText(xml));
   }
 
-  handleRunCode = () => {
-    this.props.callbackRun(this.code);
-  };
-
-  handleStopCode = () => {
-    this.props.callbackStop();
-  };
-
   handleToggleCodeCollapsed = () => {
     this.setState(oldState => ({ codeCollapsed: !oldState.codeCollapsed }));
     if (this.codeRef.current !== null)
@@ -292,7 +284,7 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
         <div className={s.sidebar}>
           {this.props.running ? (
             <ColoredIconButton
-              onClick={this.handleStopCode}
+              onClick={() => this.props.onTerminate()}
               disableRipple
               color="red"
             >
@@ -300,7 +292,7 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
             </ColoredIconButton>
           ) : (
             <ColoredIconButton
-              onClick={this.handleRunCode}
+              onClick={() => this.props.onExecute(this.code)}
               disableRipple
               color="limegreen"
             >

@@ -102,8 +102,8 @@ class Ide extends React.Component<PropTypes, StateTypes> {
             layoutNode={node}
             callbackGet={() => this.editorGet(id)}
             callbackSave={workspace => this.editorSave(workspace, id)}
-            callbackRun={code => this.handleRunCode(code)}
-            callbackStop={() => this.handleStopCode()}
+            onExecute={code => this.handleExecute(code)}
+            onTerminate={() => this.handleTerminate()}
             running={!!this.state.runningCode}
           />
         );
@@ -126,8 +126,8 @@ class Ide extends React.Component<PropTypes, StateTypes> {
             layoutNode={node}
             callbackGet={() => this.blocklyGet(id)}
             callbackSave={workspace => this.blocklySave(workspace, id)}
-            callbackRun={code => this.handleRunCode(code)}
-            callbackStop={() => this.handleStopCode()}
+            onExecute={code => this.handleExecute(code)}
+            onTerminate={() => this.handleTerminate()}
             running={!!this.state.runningCode}
           />
         );
@@ -344,13 +344,13 @@ class Ide extends React.Component<PropTypes, StateTypes> {
       tryIt();
     });
 
-  handleRunCode = (code: string) => {
+  handleExecute(code: string) {
     this.setState({ runningCode: `return (async () => {${code}})();` });
-  };
+  }
 
-  handleStopCode = () => {
+  handleTerminate() {
     this.setState({ runningCode: null });
-  };
+  }
 
   handleFileAction(node: RcTreeNodeEvent, action: FileAction) {
     switch (action) {
