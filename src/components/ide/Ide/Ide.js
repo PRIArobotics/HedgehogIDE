@@ -20,25 +20,25 @@ import FlexLayout from 'flexlayout-react';
 import FlexLayoutTheme from './flex_layout_ide.css';
 
 import Console from '../Console';
-import Editor from '../Editor';
+import Editor, { type ControlledState as TextualEditorState } from '../Editor';
 import Executor from '../Executor';
-import FileTree from '../FileTree';
+import FileTree, {
+  type FileAction,
+  type ControlledState as FileTreeState,
+} from '../FileTree';
 import Simulator from '../Simulator';
-import VisualEditor from '../VisualEditor';
+import VisualEditor, {
+  type ControlledState as VisualEditorState,
+} from '../VisualEditor';
 
-import type {
-  FilerRecursiveStatInfo,
-  FilerRecursiveDirectoryInfo,
+import {
+  type FilerRecursiveStatInfo,
+  type FilerRecursiveDirectoryInfo,
+  Project,
+  ProjectError,
 } from '../../../core/store/projects';
-import { Project, ProjectError } from '../../../core/store/projects';
 
-import type {
-  FileAction,
-  ControlledState as FileTreeState,
-} from '../FileTree/FileTree';
-import type { RcTreeNodeEvent } from '../FileTree/RcTreeTypes';
-import type { ControlledState as TextualEditorState } from '../Editor';
-import type { ControlledState as VisualEditorState } from '../VisualEditor';
+import { type RcTreeNodeEvent } from '../FileTree/RcTreeTypes';
 import CreateFileDialog from '../FileTree/CreateFileDialog';
 import RenameFileDialog from '../FileTree/RenameFileDialog';
 import DeleteFileDialog from '../FileTree/DeleteFileDialog';
