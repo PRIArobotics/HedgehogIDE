@@ -19,19 +19,21 @@ import MoveBlock from './blocks/MoveBlock';
 import SleepBlock from './blocks/SleepBlock';
 import PrintBlock from './blocks/PrintBlock';
 
-type BlocklyState = any;
+export type ControlledState = $Shape<{|
+  workspaceXml: string,
+  codeCollapsed: boolean,
+|}>;
 
 type PropTypes = {|
-  layoutNode: any,
-  callbackSave: (state: BlocklyState) => void,
-  callbackGet: () => BlocklyState,
+  workspaceXml: string,
+  codeCollapsed: boolean,
+  onUpdate: (state: ControlledState) => void | Promise<void>,
   onExecute: (code: string) => void | Promise<void>,
   onTerminate: () => void | Promise<void>,
   running: boolean,
+  layoutNode: any,
 |};
-type StateTypes = {|
-  codeCollapsed: boolean,
-|};
+type StateTypes = {||};
 
 const ColoredIconButton = styled(({ color, ...other }) => (
   <IconButton {...other} />
@@ -48,13 +50,6 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
 
   resizeAnim: IntervalID | null;
   code: string = '';
-
-  constructor(props) {
-    super(props);
-    this.state = {
-      codeCollapsed: true,
-    };
-  }
 
   componentDidMount() {
     // eslint-disable-next-line no-throw-literal
@@ -82,7 +77,7 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
       Blockly.JavaScript[type] = block.generators.JavaScript;
     });
 
-    const workspaceXml = this.props.callbackGet();
+    const { workspaceXml } = this.props;
     if (workspaceXml) {
       Blockly.Xml.domToWorkspace(
         Blockly.Xml.textToDom(workspaceXml),
@@ -98,7 +93,7 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
     codeRefCurrent.addEventListener('transitionend', () => {
       if (this.resizeAnim) clearInterval(this.resizeAnim);
       this.refreshSize();
-      if (!this.state.codeCollapsed && this.codeRef.current !== null)
+      if (!this.props.codeCollapsed && this.codeRef.current !== null)
         this.codeRef.current.style.overflow = 'auto';
     });
     this.refreshSize();
@@ -263,12 +258,15 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
 
     this.code = Blockly.JavaScript.workspaceToCode(this.workspace);
     codeRefCurrent.innerHTML = this.code;
-    const xml = Blockly.Xml.workspaceToDom(this.workspace);
-    this.props.callbackSave(Blockly.Xml.domToText(xml));
+
+    const workspaceXml = Blockly.Xml.domToText(
+      Blockly.Xml.workspaceToDom(this.workspace),
+    );
+    this.props.onUpdate({ workspaceXml });
   }
 
   handleToggleCodeCollapsed = () => {
-    this.setState(oldState => ({ codeCollapsed: !oldState.codeCollapsed }));
+    this.props.onUpdate({ codeCollapsed: !this.props.codeCollapsed });
     if (this.codeRef.current !== null)
       this.codeRef.current.style.overflow = 'hidden';
     // TODO requestAnimationFrame?
@@ -304,7 +302,7 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
             onClick={this.handleToggleCodeCollapsed}
             disableRipple
           >
-            {this.state.codeCollapsed ? (
+            {this.props.codeCollapsed ? (
               <KeyboardArrowLeftIcon />
             ) : (
               <KeyboardArrowRightIcon />
@@ -314,7 +312,7 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
         <pre
           ref={this.codeRef}
           className={
-            this.state.codeCollapsed
+            this.props.codeCollapsed
               ? `${s.codeContainer} ${s.collapsed}`
               : s.codeContainer
           }

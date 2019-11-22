@@ -37,6 +37,8 @@ import type {
   ControlledState as FileTreeState,
 } from '../FileTree/FileTree';
 import type { RcTreeNodeEvent } from '../FileTree/RcTreeTypes';
+import type { ControlledState as TextualEditorState } from '../Editor';
+import type { ControlledState as VisualEditorState } from '../VisualEditor';
 import CreateFileDialog from '../FileTree/CreateFileDialog';
 import RenameFileDialog from '../FileTree/RenameFileDialog';
 import DeleteFileDialog from '../FileTree/DeleteFileDialog';
@@ -74,11 +76,6 @@ const defaultLayout = {
   },
 };
 
-type PersistentState = {|
-  blocklyState: Object,
-  aceState: Object,
-|};
-
 type PropTypes = {|
   classes: Object,
   projectName: string,
@@ -89,6 +86,8 @@ type StateTypes = {|
   projectUid: string | null,
   fileTreeState: FileTreeState,
   layoutState: FlexLayout.Model,
+  blocklyState: { [key: string]: VisualEditorState },
+  aceState: { [key: string]: TextualEditorState },
   runningCode: string | null,
 |};
 
@@ -100,8 +99,21 @@ class Ide extends React.Component<PropTypes, StateTypes> {
         return (
           <Editor
             layoutNode={node}
-            callbackGet={() => this.editorGet(id)}
-            callbackSave={workspace => this.editorSave(workspace, id)}
+            {...this.state.aceState[id]}
+            onUpdate={state => {
+              this.setState(
+                oldState => ({
+                  aceState: {
+                    ...oldState.aceState,
+                    [id]: {
+                      ...oldState.aceState[id],
+                      ...state,
+                    },
+                  },
+                }),
+                () => this.save(),
+              );
+            }}
             onExecute={code => this.handleExecute(code)}
             onTerminate={() => this.handleTerminate()}
             running={!!this.state.runningCode}
@@ -124,8 +136,21 @@ class Ide extends React.Component<PropTypes, StateTypes> {
         return (
           <VisualEditor
             layoutNode={node}
-            callbackGet={() => this.blocklyGet(id)}
-            callbackSave={workspace => this.blocklySave(workspace, id)}
+            {...this.state.blocklyState[id]}
+            onUpdate={state => {
+              this.setState(
+                oldState => ({
+                  blocklyState: {
+                    ...oldState.blocklyState,
+                    [id]: {
+                      ...oldState.blocklyState[id],
+                      ...state,
+                    },
+                  },
+                }),
+                () => this.save(),
+              );
+            }}
             onExecute={code => this.handleExecute(code)}
             onTerminate={() => this.handleTerminate()}
             running={!!this.state.runningCode}
@@ -153,12 +178,9 @@ class Ide extends React.Component<PropTypes, StateTypes> {
     projectUid: null,
     fileTreeState: {},
     layoutState: FlexLayout.Model.fromJson(defaultLayout),
-    runningCode: null,
-  };
-
-  persistentState: PersistentState = {
     blocklyState: {},
     aceState: {},
+    runningCode: null,
   };
 
   constructor(props: PropTypes) {
@@ -166,10 +188,11 @@ class Ide extends React.Component<PropTypes, StateTypes> {
 
     this.refreshProject();
 
+    // legacy loading of editor state
     const json = localStorage.getItem('IDELayout');
     if (json) {
       const { blocklyState, aceState } = JSON.parse(json);
-      Object.assign(this.persistentState, {
+      Object.assign(this.state, {
         blocklyState,
         aceState,
       });
@@ -209,7 +232,7 @@ class Ide extends React.Component<PropTypes, StateTypes> {
     );
 
     // legacy saving of editor state
-    const { blocklyState, aceState } = this.persistentState;
+    const { blocklyState, aceState } = this.state;
     localStorage.setItem(
       'IDELayout',
       JSON.stringify({
@@ -257,20 +280,6 @@ class Ide extends React.Component<PropTypes, StateTypes> {
       );
     }
   }
-
-  blocklyGet = id => this.persistentState.blocklyState[id];
-
-  blocklySave = (workspace, id) => {
-    this.persistentState.blocklyState[id] = workspace;
-    this.save();
-  };
-
-  editorGet = id => this.persistentState.aceState[id];
-
-  editorSave = (text, id) => {
-    this.persistentState.aceState[id] = text;
-    this.save();
-  };
 
   addSimulator = () => {
     const nodes = this.getNodes();

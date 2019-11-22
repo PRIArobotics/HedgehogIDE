@@ -14,11 +14,13 @@ import PlayArrowIcon from '@material-ui/icons/PlayArrow';
 
 import s from './Editor.scss';
 
-type AceState = any;
+export type ControlledState = $Shape<{|
+  text: string,
+|}>;
 
 type PropTypes = {|
-  callbackSave: (state: AceState) => void,
-  callbackGet: () => AceState,
+  text: string,
+  onUpdate: (state: ControlledState) => void | Promise<void>,
   onExecute: (code: string) => void | Promise<void>,
   onTerminate: () => void | Promise<void>,
   running: boolean,
@@ -40,7 +42,6 @@ const ColoredIconButton = styled(({ color, ...other }) => (
 class Editor extends React.Component<PropTypes, StateTypes> {
   containerRef: RefObject<'div'> = React.createRef();
   editorRef: RefObject<typeof AceEditor> = React.createRef();
-  value: AceState;
 
   state = {
     initial: true,
@@ -48,22 +49,12 @@ class Editor extends React.Component<PropTypes, StateTypes> {
     editorHeight: '0',
   };
 
-  constructor(props: PropTypes) {
-    super(props);
-    this.value = this.props.callbackGet();
-  }
-
   componentDidMount() {
     this.setState({ initial: false });
     this.props.layoutNode.setEventListener('resize', this.handleResize);
     this.props.layoutNode.setEventListener('visibility', this.handleResize);
     this.handleResize();
   }
-
-  onChange = (newValue: AceState) => {
-    this.value = newValue;
-    this.props.callbackSave(this.value);
-  };
 
   handleResize = () => {
     setTimeout(() => {
@@ -94,7 +85,7 @@ class Editor extends React.Component<PropTypes, StateTypes> {
             </ColoredIconButton>
           ) : (
             <ColoredIconButton
-              onClick={() => this.props.onExecute(this.value)}
+              onClick={() => this.props.onExecute(this.props.text)}
               disableRipple
               color="limegreen"
             >
@@ -111,12 +102,12 @@ class Editor extends React.Component<PropTypes, StateTypes> {
             width={this.state.editorWidth}
             ref={this.editorRef}
             // onLoad={this.onLoad}
-            onChange={this.onChange}
+            onChange={text => this.props.onUpdate({ text })}
             fontSize={16}
             // onSelectionChange={this.onSelectionChange}
             // onCursorChange={this.onCursorChange}
             // onValidate={this.onValidate}
-            value={this.value}
+            value={this.props.text}
             showGutter
             highlightActiveLine
             autoScrollEditorIntoView
