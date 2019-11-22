@@ -181,18 +181,34 @@ class Ide extends React.Component<PropTypes, StateTypes> {
     const files = await project.getFiles();
     const projectUid = await project.getUid();
 
-    const json = localStorage.getItem(`FileTreeState-${projectUid}`);
-    const fileTreeState = json ? JSON.parse(json) : {};
-
-    const json2 = localStorage.getItem(`FlexLayoutState-${projectUid}`);
+    const json = localStorage.getItem(`IDE-State-${projectUid}`);
+    const { fileTreeState, layoutState: layoutStateJson } = json
+      ? JSON.parse(json)
+      : {};
     const layoutState = FlexLayout.Model.fromJson(
-      json2 ? JSON.parse(json2) : defaultLayout,
+      layoutStateJson || defaultLayout,
     );
 
     this.setState({ project, files, projectUid, fileTreeState, layoutState });
   }
 
   save() {
+    // eslint-disable-next-line no-throw-literal
+    if (this.state.projectUid === null) throw 'projectUid is null';
+    // eslint-disable-next-line no-shadow
+    const {
+      projectUid,
+      fileTreeState,
+      layoutState: layoutStateModel,
+    } = this.state;
+    const layoutState = layoutStateModel.toJson();
+
+    localStorage.setItem(
+      `IDE-State-${projectUid}`,
+      JSON.stringify({ fileTreeState, layoutState }),
+    );
+
+    // legacy saving of editor state
     const { blocklyState, aceState } = this.persistentState;
     localStorage.setItem(
       'IDELayout',
@@ -241,31 +257,6 @@ class Ide extends React.Component<PropTypes, StateTypes> {
       );
     }
   }
-
-  handleFileTreeUpdate(fileTreeState: FileTreeState) {
-    this.setState({ fileTreeState }, () => {
-      // eslint-disable-next-line no-throw-literal
-      if (this.state.projectUid === null) throw 'projectUid is null';
-      // eslint-disable-next-line no-shadow
-      const { projectUid, fileTreeState } = this.state;
-
-      localStorage.setItem(
-        `FileTreeState-${projectUid}`,
-        JSON.stringify(fileTreeState),
-      );
-    });
-  }
-
-  handleLayoutUpdate = () => {
-    // eslint-disable-next-line no-throw-literal
-    if (this.state.projectUid === null) throw 'projectUid is null';
-    const { projectUid, layoutState } = this.state;
-
-    localStorage.setItem(
-      `FlexLayoutState-${projectUid}`,
-      JSON.stringify(layoutState.toJson()),
-    );
-  };
 
   blocklyGet = id => this.persistentState.blocklyState[id];
 
@@ -563,7 +554,9 @@ class Ide extends React.Component<PropTypes, StateTypes> {
             files={files}
             {...this.state.fileTreeState}
             onFileAction={(node, action) => this.handleFileAction(node, action)}
-            onUpdate={state => this.handleFileTreeUpdate(state)}
+            onUpdate={fileTreeState =>
+              this.setState({ fileTreeState }, () => this.save())
+            }
           />
           <CreateFileDialog
             ref={this.createFileRef}
@@ -586,7 +579,7 @@ class Ide extends React.Component<PropTypes, StateTypes> {
             ref={this.flexRef}
             factory={this.factory}
             classNameMapper={className => FlexLayoutTheme[className]}
-            onModelChange={this.handleLayoutUpdate}
+            onModelChange={() => this.save()}
           />
         </Paper>
         {this.state.runningCode ? (
