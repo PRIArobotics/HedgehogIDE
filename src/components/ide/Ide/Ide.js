@@ -271,11 +271,11 @@ class Ide extends React.Component<PropTypes, StateTypes> {
       layoutState.doAction(FlexLayout.Actions.selectTab(id));
     } else {
       // create the tab.
-      let { location, alwaysNewTabset } = {
+      const { location, alwaysNewTabset } = {
         location: FlexLayout.DockLocation.RIGHT,
         alwaysNewTabset: false,
         ...(options || {}),
-      }
+      };
 
       let targetTabset;
       if (alwaysNewTabset) {
@@ -320,36 +320,43 @@ class Ide extends React.Component<PropTypes, StateTypes> {
     }
   }
 
-  addSimulator = () => this.openOrFocusTab({
-    id: 'sim',
-    type: 'tab',
-    component: 'simulator',
-    name: 'Simulator',
-  });
+  addSimulator = () =>
+    this.openOrFocusTab({
+      id: 'sim',
+      type: 'tab',
+      component: 'simulator',
+      name: 'Simulator',
+    });
 
-  addEditor = () => this.openOrFocusTab({
-    id: 'editor',
-    type: 'tab',
-    component: 'editor',
-    name: 'Editor',
-  });
+  addEditor = () =>
+    this.openOrFocusTab({
+      id: 'editor',
+      type: 'tab',
+      component: 'editor',
+      name: 'Editor',
+    });
 
-  addConsole = () => this.openOrFocusTab({
-    id: 'console',
-    type: 'tab',
-    component: 'console',
-    name: 'Console',
-  }, {
-    location: FlexLayout.DockLocation.BOTTOM,
-    alwaysNewTabset: true,
-  });
+  addConsole = () =>
+    this.openOrFocusTab(
+      {
+        id: 'console',
+        type: 'tab',
+        component: 'console',
+        name: 'Console',
+      },
+      {
+        location: FlexLayout.DockLocation.BOTTOM,
+        alwaysNewTabset: true,
+      },
+    );
 
-  addBlockly = () => this.openOrFocusTab({
-    id: 'blockly',
-    type: 'tab',
-    component: 'blockly',
-    name: 'Visual Editor',
-  });
+  addBlockly = () =>
+    this.openOrFocusTab({
+      id: 'blockly',
+      type: 'tab',
+      component: 'blockly',
+      name: 'Visual Editor',
+    });
 
   getConsole = () =>
     new Promise(resolve => {
