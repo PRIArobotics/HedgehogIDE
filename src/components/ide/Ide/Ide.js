@@ -252,80 +252,81 @@ class Ide extends React.Component<PropTypes, StateTypes> {
     return nodes;
   }
 
-  addNode(nodeJson) {
-    const nodes = this.getNodes();
-    const active = this.state.layoutState.getActiveTabset();
+  openOrFocusTab(location: FlexLayout.DockLocation, nodeJson) {
+    const { id } = nodeJson;
+    const { layoutState } = this.state;
 
-    if (
-      active !== undefined &&
-      active.getId() in nodes &&
-      nodes[active.getId()].getType() === 'tabset'
-    ) {
-      this.state.layoutState.doAction(
-        FlexLayout.Actions.addNode(
-          nodeJson,
-          active.getId(),
-          FlexLayout.DockLocation.CENTER,
-          -1,
-        ),
-      );
+    const nodes = this.getNodes();
+    if (id in nodes) {
+      // eslint-disable-next-line no-throw-literal
+      if (nodes[id].getType() !== 'tab') throw `'${id}' is not a tab`;
+
+      // the tab exists, select it
+      layoutState.doAction(FlexLayout.Actions.selectTab(id));
     } else {
-      this.state.layoutState.doAction(
-        FlexLayout.Actions.addNode(
-          nodeJson,
-          this.state.layoutState.getRoot().getId(),
-          FlexLayout.DockLocation.RIGHT,
-          -1,
-        ),
-      );
+      // create the tab. Where?
+      let active = layoutState.getActiveTabset();
+
+      // the active tabset may be a tabset that was already removed, handle that
+      if (
+        active !== undefined && (
+          !(active.getId() in nodes) ||
+          nodes[active.getId()].getType() !== 'tabset'
+        )
+      ) active = undefined;
+
+      if (active !== undefined) {
+        // there's an active tabset; put the new tab there
+        layoutState.doAction(
+          FlexLayout.Actions.addNode(
+            nodeJson,
+            active.getId(),
+            FlexLayout.DockLocation.CENTER,
+            -1,
+          ),
+        );
+      } else {
+        // there's no active tabset; put the new tab into the root tabset,
+        // at the preferred location.
+        layoutState.doAction(
+          FlexLayout.Actions.addNode(
+            nodeJson,
+            layoutState.getRoot().getId(),
+            location,
+            -1,
+          ),
+        );
+      }
     }
   }
 
-  addSimulator = () => {
-    const nodes = this.getNodes();
-    if ('sim' in nodes) {
-      // TODO assert `nodes.sim.getType() === 'tab'`
-      this.state.layoutState.doAction(FlexLayout.Actions.selectTab('sim'));
-    } else {
-      this.addNode({
-        id: 'sim',
-        type: 'tab',
-        component: 'simulator',
-        name: 'Simulator',
-      });
-    }
-  };
+  addSimulator = () => this.openOrFocusTab(FlexLayout.DockLocation.RIGHT, {
+    id: 'sim',
+    type: 'tab',
+    component: 'simulator',
+    name: 'Simulator',
+  });
 
-  addEditor = () => {
-    this.addNode({
-      type: 'tab',
-      component: 'editor',
-      name: 'Editor',
-    });
-  };
+  addEditor = () => this.openOrFocusTab(FlexLayout.DockLocation.RIGHT, {
+    id: 'editor',
+    type: 'tab',
+    component: 'editor',
+    name: 'Editor',
+  });
 
-  addConsole = () => {
-    const nodes = this.getNodes();
-    if ('console' in nodes) {
-      // TODO assert `nodes.console.getType() === 'tab'`
-      this.state.layoutState.doAction(FlexLayout.Actions.selectTab('console'));
-    } else {
-      this.addNode({
-        id: 'console',
-        type: 'tab',
-        component: 'console',
-        name: 'Console',
-      });
-    }
-  };
+  addConsole = () => this.openOrFocusTab(FlexLayout.DockLocation.BOTTOM, {
+    id: 'console',
+    type: 'tab',
+    component: 'console',
+    name: 'Console',
+  });
 
-  addBlockly = () => {
-    this.addNode({
-      type: 'tab',
-      component: 'blockly',
-      name: 'Visual Editor',
-    });
-  };
+  addBlockly = () => this.openOrFocusTab(FlexLayout.DockLocation.RIGHT, {
+    id: 'blockly',
+    type: 'tab',
+    component: 'blockly',
+    name: 'Visual Editor',
+  });
 
   getConsole = () =>
     new Promise(resolve => {
