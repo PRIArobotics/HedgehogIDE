@@ -1,12 +1,5 @@
 // @flow
 
-export type RcDataNode = {
-  key: string,
-  title: string,
-  isLeaf: boolean,
-  children: Array<RcDataNode>,
-};
-
 type RcTreeNodeProps = {
   title: string,
   isLeaf: boolean,

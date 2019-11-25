@@ -3,7 +3,7 @@
 import * as React from 'react';
 import withStyles from 'isomorphic-style-loader/lib/withStyles';
 
-import Tree from 'rc-tree';
+import Tree, { TreeNode } from 'rc-tree';
 // $FlowExpectError
 import sRcTree from 'rc-tree/assets/index.css';
 
@@ -15,11 +15,7 @@ import type {
 } from '../../../core/store/projects';
 
 import FileMenu, { type FileAction } from './FileMenu';
-import type {
-  RcDataNode,
-  RcTreeNodeEvent,
-  RcNodeEventInfo,
-} from './RcTreeTypes';
+import type { RcTreeNodeEvent, RcNodeEventInfo } from './RcTreeTypes';
 
 export type { FileAction };
 
@@ -111,47 +107,32 @@ class FileTree extends React.Component<PropTypes, StateTypes> {
     this.props.onUpdate({ expandedKeys });
   };
 
-  getTreeData(): Array<RcDataNode> {
-    const visitChildren = (
+  render() {
+    const renderChildren = (
       path: string,
       children: Array<FilerRecursiveStatInfo>,
-    ): Array<RcDataNode> =>
+    ) =>
       children.map(child =>
         // eslint-disable-next-line no-use-before-define
-        visitNode(path, child),
+        renderNode(path, child),
       );
 
-    const visitNode = (
-      path: string,
-      node: FilerRecursiveStatInfo,
-    ): RcDataNode => {
-      const { name: title } = node;
-      const key = `${path}/${title}`;
-      const isLeaf = !node.isDirectory();
-      let children;
-      if (isLeaf) {
-        children = [];
-      } else {
+    const renderNode = (path: string, node: FilerRecursiveStatInfo) => {
+      const { name } = node;
+      const key = `${path}/${node.name}`;
+      if (node.isDirectory()) {
         // $FlowExpectError
         const dirNode: FilerRecursiveDirectoryInfo = node;
-        children = visitChildren(key, dirNode.contents);
+        return (
+          <TreeNode key={key} title={name} isLeaf={false}>
+            {renderChildren(key, dirNode.contents)}
+          </TreeNode>
+        );
+      } else {
+        return <TreeNode key={key} title={name} isLeaf />;
       }
-      return { key, title, isLeaf, children };
     };
 
-    const { projectName, files } = this.props;
-
-    return [
-      {
-        key: '.',
-        title: projectName,
-        isLeaf: false,
-        children: visitChildren('.', files),
-      },
-    ];
-  }
-
-  render() {
     return (
       <div ref={this.rootDivRef} className={s.root}>
         <Tree
@@ -167,8 +148,11 @@ class FileTree extends React.Component<PropTypes, StateTypes> {
           onRightClick={this.handleTreeRightClick}
           selectedKeys={this.state.selectedKeys}
           onExpand={this.handleTreeExpand}
-          treeData={this.getTreeData()}
-        />
+        >
+          <TreeNode key="." title={this.props.projectName} isLeaf={false}>
+            {renderChildren('.', this.props.files)}
+          </TreeNode>
+        </Tree>
         <FileMenu ref={this.menuRef} onFileAction={this.props.onFileAction} />
       </div>
     );
