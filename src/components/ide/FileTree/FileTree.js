@@ -3,6 +3,10 @@
 import * as React from 'react';
 import withStyles from 'isomorphic-style-loader/lib/withStyles';
 
+import CodeIcon from '@material-ui/icons/Code';
+import FolderIcon from '@material-ui/icons/Folder';
+import FolderOpenIcon from '@material-ui/icons/FolderOpen';
+
 import Tree, { TreeNode } from 'rc-tree';
 // $FlowExpectError
 import sRcTree from 'rc-tree/assets/index.css';
@@ -74,12 +78,9 @@ class FileTree extends React.Component<PropTypes, StateTypes> {
     this.menuAnchor = e.target;
   };
 
-  handleTreeSelect = (
-    selectedKeys: Array<string>,
-    { node }: RcNodeEventInfo<>,
-  ) => {
-    this.setState({ selectedKeys });
-  };
+  handleClickFile(path: string, file: FilerRecursiveStatInfo) {
+    this.setState({ selectedKeys: [path] });
+  }
 
   // TODO implement moving files/directories via drag & drop
 
@@ -118,11 +119,28 @@ class FileTree extends React.Component<PropTypes, StateTypes> {
 
     const renderNode = (path: string, file: FilerRecursiveStatInfo) => {
       const isLeaf = !file.isDirectory();
+      const isExpanded = this.props.expandedKeys.includes(path);
+
+      const IconComponent = isLeaf
+        ? CodeIcon
+        : isExpanded
+        ? FolderOpenIcon
+        : FolderIcon;
 
       const attrs = {
         key: path,
         isLeaf,
-        title: <span onDoubleClick={event => {}}>{name}</span>,
+        title: (
+          // TODO figure out accessibility
+          <span
+            onClick={() => this.handleClickFile(path, file)}
+            onRightClick={event => {}}
+            onDoubleClick={event => {}}
+          >
+            <IconComponent style={{ fontSize: '1rem' }} />
+            {file.name}
+          </span>
+        ),
         file,
       };
 
@@ -132,9 +150,7 @@ class FileTree extends React.Component<PropTypes, StateTypes> {
         // $FlowExpectError
         const dir: FilerRecursiveDirectoryInfo = file;
         return (
-          <TreeNode {...attrs}>
-            {renderChildren(path, dir.contents)}
-          </TreeNode>
+          <TreeNode {...attrs}>{renderChildren(path, dir.contents)}</TreeNode>
         );
       }
     };
@@ -144,16 +160,16 @@ class FileTree extends React.Component<PropTypes, StateTypes> {
         <Tree
           className="file-tree"
           showLine
+          showIcon={false}
           checkable={false}
           selectable
           draggable
           expandedKeys={this.props.expandedKeys}
-          onSelect={this.handleTreeSelect}
+          onExpand={this.handleTreeExpand}
+          selectedKeys={this.state.selectedKeys}
           onDragStart={this.handleTreeDragStart}
           onDragEnd={this.handleTreeDragEnd}
           onRightClick={this.handleTreeRightClick}
-          selectedKeys={this.state.selectedKeys}
-          onExpand={this.handleTreeExpand}
         >
           {renderNode('.', this.props.files)}
         </Tree>
