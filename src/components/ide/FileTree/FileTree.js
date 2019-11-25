@@ -119,17 +119,25 @@ class FileTree extends React.Component<PropTypes, StateTypes> {
 
     const renderNode = (path: string, node: FilerRecursiveStatInfo) => {
       const { name } = node;
-      const key = `${path}/${node.name}`;
-      if (node.isDirectory()) {
+      const key = `${path}/${name}`;
+      const isLeaf = !node.isDirectory();
+
+      const attrs = {
+        key,
+        isLeaf,
+        title: <span onDoubleClick={event => {}}>{name}</span>,
+      };
+
+      if (isLeaf) {
+        return <TreeNode {...attrs} />;
+      } else {
         // $FlowExpectError
         const dirNode: FilerRecursiveDirectoryInfo = node;
         return (
-          <TreeNode key={key} title={name} isLeaf={false}>
+          <TreeNode {...attrs}>
             {renderChildren(key, dirNode.contents)}
           </TreeNode>
         );
-      } else {
-        return <TreeNode key={key} title={name} isLeaf />;
       }
     };
 
