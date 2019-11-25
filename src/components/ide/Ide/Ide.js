@@ -81,9 +81,11 @@ type PropTypes = {|
   projectName: string,
 |};
 type StateTypes = {|
-  project: Project | null,
-  files: Array<FilerRecursiveStatInfo> | null,
-  projectUid: string | null,
+  projectInfo: {|
+    project: Project,
+    files: FilerRecursiveStatInfo,
+    projectUid: string,
+  |} | null,
   fileTreeState: FileTreeState,
   layoutState: FlexLayout.Model,
   blocklyState: { [key: string]: VisualEditorState },
@@ -173,9 +175,7 @@ class Ide extends React.Component<PropTypes, StateTypes> {
   blocklyTabIds = new Set();
 
   state = {
-    project: null,
-    files: null,
-    projectUid: null,
+    projectInfo: null,
     fileTreeState: {},
     layoutState: FlexLayout.Model.fromJson(defaultLayout),
     blocklyState: {},
@@ -212,15 +212,16 @@ class Ide extends React.Component<PropTypes, StateTypes> {
       layoutStateJson || defaultLayout,
     );
 
-    this.setState({ project, files, projectUid, fileTreeState, layoutState });
+    const projectInfo = { project, files, projectUid };
+    this.setState({ projectInfo, fileTreeState, layoutState });
   }
 
   save() {
     // eslint-disable-next-line no-throw-literal
-    if (this.state.projectUid === null) throw 'projectUid is null';
+    if (this.state.projectInfo === null) throw 'projectInfo is null';
     // eslint-disable-next-line no-shadow
     const {
-      projectUid,
+      projectInfo: { projectUid },
       fileTreeState,
       layoutState: layoutStateModel,
     } = this.state;
@@ -425,9 +426,11 @@ class Ide extends React.Component<PropTypes, StateTypes> {
     type: 'FILE' | 'DIRECTORY',
   ): Promise<boolean> {
     // eslint-disable-next-line no-throw-literal
-    if (this.state.project === null) throw 'unreachable';
+    if (this.state.projectInfo === null) throw 'unreachable';
 
-    const { project } = this.state;
+    const {
+      projectInfo: { project },
+    } = this.state;
 
     try {
       const path = project.resolve(parentNode.props.eventKey, name);
@@ -452,17 +455,20 @@ class Ide extends React.Component<PropTypes, StateTypes> {
     const path = file.props.eventKey.split('/').slice(1, -1);
 
     // eslint-disable-next-line no-throw-literal
-    if (this.state.files === null) throw 'unreachable';
-    let { files } = this.state;
+    if (this.state.projectInfo === null) throw 'unreachable';
+
+    let {
+      projectInfo: { files },
+    } = this.state;
 
     // determine the files that are siblings of the event target
     path.forEach(fragment => {
-      const child = files.find(c => c.name === fragment);
       // eslint-disable-next-line no-throw-literal
-      if (child === undefined || !child.isDirectory()) throw 'unreachable';
+      if (files === undefined || !files.isDirectory()) throw 'unreachable';
       // $FlowExpectError
-      const childDir: FilerRecursiveDirectoryInfo = child;
-      files = childDir.contents;
+      const dir: FilerRecursiveDirectoryInfo = files;
+
+      files = dir.contents.find(c => c.name === fragment);
     });
 
     // eslint-disable-next-line no-throw-literal
@@ -475,9 +481,11 @@ class Ide extends React.Component<PropTypes, StateTypes> {
     newName: string,
   ): Promise<boolean> {
     // eslint-disable-next-line no-throw-literal
-    if (this.state.project === null) throw 'unreachable';
+    if (this.state.projectInfo === null) throw 'unreachable';
 
-    const { project } = this.state;
+    const {
+      projectInfo: { project },
+    } = this.state;
 
     try {
       const path = project.resolve(file.props.eventKey);
@@ -511,9 +519,11 @@ class Ide extends React.Component<PropTypes, StateTypes> {
 
   async confirmDeleteFile(file: RcTreeNodeEvent): Promise<boolean> {
     // eslint-disable-next-line no-throw-literal
-    if (this.state.project === null) throw 'unreachable';
+    if (this.state.projectInfo === null) throw 'unreachable';
 
-    const { project } = this.state;
+    const {
+      projectInfo: { project },
+    } = this.state;
 
     try {
       const path = project.resolve(file.props.eventKey);
@@ -538,10 +548,10 @@ class Ide extends React.Component<PropTypes, StateTypes> {
   }
 
   render() {
-    const { classes, projectName } = this.props;
-    const { files } = this.state;
+    const { classes } = this.props;
+    const { projectInfo } = this.state;
 
-    if (files === null) return null;
+    if (projectInfo === null) return null;
 
     return (
       <div className={classes.root}>
@@ -590,8 +600,7 @@ class Ide extends React.Component<PropTypes, StateTypes> {
             <hr />
           </div>
           <FileTree
-            projectName={projectName}
-            files={files}
+            files={projectInfo.files}
             {...this.state.fileTreeState}
             onFileAction={(node, action) => this.handleFileAction(node, action)}
             onUpdate={fileTreeState =>

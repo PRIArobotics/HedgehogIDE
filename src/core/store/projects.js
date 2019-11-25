@@ -92,8 +92,10 @@ export class Project {
     return this.resolve();
   }
 
-  async getFiles(): Promise<Array<FilerRecursiveStatInfo>> {
-    return sh.promises.ls(this.path, { recursive: true });
+  async getFiles(): Promise<FilerRecursiveStatInfo> {
+    const root = await fs.promises.stat(this.path);
+    root.contents = await sh.promises.ls(this.path, { recursive: true });
+    return root;
   }
 
   async getUid(): Promise<string> {

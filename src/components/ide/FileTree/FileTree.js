@@ -31,8 +31,7 @@ export type ControlledState = $Shape<{|
 |}>;
 
 type PropTypes = {|
-  projectName: string,
-  files: Array<FilerRecursiveStatInfo>,
+  files: FilerRecursiveStatInfo,
   expandedKeys: Array<string>,
   onFileAction: (RcTreeNodeEvent, FileAction) => void | Promise<void>,
   onUpdate: (state: ControlledState) => void | Promise<void>,
@@ -126,6 +125,7 @@ class FileTree extends React.Component<PropTypes, StateTypes> {
         key,
         isLeaf,
         title: <span onDoubleClick={event => {}}>{name}</span>,
+        file: node,
       };
 
       if (isLeaf) {
@@ -157,9 +157,7 @@ class FileTree extends React.Component<PropTypes, StateTypes> {
           selectedKeys={this.state.selectedKeys}
           onExpand={this.handleTreeExpand}
         >
-          <TreeNode key="." title={this.props.projectName} isLeaf={false}>
-            {renderChildren('.', this.props.files)}
-          </TreeNode>
+          {renderNode('.', this.props.files)}
         </Tree>
         <FileMenu ref={this.menuRef} onFileAction={this.props.onFileAction} />
       </div>
