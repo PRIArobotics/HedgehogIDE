@@ -113,16 +113,15 @@ class FileTree extends React.Component<PropTypes, StateTypes> {
     ) =>
       children.map(child =>
         // eslint-disable-next-line no-use-before-define
-        renderNode(path, child),
+        renderNode(`${path}/${child.name}`, child),
       );
 
     const renderNode = (path: string, node: FilerRecursiveStatInfo) => {
       const { name } = node;
-      const key = `${path}/${name}`;
       const isLeaf = !node.isDirectory();
 
       const attrs = {
-        key,
+        key: path,
         isLeaf,
         title: <span onDoubleClick={event => {}}>{name}</span>,
         file: node,
@@ -135,7 +134,7 @@ class FileTree extends React.Component<PropTypes, StateTypes> {
         const dirNode: FilerRecursiveDirectoryInfo = node;
         return (
           <TreeNode {...attrs}>
-            {renderChildren(key, dirNode.contents)}
+            {renderChildren(path, dirNode.contents)}
           </TreeNode>
         );
       }
