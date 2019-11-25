@@ -40,6 +40,7 @@ module.exports = {
     'class-methods-use-this': 'warn',
     'lines-between-class-members': 'off',
     'no-else-return': 'off',
+    'no-nested-ternary': 'off',
     'react/no-unused-prop-types': 'warn',
 
     // Recommend not to leave any console.log in your code
