@@ -252,7 +252,13 @@ class Ide extends React.Component<PropTypes, StateTypes> {
     return nodes;
   }
 
-  openOrFocusTab(location: FlexLayout.DockLocation, nodeJson) {
+  openOrFocusTab(
+    nodeJson,
+    options?: {|
+      location?: FlexLayout.DockLocation,
+      alwaysNewTabset?: boolean,
+    |},
+  ) {
     const { id } = nodeJson;
     const { layoutState } = this.state;
 
@@ -264,30 +270,44 @@ class Ide extends React.Component<PropTypes, StateTypes> {
       // the tab exists, select it
       layoutState.doAction(FlexLayout.Actions.selectTab(id));
     } else {
-      // create the tab. Where?
-      let active = layoutState.getActiveTabset();
+      // create the tab.
+      let { location, alwaysNewTabset } = {
+        location: FlexLayout.DockLocation.RIGHT,
+        alwaysNewTabset: false,
+        ...(options || {}),
+      }
 
-      // the active tabset may be a tabset that was already removed, handle that
-      if (
-        active !== undefined && (
-          !(active.getId() in nodes) ||
-          nodes[active.getId()].getType() !== 'tabset'
-        )
-      ) active = undefined;
+      let targetTabset;
+      if (alwaysNewTabset) {
+        targetTabset = null;
+      } else {
+        // what's the active tabset?
+        const active = layoutState.getActiveTabset();
 
-      if (active !== undefined) {
-        // there's an active tabset; put the new tab there
+        // the active tabset may be undefined or a tabset that was already removed, handle that
+        if (
+          active !== undefined &&
+          active.getId() in nodes &&
+          nodes[active.getId()].getType() === 'tabset'
+        ) {
+          targetTabset = active;
+        } else {
+          targetTabset = null;
+        }
+      }
+
+      if (targetTabset !== null) {
+        // there's a target tabset; put the new tab there
         layoutState.doAction(
           FlexLayout.Actions.addNode(
             nodeJson,
-            active.getId(),
+            targetTabset.getId(),
             FlexLayout.DockLocation.CENTER,
             -1,
           ),
         );
       } else {
-        // there's no active tabset; put the new tab into the root tabset,
-        // at the preferred location.
+        // put the new tab into the root tabset, at the preferred location.
         layoutState.doAction(
           FlexLayout.Actions.addNode(
             nodeJson,
@@ -300,28 +320,31 @@ class Ide extends React.Component<PropTypes, StateTypes> {
     }
   }
 
-  addSimulator = () => this.openOrFocusTab(FlexLayout.DockLocation.RIGHT, {
+  addSimulator = () => this.openOrFocusTab({
     id: 'sim',
     type: 'tab',
     component: 'simulator',
     name: 'Simulator',
   });
 
-  addEditor = () => this.openOrFocusTab(FlexLayout.DockLocation.RIGHT, {
+  addEditor = () => this.openOrFocusTab({
     id: 'editor',
     type: 'tab',
     component: 'editor',
     name: 'Editor',
   });
 
-  addConsole = () => this.openOrFocusTab(FlexLayout.DockLocation.BOTTOM, {
+  addConsole = () => this.openOrFocusTab({
     id: 'console',
     type: 'tab',
     component: 'console',
     name: 'Console',
+  }, {
+    location: FlexLayout.DockLocation.BOTTOM,
+    alwaysNewTabset: true,
   });
 
-  addBlockly = () => this.openOrFocusTab(FlexLayout.DockLocation.RIGHT, {
+  addBlockly = () => this.openOrFocusTab({
     id: 'blockly',
     type: 'tab',
     component: 'blockly',
