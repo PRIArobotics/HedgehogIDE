@@ -96,27 +96,83 @@ class FileTree extends React.Component<PropTypes, StateTypes> {
     this.menuAnchor = e.target;
   };
 
-  handleFileClick(file: FileReference) {
+  handleFileClick(event: MouseEvent, file: FileReference) {
     this.setState({ selectedKeys: [file.path] });
+    event.preventDefault();
   }
 
-  handleFileContextMenu(file: FileReference) {
+  handleFileRightClick(event: MouseEvent, file: FileReference) {
     this.setState({ selectedKeys: [file.path] });
 
     // eslint-disable-next-line no-throw-literal
     if (this.menuRef.current === null) throw 'ref is null';
     this.menuRef.current.show(this.menuAnchor, file);
+
+    event.preventDefault();
   }
 
-  handleFileDoubleClick(file: FileReference) {
+  handleFileDoubleClick(event: MouseEvent, file: FileReference) {
     this.setState({ selectedKeys: [file.path] });
 
-    this.props.onFileAction(file, 'OPEN');
+    if (file.file.isDirectory()) this.setExpandDirectory(file, null);
+    else this.props.onFileAction(file, 'OPEN');
+
+    event.preventDefault();
+  }
+
+  handleFileKeyDown(event: KeyboardEvent, file: FileReference) {
+    // we don't handle any of these
+    if (
+      event.altKey ||
+      event.ctrlKey ||
+      event.metaKey ||
+      event.shiftKey ||
+      event.isComposing
+    )
+      return;
+
+    if (file.file.isDirectory())
+      switch (event.key) {
+        case 'ArrowLeft':
+          this.setExpandDirectory(file, false);
+          event.preventDefault();
+          break;
+        case 'ArrowRight':
+          this.setExpandDirectory(file, true);
+          event.preventDefault();
+          break;
+        default:
+      }
+    else
+      switch (event.key) {
+        case ' ':
+        case 'Enter':
+          this.props.onFileAction(file, 'OPEN');
+          event.preventDefault();
+          break;
+        default:
+      }
   }
 
   // TODO implement moving files/directories via drag & drop
   handleFileDragStart(file: FileReference) {}
   handleFileDragEnd(file: FileReference) {}
+
+  setExpandDirectory(file: FileReference, state: boolean | null) {
+    const expandedKeys = [...this.props.expandedKeys];
+    const index = expandedKeys.indexOf(file.path);
+    if (state === null) {
+      // toggle
+      if (index === -1) expandedKeys.push(file.path);
+      else expandedKeys.splice(index, 1);
+    } else {
+      // set/reset
+      // eslint-disable-next-line no-lonely-if
+      if (index === -1 && state) expandedKeys.push(file.path);
+      else if (index !== -1 && !state) expandedKeys.splice(index, 1);
+    }
+    this.props.onUpdate({ expandedKeys });
+  }
 
   render() {
     const renderChildren = (
@@ -144,12 +200,12 @@ class FileTree extends React.Component<PropTypes, StateTypes> {
         title: (
           // TODO figure out accessibility
           <span
-            onClick={() => this.handleFileClick({ path, file })}
-            onContextMenu={event => {
-              this.handleFileContextMenu({ path, file });
-              event.preventDefault();
-            }}
-            onDoubleClick={() => this.handleFileDoubleClick({ path, file })}
+            onClick={e => this.handleFileClick(e, { path, file })}
+            onContextMenu={e => this.handleFileRightClick(e, { path, file })}
+            onDoubleClick={e => this.handleFileDoubleClick(e, { path, file })}
+            onKeyDown={e => this.handleFileKeyDown(e, { path, file })}
+            role="treeitem"
+            tabIndex="0"
           >
             <IconComponent style={{ fontSize: '1rem' }} />
             {file.name}
