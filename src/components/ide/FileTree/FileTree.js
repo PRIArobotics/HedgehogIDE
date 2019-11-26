@@ -19,7 +19,7 @@ import type {
 } from '../../../core/store/projects';
 
 import FileMenu, { type FileAction } from './FileMenu';
-import type { RcTreeNodeEvent, RcNodeEventInfo } from './RcTreeTypes';
+import type { RcNodeEventInfo } from './RcTreeTypes';
 
 export type { FileAction };
 

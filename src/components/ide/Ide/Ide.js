@@ -37,10 +37,8 @@ import {
   type FilerRecursiveStatInfo,
   type FilerRecursiveDirectoryInfo,
   Project,
-  ProjectError,
 } from '../../../core/store/projects';
 
-import { type RcTreeNodeEvent } from '../FileTree/RcTreeTypes';
 import CreateFileDialog from '../FileTree/CreateFileDialog';
 import RenameFileDialog from '../FileTree/RenameFileDialog';
 import DeleteFileDialog from '../FileTree/DeleteFileDialog';

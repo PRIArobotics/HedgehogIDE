@@ -10,9 +10,7 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 
-import type { RcTreeNodeEvent } from './RcTreeTypes';
-import type { FilerRecursiveDirectoryInfo } from '../../../core/store/projects';
-import FileTree, { type DirReference } from '.';
+import type { DirReference } from '.';
 
 type PropTypes = {|
   onCreate: (
@@ -93,7 +91,7 @@ class CreateFileDialog extends React.Component<PropTypes, StateTypes> {
 
     const {
       visible,
-      config: { parentDir, type },
+      config: { type },
       newFileName,
     } = this.state;
 

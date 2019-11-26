@@ -10,10 +10,7 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 
-import type { FilerStatInfo } from '../../../core/store/projects';
-
-import type { RcTreeNodeEvent } from './RcTreeTypes';
-import type { FileReference, DirReference } from '.';
+import type { FileReference } from '.';
 
 type PropTypes = {|
   onRename: (
