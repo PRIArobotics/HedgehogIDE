@@ -23,6 +23,8 @@ import Console from '../Console';
 import Editor, { type ControlledState as TextualEditorState } from '../Editor';
 import Executor from '../Executor';
 import FileTree, {
+  type DirReference,
+  type FileReference,
   type FileAction,
   type ControlledState as FileTreeState,
 } from '../FileTree';
@@ -393,19 +395,25 @@ class Ide extends React.Component<PropTypes, StateTypes> {
     this.setState({ runningCode: null });
   }
 
-  handleFileAction(node: RcTreeNodeEvent, action: FileAction) {
+  handleFileAction(file: FileReference, action: FileAction) {
     switch (action) {
-      case 'CREATE_FOLDER':
-        this.beginCreateFile(node, 'DIRECTORY');
+      case 'CREATE_FOLDER': {
+        // $FlowExpectError
+        const dir: DirReference = file;
+        this.beginCreateFile(dir, 'DIRECTORY');
         break;
-      case 'CREATE_FILE':
-        this.beginCreateFile(node, 'FILE');
+      }
+      case 'CREATE_FILE': {
+        // $FlowExpectError
+        const dir: DirReference = file;
+        this.beginCreateFile(dir, 'FILE');
         break;
+      }
       case 'RENAME':
-        this.beginRenameFile(node);
+        this.beginRenameFile(file);
         break;
       case 'DELETE':
-        this.beginDeleteFile(node);
+        this.beginDeleteFile(file);
         break;
       default:
         // eslint-disable-next-line no-throw-literal
@@ -413,15 +421,15 @@ class Ide extends React.Component<PropTypes, StateTypes> {
     }
   }
 
-  beginCreateFile(parentNode: RcTreeNodeEvent, type: 'FILE' | 'DIRECTORY') {
+  beginCreateFile(parentDir: DirReference, type: 'FILE' | 'DIRECTORY') {
     // eslint-disable-next-line no-throw-literal
     if (this.createFileRef.current === null) throw 'ref is null';
 
-    this.createFileRef.current.show(parentNode, type);
+    this.createFileRef.current.show(parentDir, type);
   }
 
   async confirmCreateFile(
-    parentNode: RcTreeNodeEvent,
+    parentDir: DirReference,
     name: string,
     type: 'FILE' | 'DIRECTORY',
   ): Promise<boolean> {
@@ -433,7 +441,7 @@ class Ide extends React.Component<PropTypes, StateTypes> {
     } = this.state;
 
     try {
-      const path = project.resolve(parentNode.props.eventKey, name);
+      const path = project.resolve(parentDir.path, name);
 
       if (type === 'FILE') await fs.promises.mknod(path, 'FILE');
       else await fs.promises.mkdir(path);
@@ -450,34 +458,40 @@ class Ide extends React.Component<PropTypes, StateTypes> {
     }
   }
 
-  beginRenameFile(file: RcTreeNodeEvent) {
+  beginRenameFile(file: FileReference) {
     // split off the './' at the start and the file name at the end
-    const path = file.props.eventKey.split('/').slice(1, -1);
+    const path = file.path.split('/').slice(1, -1);
 
     // eslint-disable-next-line no-throw-literal
     if (this.state.projectInfo === null) throw 'unreachable';
 
-    let {
-      projectInfo: { files },
-    } = this.state;
+    const root = this.state.projectInfo.files;
+
+    // the project root is always a directory. assert and cast
+    // eslint-disable-next-line no-throw-literal
+    if (!root.isDirectory()) throw 'unreachable';
+    // $FlowExpectError
+    let dir: FilerRecursiveDirectoryInfo = root;
 
     // determine the files that are siblings of the event target
     path.forEach(fragment => {
-      // eslint-disable-next-line no-throw-literal
-      if (files === undefined || !files.isDirectory()) throw 'unreachable';
-      // $FlowExpectError
-      const dir: FilerRecursiveDirectoryInfo = files;
+      // right now `fragment` is a child of `dir`. look it up.
+      const child = dir.contents.find(c => c.name === fragment);
 
-      files = dir.contents.find(c => c.name === fragment);
+      // the child is an ancestor of `file` and thus a directory. assert and cast
+      // eslint-disable-next-line no-throw-literal
+      if (child === undefined || !child.isDirectory()) throw 'unreachable';
+      // $FlowExpectError
+      dir = child;
     });
 
     // eslint-disable-next-line no-throw-literal
     if (this.renameFileRef.current === null) throw 'ref is null';
-    this.renameFileRef.current.show(file, files);
+    this.renameFileRef.current.show(file, dir.contents.map(f => f.name));
   }
 
   async confirmRenameFile(
-    file: RcTreeNodeEvent,
+    file: FileReference,
     newName: string,
   ): Promise<boolean> {
     // eslint-disable-next-line no-throw-literal
@@ -488,8 +502,8 @@ class Ide extends React.Component<PropTypes, StateTypes> {
     } = this.state;
 
     try {
-      const path = project.resolve(file.props.eventKey);
-      const newPath = project.resolve(file.props.eventKey, '..', newName);
+      const path = project.resolve(file.path);
+      const newPath = project.resolve(file.path, '..', newName);
 
       await fs.promises.rename(path, newPath);
 
@@ -510,14 +524,14 @@ class Ide extends React.Component<PropTypes, StateTypes> {
     }
   }
 
-  beginDeleteFile(file: RcTreeNodeEvent) {
+  beginDeleteFile(file: FileReference) {
     // eslint-disable-next-line no-throw-literal
     if (this.deleteFileRef.current === null) throw 'ref is null';
 
     this.deleteFileRef.current.show(file);
   }
 
-  async confirmDeleteFile(file: RcTreeNodeEvent): Promise<boolean> {
+  async confirmDeleteFile(file: FileReference): Promise<boolean> {
     // eslint-disable-next-line no-throw-literal
     if (this.state.projectInfo === null) throw 'unreachable';
 
@@ -526,7 +540,7 @@ class Ide extends React.Component<PropTypes, StateTypes> {
     } = this.state;
 
     try {
-      const path = project.resolve(file.props.eventKey);
+      const path = project.resolve(file.path);
 
       await sh.promises.rm(path, { recursive: true });
 

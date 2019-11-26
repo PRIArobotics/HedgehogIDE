@@ -13,31 +13,35 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import type { FilerStatInfo } from '../../../core/store/projects';
 
 import type { RcTreeNodeEvent } from './RcTreeTypes';
+import type { FileReference, DirReference } from '.';
 
 type PropTypes = {|
-  onRename: (RcTreeNodeEvent, string) => boolean | Promise<boolean>,
+  onRename: (file: FileReference, newFileName: string) => boolean | Promise<boolean>,
 |};
 type StateTypes = {|
   visible: boolean,
-  file: RcTreeNodeEvent | null,
-  siblingNodes: Array<FilerStatInfo> | null,
+  config: {|
+    file: FileReference,
+    siblingNames: Array<string>,
+  |} | null,
   newFileName: string,
 |};
 
 class RenameFileDialog extends React.Component<PropTypes, StateTypes> {
   state: StateTypes = {
     visible: false,
-    file: null,
-    siblingNodes: null,
+    config: null,
     newFileName: '',
   };
 
-  show(file: RcTreeNodeEvent, siblingNodes: Array<FilerStatInfo>) {
+  show(file: FileReference, siblingNames: Array<string>) {
     this.setState({
       visible: true,
-      file,
-      siblingNodes,
-      newFileName: file.props.title,
+      config: {
+        file,
+        siblingNames,
+      },
+      newFileName: file.file.name,
     });
   }
 
@@ -49,26 +53,32 @@ class RenameFileDialog extends React.Component<PropTypes, StateTypes> {
     this.setState({ newFileName: name.replace(/[^-\w#$%().,:; ]/g, '') });
   }
 
-  isValidFileName() {
-    const { siblingNodes, newFileName } = this.state;
+  isValid() {
+    // eslint-disable-next-line no-throw-literal
+    if (this.state.config === null) throw 'unreachable';
 
-    if (siblingNodes === null) return false;
+    const { config: { siblingNames }, newFileName } = this.state;
 
     return (
       newFileName !== '' &&
-      siblingNodes.every(sibling => sibling.name !== newFileName)
+      siblingNames.every(name => name !== newFileName)
     );
   }
 
   async confirm() {
     // eslint-disable-next-line no-throw-literal
-    if (!this.state.visible) throw 'confirming when dialog is not shown';
+    if (!this.state.visible) throw 'dialog is not shown';
     // eslint-disable-next-line no-throw-literal
-    if (this.state.file === null) throw 'no file';
+    if (this.state.config === null) throw 'unreachable';
+
+    const {
+      config: { file },
+      newFileName,
+    } = this.state;
 
     const success = await this.props.onRename(
-      this.state.file,
-      this.state.newFileName,
+      file,
+      newFileName,
     );
     if (success) {
       this.setState({ visible: false });
@@ -76,15 +86,24 @@ class RenameFileDialog extends React.Component<PropTypes, StateTypes> {
   }
 
   render() {
-    const [label, placeholder] = (this.state.file === null
-    ? true
-    : this.state.file.props.isLeaf)
-      ? ['file', 'file.js']
-      : ['folder', 'folder'];
+    // this will only trigger before the first showing.
+    // after that, the old config is still present and will ensure that
+    // fade out animations won't glitch due to changing contents.
+    if (this.state.config === null) return null;
+
+    const {
+      visible,
+      config: { file },
+      newFileName,
+    } = this.state;
+
+    const label = file.file.isDirectory() ? 'folder' : 'file';
+    const placeholder = file.file.isDirectory() === 'FILE' ? 'folder' : 'file.js';
+    const isValid = this.isValid();
 
     return (
       <Dialog
-        open={this.state.visible}
+        open={visible}
         onClose={() => this.cancel()}
         aria-labelledby="rename-file-dialog-title"
         aria-describedby="rename-file-dialog-description"
@@ -100,9 +119,9 @@ class RenameFileDialog extends React.Component<PropTypes, StateTypes> {
             id="name"
             label={placeholder}
             type="text"
-            value={this.state.newFileName}
+            value={newFileName}
             onChange={event => this.setNewFileName(event.target.value)}
-            error={!this.isValidFileName()}
+            error={!isValid}
             fullWidth
           />
         </DialogContent>
@@ -113,7 +132,7 @@ class RenameFileDialog extends React.Component<PropTypes, StateTypes> {
           <Button
             onClick={() => this.confirm()}
             color="primary"
-            disabled={!this.isValidFileName()}
+            disabled={!isValid}
           >
             OK
           </Button>

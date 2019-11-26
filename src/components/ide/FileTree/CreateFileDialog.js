@@ -11,31 +11,38 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 
 import type { RcTreeNodeEvent } from './RcTreeTypes';
+import type { FilerRecursiveDirectoryInfo } from '../../../core/store/projects';
+import FileTree, { type DirReference } from '.';
 
 type PropTypes = {|
   onCreate: (
-    RcTreeNodeEvent,
-    string,
-    'FILE' | 'DIRECTORY',
+    parentDir: DirReference,
+    newFileName: string,
+    type: 'FILE' | 'DIRECTORY',
   ) => boolean | Promise<boolean>,
 |};
 type StateTypes = {|
   visible: boolean,
-  parentNode: RcTreeNodeEvent | null,
-  type: 'FILE' | 'DIRECTORY',
+  config: {|
+    parentDir: DirReference,
+    type: 'FILE' | 'DIRECTORY',
+  |} | null,
   newFileName: string,
 |};
 
 class CreateFileDialog extends React.Component<PropTypes, StateTypes> {
   state: StateTypes = {
     visible: false,
-    parentNode: null,
-    type: 'FILE',
+    config: null,
     newFileName: '',
   };
 
-  show(parentNode: RcTreeNodeEvent, type: 'FILE' | 'DIRECTORY') {
-    this.setState({ visible: true, parentNode, type, newFileName: '' });
+  show(parentDir: DirReference, type: 'FILE' | 'DIRECTORY') {
+    this.setState({
+      visible: true,
+      config: { parentDir, type },
+      newFileName: '',
+    });
   }
 
   cancel() {
@@ -47,39 +54,53 @@ class CreateFileDialog extends React.Component<PropTypes, StateTypes> {
   }
 
   isValid() {
-    const { parentNode, newFileName } = this.state;
-
     // eslint-disable-next-line no-throw-literal
-    if (parentNode === null || !this.state.visible) return false;
+    if (this.state.config === null) throw 'unreachable';
+
+    const { config: { parentDir }, newFileName } = this.state;
 
     return (
       newFileName !== '' &&
-      parentNode.props.children.every(node => node.props.title !== newFileName)
+      parentDir.file.contents.every(f => f.name !== newFileName)
     );
   }
 
   async confirm() {
     // eslint-disable-next-line no-throw-literal
-    if (!this.state.visible) throw 'confirming when dialog is not shown';
-
-    const { parentNode, newFileName, type } = this.state;
-
+    if (!this.state.visible) throw 'dialog is not shown';
     // eslint-disable-next-line no-throw-literal
-    if (parentNode === null) throw 'unreachable';
+    if (this.state.config === null) throw 'unreachable';
 
-    const success = await this.props.onCreate(parentNode, newFileName, type);
+    const {
+      config: { parentDir, type },
+      newFileName,
+    } = this.state;
+
+    const success = await this.props.onCreate(parentDir, newFileName, type);
     if (success) {
       this.setState({ visible: false });
     }
   }
 
   render() {
-    const [label, placeholder] =
-      this.state.type === 'FILE' ? ['file', 'file.js'] : ['folder', 'folder'];
+    // this will only trigger before the first showing.
+    // after that, the old config is still present and will ensure that
+    // fade out animations won't glitch due to changing contents.
+    if (this.state.config === null) return null;
+
+    const {
+      visible,
+      config: { parentDir, type },
+      newFileName,
+    } = this.state;
+
+    const label = type === 'FILE' ? 'file' : 'folder';
+    const placeholder = type === 'FILE' ? 'file.js' : 'folder';
+    const isValid = this.isValid();
 
     return (
       <Dialog
-        open={this.state.visible}
+        open={visible}
         onClose={() => this.cancel()}
         aria-labelledby="create-file-dialog-title"
         aria-describedby="create-file-dialog-description"
@@ -97,9 +118,9 @@ class CreateFileDialog extends React.Component<PropTypes, StateTypes> {
             id="name"
             label={placeholder}
             type="text"
-            value={this.state.newFileName}
+            value={newFileName}
             onChange={event => this.setNewFileName(event.target.value)}
-            error={!this.isValid()}
+            error={!isValid}
             fullWidth
           />
         </DialogContent>
@@ -110,7 +131,7 @@ class CreateFileDialog extends React.Component<PropTypes, StateTypes> {
           <Button
             onClick={() => this.confirm()}
             color="primary"
-            disabled={!this.isValid()}
+            disabled={!isValid}
           >
             OK
           </Button>

@@ -23,6 +23,16 @@ import type { RcTreeNodeEvent, RcNodeEventInfo } from './RcTreeTypes';
 
 export type { FileAction };
 
+export type FileReference = {|
+  path: string,
+  file: FilerRecursiveStatInfo,
+|};
+
+export type DirReference = {|
+  path: string,
+  file: FilerRecursiveDirectoryInfo,
+|};
+
 /*
 --- rc-tree BUG ---
 Open all Nodes (or one child node), then close the root node.
@@ -37,7 +47,10 @@ export type ControlledState = $Shape<{|
 type PropTypes = {|
   files: FilerRecursiveStatInfo,
   expandedKeys: Array<string>,
-  onFileAction: (RcTreeNodeEvent, FileAction) => void | Promise<void>,
+  onFileAction: (
+    file: FileReference,
+    action: FileAction,
+  ) => void | Promise<void>,
   onUpdate: (state: ControlledState) => void | Promise<void>,
 |};
 type StateTypes = {|
@@ -78,8 +91,22 @@ class FileTree extends React.Component<PropTypes, StateTypes> {
     this.menuAnchor = e.target;
   };
 
-  handleClickFile(path: string, file: FilerRecursiveStatInfo) {
-    this.setState({ selectedKeys: [path] });
+  handleFileClick(file: FileReference) {
+    this.setState({ selectedKeys: [file.path] });
+  }
+
+  handleFileContextMenu(file: FileReference) {
+    this.setState({ selectedKeys: [file.path] });
+
+    // eslint-disable-next-line no-throw-literal
+    if (this.menuRef.current === null) throw 'ref is null';
+    this.menuRef.current.show(this.menuAnchor, file);
+  }
+
+  handleFileDoubleClick(file: FileReference) {
+    this.setState({ selectedKeys: [file.path] });
+
+    // TODO
   }
 
   // TODO implement moving files/directories via drag & drop
@@ -87,25 +114,6 @@ class FileTree extends React.Component<PropTypes, StateTypes> {
   handleTreeDragStart = ({ node }: RcNodeEventInfo<>) => {};
 
   handleTreeDragEnd = ({ node }: RcNodeEventInfo<>) => {};
-
-  handleTreeRightClick = ({ node }: RcNodeEventInfo<>) => {
-    // TODO only right click supported for opening context menu
-
-    this.setState({
-      selectedKeys: [node.props.eventKey],
-    });
-
-    // eslint-disable-next-line no-throw-literal
-    if (this.menuRef.current === null) throw 'ref is null';
-    this.menuRef.current.show(this.menuAnchor, node);
-  };
-
-  handleTreeExpand = (
-    expandedKeys: Array<string>,
-    { node }: RcNodeEventInfo<>,
-  ) => {
-    this.props.onUpdate({ expandedKeys });
-  };
 
   render() {
     const renderChildren = (
@@ -133,9 +141,12 @@ class FileTree extends React.Component<PropTypes, StateTypes> {
         title: (
           // TODO figure out accessibility
           <span
-            onClick={() => this.handleClickFile(path, file)}
-            onRightClick={event => {}}
-            onDoubleClick={event => {}}
+            onClick={() => this.handleFileClick({ path, file })}
+            onContextMenu={event => {
+              this.handleFileContextMenu({ path, file });
+              event.preventDefault();
+            }}
+            onDoubleClick={() => this.handleFileDoubleClick({ path, file })}
           >
             <IconComponent style={{ fontSize: '1rem' }} />
             {file.name}
@@ -165,11 +176,10 @@ class FileTree extends React.Component<PropTypes, StateTypes> {
           selectable
           draggable
           expandedKeys={this.props.expandedKeys}
-          onExpand={this.handleTreeExpand}
+          onExpand={expandedKeys => this.props.onUpdate({ expandedKeys })}
           selectedKeys={this.state.selectedKeys}
           onDragStart={this.handleTreeDragStart}
           onDragEnd={this.handleTreeDragEnd}
-          onRightClick={this.handleTreeRightClick}
         >
           {renderNode('.', this.props.files)}
         </Tree>

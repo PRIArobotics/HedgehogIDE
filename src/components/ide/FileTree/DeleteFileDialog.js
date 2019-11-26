@@ -10,23 +10,26 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 
 import type { RcTreeNodeEvent } from './RcTreeTypes';
+import type { FileReference } from '.';
 
 type PropTypes = {|
-  onDelete: RcTreeNodeEvent => boolean | Promise<boolean>,
+  onDelete: (file: FileReference) => boolean | Promise<boolean>,
 |};
 type StateTypes = {|
   visible: boolean,
-  file: RcTreeNodeEvent | null,
+  config: {|
+    file: FileReference,
+  |} | null,
 |};
 
 class DeleteFileDialog extends React.Component<PropTypes, StateTypes> {
   state: StateTypes = {
     visible: false,
-    file: null,
+    config: null,
   };
 
-  show(file: RcTreeNodeEvent) {
-    this.setState({ visible: true, file });
+  show(file: FileReference) {
+    this.setState({ visible: true, config: { file } });
   }
 
   cancel() {
@@ -35,13 +38,17 @@ class DeleteFileDialog extends React.Component<PropTypes, StateTypes> {
 
   async confirm() {
     // eslint-disable-next-line no-throw-literal
-    if (!this.state.visible) throw 'confirming when dialog is not shown';
+    if (!this.state.visible) throw 'dialog is not shown';
     // eslint-disable-next-line no-throw-literal
-    if (this.state.file === null) throw 'no file';
+    if (this.state.config === null) throw 'unreachable';
+
+    const {
+      config: { file },
+    } = this.state;
 
     // whether the deletion succeeded or not, we want to hide the dialog.
     // Thus, ignore the result of onDelete
-    await this.props.onDelete(this.state.file);
+    await this.props.onDelete(file);
 
     // we don't set the project to null because that results in a display glitch:
     // the hide animation will leave the project name visible for a split second
@@ -49,16 +56,22 @@ class DeleteFileDialog extends React.Component<PropTypes, StateTypes> {
   }
 
   render() {
-    const label = (this.state.file === null
-    ? true
-    : this.state.file.props.isLeaf)
-      ? 'file'
-      : 'folder';
-    const name = this.state.file === null ? '' : this.state.file.props.title;
+    // this will only trigger before the first showing.
+    // after that, the old config is still present and will ensure that
+    // fade out animations won't glitch due to changing contents.
+    if (this.state.config === null) return null;
+
+    const {
+      visible,
+      config: { file },
+    } = this.state;
+
+    const label = file.file.isDirectory() ? 'folder' : 'file';
+    const name = file.file.name;
 
     return (
       <Dialog
-        open={this.state.visible}
+        open={visible}
         onClose={() => this.cancel()}
         aria-labelledby="delete-file-dialog-title"
         aria-describedby="delete-file-dialog-description"
