@@ -47,7 +47,9 @@ class FileMenu extends React.Component<PropTypes, StateTypes> {
     // eslint-disable-next-line no-throw-literal
     if (this.state.config === null) throw 'unreachable';
 
-    const { config: {file} } = this.state;
+    const {
+      config: { file },
+    } = this.state;
 
     this.hide();
     this.props.onFileAction(file, action);

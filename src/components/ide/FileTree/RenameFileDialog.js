@@ -16,7 +16,10 @@ import type { RcTreeNodeEvent } from './RcTreeTypes';
 import type { FileReference, DirReference } from '.';
 
 type PropTypes = {|
-  onRename: (file: FileReference, newFileName: string) => boolean | Promise<boolean>,
+  onRename: (
+    file: FileReference,
+    newFileName: string,
+  ) => boolean | Promise<boolean>,
 |};
 type StateTypes = {|
   visible: boolean,
@@ -57,11 +60,13 @@ class RenameFileDialog extends React.Component<PropTypes, StateTypes> {
     // eslint-disable-next-line no-throw-literal
     if (this.state.config === null) throw 'unreachable';
 
-    const { config: { siblingNames }, newFileName } = this.state;
+    const {
+      config: { siblingNames },
+      newFileName,
+    } = this.state;
 
     return (
-      newFileName !== '' &&
-      siblingNames.every(name => name !== newFileName)
+      newFileName !== '' && siblingNames.every(name => name !== newFileName)
     );
   }
 
@@ -76,10 +81,7 @@ class RenameFileDialog extends React.Component<PropTypes, StateTypes> {
       newFileName,
     } = this.state;
 
-    const success = await this.props.onRename(
-      file,
-      newFileName,
-    );
+    const success = await this.props.onRename(file, newFileName);
     if (success) {
       this.setState({ visible: false });
     }
@@ -98,7 +100,8 @@ class RenameFileDialog extends React.Component<PropTypes, StateTypes> {
     } = this.state;
 
     const label = file.file.isDirectory() ? 'folder' : 'file';
-    const placeholder = file.file.isDirectory() === 'FILE' ? 'folder' : 'file.js';
+    const placeholder =
+      file.file.isDirectory() === 'FILE' ? 'folder' : 'file.js';
     const isValid = this.isValid();
 
     return (
