@@ -94,6 +94,11 @@ type StateTypes = {|
   runningCode: string | null,
 |};
 
+type OpenOrFocusTabOptions = {|
+  location?: FlexLayout.DockLocation,
+  alwaysNewTabset?: boolean,
+|};
+
 class Ide extends React.Component<PropTypes, StateTypes> {
   factory = (node: any) => {
     const id = node.getId();
@@ -254,13 +259,7 @@ class Ide extends React.Component<PropTypes, StateTypes> {
     return nodes;
   }
 
-  openOrFocusTab(
-    nodeJson,
-    options?: {|
-      location?: FlexLayout.DockLocation,
-      alwaysNewTabset?: boolean,
-    |},
-  ) {
+  openOrFocusTab(nodeJson, options?: OpenOrFocusTabOptions) {
     const { id } = nodeJson;
     const { layoutState } = this.state;
 
