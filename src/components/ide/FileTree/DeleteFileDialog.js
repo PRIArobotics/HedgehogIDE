@@ -67,7 +67,7 @@ class DeleteFileDialog extends React.Component<PropTypes, StateTypes> {
     } = this.state;
 
     const label = file.file.isDirectory() ? 'folder' : 'file';
-    const name = file.file.name;
+    const { name } = file.file;
 
     return (
       <Dialog

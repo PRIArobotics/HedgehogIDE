@@ -57,7 +57,10 @@ class CreateFileDialog extends React.Component<PropTypes, StateTypes> {
     // eslint-disable-next-line no-throw-literal
     if (this.state.config === null) throw 'unreachable';
 
-    const { config: { parentDir }, newFileName } = this.state;
+    const {
+      config: { parentDir },
+      newFileName,
+    } = this.state;
 
     return (
       newFileName !== '' &&
