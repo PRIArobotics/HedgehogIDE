@@ -19,7 +19,6 @@ import type {
 } from '../../../core/store/projects';
 
 import FileMenu, { type FileAction } from './FileMenu';
-import type { RcNodeEventInfo } from './RcTreeTypes';
 
 export type { FileAction };
 
@@ -110,10 +109,8 @@ class FileTree extends React.Component<PropTypes, StateTypes> {
   }
 
   // TODO implement moving files/directories via drag & drop
-
-  handleTreeDragStart = ({ node }: RcNodeEventInfo<>) => {};
-
-  handleTreeDragEnd = ({ node }: RcNodeEventInfo<>) => {};
+  handleFileDragStart(file: FileReference) {}
+  handleFileDragEnd(file: FileReference) {}
 
   render() {
     const renderChildren = (
@@ -166,6 +163,11 @@ class FileTree extends React.Component<PropTypes, StateTypes> {
       }
     };
 
+    const eventToFileRef = ({ node }) => ({
+      path: node.props.eventKey,
+      file: node.props.file,
+    });
+
     return (
       <div ref={this.rootDivRef} className={s.root}>
         <Tree
@@ -178,8 +180,8 @@ class FileTree extends React.Component<PropTypes, StateTypes> {
           expandedKeys={this.props.expandedKeys}
           onExpand={expandedKeys => this.props.onUpdate({ expandedKeys })}
           selectedKeys={this.state.selectedKeys}
-          onDragStart={this.handleTreeDragStart}
-          onDragEnd={this.handleTreeDragEnd}
+          onDragStart={event => this.handleFileDragStart(eventToFileRef(event))}
+          onDragEnd={event => this.handleFileDragEnd(eventToFileRef(event))}
         >
           {renderNode('.', this.props.files)}
         </Tree>
