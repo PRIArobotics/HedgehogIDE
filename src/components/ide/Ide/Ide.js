@@ -414,13 +414,12 @@ class Ide extends React.Component<PropTypes, StateTypes> {
         this.beginDeleteFile(file);
         break;
       case 'OPEN':
-        if (file.file.isFile())
-          this.openOrFocusTab({
-            id: file.path,
-            type: 'tab',
-            component: 'editor',
-            name: file.file.name,
-          });
+        this.openOrFocusTab({
+          id: file.path,
+          type: 'tab',
+          component: 'editor',
+          name: file.file.name,
+        });
         break;
       default:
         // eslint-disable-next-line no-throw-literal
