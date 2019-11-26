@@ -21,7 +21,12 @@ import type {
 import FileMenu from './FileMenu';
 
 export type FileType = 'FILE' | 'DIRECTORY';
-export type FileAction = 'CREATE_FOLDER' | 'CREATE_FILE' | 'RENAME' | 'DELETE';
+export type FileAction =
+  | 'CREATE_FOLDER'
+  | 'CREATE_FILE'
+  | 'RENAME'
+  | 'DELETE'
+  | 'OPEN';
 
 export type FileReference = {|
   path: string,
@@ -106,7 +111,7 @@ class FileTree extends React.Component<PropTypes, StateTypes> {
   handleFileDoubleClick(file: FileReference) {
     this.setState({ selectedKeys: [file.path] });
 
-    // TODO
+    this.props.onFileAction(file, 'OPEN');
   }
 
   // TODO implement moving files/directories via drag & drop
