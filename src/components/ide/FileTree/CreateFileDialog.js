@@ -10,20 +10,20 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 
-import type { DirReference } from '.';
+import type { DirReference, FileType } from '.';
 
 type PropTypes = {|
   onCreate: (
     parentDir: DirReference,
     newFileName: string,
-    type: 'FILE' | 'DIRECTORY',
+    type: FileType,
   ) => boolean | Promise<boolean>,
 |};
 type StateTypes = {|
   visible: boolean,
   config: {|
     parentDir: DirReference,
-    type: 'FILE' | 'DIRECTORY',
+    type: FileType,
   |} | null,
   newFileName: string,
 |};
@@ -35,7 +35,7 @@ class CreateFileDialog extends React.Component<PropTypes, StateTypes> {
     newFileName: '',
   };
 
-  show(parentDir: DirReference, type: 'FILE' | 'DIRECTORY') {
+  show(parentDir: DirReference, type: FileType) {
     this.setState({
       visible: true,
       config: { parentDir, type },

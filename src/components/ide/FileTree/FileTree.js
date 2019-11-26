@@ -18,9 +18,10 @@ import type {
   FilerRecursiveDirectoryInfo,
 } from '../../../core/store/projects';
 
-import FileMenu, { type FileAction } from './FileMenu';
+import FileMenu from './FileMenu';
 
-export type { FileAction };
+export type FileType = 'FILE' | 'DIRECTORY';
+export type FileAction = 'CREATE_FOLDER' | 'CREATE_FILE' | 'RENAME' | 'DELETE';
 
 export type FileReference = {|
   path: string,

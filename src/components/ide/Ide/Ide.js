@@ -26,6 +26,7 @@ import FileTree, {
   type DirReference,
   type FileReference,
   type FileAction,
+  type FileType,
   type ControlledState as FileTreeState,
 } from '../FileTree';
 import Simulator from '../Simulator';
@@ -419,7 +420,7 @@ class Ide extends React.Component<PropTypes, StateTypes> {
     }
   }
 
-  beginCreateFile(parentDir: DirReference, type: 'FILE' | 'DIRECTORY') {
+  beginCreateFile(parentDir: DirReference, type: FileType) {
     // eslint-disable-next-line no-throw-literal
     if (this.createFileRef.current === null) throw 'ref is null';
 
@@ -429,7 +430,7 @@ class Ide extends React.Component<PropTypes, StateTypes> {
   async confirmCreateFile(
     parentDir: DirReference,
     name: string,
-    type: 'FILE' | 'DIRECTORY',
+    type: FileType,
   ): Promise<boolean> {
     // eslint-disable-next-line no-throw-literal
     if (this.state.projectInfo === null) throw 'unreachable';

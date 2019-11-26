@@ -5,9 +5,7 @@ import * as React from 'react';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 
-import type { FileReference } from './FileTree';
-
-export type FileAction = 'CREATE_FOLDER' | 'CREATE_FILE' | 'RENAME' | 'DELETE';
+import type { FileAction, FileReference } from '.';
 
 type PropTypes = {|
   onFileAction: (
