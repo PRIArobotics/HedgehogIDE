@@ -120,9 +120,12 @@ class Editor extends React.Component<PropTypes, StateTypes> {
             </ColoredIconButton>
           ) : (
             <ColoredIconButton
-              onClick={() => this.props.onExecute(content)}
+              onClick={() => {
+                if (content !== null) this.props.onExecute(content);
+              }}
               disableRipple
               color="limegreen"
+              disabled={content === null}
             >
               <PlayArrowIcon />
             </ColoredIconButton>
