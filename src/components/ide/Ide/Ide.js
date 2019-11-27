@@ -20,7 +20,7 @@ import FlexLayout from 'flexlayout-react';
 import FlexLayoutTheme from './flex_layout_ide.css';
 
 import Console from '../Console';
-import Editor, { type ControlledState as TextualEditorState } from '../Editor';
+import Editor from '../Editor';
 import Executor from '../Executor';
 import FileTree, {
   type DirReference,
@@ -90,7 +90,6 @@ type StateTypes = {|
   fileTreeState: FileTreeState,
   layoutState: FlexLayout.Model,
   blocklyState: { [key: string]: VisualEditorState },
-  aceState: { [key: string]: TextualEditorState },
   runningCode: string | null,
 |};
 
@@ -101,27 +100,18 @@ type OpenOrFocusTabOptions = {|
 
 class Ide extends React.Component<PropTypes, StateTypes> {
   factory = (node: any) => {
+    // eslint-disable-next-line no-throw-literal
+    if (this.state.projectInfo === null) throw 'unreachable';
+    const { project } = this.state.projectInfo;
+
     const id = node.getId();
     switch (node.getComponent()) {
       case 'editor': {
         return (
           <Editor
             layoutNode={node}
-            {...this.state.aceState[id]}
-            onUpdate={state => {
-              this.setState(
-                oldState => ({
-                  aceState: {
-                    ...oldState.aceState,
-                    [id]: {
-                      ...oldState.aceState[id],
-                      ...state,
-                    },
-                  },
-                }),
-                () => this.save(),
-              );
-            }}
+            project={project}
+            path={id}
             onExecute={code => this.handleExecute(code)}
             onTerminate={() => this.handleTerminate()}
             running={!!this.state.runningCode}
@@ -185,7 +175,6 @@ class Ide extends React.Component<PropTypes, StateTypes> {
     fileTreeState: {},
     layoutState: FlexLayout.Model.fromJson(defaultLayout),
     blocklyState: {},
-    aceState: {},
     runningCode: null,
   };
 
@@ -197,10 +186,9 @@ class Ide extends React.Component<PropTypes, StateTypes> {
     // legacy loading of editor state
     const json = localStorage.getItem('IDELayout');
     if (json) {
-      const { blocklyState, aceState } = JSON.parse(json);
+      const { blocklyState } = JSON.parse(json);
       Object.assign(this.state, {
         blocklyState,
-        aceState,
       });
     }
   }
@@ -213,10 +201,11 @@ class Ide extends React.Component<PropTypes, StateTypes> {
     const json = localStorage.getItem(`IDE-State-${projectUid}`);
     const { fileTreeState, layoutState: layoutStateJson } = json
       ? JSON.parse(json)
-      : {};
-    const layoutState = FlexLayout.Model.fromJson(
-      layoutStateJson || defaultLayout,
-    );
+      : {
+          fileTreeState: { expandedKeys: [] },
+          layoutState: defaultLayout,
+        };
+    const layoutState = FlexLayout.Model.fromJson(layoutStateJson);
 
     const projectInfo = { project, files, projectUid };
     this.setState({ projectInfo, fileTreeState, layoutState });
@@ -239,12 +228,11 @@ class Ide extends React.Component<PropTypes, StateTypes> {
     );
 
     // legacy saving of editor state
-    const { blocklyState, aceState } = this.state;
+    const { blocklyState } = this.state;
     localStorage.setItem(
       'IDELayout',
       JSON.stringify({
         blocklyState,
-        aceState,
       }),
     );
   }
@@ -449,8 +437,19 @@ class Ide extends React.Component<PropTypes, StateTypes> {
     try {
       const path = project.resolve(parentDir.path, name);
 
-      if (type === 'FILE') await fs.promises.mknod(path, 'FILE');
-      else await fs.promises.mkdir(path);
+      if (type === 'FILE') {
+        try {
+          await fs.promises.stat(path);
+        } catch (ex) {
+          if (!(ex instanceof filer.Errors.ENOENT)) {
+            throw ex;
+          }
+
+          await fs.promises.writeFile(path, '');
+        }
+      } else {
+        await fs.promises.mkdir(path);
+      }
 
       await this.refreshProject();
       return true;
