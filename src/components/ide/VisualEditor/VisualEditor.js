@@ -45,7 +45,9 @@ type PropTypes = {|
   running: boolean,
   layoutNode: any,
 |};
-type StateTypes = {||};
+type StateTypes = {|
+  code: string,
+|};
 
 const ColoredIconButton = styled(({ color, ...other }) => (
   <IconButton {...other} />
@@ -61,7 +63,10 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
   workspace: Blockly.Workspace | null = null;
 
   resizeAnim: IntervalID | null;
-  code: string = '';
+
+  state = {
+    code: '',
+  };
 
   componentDidMount() {
     // eslint-disable-next-line no-throw-literal
@@ -274,8 +279,8 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
     const codeRefCurrent = this.codeRef.current;
     const { workspace } = this;
 
-    this.code = Blockly.JavaScript.workspaceToCode(workspace);
-    codeRefCurrent.innerHTML = this.code;
+    const code = Blockly.JavaScript.workspaceToCode(workspace);
+    this.setState({ code });
 
     const workspaceXml = Blockly.Xml.domToText(
       Blockly.Xml.workspaceToDom(workspace),
@@ -292,6 +297,8 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
   };
 
   render() {
+    const { code } = this.state;
+
     return (
       <div className={s.tabRoot}>
         <div ref={this.containerRef} className={s.blocklyContainer}>
@@ -334,7 +341,9 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
               ? `${s.codeContainer} ${s.collapsed}`
               : s.codeContainer
           }
-        />
+        >
+          {code}
+        </pre>
       </div>
     );
   }
