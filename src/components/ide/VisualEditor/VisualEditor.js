@@ -58,7 +58,7 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
   containerRef: RefObject<'div'> = React.createRef();
   blocklyRef: RefObject<'div'> = React.createRef();
   codeRef: RefObject<'pre'> = React.createRef();
-  workspace: Blockly.Workspace;
+  workspace: Blockly.Workspace | null = null;
 
   resizeAnim: IntervalID | null;
   code: string = '';
@@ -66,9 +66,11 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
   componentDidMount() {
     // eslint-disable-next-line no-throw-literal
     if (this.codeRef.current === null) throw 'ref is null in componentDidMount';
+    // eslint-disable-next-line no-throw-literal
+    if (this.blocklyRef.current === null) throw 'ref is null';
     const codeRefCurrent = this.codeRef.current;
 
-    this.workspace = Blockly.inject(this.blocklyRef.current, {
+    const workspace = Blockly.inject(this.blocklyRef.current, {
       toolbox: this.createToolbox(),
       move: {
         scrollbars: true,
@@ -81,11 +83,11 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
     if (workspaceXml) {
       Blockly.Xml.domToWorkspace(
         Blockly.Xml.textToDom(workspaceXml),
-        this.workspace,
+        workspace,
       );
     }
 
-    this.workspace.addChangeListener(() => this.workspaceUpdater());
+    workspace.addChangeListener(() => this.workspaceUpdater());
 
     const { layoutNode } = this.props;
     layoutNode.setEventListener('resize', this.handleResize);
@@ -96,6 +98,8 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
       if (!this.props.codeCollapsed && this.codeRef.current !== null)
         this.codeRef.current.style.overflow = 'auto';
     });
+
+    this.workspace = workspace;
     this.refreshSize();
   }
 
@@ -243,7 +247,8 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
     setTimeout(() => {
       const container = this.containerRef.current;
       const blockly = this.blocklyRef.current;
-      if (container === null || blockly === null) return;
+      if (container === null || blockly === null || this.workspace === null)
+        return;
 
       blockly.style.width = `${container.offsetWidth}px`;
       blockly.style.height = `${container.offsetHeight}px`;
@@ -253,14 +258,18 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
 
   workspaceUpdater() {
     // eslint-disable-next-line no-throw-literal
-    if (this.codeRef.current === null) throw 'ref is null in componentDidMount';
-    const codeRefCurrent = this.codeRef.current;
+    if (this.codeRef.current === null) throw 'ref is null';
+    // eslint-disable-next-line no-throw-literal
+    if (this.workspace === null) throw 'unreachable';
 
-    this.code = Blockly.JavaScript.workspaceToCode(this.workspace);
+    const codeRefCurrent = this.codeRef.current;
+    const { workspace } = this;
+
+    this.code = Blockly.JavaScript.workspaceToCode(workspace);
     codeRefCurrent.innerHTML = this.code;
 
     const workspaceXml = Blockly.Xml.domToText(
-      Blockly.Xml.workspaceToDom(this.workspace),
+      Blockly.Xml.workspaceToDom(workspace),
     );
     this.props.onUpdate({ workspaceXml });
   }
