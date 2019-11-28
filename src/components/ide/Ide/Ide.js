@@ -22,6 +22,7 @@ import FlexLayoutTheme from './flex_layout_ide.css';
 import Console from '../Console';
 import Editor from '../Editor';
 import Executor from '../Executor';
+import FileTab from '../FileTab';
 import FileTree, {
   type DirReference,
   type FileReference,
@@ -108,14 +109,18 @@ class Ide extends React.Component<PropTypes, StateTypes> {
     switch (node.getComponent()) {
       case 'editor': {
         return (
-          <Editor
-            layoutNode={node}
-            project={project}
-            path={id}
-            onExecute={code => this.handleExecute(code)}
-            onTerminate={() => this.handleTerminate()}
-            running={!!this.state.runningCode}
-          />
+          <FileTab project={project} path={id}>
+            {(content, onContentChange) => (
+              <Editor
+                layoutNode={node}
+                content={content}
+                onContentChange={onContentChange}
+                onExecute={code => this.handleExecute(code)}
+                onTerminate={() => this.handleTerminate()}
+                running={!!this.state.runningCode}
+              />
+            )}
+          </FileTab>
         );
       }
       case 'simulator': {

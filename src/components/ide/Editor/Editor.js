@@ -19,15 +19,14 @@ import { Project } from '../../../core/store/projects';
 import s from './Editor.scss';
 
 type PropTypes = {|
-  project: Project,
-  path: string,
+  layoutNode: any,
+  content: string | null,
+  onContentChange: (content: string) => void | Promise<void>,
   onExecute: (code: string) => void | Promise<void>,
   onTerminate: () => void | Promise<void>,
   running: boolean,
-  layoutNode: any,
 |};
 type StateTypes = {|
-  content: string | null,
   editorWidth: string,
   editorHeight: string,
 |};
@@ -44,47 +43,9 @@ class Editor extends React.Component<PropTypes, StateTypes> {
   editorRef: RefObject<typeof AceEditor> = React.createRef();
 
   state = {
-    content: null,
     editorWidth: '0',
     editorHeight: '0',
   };
-
-  constructor(props: PropTypes) {
-    super(props);
-
-    this.refreshFile();
-  }
-
-  async refreshFile() {
-    const { project, path } = this.props;
-    const absolutePath = project.resolve(path);
-
-    const content = await fs.promises.readFile(absolutePath, 'utf8');
-    this.setState({ content });
-  }
-
-  setContent(content: string) {
-    // only set content if the current content is not null,
-    // i.e. the original file contents were loaded successfully,
-    // and subsequently persist that content
-    this.setState(
-      ({ content: oldContent }) => (oldContent === null ? {} : { content }),
-      () => this.save(),
-    );
-  }
-
-  async save() {
-    const { project, path } = this.props;
-    const { content } = this.state;
-
-    // if the content was not loaded yet for whatever reason,
-    // don't delete existing file contents.
-    if (content === null) return;
-
-    const absolutePath = project.resolve(path);
-
-    await fs.promises.writeFile(absolutePath, this.state.content, 'utf8');
-  }
 
   componentDidMount() {
     this.props.layoutNode.setEventListener('resize', this.handleResize);
@@ -104,8 +65,8 @@ class Editor extends React.Component<PropTypes, StateTypes> {
   };
 
   render() {
-    const { running } = this.props;
-    const { content, editorWidth, editorHeight } = this.state;
+    const { content, running } = this.props;
+    const { editorWidth, editorHeight } = this.state;
 
     return (
       <div className={s.root}>
@@ -141,7 +102,7 @@ class Editor extends React.Component<PropTypes, StateTypes> {
               height={editorHeight}
               ref={this.editorRef}
               // onLoad={this.onLoad}
-              onChange={text => this.setContent(text)}
+              onChange={text => this.props.onContentChange(text)}
               fontSize={16}
               // onSelectionChange={this.onSelectionChange}
               // onCursorChange={this.onCursorChange}
