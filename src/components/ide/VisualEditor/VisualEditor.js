@@ -19,6 +19,18 @@ import MoveBlock from './blocks/MoveBlock';
 import SleepBlock from './blocks/SleepBlock';
 import PrintBlock from './blocks/PrintBlock';
 
+const blocks = [MoveBlock, PrintBlock, SleepBlock];
+blocks.forEach(block => {
+  const { type } = block.blockJson;
+
+  Blockly.Blocks[type] = {
+    init() {
+      this.jsonInit(block.blockJson);
+    },
+  };
+  Blockly.JavaScript[type] = block.generators.JavaScript;
+});
+
 export type ControlledState = $Shape<{|
   workspaceXml: string,
   codeCollapsed: boolean,
@@ -63,18 +75,6 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
         drag: true,
         wheel: false,
       },
-    });
-
-    const blocks = [MoveBlock, PrintBlock, SleepBlock];
-    blocks.forEach(block => {
-      const { type } = block.blockJson;
-
-      Blockly.Blocks[type] = {
-        init() {
-          this.jsonInit(block.blockJson);
-        },
-      };
-      Blockly.JavaScript[type] = block.generators.JavaScript;
     });
 
     const { workspaceXml } = this.props;
