@@ -46,7 +46,7 @@ type PropTypes = {|
   layoutNode: any,
 |};
 type StateTypes = {|
-  code: string,
+  code: string | null,
 |};
 
 const ColoredIconButton = styled(({ color, ...other }) => (
@@ -65,7 +65,7 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
   resizeAnim: IntervalID | null;
 
   state = {
-    code: '',
+    code: null,
   };
 
   componentDidMount() {
@@ -315,9 +315,12 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
             </ColoredIconButton>
           ) : (
             <ColoredIconButton
-              onClick={() => this.props.onExecute(this.code)}
+              onClick={() => {
+                if (code !== null) this.props.onExecute(code);
+              }}
               disableRipple
               color="limegreen"
+              disabled={code === null}
             >
               <PlayArrowIcon />
             </ColoredIconButton>
