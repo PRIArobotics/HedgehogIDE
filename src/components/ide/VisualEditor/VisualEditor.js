@@ -32,12 +32,12 @@ blocks.forEach(block => {
 });
 
 export type ControlledState = $Shape<{|
-  workspaceXml: string,
   codeCollapsed: boolean,
 |}>;
 
 type PropTypes = {|
-  workspaceXml: string,
+  content: string | null,
+  onContentChange: (content: string) => void | Promise<void>,
   codeCollapsed: boolean,
   onUpdate: (state: ControlledState) => void | Promise<void>,
   onExecute: (code: string) => void | Promise<void>,
@@ -66,28 +66,7 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
   componentDidMount() {
     // eslint-disable-next-line no-throw-literal
     if (this.codeRef.current === null) throw 'ref is null in componentDidMount';
-    // eslint-disable-next-line no-throw-literal
-    if (this.blocklyRef.current === null) throw 'ref is null';
     const codeRefCurrent = this.codeRef.current;
-
-    const workspace = Blockly.inject(this.blocklyRef.current, {
-      toolbox: this.createToolbox(),
-      move: {
-        scrollbars: true,
-        drag: true,
-        wheel: false,
-      },
-    });
-
-    const { workspaceXml } = this.props;
-    if (workspaceXml) {
-      Blockly.Xml.domToWorkspace(
-        Blockly.Xml.textToDom(workspaceXml),
-        workspace,
-      );
-    }
-
-    workspace.addChangeListener(() => this.workspaceUpdater());
 
     const { layoutNode } = this.props;
     layoutNode.setEventListener('resize', this.handleResize);
@@ -98,6 +77,36 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
       if (!this.props.codeCollapsed && this.codeRef.current !== null)
         this.codeRef.current.style.overflow = 'auto';
     });
+  }
+
+  // TODO remove blockly in componentWillUnmount
+
+  componentDidUpdate(prevProps) {
+    const { content: prevContent } = prevProps;
+    const { content } = this.props;
+
+    if (prevContent === null && content !== null && content !== '') {
+      // load contents only once
+      this.initializeBlockly(content);
+    }
+  }
+
+  initializeBlockly(workspaceXml: string) {
+    // eslint-disable-next-line no-throw-literal
+    if (this.blocklyRef.current === null) throw 'ref is null';
+
+    const workspace = Blockly.inject(this.blocklyRef.current, {
+      toolbox: this.createToolbox(),
+      move: {
+        scrollbars: true,
+        drag: true,
+        wheel: false,
+      },
+    });
+
+    Blockly.Xml.domToWorkspace(Blockly.Xml.textToDom(workspaceXml), workspace);
+
+    workspace.addChangeListener(() => this.handleWorkspaceChange());
 
     this.workspace = workspace;
     this.refreshSize();
@@ -256,7 +265,7 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
     }, 0);
   }
 
-  workspaceUpdater() {
+  handleWorkspaceChange() {
     // eslint-disable-next-line no-throw-literal
     if (this.codeRef.current === null) throw 'ref is null';
     // eslint-disable-next-line no-throw-literal
@@ -271,7 +280,7 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
     const workspaceXml = Blockly.Xml.domToText(
       Blockly.Xml.workspaceToDom(workspace),
     );
-    this.props.onUpdate({ workspaceXml });
+    this.props.onContentChange(workspaceXml);
   }
 
   handleToggleCodeCollapsed = () => {
