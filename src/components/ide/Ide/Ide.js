@@ -416,7 +416,7 @@ class Ide extends React.Component<PropTypes, StateTypes> {
         this.openOrFocusTab({
           id: file.path,
           type: 'tab',
-          component: 'editor',
+          component: file.file.name.endsWith('.blockly') ? 'blockly' : 'editor',
           name: file.file.name,
         });
         break;
