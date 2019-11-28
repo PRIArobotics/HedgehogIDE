@@ -137,27 +137,33 @@ class Ide extends React.Component<PropTypes, StateTypes> {
       }
       case 'blockly': {
         return (
-          <VisualEditor
-            layoutNode={node}
-            {...this.state.blocklyState[id]}
-            onUpdate={state => {
-              this.setState(
-                oldState => ({
-                  blocklyState: {
-                    ...oldState.blocklyState,
-                    [id]: {
-                      ...oldState.blocklyState[id],
-                      ...state,
-                    },
-                  },
-                }),
-                () => this.save(),
-              );
-            }}
-            onExecute={code => this.handleExecute(code)}
-            onTerminate={() => this.handleTerminate()}
-            running={!!this.state.runningCode}
-          />
+          <FileTab project={project} path={id}>
+            {(content, onContentChange) => (
+              <VisualEditor
+                layoutNode={node}
+                content={content}
+                onContentChange={onContentChange}
+                {...this.state.blocklyState[id]}
+                onUpdate={state => {
+                  this.setState(
+                    oldState => ({
+                      blocklyState: {
+                        ...oldState.blocklyState,
+                        [id]: {
+                          ...oldState.blocklyState[id],
+                          ...state,
+                        },
+                      },
+                    }),
+                    () => this.save(),
+                  );
+                }}
+                onExecute={code => this.handleExecute(code)}
+                onTerminate={() => this.handleTerminate()}
+                running={!!this.state.runningCode}
+              />
+            )}
+          </FileTab>
         );
       }
       default:
