@@ -510,6 +510,7 @@ class Ide extends React.Component<PropTypes, StateTypes> {
       const path = project.resolve(file.path);
       const newPath = project.resolve(file.path, '..', newName);
 
+      this.closeTabsForFile(file);
       await fs.promises.rename(path, newPath);
 
       await this.refreshProject();
@@ -547,6 +548,7 @@ class Ide extends React.Component<PropTypes, StateTypes> {
     try {
       const path = project.resolve(file.path);
 
+      this.closeTabsForFile(file);
       await sh.promises.rm(path, { recursive: true });
 
       await this.refreshProject();
@@ -564,6 +566,25 @@ class Ide extends React.Component<PropTypes, StateTypes> {
       console.error(ex);
       throw ex;
     }
+  }
+
+  closeTabsForFile(root: FileReference) {
+    const nodes = this.getNodes();
+    const { layoutState } = this.state;
+
+    const close = (file: FileReference) => {
+      if (file.file.isDirectory()) {
+        // $FlowExpectError
+        const dir: DirReference = file;
+        dir.file.contents.forEach(child =>
+          close({ path: `${dir.path}/${child.name}`, file: child }),
+        );
+      } else if (file.path in nodes) {
+        layoutState.doAction(FlexLayout.Actions.deleteTab(file.path));
+      }
+    };
+
+    close(root);
   }
 
   render() {
