@@ -66,6 +66,7 @@
     "sqlite3": "4.1.0",
     "subscriptions-transport-ws": "^0.9.16",
     "universal-router": "^6.0.0",
+    "webrtc-adapter": "=7.3",
     "whatwg-fetch": "^3.0.0"
   },
   "devDependencies": {
