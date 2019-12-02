@@ -64,6 +64,10 @@ const routes = {
       path: '/indexedDB',
       load: () => import(/* webpackChunkName: 'indexedDB' */ './indexedDB'),
     },
+    {
+      path: '/webrtc',
+      load: () => import(/* webpackChunkName: 'webrtc' */ './webrtc'),
+    },
 
     // Wildcard routes, e.g. { path: '(.*)', ... } (must go last)
     {
