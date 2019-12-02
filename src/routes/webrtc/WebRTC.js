@@ -37,30 +37,37 @@ class WebRTC extends React.Component<PropTypes, StateTypes> {
     const rightConnection = new RTCPeerConnection(null);
     leftConnection.onicecandidate = async ({ candidate }) => {
       await rightConnection.addIceCandidate(candidate);
-      console.log("left ICE candidate added to right");
+      // eslint-disable-next-line no-console
+      console.log('left ICE candidate added to right');
     };
     rightConnection.onicecandidate = async ({ candidate }) => {
       await leftConnection.addIceCandidate(candidate);
-      console.log("right ICE candidate added to left");
+      // eslint-disable-next-line no-console
+      console.log('right ICE candidate added to left');
     };
 
+    // eslint-disable-next-line no-console
     console.log('left & right created');
 
     const leftChannel = leftConnection.createDataChannel('chat');
+    // eslint-disable-next-line no-console
     console.log('channel created @ left');
 
     const offer = await leftConnection.createOffer();
     leftConnection.setLocalDescription(offer);
     rightConnection.setRemoteDescription(offer);
+    // eslint-disable-next-line no-console
     console.log('left offered right');
     const answer = await rightConnection.createAnswer();
+    // eslint-disable-next-line no-console
     console.log('right answered left');
     rightConnection.setLocalDescription(answer);
     leftConnection.setRemoteDescription(answer);
 
-    const rightChannel = await new Promise((resolve, reject) => {
+    const rightChannel = await new Promise(resolve => {
       rightConnection.ondatachannel = ({ channel }) => resolve(channel);
     });
+    // eslint-disable-next-line no-console
     console.log('channel connected @ right');
 
     leftChannel.onmessage = ({ data }) => this.handleRecv('left', data);
@@ -77,8 +84,8 @@ class WebRTC extends React.Component<PropTypes, StateTypes> {
         connection: rightConnection,
         channel: rightChannel,
       },
-    })
-  };
+    });
+  }
 
   componentDidMount() {
     this.createConnections();
@@ -94,10 +101,10 @@ class WebRTC extends React.Component<PropTypes, StateTypes> {
         },
       };
     });
-  };
+  }
 
   handleSend(from: string, text: string) {
-    return e => {
+    return () => {
       this.state[from].channel.send(text);
       this.setState(oldState => {
         const chat = oldState[from];
@@ -114,18 +121,26 @@ class WebRTC extends React.Component<PropTypes, StateTypes> {
   render() {
     const renderChat = (chat: Chat, onSend) => (
       <Paper className={s.chat} square>
-        {chat.messages.map(({ type, text }, i) => (
-          <div key={i} className={`${s.msg} ${type === 'OUT' ? s.mine : s.theirs}`}>{text}</div>
+        {chat.messages.map(({ type, text }) => (
+          <div className={`${s.msg} ${type === 'OUT' ? s.mine : s.theirs}`}>
+            {text}
+          </div>
         ))}
-        <button onClick={onSend}>Send</button>
+        <button type="button" onClick={onSend}>
+          Send
+        </button>
       </Paper>
     );
 
     return (
       <div className={s.root}>
         <div className={s.container}>
-          {this.state.left === null ? null : renderChat(this.state.left, this.handleSend('left', 'Hello'))}
-          {this.state.right === null ? null : renderChat(this.state.right, this.handleSend('right', 'There'))}
+          {this.state.left === null
+            ? null
+            : renderChat(this.state.left, this.handleSend('left', 'Hello'))}
+          {this.state.right === null
+            ? null
+            : renderChat(this.state.right, this.handleSend('right', 'There'))}
         </div>
       </div>
     );

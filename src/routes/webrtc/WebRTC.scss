@@ -18,14 +18,12 @@
   margin: 0 auto;
   padding: 0 0 40px;
   max-width: var(--max-content-width);
-
   display: flex;
   flex-flow: row nowrap;
 }
 
 .chat {
   flex: 1 0 0;
-
   margin: 10px;
   padding: 0 5px 5px;
 
@@ -37,6 +35,7 @@
       margin-left: 4cm;
       background-color: #ddd;
     }
+
     &.theirs {
       margin-right: 4cm;
       background-color: #95f;
