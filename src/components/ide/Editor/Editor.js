@@ -12,10 +12,6 @@ import { styled } from '@material-ui/styles';
 import IconButton from '@material-ui/core/IconButton';
 import PlayArrowIcon from '@material-ui/icons/PlayArrow';
 
-import filer, { fs } from 'filer';
-
-import { Project } from '../../../core/store/projects';
-
 import s from './Editor.scss';
 
 type PropTypes = {|

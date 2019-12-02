@@ -272,11 +272,8 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
 
   handleWorkspaceChange() {
     // eslint-disable-next-line no-throw-literal
-    if (this.codeRef.current === null) throw 'ref is null';
-    // eslint-disable-next-line no-throw-literal
     if (this.workspace === null) throw 'unreachable';
 
-    const codeRefCurrent = this.codeRef.current;
     const { workspace } = this;
 
     const code = Blockly.JavaScript.workspaceToCode(workspace);
