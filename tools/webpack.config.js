@@ -13,6 +13,7 @@ import webpack from 'webpack';
 import WebpackAssetsManifest from 'webpack-assets-manifest';
 import nodeExternals from 'webpack-node-externals';
 import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer';
+import WorkboxPlugin from 'workbox-webpack-plugin';
 import overrideRules from './lib/overrideRules';
 import pkg from '../package.json';
 
@@ -364,6 +365,13 @@ const clientConfig = {
           if (!isDebug) process.exit(1);
         }
       },
+    }),
+
+    new WorkboxPlugin.InjectManifest({
+      importWorkboxFrom: 'local',
+      swSrc: 'src/serviceworker/index.js',
+      swDest: '../sw.js',
+      exclude: [/\/asset-manifest\.json/],
     }),
 
     ...(isDebug

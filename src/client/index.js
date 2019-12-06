@@ -21,6 +21,10 @@ import { updateMeta } from './DOMUtils';
 import createApolloClient from '../core/createApolloClient';
 import router from '../core/router';
 import setupNetworkStatus from './networkStatus';
+import setupServiceWorker from './serviceWorker';
+
+if ('serviceWorker' in navigator)
+  window.addEventListener('load', setupServiceWorker);
 
 const apolloClient = createApolloClient();
 
