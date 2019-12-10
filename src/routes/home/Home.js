@@ -1,63 +1,48 @@
-/**
- * React Starter Kit (https://www.reactstarterkit.com/)
- *
- * Copyright © 2014-present Kriasoft, LLC. All rights reserved.
- *
- * This source code is licensed under the MIT license found in the
- * LICENSE.txt file in the root directory of this source tree.
- */
-
 // @flow
 
 import * as React from 'react';
 import withStyles from 'isomorphic-style-loader/lib/withStyles';
 
-import { graphql } from 'react-apollo';
-import type { OperationComponent } from 'react-apollo';
+import Button from '@material-ui/core/Button';
+import Container from '@material-ui/core/Container';
+import Grid from '@material-ui/core/Grid';
+import Typography from '@material-ui/core/Typography';
 
-// $FlowExpectError
-import newsQuery from './news.graphql';
+import Link from '../../components/misc/Link';
+
 import s from './Home.css';
 
-import type { HomeNews } from './__generated__/HomeNews';
-
-// Note: There is a regression from flow-bin@0.89.0
-// which spoils OperationComponent declaration. Be careful.
-const withNews: OperationComponent<HomeNews> = graphql(newsQuery);
-
-const Home = withNews(props => {
-  const {
-    data: {
-      loading,
-      reactjsGetAllNews,
-      networkStatus: { isConnected },
-    },
-  } = props;
-
-  return (
-    <div className={s.root}>
-      <div className={s.container}>
-        <p className={s.networkStatusMessage}>
-          {isConnected ? 'Online' : 'Offline'}
-        </p>
-        <h1>React.js News</h1>
-        {loading
-          ? 'Loading...'
-          : reactjsGetAllNews.map(item => (
-              <article key={item.link} className={s.newsItem}>
-                <h1 className={s.newsTitle}>
-                  <a href={item.link}>{item.title}</a>
-                </h1>
-                <div
-                  className={s.newsDesc}
-                  // eslint-disable-next-line react/no-danger
-                  dangerouslySetInnerHTML={{ __html: item.content }}
-                />
-              </article>
-            ))}
+const Home = props => (
+  <div className={s.root}>
+    <Container maxWidth="sm">
+      <Typography
+        component="h1"
+        variant="h2"
+        align="center"
+        color="textPrimary"
+        gutterBottom
+      >
+        Welcome to Hedgehog IDE
+      </Typography>
+      <Typography variant="h5" align="center" color="textSecondary" paragraph>
+        Learn coding using the Hedgehog IDE without signing up!
+      </Typography>
+      <div>
+        <Grid container spacing={2} justify="center">
+          <Grid item>
+            <Button
+              variant="contained"
+              color="primary"
+              component={Link}
+              to="/projects"
+            >
+              Create your first project
+            </Button>
+          </Grid>
+        </Grid>
       </div>
-    </div>
-  );
-});
+    </Container>
+  </div>
+);
 
 export default withStyles(s)(Home);

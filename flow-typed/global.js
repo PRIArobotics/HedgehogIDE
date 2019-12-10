@@ -11,6 +11,7 @@ declare type RefObject<T> = {
 declare module '@material-ui/core/AppBar' { declare module.exports: any; }
 declare module '@material-ui/core/Avatar' { declare module.exports: any; }
 declare module '@material-ui/core/Button' { declare module.exports: any; }
+declare module '@material-ui/core/Container' { declare module.exports: any; }
 declare module '@material-ui/core/CssBaseline' { declare module.exports: any; }
 declare module '@material-ui/core/Dialog' { declare module.exports: any; }
 declare module '@material-ui/core/DialogActions' { declare module.exports: any; }
@@ -19,6 +20,7 @@ declare module '@material-ui/core/DialogContentText' { declare module.exports: a
 declare module '@material-ui/core/DialogTitle' { declare module.exports: any; }
 declare module '@material-ui/core/Divider' { declare module.exports: any; }
 declare module '@material-ui/core/Drawer' { declare module.exports: any; }
+declare module '@material-ui/core/Grid' { declare module.exports: any; }
 declare module '@material-ui/core/Icon' { declare module.exports: any; }
 declare module '@material-ui/core/IconButton' { declare module.exports: any; }
 declare module '@material-ui/core/List' { declare module.exports: any; }
