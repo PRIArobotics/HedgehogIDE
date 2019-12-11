@@ -17,21 +17,33 @@ type PropTypes = {|
   code: string,
   handlers: { [command: string]: (window, any) => any },
 |};
-type StateTypes = {||};
+type StateTypes = {|
+  executorDoc: string | null,
+|};
+
+const fetchExecutorDoc = fetch('/executor').then(response => response.text());
 
 class Executor extends React.Component<PropTypes, StateTypes> {
   frameRef: RefObject<'iframe'> = React.createRef();
 
-  componentDidMount() {
-    if (this.frameRef.current === null) {
-      // eslint-disable-next-line no-throw-literal
-      throw 'ref is null in componentDidMount';
-    }
+  state = {
+    executorDoc: null,
+  };
 
-    this.frameRef.current.onload = () => {
-      this.sendMessage('execute', this.props.code);
-    };
-    window.addEventListener('message', this.receiveMessage, false);
+  componentDidMount() {
+    fetchExecutorDoc.then(executorDoc => {
+      this.setState({ executorDoc }, () => {
+        if (this.frameRef.current === null) {
+          // eslint-disable-next-line no-throw-literal
+          throw 'ref is null in componentDidMount';
+        }
+
+        this.frameRef.current.onload = () => {
+          this.sendMessage('execute', this.props.code);
+        };
+        window.addEventListener('message', this.receiveMessage, false);
+      });
+    });
   }
 
   componentWillUnmount() {
@@ -57,12 +69,15 @@ class Executor extends React.Component<PropTypes, StateTypes> {
   }
 
   render() {
+    const { executorDoc } = this.state;
+
     return (
       // eslint-disable-next-line jsx-a11y/iframe-has-title
       <iframe
         ref={this.frameRef}
         sandbox="allow-scripts"
-        src="/executor"
+        // src="/executor"
+        srcDoc={executorDoc}
         style={{ display: 'none' }}
       />
     );
