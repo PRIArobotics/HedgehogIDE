@@ -90,7 +90,7 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
     const { content: prevContent } = prevProps;
     const { content } = this.props;
 
-    if (prevContent === null && content !== null && content !== '') {
+    if (prevContent === null && content !== null) {
       // load contents only once
       this.initializeBlockly(content);
     }
@@ -109,7 +109,15 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
       },
     });
 
-    Blockly.Xml.domToWorkspace(Blockly.Xml.textToDom(workspaceXml), workspace);
+    try {
+      if (workspaceXml !== '')
+        Blockly.Xml.domToWorkspace(
+          Blockly.Xml.textToDom(workspaceXml),
+          workspace,
+        );
+    } catch (ex) {
+      console.warn(ex);
+    }
 
     workspace.addChangeListener(() => this.handleWorkspaceChange());
 
