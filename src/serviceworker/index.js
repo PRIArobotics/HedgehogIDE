@@ -1,3 +1,10 @@
+// @flow
+
+/* eslint-disable no-restricted-globals */
+/* eslint no-underscore-dangle: ["error", { "allow": ["__precacheManifest"] }] */
+
+declare var workbox: any;
+
 workbox.core.skipWaiting();
 workbox.core.clientsClaim();
 
