@@ -15,16 +15,13 @@ import { withStyles } from '@material-ui/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Drawer from '@material-ui/core/Drawer';
 import Divider from '@material-ui/core/Divider';
+import Grid from '@material-ui/core/Grid';
 
 import Header from '../Header';
 import Sidebar from '../Sidebar';
 import Footer from '../Footer';
 
 const styled = withStyles(theme => ({
-  root: {
-    display: 'flex',
-    flexFlow: 'row nowrap',
-  },
   appBar: {
     zIndex: theme.zIndex.drawer + 1,
   },
@@ -32,36 +29,6 @@ const styled = withStyles(theme => ({
   sidebar: {
     position: 'relative',
     height: '100vh',
-  },
-  sidebarContent: {
-    overflow: 'auto',
-  },
-  main: {
-    flex: '1 auto',
-
-    height: '100vh',
-    display: 'flex',
-    flexFlow: 'column nowrap',
-  },
-  contentPane: {
-    flex: '1 auto',
-    overflow: 'auto',
-
-    display: 'flex',
-    flexFlow: 'column nowrap',
-  },
-  content: {
-    flex: '1 auto',
-  },
-  contentPaneFill: {
-    flex: '1 auto',
-
-    display: 'flex',
-    flexFlow: 'column nowrap',
-  },
-  contentFill: {
-    flex: '1 0 0',
-    minHeight: 0,
   },
 }));
 
@@ -75,31 +42,71 @@ class Layout extends React.Component<PropTypes> {
   render() {
     const { children, classes, contentFill } = this.props;
 
-    const contentPaneClass = contentFill
-      ? classes.contentPaneFill
-      : classes.contentPane;
-    const contentClass = contentFill ? classes.contentFill : classes.content;
-
     return (
-      <div className={classes.root}>
+      <Grid container direction="row" wrap="nowrap">
         <AppBar className={classes.appBar}>
           <Header />
         </AppBar>
-        <Drawer classes={{ paper: classes.sidebar }} variant="permanent" open>
-          <div className={classes.appBarSpacer} />
-          <Divider />
-          <div className={classes.sidebarContent}>
-            <Sidebar />
-          </div>
-        </Drawer>
-        <div className={classes.main}>
-          <div className={classes.appBarSpacer} />
-          <div className={contentPaneClass}>
-            <main className={contentClass}>{children}</main>
+        <Grid item>
+          <Drawer classes={{ paper: classes.sidebar }} variant="permanent" open>
+            <div className={classes.appBarSpacer} />
+            <Divider />
+            <div style={{ overflow: 'auto' }}>
+              <Sidebar />
+            </div>
+          </Drawer>
+        </Grid>
+        <Grid
+          item
+          style={{
+            flex: '1 auto',
+            height: '100vh',
+          }}
+          container
+          direction="column"
+          wrap="nowrap"
+        >
+          <Grid item className={classes.appBarSpacer} />
+          <Grid
+            item
+            style={
+              contentFill
+                ? {
+                    flex: '1 auto',
+                  }
+                : {
+                    flex: '1 auto',
+                    // scroll through content if there is too much
+                    overflow: 'auto',
+                  }
+            }
+            container
+            direction="column"
+            wrap="nowrap"
+          >
+            <Grid
+              item
+              component="main"
+              style={
+                contentFill
+                  ? {
+                      // fix height to fill the container
+                      flex: '1 0 0',
+                      minHeight: 0,
+                    }
+                  : {
+                      // fill, but don't shrink to fit
+                      // the parent scroll the main content together with the footer
+                      flex: '1 auto',
+                    }
+              }
+            >
+              {children}
+            </Grid>
             <Footer />
-          </div>
-        </div>
-      </div>
+          </Grid>
+        </Grid>
+      </Grid>
     );
   }
 }
