@@ -17,7 +17,7 @@ async function action() {
     title: 'Projects',
     chunks: ['ide'],
     component: (
-      <Layout contentFill>
+      <Layout>
         <NoSSR key="projects">{showProjectList}</NoSSR>
       </Layout>
     ),
