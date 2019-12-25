@@ -4,6 +4,7 @@ import * as React from 'react';
 import withStyles from 'isomorphic-style-loader/lib/withStyles';
 import { compose } from 'react-apollo';
 
+import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
 import { withStyles as withStylesMaterial } from '@material-ui/styles';
 import CodeIcon from '@material-ui/icons/Code';
@@ -51,17 +52,10 @@ const styled = withStylesMaterial(theme => ({
   root: {
     boxSizing: 'border-box',
     height: '100%',
-    display: 'flex',
-    flexFlow: 'row nowrap',
   },
-  navContainer: {
-    flex: '0 auto',
-    minWidth: '150px',
-    marginRight: theme.spacing(1),
-    overflow: 'auto',
-  },
-  navContainerInner: {
+  navToolbar: {
     padding: theme.spacing(1),
+    paddingBottom: 0,
   },
   editorContainer: {
     flex: '1 auto',
@@ -605,9 +599,18 @@ class Ide extends React.Component<PropTypes, StateTypes> {
     if (projectInfo === null) return null;
 
     return (
-      <div className={classes.root}>
-        <Paper className={classes.navContainer} square>
-          <div className={classes.navContainerInner}>
+      <Grid className={classes.root} container direction="row" wrap="nowrap">
+        <Grid
+          item
+          component={props => <Paper square {...props} />}
+          style={{
+            flex: '0 auto',
+            minWidth: '150px',
+            marginRight: '8px',
+            overflow: 'auto',
+          }}
+        >
+          <div className={classes.navToolbar}>
             <Tooltip title="Editor">
               <IconButton
                 variant="contained"
@@ -672,8 +675,12 @@ class Ide extends React.Component<PropTypes, StateTypes> {
             ref={this.deleteFileRef}
             onDelete={file => this.confirmDeleteFile(file)}
           />
-        </Paper>
-        <Paper className={classes.editorContainer} square>
+        </Grid>
+        <Grid
+          item
+          component={props => <Paper square {...props} />}
+          className={classes.editorContainer}
+        >
           <FlexLayout.Layout
             model={this.state.layoutState}
             ref={this.flexRef}
@@ -681,7 +688,7 @@ class Ide extends React.Component<PropTypes, StateTypes> {
             classNameMapper={className => FlexLayoutTheme[className]}
             onModelChange={() => this.save()}
           />
-        </Paper>
+        </Grid>
         {this.state.runningCode ? (
           <Executor
             code={this.state.runningCode}
@@ -701,7 +708,7 @@ class Ide extends React.Component<PropTypes, StateTypes> {
             }}
           />
         ) : null}
-      </div>
+      </Grid>
     );
   }
 }
