@@ -231,7 +231,7 @@ class FileTree extends React.Component<PropTypes, StateTypes> {
     });
 
     return (
-      <div ref={this.rootDivRef} className={s.root}>
+      <div ref={this.rootDivRef}>
         <Tree
           className="file-tree"
           showLine
