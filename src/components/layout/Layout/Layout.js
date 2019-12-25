@@ -47,14 +47,22 @@ class Layout extends React.Component<PropTypes> {
         <AppBar className={classes.appBar}>
           <Header />
         </AppBar>
-        <Grid item>
-          <Drawer classes={{ paper: classes.sidebar }} variant="permanent" open>
-            <div className={classes.appBarSpacer} />
-            <Divider />
-            <div style={{ overflow: 'auto' }}>
-              <Sidebar />
-            </div>
-          </Drawer>
+        <Grid
+          item
+          component={props => (
+            <Drawer
+              classes={{ paper: classes.sidebar }}
+              variant="permanent"
+              open
+              {...props}
+            />
+          )}
+        >
+          <div className={classes.appBarSpacer} />
+          <Divider />
+          <div style={{ overflow: 'auto' }}>
+            <Sidebar />
+          </div>
         </Grid>
         <Grid
           item
@@ -69,17 +77,11 @@ class Layout extends React.Component<PropTypes> {
           <Grid item className={classes.appBarSpacer} />
           <Grid
             item
-            style={
-              contentFill
-                ? {
-                    flex: '1 auto',
-                  }
-                : {
-                    flex: '1 auto',
-                    // scroll through content if there is too much
-                    overflow: 'auto',
-                  }
-            }
+            style={{
+              flex: '1 auto',
+              // when not in contentFill mode, allow scrolling
+              ...(contentFill ? {} : { overflow: 'auto' }),
+            }}
             container
             direction="column"
             wrap="nowrap"
@@ -87,8 +89,8 @@ class Layout extends React.Component<PropTypes> {
             <Grid
               item
               component="main"
-              style={
-                contentFill
+              style={{
+                ...(contentFill
                   ? {
                       // fix height to fill the container
                       flex: '1 0 0',
@@ -98,8 +100,8 @@ class Layout extends React.Component<PropTypes> {
                       // fill, but don't shrink to fit
                       // the parent scroll the main content together with the footer
                       flex: '1 auto',
-                    }
-              }
+                    }),
+              }}
             >
               {children}
             </Grid>
