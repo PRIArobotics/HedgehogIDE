@@ -7,10 +7,8 @@ import { compose } from 'react-apollo';
 import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
 import { withStyles as withStylesMaterial } from '@material-ui/styles';
-import CodeIcon from '@material-ui/icons/Code';
-import AddToQueueIcon from '@material-ui/icons/AddToQueue';
+import PagesIcon from '@material-ui/icons/Pages';
 import NotesIcon from '@material-ui/icons/Notes';
-import CallToActionIcon from '@material-ui/icons/CallToAction';
 import IconButton from '@material-ui/core/IconButton';
 import Tooltip from '@material-ui/core/Tooltip';
 
@@ -611,16 +609,6 @@ class Ide extends React.Component<PropTypes, StateTypes> {
           }}
         >
           <div className={classes.navToolbar}>
-            <Tooltip title="Editor">
-              <IconButton
-                variant="contained"
-                color="primary"
-                size="small"
-                onClick={this.addEditor}
-              >
-                <CodeIcon />
-              </IconButton>
-            </Tooltip>
             <Tooltip title="Simulator">
               <IconButton
                 variant="contained"
@@ -628,7 +616,7 @@ class Ide extends React.Component<PropTypes, StateTypes> {
                 size="small"
                 onClick={this.addSimulator}
               >
-                <AddToQueueIcon />
+                <PagesIcon />
               </IconButton>
             </Tooltip>
             <Tooltip title="Console">
@@ -639,16 +627,6 @@ class Ide extends React.Component<PropTypes, StateTypes> {
                 onClick={this.addConsole}
               >
                 <NotesIcon />
-              </IconButton>
-            </Tooltip>
-            <Tooltip title="Visual Editor">
-              <IconButton
-                variant="contained"
-                color="primary"
-                size="small"
-                onClick={this.addBlockly}
-              >
-                <CallToActionIcon />
               </IconButton>
             </Tooltip>
             <hr />

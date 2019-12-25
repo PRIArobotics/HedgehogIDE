@@ -16,7 +16,7 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import Divider from '@material-ui/core/Divider';
 import Tooltip from '@material-ui/core/Tooltip';
-import EditIcon from '@material-ui/icons/Edit';
+import CodeIcon from '@material-ui/icons/Code';
 import CloudQueueIcon from '@material-ui/icons/CloudQueue';
 import NavigationIcon from '@material-ui/icons/Navigation';
 import TuneIcon from '@material-ui/icons/Tune';
@@ -44,7 +44,7 @@ class Sidebar extends React.Component<PropTypes> {
         <Tooltip title="IDE" placement="right">
           <ListItem button component={Link} to="/projects">
             <ListItemIcon className={classes.listItemIcon}>
-              <EditIcon />
+              <CodeIcon />
             </ListItemIcon>
           </ListItem>
         </Tooltip>
