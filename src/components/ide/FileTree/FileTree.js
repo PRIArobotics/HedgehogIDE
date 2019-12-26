@@ -210,7 +210,7 @@ class FileTree extends React.Component<PropTypes, StateTypes> {
             role="treeitem"
             tabIndex="0"
           >
-            <IconComponent style={{ fontSize: '1rem', marginBottom: '-0.17rem', marginRight: '0.1rem' }} />
+            <IconComponent className={s.fileIcon} />
             {file.name}
           </span>
         ),
