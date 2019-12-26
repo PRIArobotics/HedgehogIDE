@@ -73,30 +73,6 @@ class FileTree extends React.Component<PropTypes, StateTypes> {
     selectedKeys: [],
   };
 
-  componentDidMount() {
-    if (this.rootDivRef.current === null) {
-      // eslint-disable-next-line no-throw-literal
-      throw 'ref is null in componentDidMount';
-    }
-
-    const rootDiv = this.rootDivRef.current;
-    rootDiv.addEventListener('mousemove', this.handleMouseMove);
-  }
-
-  componentWillUnmount() {
-    if (this.rootDivRef.current === null) {
-      // eslint-disable-next-line no-throw-literal
-      throw 'ref is null in componentDidMount';
-    }
-
-    const rootDiv = this.rootDivRef.current;
-    rootDiv.removeEventListener('mousemove', this.handleMouseMove);
-  }
-
-  handleMouseMove = e => {
-    this.menuAnchor = e.target;
-  };
-
   handleFileClick(event: MouseEvent, file: FileReference) {
     this.setState({ selectedKeys: [file.path] });
     event.preventDefault();
@@ -107,7 +83,10 @@ class FileTree extends React.Component<PropTypes, StateTypes> {
 
     // eslint-disable-next-line no-throw-literal
     if (this.menuRef.current === null) throw 'ref is null';
-    this.menuRef.current.show(this.menuAnchor, file);
+    this.menuRef.current.show(
+      { left: event.clientX - 2, top: event.clientY - 4 },
+      file,
+    );
 
     event.preventDefault();
   }
