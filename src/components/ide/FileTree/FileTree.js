@@ -4,6 +4,7 @@ import * as React from 'react';
 import withStyles from 'isomorphic-style-loader/lib/withStyles';
 
 import CodeIcon from '@material-ui/icons/Code';
+import WidgetsIcon from '@material-ui/icons/Widgets';
 import FolderIcon from '@material-ui/icons/Folder';
 import FolderOpenIcon from '@material-ui/icons/FolderOpen';
 
@@ -188,11 +189,13 @@ class FileTree extends React.Component<PropTypes, StateTypes> {
       const isLeaf = !file.isDirectory();
       const isExpanded = this.props.expandedKeys.includes(path);
 
-      const IconComponent = isLeaf
-        ? CodeIcon
-        : isExpanded
-        ? FolderOpenIcon
-        : FolderIcon;
+      const IconComponent = (() => {
+        if (isLeaf) {
+          return file.name.endsWith('.blockly') ? WidgetsIcon : CodeIcon;
+        } else {
+          return isExpanded ? FolderOpenIcon : FolderIcon;
+        }
+      })();
 
       const attrs = {
         key: path,
@@ -207,7 +210,7 @@ class FileTree extends React.Component<PropTypes, StateTypes> {
             role="treeitem"
             tabIndex="0"
           >
-            <IconComponent style={{ fontSize: '1rem' }} />
+            <IconComponent style={{ fontSize: '1rem', marginBottom: '-0.17rem', marginRight: '0.1rem' }} />
             {file.name}
           </span>
         ),
