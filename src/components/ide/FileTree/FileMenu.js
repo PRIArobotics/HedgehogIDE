@@ -7,6 +7,11 @@ import MenuItem from '@material-ui/core/MenuItem';
 
 import type { FileAction, FileReference } from '.';
 
+type Position = {|
+  left: number,
+  top: number,
+|};
+
 type PropTypes = {|
   onFileAction: (
     file: FileReference,
@@ -16,7 +21,7 @@ type PropTypes = {|
 type StateTypes = {|
   visible: boolean,
   config: {|
-    anchor: HTMLElement,
+    anchorPosition: Position,
     file: FileReference,
   |} | null,
 |};
@@ -27,8 +32,8 @@ class FileMenu extends React.Component<PropTypes, StateTypes> {
     config: null,
   };
 
-  show(anchor: HTMLElement, file: FileReference) {
-    this.setState({ visible: true, config: { anchor, file } });
+  show(anchorPosition: Position, file: FileReference) {
+    this.setState({ visible: true, config: { anchorPosition, file } });
   }
 
   hide() {
@@ -57,7 +62,7 @@ class FileMenu extends React.Component<PropTypes, StateTypes> {
 
     const {
       visible,
-      config: { anchor, file },
+      config: { anchorPosition, file },
     } = this.state;
 
     const isRoot = file.path === '.';
@@ -65,8 +70,9 @@ class FileMenu extends React.Component<PropTypes, StateTypes> {
 
     return (
       <Menu
-        anchorEl={anchor}
         keepMounted
+        anchorReference="anchorPosition"
+        anchorPosition={anchorPosition}
         open={visible}
         onClose={() => this.hide()}
       >
