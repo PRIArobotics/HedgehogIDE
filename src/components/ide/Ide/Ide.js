@@ -649,11 +649,7 @@ class Ide extends React.Component<PropTypes, StateTypes> {
             onDelete={file => this.confirmDeleteFile(file)}
           />
         </Grid>
-        <Grid
-          item
-          component={props => <Paper square {...props} />}
-          className={classes.editorContainer}
-        >
+        <Paper className={classes.editorContainer} square>
           <FlexLayout.Layout
             model={this.state.layoutState}
             ref={this.flexRef}
@@ -661,7 +657,7 @@ class Ide extends React.Component<PropTypes, StateTypes> {
             classNameMapper={className => FlexLayoutTheme[className]}
             onModelChange={() => this.save()}
           />
-        </Grid>
+        </Paper>
         {this.state.runningCode ? (
           <Executor
             code={this.state.runningCode}
