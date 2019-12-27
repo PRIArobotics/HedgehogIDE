@@ -7,6 +7,7 @@ import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import FolderIcon from '@material-ui/icons/Folder';
 import CodeIcon from '@material-ui/icons/Code';
+import WidgetsIcon from '@material-ui/icons/Widgets';
 import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
 
@@ -82,7 +83,9 @@ class FileMenu extends React.Component<PropTypes, StateTypes> {
         onClose={() => this.hide()}
       >
         <MenuItem
-          onClick={() => this.action('CREATE_FOLDER')}
+          onClick={() =>
+            this.action({ action: 'CREATE', desc: { type: 'DIRECTORY' } })
+          }
           disabled={isLeaf}
         >
           <ListItemIcon>
@@ -90,19 +93,47 @@ class FileMenu extends React.Component<PropTypes, StateTypes> {
           </ListItemIcon>
           New Folder
         </MenuItem>
-        <MenuItem onClick={() => this.action('CREATE_FILE')} disabled={isLeaf}>
+        <MenuItem
+          onClick={() =>
+            this.action({
+              action: 'CREATE',
+              desc: { type: 'FILE', extension: '.js' },
+            })
+          }
+          disabled={isLeaf}
+        >
           <ListItemIcon>
             <CodeIcon fontSize="small" />
           </ListItemIcon>
-          New File
+          New JavaScript File
         </MenuItem>
-        <MenuItem onClick={() => this.action('RENAME')} disabled={isRoot}>
+        <MenuItem
+          onClick={() =>
+            this.action({
+              action: 'CREATE',
+              desc: { type: 'FILE', extension: '.blockly' },
+            })
+          }
+          disabled={isLeaf}
+        >
+          <ListItemIcon>
+            <WidgetsIcon fontSize="small" />
+          </ListItemIcon>
+          New Blockly File
+        </MenuItem>
+        <MenuItem
+          onClick={() => this.action({ action: 'RENAME' })}
+          disabled={isRoot}
+        >
           <ListItemIcon>
             <EditIcon fontSize="small" />
           </ListItemIcon>
           Rename
         </MenuItem>
-        <MenuItem onClick={() => this.action('DELETE')} disabled={isRoot}>
+        <MenuItem
+          onClick={() => this.action({ action: 'DELETE' })}
+          disabled={isRoot}
+        >
           <ListItemIcon>
             <DeleteIcon fontSize="small" />
           </ListItemIcon>

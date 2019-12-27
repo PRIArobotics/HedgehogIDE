@@ -26,6 +26,7 @@ import FileTree, {
   type DirReference,
   type FileReference,
   type FileAction,
+  type FileDesc,
   type FileType,
   type ControlledState as FileTreeState,
 } from '../FileTree';
@@ -385,17 +386,11 @@ class Ide extends React.Component<PropTypes, StateTypes> {
   }
 
   handleFileAction(file: FileReference, action: FileAction) {
-    switch (action) {
-      case 'CREATE_FOLDER': {
+    switch (action.action) {
+      case 'CREATE': {
         // $FlowExpectError
         const dir: DirReference = file;
-        this.beginCreateFile(dir, 'DIRECTORY');
-        break;
-      }
-      case 'CREATE_FILE': {
-        // $FlowExpectError
-        const dir: DirReference = file;
-        this.beginCreateFile(dir, 'FILE');
+        this.beginCreateFile(dir, action.desc);
         break;
       }
       case 'RENAME':
@@ -418,11 +413,11 @@ class Ide extends React.Component<PropTypes, StateTypes> {
     }
   }
 
-  beginCreateFile(parentDir: DirReference, type: FileType) {
+  beginCreateFile(parentDir: DirReference, desc: FileDesc) {
     // eslint-disable-next-line no-throw-literal
     if (this.createFileRef.current === null) throw 'ref is null';
 
-    this.createFileRef.current.show(parentDir, type);
+    this.createFileRef.current.show(parentDir, desc);
   }
 
   async confirmCreateFile(

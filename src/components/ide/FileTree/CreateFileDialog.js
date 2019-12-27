@@ -10,7 +10,7 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 
-import type { DirReference, FileType } from '.';
+import type { DirReference, FileType, FileDesc } from '.';
 
 type PropTypes = {|
   onCreate: (
@@ -23,9 +23,11 @@ type StateTypes = {|
   visible: boolean,
   config: {|
     parentDir: DirReference,
-    type: FileType,
+    desc: FileDesc,
   |} | null,
   newFileName: string,
+  actualNewFileName: string,
+  isValid: boolean,
 |};
 
 class CreateFileDialog extends React.Component<PropTypes, StateTypes> {
@@ -33,14 +35,18 @@ class CreateFileDialog extends React.Component<PropTypes, StateTypes> {
     visible: false,
     config: null,
     newFileName: '',
+    actualNewFileName: '',
+    isValid: false,
   };
 
-  show(parentDir: DirReference, type: FileType) {
-    this.setState({
-      visible: true,
-      config: { parentDir, type },
-      newFileName: '',
-    });
+  show(parentDir: DirReference, desc: FileDesc) {
+    this.setState(
+      {
+        visible: true,
+        config: { parentDir, desc },
+      },
+      () => this.setNewFileName(''),
+    );
   }
 
   cancel() {
@@ -48,22 +54,27 @@ class CreateFileDialog extends React.Component<PropTypes, StateTypes> {
   }
 
   setNewFileName(name: string) {
-    this.setState({ newFileName: name.replace(/[^-\w#$%().,:; ]/g, '') });
-  }
+    this.setState(state => {
+      // eslint-disable-next-line no-throw-literal
+      if (state.config === null) throw 'unreachable';
 
-  isValid() {
-    // eslint-disable-next-line no-throw-literal
-    if (this.state.config === null) throw 'unreachable';
+      const {
+        config: { parentDir, desc },
+      } = state;
 
-    const {
-      config: { parentDir },
-      newFileName,
-    } = this.state;
+      const newFileName = name.replace(/[^-\w#$%().,:; ]/g, '');
+      const actualNewFileName =
+        desc.type === 'DIRECTORY'
+          ? newFileName
+          : newFileName.endsWith(desc.extension)
+          ? newFileName
+          : `${newFileName}${desc.extension}`;
+      const isValid =
+        newFileName !== '' &&
+        parentDir.file.contents.every(f => f.name !== actualNewFileName);
 
-    return (
-      newFileName !== '' &&
-      parentDir.file.contents.every(f => f.name !== newFileName)
-    );
+      return { newFileName, actualNewFileName, isValid };
+    });
   }
 
   async confirm() {
@@ -73,11 +84,15 @@ class CreateFileDialog extends React.Component<PropTypes, StateTypes> {
     if (this.state.config === null) throw 'unreachable';
 
     const {
-      config: { parentDir, type },
-      newFileName,
+      config: { parentDir, desc },
+      actualNewFileName,
     } = this.state;
 
-    const success = await this.props.onCreate(parentDir, newFileName, type);
+    const success = await this.props.onCreate(
+      parentDir,
+      actualNewFileName,
+      desc.type,
+    );
     if (success) {
       this.setState({ visible: false });
     }
@@ -91,13 +106,14 @@ class CreateFileDialog extends React.Component<PropTypes, StateTypes> {
 
     const {
       visible,
-      config: { type },
+      config: { desc },
       newFileName,
+      isValid,
     } = this.state;
 
-    const label = type === 'FILE' ? 'file' : 'folder';
-    const placeholder = type === 'FILE' ? 'file.js' : 'folder';
-    const isValid = this.isValid();
+    const label = desc.type === 'FILE' ? 'file' : 'folder';
+    const placeholder =
+      desc.type === 'FILE' ? `file${desc.extension}` : 'folder';
 
     return (
       <Dialog
