@@ -2,8 +2,13 @@
 
 import * as React from 'react';
 
+import ListItemIcon from '@material-ui/core/ListItemIcon';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
+import FolderIcon from '@material-ui/icons/Folder';
+import CodeIcon from '@material-ui/icons/Code';
+import EditIcon from '@material-ui/icons/Edit';
+import DeleteIcon from '@material-ui/icons/Delete';
 
 import type { FileAction, FileReference } from '.';
 
@@ -80,15 +85,27 @@ class FileMenu extends React.Component<PropTypes, StateTypes> {
           onClick={() => this.action('CREATE_FOLDER')}
           disabled={isLeaf}
         >
+          <ListItemIcon>
+            <FolderIcon fontSize="small" />
+          </ListItemIcon>
           New Folder
         </MenuItem>
         <MenuItem onClick={() => this.action('CREATE_FILE')} disabled={isLeaf}>
+          <ListItemIcon>
+            <CodeIcon fontSize="small" />
+          </ListItemIcon>
           New File
         </MenuItem>
         <MenuItem onClick={() => this.action('RENAME')} disabled={isRoot}>
+          <ListItemIcon>
+            <EditIcon fontSize="small" />
+          </ListItemIcon>
           Rename
         </MenuItem>
         <MenuItem onClick={() => this.action('DELETE')} disabled={isRoot}>
+          <ListItemIcon>
+            <DeleteIcon fontSize="small" />
+          </ListItemIcon>
           Delete
         </MenuItem>
       </Menu>
