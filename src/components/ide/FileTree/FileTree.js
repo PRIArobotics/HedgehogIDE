@@ -22,12 +22,12 @@ import type {
 import FileMenu from './FileMenu';
 
 export type FileType = 'FILE' | 'DIRECTORY';
+export type FileDesc =
+  | {| type: 'DIRECTORY' |}
+  | {| type: 'FILE', extension: string |};
 export type FileAction =
-  | 'CREATE_FOLDER'
-  | 'CREATE_FILE'
-  | 'RENAME'
-  | 'DELETE'
-  | 'OPEN';
+  | {| action: 'CREATE', desc: FileDesc |}
+  | {| action: 'RENAME' | 'DELETE' | 'OPEN' |};
 
 export type FileReference = {|
   path: string,
@@ -95,7 +95,7 @@ class FileTree extends React.Component<PropTypes, StateTypes> {
     this.setState({ selectedKeys: [file.path] });
 
     if (file.file.isDirectory()) this.setExpandDirectory(file, null);
-    else this.props.onFileAction(file, 'OPEN');
+    else this.props.onFileAction(file, { action: 'OPEN' });
 
     event.preventDefault();
   }
@@ -127,7 +127,7 @@ class FileTree extends React.Component<PropTypes, StateTypes> {
       switch (event.key) {
         case ' ':
         case 'Enter':
-          this.props.onFileAction(file, 'OPEN');
+          this.props.onFileAction(file, { action: 'OPEN' });
           event.preventDefault();
           break;
         default:
