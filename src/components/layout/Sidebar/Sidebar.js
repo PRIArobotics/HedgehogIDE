@@ -16,11 +16,11 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import Divider from '@material-ui/core/Divider';
 import Tooltip from '@material-ui/core/Tooltip';
-import CodeIcon from '@material-ui/icons/Code';
-import CloudQueueIcon from '@material-ui/icons/CloudQueue';
-import NavigationIcon from '@material-ui/icons/Navigation';
-import TuneIcon from '@material-ui/icons/Tune';
 import { withStyles } from '@material-ui/styles';
+
+import {
+  IdeIcon, ControlsIcon, ApolloTestIcon, IndexDBTestIcon,
+} from '../../misc/palette';
 
 import Link from '../../misc/Link';
 
@@ -44,14 +44,14 @@ class Sidebar extends React.Component<PropTypes> {
         <Tooltip title="IDE" placement="right">
           <ListItem button component={Link} to="/projects">
             <ListItemIcon className={classes.listItemIcon}>
-              <CodeIcon />
+              <IdeIcon />
             </ListItemIcon>
           </ListItem>
         </Tooltip>
         <Tooltip title="Robot Controls" placement="right">
           <ListItem button>
             <ListItemIcon className={classes.listItemIcon}>
-              <TuneIcon />
+              <ControlsIcon />
             </ListItemIcon>
           </ListItem>
         </Tooltip>
@@ -59,14 +59,14 @@ class Sidebar extends React.Component<PropTypes> {
         <Tooltip title="Apollo Feature Test" placement="right">
           <ListItem button component={Link} to="/apollo">
             <ListItemIcon className={classes.listItemIcon}>
-              <CloudQueueIcon />
+              <ApolloTestIcon />
             </ListItemIcon>
           </ListItem>
         </Tooltip>
         <Tooltip title="IndexedDB Feature Test" placement="right">
           <ListItem button component={Link} to="/indexedDB">
             <ListItemIcon className={classes.listItemIcon}>
-              <NavigationIcon />
+              <IndexDBTestIcon />
             </ListItemIcon>
           </ListItem>
         </Tooltip>
