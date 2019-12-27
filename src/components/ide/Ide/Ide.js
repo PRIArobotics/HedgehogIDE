@@ -7,8 +7,6 @@ import { compose } from 'react-apollo';
 import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
 import { withStyles as withStylesMaterial } from '@material-ui/styles';
-import ConsoleIcon from 'mdi-material-ui/Console';
-import PagesIcon from '@material-ui/icons/Pages';
 import IconButton from '@material-ui/core/IconButton';
 import Tooltip from '@material-ui/core/Tooltip';
 
@@ -17,6 +15,10 @@ import filer, { fs } from 'filer';
 import FlexLayout from 'flexlayout-react';
 // eslint-disable-next-line css-modules/no-unused-class
 import FlexLayoutTheme from './flex_layout_ide.css';
+
+import {
+  ConsoleIcon, SimulatorIcon,
+} from '../../misc/palette';
 
 import Console from '../Console';
 import Editor from '../Editor';
@@ -611,7 +613,7 @@ class Ide extends React.Component<PropTypes, StateTypes> {
                 size="small"
                 onClick={this.addSimulator}
               >
-                <PagesIcon />
+                <SimulatorIcon />
               </IconButton>
             </Tooltip>
             <Tooltip title="Console">

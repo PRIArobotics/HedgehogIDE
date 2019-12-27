@@ -5,11 +5,10 @@ import * as React from 'react';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
-import FolderIcon from '@material-ui/icons/Folder';
-import CodeIcon from '@material-ui/icons/Code';
-import WidgetsIcon from '@material-ui/icons/Widgets';
-import EditIcon from '@material-ui/icons/Edit';
-import DeleteIcon from '@material-ui/icons/Delete';
+
+import {
+  FolderIcon, LanguageBlocklyIcon, LanguageJavascriptIcon, RenameIcon, DeleteIcon,
+} from '../../misc/palette';
 
 import type { FileAction, FileReference } from '.';
 
@@ -103,7 +102,7 @@ class FileMenu extends React.Component<PropTypes, StateTypes> {
           disabled={isLeaf}
         >
           <ListItemIcon>
-            <CodeIcon fontSize="small" />
+            <LanguageJavascriptIcon fontSize="small" />
           </ListItemIcon>
           New JavaScript File
         </MenuItem>
@@ -117,7 +116,7 @@ class FileMenu extends React.Component<PropTypes, StateTypes> {
           disabled={isLeaf}
         >
           <ListItemIcon>
-            <WidgetsIcon fontSize="small" />
+            <LanguageBlocklyIcon fontSize="small" />
           </ListItemIcon>
           New Blockly File
         </MenuItem>
@@ -126,7 +125,7 @@ class FileMenu extends React.Component<PropTypes, StateTypes> {
           disabled={isRoot}
         >
           <ListItemIcon>
-            <EditIcon fontSize="small" />
+            <RenameIcon fontSize="small" />
           </ListItemIcon>
           Rename
         </MenuItem>

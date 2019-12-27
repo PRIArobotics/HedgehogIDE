@@ -3,14 +3,13 @@
 import * as React from 'react';
 import withStyles from 'isomorphic-style-loader/lib/withStyles';
 
-import CodeIcon from '@material-ui/icons/Code';
-import WidgetsIcon from '@material-ui/icons/Widgets';
-import FolderIcon from '@material-ui/icons/Folder';
-import FolderOpenIcon from '@material-ui/icons/FolderOpen';
-
 import Tree, { TreeNode } from 'rc-tree';
 // $FlowExpectError
 import sRcTree from 'rc-tree/assets/index.css';
+
+import {
+  FileIcon, FolderIcon, FolderOpenIcon, LanguageBlocklyIcon, LanguageJavascriptIcon,
+} from '../../misc/palette';
 
 import s from './FileTree.scss';
 
@@ -170,7 +169,9 @@ class FileTree extends React.Component<PropTypes, StateTypes> {
 
       const IconComponent = (() => {
         if (isLeaf) {
-          return file.name.endsWith('.blockly') ? WidgetsIcon : CodeIcon;
+          if (file.name.endsWith('.blockly')) return LanguageBlocklyIcon;
+          if (file.name.endsWith('.js')) return LanguageJavascriptIcon;
+          return FileIcon;
         } else {
           return isExpanded ? FolderOpenIcon : FolderIcon;
         }
