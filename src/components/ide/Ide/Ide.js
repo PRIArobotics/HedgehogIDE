@@ -7,8 +7,8 @@ import { compose } from 'react-apollo';
 import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
 import { withStyles as withStylesMaterial } from '@material-ui/styles';
+import ConsoleIcon from 'mdi-material-ui/Console';
 import PagesIcon from '@material-ui/icons/Pages';
-import NotesIcon from '@material-ui/icons/Notes';
 import IconButton from '@material-ui/core/IconButton';
 import Tooltip from '@material-ui/core/Tooltip';
 
@@ -621,7 +621,7 @@ class Ide extends React.Component<PropTypes, StateTypes> {
                 size="small"
                 onClick={this.addConsole}
               >
-                <NotesIcon />
+                <ConsoleIcon />
               </IconButton>
             </Tooltip>
             <hr />
