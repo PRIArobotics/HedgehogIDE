@@ -7,11 +7,11 @@ import withStyles from 'isomorphic-style-loader/lib/withStyles';
 import Blockly from 'blockly';
 
 import IconButton from '@material-ui/core/IconButton';
-import PlayArrowIcon from '@material-ui/icons/PlayArrow';
-import KeyboardArrowRightIcon from '@material-ui/icons/KeyboardArrowRight';
-import KeyboardArrowLeftIcon from '@material-ui/icons/KeyboardArrowLeft';
-import StopIcon from '@material-ui/icons/Stop';
 import { styled } from '@material-ui/styles';
+
+import {
+  ExecuteIcon, TerminateIcon, SlideLeftIcon, SlideRightIcon,
+} from '../../misc/palette';
 
 import s from './VisualEditor.scss';
 
@@ -316,7 +316,7 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
               disableRipple
               color="red"
             >
-              <StopIcon />
+              <TerminateIcon />
             </ColoredIconButton>
           ) : (
             <ColoredIconButton
@@ -327,7 +327,7 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
               color="limegreen"
               disabled={code === null}
             >
-              <PlayArrowIcon />
+              <ExecuteIcon />
             </ColoredIconButton>
           )}
           <br />
@@ -336,9 +336,9 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
             disableRipple
           >
             {this.props.codeCollapsed ? (
-              <KeyboardArrowLeftIcon />
+              <SlideLeftIcon />
             ) : (
-              <KeyboardArrowRightIcon />
+              <SlideRightIcon />
             )}
           </ColoredIconButton>
         </div>
