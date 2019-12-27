@@ -9,6 +9,9 @@ import FolderOpenIcon from 'mdi-material-ui/FolderOpen';
 import LanguageBlocklyIcon from 'mdi-material-ui/Widgets';
 import LanguageJavascriptIcon from 'mdi-material-ui/LanguageJavascript';
 
+// projects
+import LocalProjectIcon from 'mdi-material-ui/Folder';
+
 // IDE navigation
 import IdeIcon from 'mdi-material-ui/CodeTags';
 import ControlsIcon from 'mdi-material-ui/TuneVertical';
@@ -19,14 +22,17 @@ import IndexDBTestIcon from 'mdi-material-ui/Database';
 import ConsoleIcon from 'mdi-material-ui/Console';
 import SimulatorIcon from 'mdi-material-ui/AxisArrow';
 
-// file actions
+// file/collection actions
+import CreateIcon from 'mdi-material-ui/Plus';
 import RenameIcon from 'mdi-material-ui/Pencil';
 import DeleteIcon from 'mdi-material-ui/Delete';
+import RefreshIcon from 'mdi-material-ui/Refresh';
 
 export {
   FileIcon, FolderIcon, FolderOpenIcon,
   LanguageBlocklyIcon, LanguageJavascriptIcon,
+  LocalProjectIcon,
   IdeIcon, ControlsIcon, ApolloTestIcon, IndexDBTestIcon,
   ConsoleIcon, SimulatorIcon,
-  RenameIcon, DeleteIcon,
+  CreateIcon, RenameIcon, DeleteIcon, RefreshIcon,
 };

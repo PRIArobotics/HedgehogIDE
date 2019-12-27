@@ -13,11 +13,10 @@ import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import ListItemText from '@material-ui/core/ListItemText';
 import Avatar from '@material-ui/core/Avatar';
 import IconButton from '@material-ui/core/IconButton';
-import AddIcon from '@material-ui/icons/Add';
-import DeleteIcon from '@material-ui/icons/Delete';
-import EditIcon from '@material-ui/icons/Edit';
-import FolderIcon from '@material-ui/icons/Folder';
-import RefreshIcon from '@material-ui/icons/Refresh';
+
+import {
+  LocalProjectIcon, CreateIcon, RenameIcon, DeleteIcon, RefreshIcon,
+} from '../../misc/palette';
 
 import Link from '../../misc/Link';
 import { Project, ProjectError } from '../../../core/store/projects';
@@ -125,7 +124,7 @@ class ProjectList extends React.Component<PropTypes, StateTypes> {
               aria-label="create project"
               onClick={() => this.beginCreateProject()}
             >
-              <AddIcon />
+              <CreateIcon />
             </IconButton>
             <IconButton
               edge="end"
@@ -145,7 +144,7 @@ class ProjectList extends React.Component<PropTypes, StateTypes> {
               >
                 <ListItemAvatar>
                   <Avatar>
-                    <FolderIcon />
+                    <LocalProjectIcon />
                   </Avatar>
                 </ListItemAvatar>
                 <ListItemText
@@ -157,7 +156,7 @@ class ProjectList extends React.Component<PropTypes, StateTypes> {
                     aria-label={`delete project "${project.name}"`}
                     onClick={() => this.beginRenameProject(project)}
                   >
-                    <EditIcon />
+                    <RenameIcon />
                   </IconButton>
                   <IconButton
                     edge="end"
