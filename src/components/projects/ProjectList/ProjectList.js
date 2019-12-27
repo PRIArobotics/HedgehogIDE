@@ -15,7 +15,11 @@ import Avatar from '@material-ui/core/Avatar';
 import IconButton from '@material-ui/core/IconButton';
 
 import {
-  LocalProjectIcon, CreateIcon, RenameIcon, DeleteIcon, RefreshIcon,
+  LocalProjectIcon,
+  CreateIcon,
+  RenameIcon,
+  DeleteIcon,
+  RefreshIcon,
 } from '../../misc/palette';
 
 import Link from '../../misc/Link';

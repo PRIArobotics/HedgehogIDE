@@ -16,9 +16,7 @@ import FlexLayout from 'flexlayout-react';
 // eslint-disable-next-line css-modules/no-unused-class
 import FlexLayoutTheme from './flex_layout_ide.css';
 
-import {
-  ConsoleIcon, SimulatorIcon,
-} from '../../misc/palette';
+import { ConsoleIcon, SimulatorIcon } from '../../misc/palette';
 
 import Console from '../Console';
 import Editor from '../Editor';

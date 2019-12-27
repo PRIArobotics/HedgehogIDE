@@ -10,7 +10,10 @@ import IconButton from '@material-ui/core/IconButton';
 import { styled } from '@material-ui/styles';
 
 import {
-  ExecuteIcon, TerminateIcon, SlideLeftIcon, SlideRightIcon,
+  ExecuteIcon,
+  TerminateIcon,
+  SlideLeftIcon,
+  SlideRightIcon,
 } from '../../misc/palette';
 
 import s from './VisualEditor.scss';
@@ -335,11 +338,7 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
             onClick={this.handleToggleCodeCollapsed}
             disableRipple
           >
-            {this.props.codeCollapsed ? (
-              <SlideLeftIcon />
-            ) : (
-              <SlideRightIcon />
-            )}
+            {this.props.codeCollapsed ? <SlideLeftIcon /> : <SlideRightIcon />}
           </ColoredIconButton>
         </div>
         <pre

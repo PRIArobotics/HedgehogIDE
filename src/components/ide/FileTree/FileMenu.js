@@ -7,7 +7,11 @@ import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 
 import {
-  FolderIcon, LanguageBlocklyIcon, LanguageJavascriptIcon, RenameIcon, DeleteIcon,
+  FolderIcon,
+  LanguageBlocklyIcon,
+  LanguageJavascriptIcon,
+  RenameIcon,
+  DeleteIcon,
 } from '../../misc/palette';
 
 import type { FileAction, FileReference } from '.';

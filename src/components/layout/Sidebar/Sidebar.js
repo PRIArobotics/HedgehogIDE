@@ -19,7 +19,10 @@ import Tooltip from '@material-ui/core/Tooltip';
 import { withStyles } from '@material-ui/styles';
 
 import {
-  IdeIcon, ControlsIcon, ApolloTestIcon, IndexDBTestIcon,
+  IdeIcon,
+  ControlsIcon,
+  ApolloTestIcon,
+  IndexDBTestIcon,
 } from '../../misc/palette';
 
 import Link from '../../misc/Link';

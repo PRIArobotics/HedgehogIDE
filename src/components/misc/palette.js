@@ -1,4 +1,5 @@
 // @flow
+/* eslint-disable import/no-duplicates */
 
 // files: general
 import FileIcon from 'mdi-material-ui/File';
@@ -37,11 +38,24 @@ import SlideLeftIcon from 'mdi-material-ui/ChevronLeft';
 import SlideRightIcon from 'mdi-material-ui/ChevronRight';
 
 export {
-  FileIcon, FolderIcon, FolderOpenIcon,
-  LanguageBlocklyIcon, LanguageJavascriptIcon,
+  FileIcon,
+  FolderIcon,
+  FolderOpenIcon,
+  LanguageBlocklyIcon,
+  LanguageJavascriptIcon,
   LocalProjectIcon,
-  IdeIcon, ControlsIcon, ApolloTestIcon, IndexDBTestIcon,
-  ConsoleIcon, SimulatorIcon,
-  CreateIcon, RenameIcon, DeleteIcon, RefreshIcon,
-  ExecuteIcon, TerminateIcon, SlideLeftIcon, SlideRightIcon,
+  IdeIcon,
+  ControlsIcon,
+  ApolloTestIcon,
+  IndexDBTestIcon,
+  ConsoleIcon,
+  SimulatorIcon,
+  CreateIcon,
+  RenameIcon,
+  DeleteIcon,
+  RefreshIcon,
+  ExecuteIcon,
+  TerminateIcon,
+  SlideLeftIcon,
+  SlideRightIcon,
 };
