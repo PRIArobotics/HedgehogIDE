@@ -8,7 +8,11 @@ import Tree, { TreeNode } from 'rc-tree';
 import sRcTree from 'rc-tree/assets/index.css';
 
 import {
-  FileIcon, FolderIcon, FolderOpenIcon, LanguageBlocklyIcon, LanguageJavascriptIcon,
+  FileIcon,
+  FolderIcon,
+  FolderOpenIcon,
+  LanguageBlocklyIcon,
+  LanguageJavascriptIcon,
 } from '../../misc/palette';
 
 import s from './FileTree.scss';

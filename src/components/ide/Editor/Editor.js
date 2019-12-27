@@ -10,9 +10,7 @@ import 'brace/ext/language_tools';
 import { styled } from '@material-ui/styles';
 import IconButton from '@material-ui/core/IconButton';
 
-import {
-  ExecuteIcon, TerminateIcon,
-} from '../../misc/palette';
+import { ExecuteIcon, TerminateIcon } from '../../misc/palette';
 
 import s from './Editor.scss';
 
