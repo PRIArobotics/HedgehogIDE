@@ -6,6 +6,7 @@ import withStyles from 'isomorphic-style-loader/lib/withStyles';
 import AceEditor from 'react-ace';
 import 'brace/mode/javascript';
 import 'brace/ext/language_tools';
+import 'brace/theme/github';
 
 import { styled } from '@material-ui/styles';
 import IconButton from '@material-ui/core/IconButton';
@@ -93,6 +94,7 @@ class Editor extends React.Component<PropTypes, StateTypes> {
           {content === null ? null : (
             <AceEditor
               mode="javascript"
+              theme="github"
               name="editor"
               width={editorWidth}
               height={editorHeight}
