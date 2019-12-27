@@ -47,6 +47,7 @@
     "jsstore": "^3.4.3",
     "lodash.merge": "^4.6.1",
     "matter-js": "^0.14.2",
+    "mdi-material-ui": "^6.10.0",
     "node-fetch": "^2.2.0",
     "normalize.css": "^8.0.0",
     "passport": "^0.4.0",
