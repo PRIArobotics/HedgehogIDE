@@ -28,6 +28,14 @@ import RenameIcon from 'mdi-material-ui/Pencil';
 import DeleteIcon from 'mdi-material-ui/Delete';
 import RefreshIcon from 'mdi-material-ui/Refresh';
 
+// program actions
+import ExecuteIcon from 'mdi-material-ui/Play';
+import TerminateIcon from 'mdi-material-ui/Stop';
+
+// misc actions
+import SlideLeftIcon from 'mdi-material-ui/ChevronLeft';
+import SlideRightIcon from 'mdi-material-ui/ChevronRight';
+
 export {
   FileIcon, FolderIcon, FolderOpenIcon,
   LanguageBlocklyIcon, LanguageJavascriptIcon,
@@ -35,4 +43,5 @@ export {
   IdeIcon, ControlsIcon, ApolloTestIcon, IndexDBTestIcon,
   ConsoleIcon, SimulatorIcon,
   CreateIcon, RenameIcon, DeleteIcon, RefreshIcon,
+  ExecuteIcon, TerminateIcon, SlideLeftIcon, SlideRightIcon,
 };

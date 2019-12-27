@@ -7,10 +7,12 @@ import AceEditor from 'react-ace';
 import 'brace/mode/javascript';
 import 'brace/ext/language_tools';
 
-import StopIcon from '@material-ui/icons/Stop';
 import { styled } from '@material-ui/styles';
 import IconButton from '@material-ui/core/IconButton';
-import PlayArrowIcon from '@material-ui/icons/PlayArrow';
+
+import {
+  ExecuteIcon, TerminateIcon,
+} from '../../misc/palette';
 
 import s from './Editor.scss';
 
@@ -73,7 +75,7 @@ class Editor extends React.Component<PropTypes, StateTypes> {
               disableRipple
               color="red"
             >
-              <StopIcon />
+              <TerminateIcon />
             </ColoredIconButton>
           ) : (
             <ColoredIconButton
@@ -84,7 +86,7 @@ class Editor extends React.Component<PropTypes, StateTypes> {
               color="limegreen"
               disabled={content === null}
             >
-              <PlayArrowIcon />
+              <ExecuteIcon />
             </ColoredIconButton>
           )}
           <br />
