@@ -6318,10 +6318,10 @@ flatten@^1.0.2:
   resolved "https://registry.yarnpkg.com/flatten/-/flatten-1.0.2.tgz#dae46a9d78fbe25292258cc1e780a41d95c03782"
   integrity sha1-2uRqnXj74lKSJYzB54CkHZXAN4I=
 
-flexlayout-react@^0.3.3:
-  version "0.3.3"
-  resolved "https://registry.yarnpkg.com/flexlayout-react/-/flexlayout-react-0.3.3.tgz#f6e0db8fb46290301cdd931b375e808fadc02ab7"
-  integrity sha512-BtfAp6yPUaxAP8KyJBeIH0NgnTBsKZRV6wsMb80fXQp2cHM4kgOcrPkndkCMspc1/JUNo/RraNttCiPHNiJrxg==
+flexlayout-react@^0.3.4:
+  version "0.3.4"
+  resolved "https://registry.yarnpkg.com/flexlayout-react/-/flexlayout-react-0.3.4.tgz#7eb1068dcda28e3b8bdafc2bf7d1f30238739dc7"
+  integrity sha512-jKMeXUcO1wrMgb4IE9OJtj+QUjv6Kom6GLTMRvsTKru9FfXQGT5lc5ZcTLin1Hte1uU75Vk/7v+qiTchdMyxPw==
 
 flow-bin@^0.110.1:
   version "0.110.1"
