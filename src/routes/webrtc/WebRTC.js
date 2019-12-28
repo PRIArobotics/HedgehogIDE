@@ -12,18 +12,32 @@ type Message = {|
   text: string,
 |};
 
-type Chat = {|
+type ChatProps = {|
   messages: Array<Message>,
   connection: RTCPeerConnection,
   channel: RTCDataChannel,
+  onSend: () => void | Promise<void>,
 |};
+
+const Chat = ({ messages, connection, channel, onSend }: ChatProps) => (
+  <Paper className={s.chat} square>
+    {messages.map(({ type, text }) => (
+      <div className={`${s.msg} ${type === 'OUT' ? s.mine : s.theirs}`}>
+        {text}
+      </div>
+    ))}
+    <button type="button" onClick={onSend}>
+      Send
+    </button>
+  </Paper>
+);
 
 const msg = (type: 'IN' | 'OUT', text: string): Message => ({ type, text });
 
 type PropTypes = {||};
 type StateTypes = {|
-  left: Chat | null,
-  right: Chat | null,
+  left: ChatProps | null,
+  right: ChatProps | null,
 |};
 
 class WebRTC extends React.Component<PropTypes, StateTypes> {
@@ -78,11 +92,13 @@ class WebRTC extends React.Component<PropTypes, StateTypes> {
         messages: [],
         connection: leftConnection,
         channel: leftChannel,
+        onSend: this.handleSend('left', 'Hello'),
       },
       right: {
         messages: [],
         connection: rightConnection,
         channel: rightChannel,
+        onSend: this.handleSend('right', 'There'),
       },
     });
   }
@@ -119,28 +135,11 @@ class WebRTC extends React.Component<PropTypes, StateTypes> {
   }
 
   render() {
-    const renderChat = (chat: Chat, onSend) => (
-      <Paper className={s.chat} square>
-        {chat.messages.map(({ type, text }) => (
-          <div className={`${s.msg} ${type === 'OUT' ? s.mine : s.theirs}`}>
-            {text}
-          </div>
-        ))}
-        <button type="button" onClick={onSend}>
-          Send
-        </button>
-      </Paper>
-    );
-
     return (
       <div className={s.root}>
         <div className={s.container}>
-          {this.state.left === null
-            ? null
-            : renderChat(this.state.left, this.handleSend('left', 'Hello'))}
-          {this.state.right === null
-            ? null
-            : renderChat(this.state.right, this.handleSend('right', 'There'))}
+          {this.state.left === null ? null : <Chat {...this.state.left} />}
+          {this.state.right === null ? null : <Chat {...this.state.right} />}
         </div>
       </div>
     );
