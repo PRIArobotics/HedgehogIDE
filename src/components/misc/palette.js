@@ -18,6 +18,7 @@ import IdeIcon from 'mdi-material-ui/CodeTags';
 import ControlsIcon from 'mdi-material-ui/TuneVertical';
 import ApolloTestIcon from 'mdi-material-ui/Graphql';
 import IndexDBTestIcon from 'mdi-material-ui/Database';
+import WebRTCTestIcon from 'mdi-material-ui/Forum';
 
 // IDE tab components
 import ConsoleIcon from 'mdi-material-ui/Console';
@@ -48,6 +49,7 @@ export {
   ControlsIcon,
   ApolloTestIcon,
   IndexDBTestIcon,
+  WebRTCTestIcon,
   ConsoleIcon,
   SimulatorIcon,
   CreateIcon,
