@@ -1,12 +1,3 @@
-/**
- * React Starter Kit (https://www.reactstarterkit.com/)
- *
- * Copyright © 2014-present Kriasoft, LLC. All rights reserved.
- *
- * This source code is licensed under the MIT license found in the
- * LICENSE.txt file in the root directory of this source tree.
- */
-
 // @flow
 
 import * as React from 'react';
@@ -30,33 +21,29 @@ const styled = withStyles(theme => ({
   },
 }));
 
-type PropTypes = {|
+type HeaderProps = {|
   classes: Object,
 |};
 
-class Header extends React.Component<PropTypes> {
-  render() {
-    const { classes } = this.props;
-
-    return (
-      <Toolbar classes={{ gutters: classes.gutters }}>
-        <IconButton
-          edge="start"
-          color="inherit"
-          component={Link}
-          to="/"
-          aria-label="Hedgehog"
-        >
-          <Icon>
-            <img src={logoUrl} alt="Hedgehog Logo" />
-          </Icon>
-        </IconButton>
-        <Typography className={classes.brandTxt} variant="h6" noWrap>
-          Hedgehog IDE
-        </Typography>
-      </Toolbar>
-    );
-  }
+function Header({ classes }: HeaderProps) {
+  return (
+    <Toolbar classes={{ gutters: classes.gutters }}>
+      <IconButton
+        edge="start"
+        color="inherit"
+        component={Link}
+        to="/"
+        aria-label="Hedgehog"
+      >
+        <Icon>
+          <img src={logoUrl} alt="Hedgehog Logo" />
+        </Icon>
+      </IconButton>
+      <Typography className={classes.brandTxt} variant="h6" noWrap>
+        Hedgehog IDE
+      </Typography>
+    </Toolbar>
+  );
 }
 
 export default styled(Header);

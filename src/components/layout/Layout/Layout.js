@@ -21,10 +21,18 @@ import Header from '../Header';
 import Sidebar from '../Sidebar';
 import Footer from '../Footer';
 
+// OpenDrawer component
+
+type OpenDrawerProps = {
+  drawerClasses?: Object,
+};
+
 // eslint-disable-next-line react/prop-types
-const OpenDrawer = ({ drawerClasses, ...props }) => (
-  <Drawer variant="permanent" open classes={drawerClasses} {...props} />
-);
+function OpenDrawer({ drawerClasses, ...props }: OpenDrawerProps) {
+  return <Drawer variant="permanent" open classes={drawerClasses} {...props} />;
+}
+
+// main component
 
 const styled = withStyles(theme => ({
   appBar: {
@@ -37,79 +45,75 @@ const styled = withStyles(theme => ({
   },
 }));
 
-type PropTypes = {|
+type LayoutProps = {|
   children: React.Node,
   classes: Object,
   contentFill: boolean,
 |};
 
-class Layout extends React.Component<PropTypes> {
-  render() {
-    const { children, classes, contentFill } = this.props;
-
-    return (
-      <Grid container direction="row" wrap="nowrap">
-        <AppBar className={classes.appBar}>
-          <Header />
-        </AppBar>
-        <Grid
-          item
-          component={OpenDrawer}
-          drawerClasses={{ paper: classes.sidebar }}
-        >
-          <div className={classes.appBarSpacer} />
-          <Divider />
-          <div style={{ overflow: 'auto' }}>
-            <Sidebar />
-          </div>
-        </Grid>
+function Layout({ children, classes, contentFill }: LayoutProps) {
+  return (
+    <Grid container direction="row" wrap="nowrap">
+      <AppBar className={classes.appBar}>
+        <Header />
+      </AppBar>
+      <Grid
+        item
+        component={OpenDrawer}
+        drawerClasses={{ paper: classes.sidebar }}
+      >
+        <div className={classes.appBarSpacer} />
+        <Divider />
+        <div style={{ overflow: 'auto' }}>
+          <Sidebar />
+        </div>
+      </Grid>
+      <Grid
+        item
+        style={{
+          flex: '1 auto',
+          height: '100vh',
+        }}
+        container
+        direction="column"
+        wrap="nowrap"
+      >
+        <Grid item className={classes.appBarSpacer} />
         <Grid
           item
           style={{
             flex: '1 auto',
-            height: '100vh',
+            // when not in contentFill mode, allow scrolling
+            ...(contentFill ? {} : { overflow: 'auto' }),
           }}
           container
           direction="column"
           wrap="nowrap"
         >
-          <Grid item className={classes.appBarSpacer} />
           <Grid
             item
+            component="main"
             style={{
-              flex: '1 auto',
-              // when not in contentFill mode, allow scrolling
-              ...(contentFill ? {} : { overflow: 'auto' }),
+              ...(contentFill
+                ? {
+                    // fix height to fill the container
+                    flex: '1 0 0',
+                    minHeight: 0,
+                  }
+                : {
+                    // fill, but don't shrink to fit
+                    // the parent scroll the main content together with the footer
+                    flex: '1 auto',
+                  }),
             }}
-            container
-            direction="column"
-            wrap="nowrap"
           >
-            <Grid
-              item
-              component="main"
-              style={{
-                ...(contentFill
-                  ? {
-                      // fix height to fill the container
-                      flex: '1 0 0',
-                      minHeight: 0,
-                    }
-                  : {
-                      // fill, but don't shrink to fit
-                      // the parent scroll the main content together with the footer
-                      flex: '1 auto',
-                    }),
-              }}
-            >
-              {children}
-            </Grid>
-            <Footer />
+            {children}
           </Grid>
+          <Footer />
         </Grid>
       </Grid>
-    );
-  }
+    </Grid>
+  );
 }
 
 export default styled(Layout);
