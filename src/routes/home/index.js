@@ -15,7 +15,7 @@ import Layout from '../../components/layout/Layout';
 
 async function action() {
   return {
-    title: 'React Starter Kit',
+    title: 'Home',
     chunks: ['home'],
     component: (
       <Layout>
