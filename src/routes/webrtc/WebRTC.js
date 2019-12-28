@@ -16,17 +16,24 @@ type ChatProps = {|
   messages: Array<Message>,
   connection: RTCPeerConnection,
   channel: RTCDataChannel,
-  onSend: () => void | Promise<void>,
+  onSend: (text: string) => void | Promise<void>,
+  sendText: string,
 |};
 
-const Chat = ({ messages, connection, channel, onSend }: ChatProps) => (
+const Chat = ({
+  messages,
+  connection,
+  channel,
+  onSend,
+  sendText,
+}: ChatProps) => (
   <Paper className={s.chat} square>
     {messages.map(({ type, text }) => (
       <div className={`${s.msg} ${type === 'OUT' ? s.mine : s.theirs}`}>
         {text}
       </div>
     ))}
-    <button type="button" onClick={onSend}>
+    <button type="button" onClick={() => onSend(sendText)}>
       Send
     </button>
   </Paper>
@@ -92,13 +99,15 @@ class WebRTC extends React.Component<PropTypes, StateTypes> {
         messages: [],
         connection: leftConnection,
         channel: leftChannel,
-        onSend: this.handleSend('left', 'Hello'),
+        onSend: this.handleSend('left'),
+        sendText: 'Hello',
       },
       right: {
         messages: [],
         connection: rightConnection,
         channel: rightChannel,
-        onSend: this.handleSend('right', 'There'),
+        onSend: this.handleSend('right'),
+        sendText: 'There',
       },
     });
   }
@@ -119,8 +128,8 @@ class WebRTC extends React.Component<PropTypes, StateTypes> {
     });
   }
 
-  handleSend(from: string, text: string) {
-    return () => {
+  handleSend(from: string) {
+    return (text: string) => {
       this.state[from].channel.send(text);
       this.setState(oldState => {
         const chat = oldState[from];
