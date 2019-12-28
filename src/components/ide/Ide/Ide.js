@@ -92,6 +92,8 @@ type OpenOrFocusTabOptions = {|
   alwaysNewTabset?: boolean,
 |};
 
+const SquarePaper = props => <Paper square {...props} />;
+
 class Ide extends React.Component<PropTypes, StateTypes> {
   factory = (node: any) => {
     // eslint-disable-next-line no-throw-literal
@@ -595,7 +597,7 @@ class Ide extends React.Component<PropTypes, StateTypes> {
       <Grid className={classes.root} container direction="row" wrap="nowrap">
         <Grid
           item
-          component={props => <Paper square {...props} />}
+          component={SquarePaper}
           style={{
             flex: '0 auto',
             minWidth: '150px',
@@ -649,7 +651,7 @@ class Ide extends React.Component<PropTypes, StateTypes> {
             onDelete={file => this.confirmDeleteFile(file)}
           />
         </Grid>
-        <Paper className={classes.editorContainer} square>
+        <Grid item component={SquarePaper} className={classes.editorContainer}>
           <FlexLayout.Layout
             model={this.state.layoutState}
             ref={this.flexRef}
@@ -657,7 +659,7 @@ class Ide extends React.Component<PropTypes, StateTypes> {
             classNameMapper={className => FlexLayoutTheme[className]}
             onModelChange={() => this.save()}
           />
-        </Paper>
+        </Grid>
         {this.state.runningCode ? (
           <Executor
             code={this.state.runningCode}

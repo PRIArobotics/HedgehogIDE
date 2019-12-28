@@ -21,6 +21,11 @@ import Header from '../Header';
 import Sidebar from '../Sidebar';
 import Footer from '../Footer';
 
+// eslint-disable-next-line react/prop-types
+const OpenDrawer = ({ drawerClasses, ...props }) => (
+  <Drawer variant="permanent" open classes={drawerClasses} {...props} />
+);
+
 const styled = withStyles(theme => ({
   appBar: {
     zIndex: theme.zIndex.drawer + 1,
@@ -49,14 +54,8 @@ class Layout extends React.Component<PropTypes> {
         </AppBar>
         <Grid
           item
-          component={props => (
-            <Drawer
-              classes={{ paper: classes.sidebar }}
-              variant="permanent"
-              open
-              {...props}
-            />
-          )}
+          component={OpenDrawer}
+          drawerClasses={{ paper: classes.sidebar }}
         >
           <div className={classes.appBarSpacer} />
           <Divider />
