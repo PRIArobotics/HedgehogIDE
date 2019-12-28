@@ -13,11 +13,11 @@ import * as React from 'react';
 
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
+import Icon from '@material-ui/core/Icon';
 import IconButton from '@material-ui/core/IconButton';
 import { withStyles } from '@material-ui/styles';
 
 import Link from '../../misc/Link';
-import SvgIcon from '../../misc/SvgIcon';
 
 import logoUrl from './logo.svg';
 
@@ -47,7 +47,9 @@ class Header extends React.Component<PropTypes> {
           to="/"
           aria-label="Hedgehog"
         >
-          <SvgIcon src={logoUrl} alt="Hedgehog Logo" />
+          <Icon>
+            <img src={logoUrl} alt="Hedgehog Logo" />
+          </Icon>
         </IconButton>
         <Typography className={classes.brandTxt} variant="h6" noWrap>
           Hedgehog IDE
