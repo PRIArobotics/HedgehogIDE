@@ -23,6 +23,7 @@ import {
   ControlsIcon,
   ApolloTestIcon,
   IndexDBTestIcon,
+  WebRTCTestIcon,
 } from '../../misc/palette';
 
 import Link from '../../misc/Link';
@@ -70,6 +71,13 @@ class Sidebar extends React.Component<PropTypes> {
           <ListItem button component={Link} to="/indexedDB">
             <ListItemIcon className={classes.listItemIcon}>
               <IndexDBTestIcon />
+            </ListItemIcon>
+          </ListItem>
+        </Tooltip>
+        <Tooltip title="WebRTC Feature Test" placement="right">
+          <ListItem button component={Link} to="/webrtc">
+            <ListItemIcon className={classes.listItemIcon}>
+              <WebRTCTestIcon />
             </ListItemIcon>
           </ListItem>
         </Tooltip>
