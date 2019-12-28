@@ -12,33 +12,35 @@ import Link from '../../components/misc/Link';
 
 import s from './Home.css';
 
-const Home = props => (
-  <Container maxWidth="sm" className={s.root}>
-    <Typography
-      component="h1"
-      variant="h2"
-      align="center"
-      color="textPrimary"
-      gutterBottom
-    >
-      Welcome to Hedgehog IDE
-    </Typography>
-    <Typography variant="h5" align="center" color="textSecondary" paragraph>
-      Learn coding using the Hedgehog IDE without signing up!
-    </Typography>
-    <Grid container spacing={2} justify="center">
-      <Grid item>
-        <Button
-          variant="contained"
-          color="primary"
-          component={Link}
-          to="/projects"
-        >
-          Create your first project
-        </Button>
+function Home() {
+  return (
+    <Container maxWidth="sm" className={s.root}>
+      <Typography
+        component="h1"
+        variant="h2"
+        align="center"
+        color="textPrimary"
+        gutterBottom
+      >
+        Welcome to Hedgehog IDE
+      </Typography>
+      <Typography variant="h5" align="center" color="textSecondary" paragraph>
+        Learn coding using the Hedgehog IDE without signing up!
+      </Typography>
+      <Grid container spacing={2} justify="center">
+        <Grid item>
+          <Button
+            variant="contained"
+            color="primary"
+            component={Link}
+            to="/projects"
+          >
+            Create your first project
+          </Button>
+        </Grid>
       </Grid>
-    </Grid>
-  </Container>
-);
+    </Container>
+  );
+}
 
 export default withStyles(s)(Home);

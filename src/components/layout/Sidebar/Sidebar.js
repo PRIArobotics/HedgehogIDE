@@ -1,12 +1,3 @@
-/**
- * React Starter Kit (https://www.reactstarterkit.com/)
- *
- * Copyright © 2014-present Kriasoft, LLC. All rights reserved.
- *
- * This source code is licensed under the MIT license found in the
- * LICENSE.txt file in the root directory of this source tree.
- */
-
 // @flow
 
 import * as React from 'react';
@@ -35,55 +26,49 @@ const styled = withStyles(theme => ({
   toolbar: theme.mixins.toolbar,
 }));
 
-type PropTypes = {|
+type SidebarProps = {|
   classes: Object,
 |};
 
-class Sidebar extends React.Component<PropTypes> {
-  render() {
-    const { classes } = this.props;
+function Sidebar({ classes }: SidebarProps) {
+  type NavItemProps = {|
+    title: string,
+    target: string,
+    icon: Class<React.Component<any>>,
+  |};
+
+  function NavItem({ title, target, icon }: NavItemProps) {
+    const TheIcon = icon;
 
     return (
-      <List>
-        <Tooltip title="IDE" placement="right">
-          <ListItem button component={Link} to="/projects">
-            <ListItemIcon className={classes.listItemIcon}>
-              <IdeIcon />
-            </ListItemIcon>
-          </ListItem>
-        </Tooltip>
-        <Tooltip title="Robot Controls" placement="right">
-          <ListItem button>
-            <ListItemIcon className={classes.listItemIcon}>
-              <ControlsIcon />
-            </ListItemIcon>
-          </ListItem>
-        </Tooltip>
-        <Divider />
-        <Tooltip title="Apollo Feature Test" placement="right">
-          <ListItem button component={Link} to="/apollo">
-            <ListItemIcon className={classes.listItemIcon}>
-              <ApolloTestIcon />
-            </ListItemIcon>
-          </ListItem>
-        </Tooltip>
-        <Tooltip title="IndexedDB Feature Test" placement="right">
-          <ListItem button component={Link} to="/indexedDB">
-            <ListItemIcon className={classes.listItemIcon}>
-              <IndexDBTestIcon />
-            </ListItemIcon>
-          </ListItem>
-        </Tooltip>
-        <Tooltip title="WebRTC Feature Test" placement="right">
-          <ListItem button component={Link} to="/webrtc">
-            <ListItemIcon className={classes.listItemIcon}>
-              <WebRTCTestIcon />
-            </ListItemIcon>
-          </ListItem>
-        </Tooltip>
-      </List>
+      <Tooltip title={title} placement="right">
+        <ListItem button component={Link} to={target}>
+          <ListItemIcon className={classes.listItemIcon}>
+            <TheIcon />
+          </ListItemIcon>
+        </ListItem>
+      </Tooltip>
     );
   }
+
+  return (
+    <List>
+      <NavItem title="IDE" target="/projects" icon={IdeIcon} />
+      {/* <NavItem title="Robot Controls" target="/control" icon={ControlsIcon} /> */}
+      {__DEV__ ? (
+        <>
+          <Divider />
+          <NavItem title="Apollo Test" target="/apollo" icon={ApolloTestIcon} />
+          <NavItem
+            title="IndexedDB Test"
+            target="/indexedDB"
+            icon={IndexDBTestIcon}
+          />
+          <NavItem title="WebRTC Test" target="/webrtc" icon={WebRTCTestIcon} />
+        </>
+      ) : null}
+    </List>
+  );
 }
 
 export default styled(Sidebar);
