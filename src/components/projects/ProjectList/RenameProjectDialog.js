@@ -14,21 +14,23 @@ type PropTypes = {|
 |};
 type StateTypes = {|
   visible: boolean,
-  project: Project | null,
+  config: {|
+    project: Project,
+  |} | null,
   newProjectName: string,
 |};
 
 class RenameProjectDialog extends React.Component<PropTypes, StateTypes> {
   state: StateTypes = {
     visible: false,
-    project: null,
+    config: null,
     newProjectName: '',
   };
 
   show(project: Project) {
     this.setState({
       visible: true,
-      project,
+      config: { project },
       newProjectName: project.name,
     });
   }
@@ -41,9 +43,10 @@ class RenameProjectDialog extends React.Component<PropTypes, StateTypes> {
     this.setState({ newProjectName: name.replace(/[^-\w#$%().,:; ]/g, '') });
   }
 
-  isValidProjectName() {
+  isValid() {
     const { allProjects } = this.props;
     const { newProjectName } = this.state;
+
     return (
       newProjectName !== '' &&
       allProjects.every(project => project.name !== newProjectName)
@@ -54,23 +57,29 @@ class RenameProjectDialog extends React.Component<PropTypes, StateTypes> {
     // eslint-disable-next-line no-throw-literal
     if (!this.state.visible) throw 'confirming when dialog is not shown';
     // eslint-disable-next-line no-throw-literal
-    if (this.state.project === null) throw 'no project';
+    if (this.state.config === null) throw 'unreachable';
 
-    const success = await this.props.onRename(
-      this.state.project,
-      this.state.newProjectName,
-    );
+    const {
+      config: { project },
+      newProjectName,
+    } = this.state;
+
+    const success = await this.props.onRename(project, newProjectName);
     if (success) {
       this.setState({ visible: false, newProjectName: '' });
     }
   }
 
   render() {
+    const { visible, newProjectName } = this.state;
+
+    const isValid = this.isValid();
+
     return (
       <SimpleDialog
         id="rename-dialog"
-        open={this.state.visible}
-        valid={this.isValidProjectName()}
+        open={visible}
+        valid={isValid}
         title="Rename project"
         description="Please enter the project's new name."
         actions="OK_CANCEL"
@@ -83,9 +92,9 @@ class RenameProjectDialog extends React.Component<PropTypes, StateTypes> {
           id="name"
           label="Project Name"
           type="text"
-          value={this.state.newProjectName}
+          value={newProjectName}
           onChange={event => this.setNewProjectName(event.target.value)}
-          error={!this.isValidProjectName()}
+          error={!isValid}
           fullWidth
         />
       </SimpleDialog>

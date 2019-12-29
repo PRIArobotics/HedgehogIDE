@@ -11,17 +11,19 @@ type PropTypes = {|
 |};
 type StateTypes = {|
   visible: boolean,
-  project: Project | null,
+  config: {|
+    project: Project,
+  |} | null,
 |};
 
 class DeleteProjectDialog extends React.Component<PropTypes, StateTypes> {
   state: StateTypes = {
     visible: false,
-    project: null,
+    config: null,
   };
 
   show(project: Project) {
-    this.setState({ visible: true, project });
+    this.setState({ visible: true, config: { project } });
   }
 
   cancel() {
@@ -30,13 +32,17 @@ class DeleteProjectDialog extends React.Component<PropTypes, StateTypes> {
 
   async confirm() {
     // eslint-disable-next-line no-throw-literal
-    if (!this.state.visible) throw 'confirming when dialog is not shown';
+    if (!this.state.visible) throw 'dialog is not shown';
     // eslint-disable-next-line no-throw-literal
-    if (this.state.project === null) throw 'no project';
+    if (this.state.config === null) throw 'unreachable';
+
+    const {
+      config: { project },
+    } = this.state;
 
     // whether the deletion succeeded or not, we want to hide the dialog.
     // Thus, ignore the result of onDelete
-    await this.props.onDelete(this.state.project);
+    await this.props.onDelete(project);
 
     // we don't set the project to null because that results in a display glitch:
     // the hide animation will leave the project name visible for a split second
@@ -44,15 +50,25 @@ class DeleteProjectDialog extends React.Component<PropTypes, StateTypes> {
   }
 
   render() {
+    // this will only trigger before the first showing.
+    // after that, the old config is still present and will ensure that
+    // fade out animations won't glitch due to changing contents.
+    if (this.state.config === null) return null;
+
+    const {
+      visible,
+      config: {
+        project: { name },
+      },
+    } = this.state;
+
     return (
       <SimpleDialog
         id="delete-dialog"
-        open={this.state.visible}
+        open={visible}
         valid
         title="Confirm deletion"
-        description={`Are you sure yo want to delete project "${
-          (this.state.project || {}).name
-        }"?`}
+        description={`Are you sure yo want to delete project "${name}"?`}
         actions="OK_autofocus_CANCEL"
         onCancel={() => this.cancel()}
         onConfirm={() => this.confirm()}
