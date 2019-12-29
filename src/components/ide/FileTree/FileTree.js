@@ -70,8 +70,6 @@ class FileTree extends React.Component<PropTypes, StateTypes> {
   rootDivRef: RefObject<'div'> = React.createRef();
   menuRef: RefObject<typeof FileMenu> = React.createRef();
 
-  menuAnchor: HTMLElement | null = null;
-
   state = {
     selectedKeys: [],
   };
