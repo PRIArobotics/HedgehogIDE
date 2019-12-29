@@ -37,7 +37,6 @@ const ColoredIconButton = styled(({ color, ...other }) => (
 
 class Editor extends React.Component<PropTypes, StateTypes> {
   containerRef: RefObject<'div'> = React.createRef();
-  editorRef: RefObject<typeof AceEditor> = React.createRef();
 
   state = {
     editorWidth: '0',
@@ -98,7 +97,6 @@ class Editor extends React.Component<PropTypes, StateTypes> {
               name="editor"
               width={editorWidth}
               height={editorHeight}
-              ref={this.editorRef}
               // onLoad={this.onLoad}
               onChange={text => this.props.onContentChange(text)}
               fontSize={16}
