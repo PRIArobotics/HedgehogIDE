@@ -2,13 +2,9 @@
 
 import * as React from 'react';
 
-import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
-import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
-import DialogTitle from '@material-ui/core/DialogTitle';
+
+import SimpleDialog from '../../misc/SimpleDialog';
 
 import type { FileReference } from '.';
 
@@ -102,42 +98,28 @@ class RenameFileDialog extends React.Component<PropTypes, StateTypes> {
     const isValid = this.isValid();
 
     return (
-      <Dialog
-        open={visible}
-        onClose={() => this.cancel()}
-        aria-labelledby="rename-file-dialog-title"
-        aria-describedby="rename-file-dialog-description"
+      <SimpleDialog
+        id="rename-dialog"
+        open={this.state.visible}
+        valid={isValid}
+        title={`Rename ${label}`}
+        description={`Please enter the ${label}'s new name.`}
+        actions="OK_CANCEL"
+        onCancel={() => this.cancel()}
+        onConfirm={() => this.confirm()}
       >
-        <DialogTitle id="rename-file-dialog-title">Rename {label}</DialogTitle>
-        <DialogContent>
-          <DialogContentText id="rename-file-dialog-description">
-            Please enter the {label}&apos;s new name.
-          </DialogContentText>
-          <TextField
-            autoFocus
-            margin="dense"
-            id="name"
-            label={placeholder}
-            type="text"
-            value={newFileName}
-            onChange={event => this.setNewFileName(event.target.value)}
-            error={!isValid}
-            fullWidth
-          />
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => this.cancel()} color="secondary">
-            Cancel
-          </Button>
-          <Button
-            onClick={() => this.confirm()}
-            color="primary"
-            disabled={!isValid}
-          >
-            OK
-          </Button>
-        </DialogActions>
-      </Dialog>
+        <TextField
+          autoFocus
+          margin="dense"
+          id="name"
+          label={placeholder}
+          type="text"
+          value={newFileName}
+          onChange={event => this.setNewFileName(event.target.value)}
+          error={!isValid}
+          fullWidth
+        />
+      </SimpleDialog>
     );
   }
 }

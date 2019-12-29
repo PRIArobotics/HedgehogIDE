@@ -2,13 +2,9 @@
 
 import * as React from 'react';
 
-import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
-import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
-import DialogTitle from '@material-ui/core/DialogTitle';
+
+import SimpleDialog from '../../misc/SimpleDialog';
 
 import { Project } from '../../../core/store/projects';
 
@@ -71,42 +67,28 @@ class RenameProjectDialog extends React.Component<PropTypes, StateTypes> {
 
   render() {
     return (
-      <Dialog
+      <SimpleDialog
+        id="rename-dialog"
         open={this.state.visible}
-        onClose={() => this.cancel()}
-        aria-labelledby="rename-dialog-title"
-        aria-describedby="rename-dialog-description"
+        valid={this.isValidProjectName()}
+        title="Rename project"
+        description="Please enter the project's new name."
+        actions="OK_CANCEL"
+        onCancel={() => this.cancel()}
+        onConfirm={() => this.confirm()}
       >
-        <DialogTitle id="rename-dialog-title">Rename project</DialogTitle>
-        <DialogContent>
-          <DialogContentText id="rename-dialog-description">
-            Please enter the project&apos;s new name.
-          </DialogContentText>
-          <TextField
-            autoFocus
-            margin="dense"
-            id="name"
-            label="Project Name"
-            type="text"
-            value={this.state.newProjectName}
-            onChange={event => this.setNewProjectName(event.target.value)}
-            error={!this.isValidProjectName()}
-            fullWidth
-          />
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => this.cancel()} color="secondary">
-            Cancel
-          </Button>
-          <Button
-            onClick={() => this.confirm()}
-            color="primary"
-            disabled={!this.isValidProjectName()}
-          >
-            OK
-          </Button>
-        </DialogActions>
-      </Dialog>
+        <TextField
+          autoFocus
+          margin="dense"
+          id="name"
+          label="Project Name"
+          type="text"
+          value={this.state.newProjectName}
+          onChange={event => this.setNewProjectName(event.target.value)}
+          error={!this.isValidProjectName()}
+          fullWidth
+        />
+      </SimpleDialog>
     );
   }
 }

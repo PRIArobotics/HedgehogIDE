@@ -2,12 +2,7 @@
 
 import * as React from 'react';
 
-import Button from '@material-ui/core/Button';
-import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
-import DialogTitle from '@material-ui/core/DialogTitle';
+import SimpleDialog from '../../misc/SimpleDialog';
 
 import { Project } from '../../../core/store/projects';
 
@@ -50,28 +45,18 @@ class DeleteProjectDialog extends React.Component<PropTypes, StateTypes> {
 
   render() {
     return (
-      <Dialog
+      <SimpleDialog
+        id="delete-dialog"
         open={this.state.visible}
-        onClose={() => this.cancel()}
-        aria-labelledby="delete-dialog-title"
-        aria-describedby="delete-dialog-description"
-      >
-        <DialogTitle id="delete-dialog-title">Confirm deletion</DialogTitle>
-        <DialogContent>
-          <DialogContentText id="delete-dialog-description">
-            Are you sure yo want to delete project &quot;
-            {(this.state.project || {}).name}&quot;?
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => this.cancel()} color="secondary">
-            Cancel
-          </Button>
-          <Button onClick={() => this.confirm()} color="primary" autoFocus>
-            OK
-          </Button>
-        </DialogActions>
-      </Dialog>
+        valid
+        title="Confirm deletion"
+        description={`Are you sure yo want to delete project "${
+          (this.state.project || {}).name
+        }"?`}
+        actions="OK_autofocus_CANCEL"
+        onCancel={() => this.cancel()}
+        onConfirm={() => this.confirm()}
+      />
     );
   }
 }

@@ -2,12 +2,7 @@
 
 import * as React from 'react';
 
-import Button from '@material-ui/core/Button';
-import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
-import DialogTitle from '@material-ui/core/DialogTitle';
+import SimpleDialog from '../../misc/SimpleDialog';
 
 import type { FileReference } from '.';
 
@@ -69,29 +64,16 @@ class DeleteFileDialog extends React.Component<PropTypes, StateTypes> {
     const { name } = file.file;
 
     return (
-      <Dialog
+      <SimpleDialog
+        id="delete-file-dialog"
         open={visible}
-        onClose={() => this.cancel()}
-        aria-labelledby="delete-file-dialog-title"
-        aria-describedby="delete-file-dialog-description"
-      >
-        <DialogTitle id="delete-file-dialog-title">
-          Confirm deletion
-        </DialogTitle>
-        <DialogContent>
-          <DialogContentText id="delete-file-dialog-description">
-            Are you sure yo want to delete {label} &quot;{name}&quot;?
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => this.cancel()} color="secondary">
-            Cancel
-          </Button>
-          <Button onClick={() => this.confirm()} color="primary" autoFocus>
-            OK
-          </Button>
-        </DialogActions>
-      </Dialog>
+        valid
+        title="Confirm deletion"
+        description={`Are you sure yo want to delete ${label} "${name}"?`}
+        actions="OK_autofocus_CANCEL"
+        onCancel={() => this.cancel()}
+        onConfirm={() => this.confirm()}
+      />
     );
   }
 }
