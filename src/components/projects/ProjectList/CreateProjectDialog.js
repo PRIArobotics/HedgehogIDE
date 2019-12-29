@@ -46,20 +46,28 @@ class CreateProjectDialog extends React.Component<PropTypes, StateTypes> {
 
   async confirm() {
     // eslint-disable-next-line no-throw-literal
-    if (!this.state.visible) throw 'confirming when dialog is not shown';
+    if (!this.state.visible) throw 'dialog is not shown';
 
-    const success = await this.props.onCreate(this.state.newProjectName);
+    const {
+      newProjectName,
+    } = this.state;
+
+    const success = await this.props.onCreate(newProjectName);
     if (success) {
       this.setState({ visible: false, newProjectName: '' });
     }
   }
 
   render() {
+    const { visible, newProjectName } = this.state;
+
+    const isValid = this.isValid();
+
     return (
       <SimpleDialog
         id="create-dialog"
-        open={this.state.visible}
-        valid={this.isValid()}
+        open={visible}
+        valid={isValid}
         title="Create new project"
         description="Please enter the new project's name."
         actions="OK_CANCEL"
@@ -72,9 +80,9 @@ class CreateProjectDialog extends React.Component<PropTypes, StateTypes> {
           id="name"
           label="Project Name"
           type="text"
-          value={this.state.newProjectName}
+          value={newProjectName}
           onChange={event => this.setNewProjectName(event.target.value)}
-          error={!this.isValid()}
+          error={!isValid}
           fullWidth
         />
       </SimpleDialog>
