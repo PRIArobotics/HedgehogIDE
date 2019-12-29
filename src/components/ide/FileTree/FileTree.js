@@ -169,7 +169,7 @@ class FileTree extends React.Component<PropTypes, StateTypes> {
       const isLeaf = !file.isDirectory();
       const isExpanded = this.props.expandedKeys.includes(path);
 
-      const IconComponent = (() => {
+      const TheIcon = (() => {
         if (isLeaf) {
           if (file.name.endsWith('.blockly')) return LanguageBlocklyIcon;
           if (file.name.endsWith('.js')) return LanguageJavascriptIcon;
@@ -192,7 +192,7 @@ class FileTree extends React.Component<PropTypes, StateTypes> {
             role="treeitem"
             tabIndex="0"
           >
-            <IconComponent className={s.fileIcon} />
+            <TheIcon className={s.fileIcon} />
             {file.name}
           </span>
         ),
