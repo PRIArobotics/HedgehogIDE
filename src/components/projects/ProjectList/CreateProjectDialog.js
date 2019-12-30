@@ -48,9 +48,7 @@ class CreateProjectDialog extends React.Component<PropTypes, StateTypes> {
     // eslint-disable-next-line no-throw-literal
     if (!this.state.visible) throw 'dialog is not shown';
 
-    const {
-      newProjectName,
-    } = this.state;
+    const { newProjectName } = this.state;
 
     const success = await this.props.onCreate(newProjectName);
     if (success) {
