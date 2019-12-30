@@ -14,7 +14,7 @@ import {
   DeleteIcon,
 } from '../../misc/palette';
 
-import type { FileAction, FileReference } from '.';
+import type { FileDesc, FileReference, DirReference, FileAction } from '.';
 
 type Position = {|
   left: number,
@@ -22,10 +22,7 @@ type Position = {|
 |};
 
 type PropTypes = {|
-  onFileAction: (
-    file: FileReference,
-    action: FileAction,
-  ) => void | Promise<void>,
+  onFileAction: (action: FileAction) => void | Promise<void>,
 |};
 type StateTypes = {|
   visible: boolean,
@@ -49,7 +46,7 @@ class FileMenu extends React.Component<PropTypes, StateTypes> {
     this.setState({ visible: false });
   }
 
-  action(action: FileAction) {
+  action(mkAction: (file: FileReference) => FileAction) {
     // eslint-disable-next-line no-throw-literal
     if (!this.state.visible) throw 'menu is not shown';
     // eslint-disable-next-line no-throw-literal
@@ -58,9 +55,27 @@ class FileMenu extends React.Component<PropTypes, StateTypes> {
     const {
       config: { file },
     } = this.state;
+    const action = mkAction(file);
 
     this.hide();
-    this.props.onFileAction(file, action);
+    this.props.onFileAction(action);
+  }
+
+  handleCreate(desc: FileDesc) {
+    this.action(file => {
+      // $FlowExpectError
+      const parentDir: DirReference = file;
+
+      return { action: 'CREATE', parentDir, desc };
+    });
+  }
+
+  handleRename() {
+    this.action(file => ({ action: 'RENAME', file }));
+  }
+
+  handleDelete() {
+    this.action(file => ({ action: 'DELETE', file }));
   }
 
   render() {
@@ -86,9 +101,7 @@ class FileMenu extends React.Component<PropTypes, StateTypes> {
         onClose={() => this.hide()}
       >
         <MenuItem
-          onClick={() =>
-            this.action({ action: 'CREATE', desc: { type: 'DIRECTORY' } })
-          }
+          onClick={() => this.handleCreate({ type: 'DIRECTORY' })}
           disabled={isLeaf}
         >
           <ListItemIcon>
@@ -97,12 +110,7 @@ class FileMenu extends React.Component<PropTypes, StateTypes> {
           New Folder
         </MenuItem>
         <MenuItem
-          onClick={() =>
-            this.action({
-              action: 'CREATE',
-              desc: { type: 'FILE', extension: '.js' },
-            })
-          }
+          onClick={() => this.handleCreate({ type: 'FILE', extension: '.js' })}
           disabled={isLeaf}
         >
           <ListItemIcon>
@@ -112,10 +120,7 @@ class FileMenu extends React.Component<PropTypes, StateTypes> {
         </MenuItem>
         <MenuItem
           onClick={() =>
-            this.action({
-              action: 'CREATE',
-              desc: { type: 'FILE', extension: '.blockly' },
-            })
+            this.handleCreate({ type: 'FILE', extension: '.blockly' })
           }
           disabled={isLeaf}
         >
@@ -124,19 +129,13 @@ class FileMenu extends React.Component<PropTypes, StateTypes> {
           </ListItemIcon>
           New Blockly File
         </MenuItem>
-        <MenuItem
-          onClick={() => this.action({ action: 'RENAME' })}
-          disabled={isRoot}
-        >
+        <MenuItem onClick={() => this.handleRename()} disabled={isRoot}>
           <ListItemIcon>
             <RenameIcon fontSize="small" />
           </ListItemIcon>
           Rename
         </MenuItem>
-        <MenuItem
-          onClick={() => this.action({ action: 'DELETE' })}
-          disabled={isRoot}
-        >
+        <MenuItem onClick={() => this.handleDelete()} disabled={isRoot}>
           <ListItemIcon>
             <DeleteIcon fontSize="small" />
           </ListItemIcon>

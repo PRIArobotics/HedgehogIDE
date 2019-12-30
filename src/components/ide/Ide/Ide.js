@@ -365,28 +365,35 @@ class Ide extends React.Component<PropTypes, StateTypes> {
     this.setState({ runningCode: null });
   }
 
-  handleFileAction(file: FileReference, action: FileAction) {
+  handleFileAction(action: FileAction) {
     switch (action.action) {
       case 'CREATE': {
-        // $FlowExpectError
-        const dir: DirReference = file;
-        this.beginCreateFile(dir, action.desc);
+        const { parentDir, desc } = action;
+        this.beginCreateFile(parentDir, desc);
         break;
       }
-      case 'RENAME':
+      case 'RENAME': {
+        const { file } = action;
         this.beginRenameFile(file);
         break;
-      case 'DELETE':
+      }
+      case 'DELETE': {
+        const { file } = action;
         this.beginDeleteFile(file);
         break;
-      case 'OPEN':
+      }
+      case 'OPEN': {
+        const {
+          file: { path, file },
+        } = action;
         this.openOrFocusTab({
-          id: file.path,
+          id: path,
           type: 'tab',
-          component: file.file.name.endsWith('.blockly') ? 'blockly' : 'editor',
-          name: file.file.name,
+          component: file.name.endsWith('.blockly') ? 'blockly' : 'editor',
+          name: file.name,
         });
         break;
+      }
       default:
         // eslint-disable-next-line no-throw-literal
         throw 'unreachable';
@@ -609,7 +616,7 @@ class Ide extends React.Component<PropTypes, StateTypes> {
           <FileTree
             files={projectInfo.files}
             {...this.state.fileTreeState}
-            onFileAction={(node, action) => this.handleFileAction(node, action)}
+            onFileAction={action => this.handleFileAction(action)}
             onUpdate={fileTreeState =>
               this.setState({ fileTreeState }, () => this.save())
             }
