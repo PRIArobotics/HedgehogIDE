@@ -46,6 +46,21 @@ export class ProjectError extends Error {
   name = 'ProjectError';
 }
 
+const cmpFile = (a: FilerStatInfo, b: FilerStatInfo) => {
+  let result;
+
+  // sort directories before files (& symlinks)
+  const typeVal = f => f.isDirectory() ? 0 : 1;
+  result = typeVal(a) - typeVal(b);
+  if (result !== 0) return result;
+
+  // sort alphabetically
+  result = a.name.localeCompare(b.name)
+  if (result !== 0) return result;
+
+  return 0;
+}
+
 export class Project {
   name: string;
 
@@ -95,6 +110,17 @@ export class Project {
   async getFiles(): Promise<FilerRecursiveStatInfo> {
     const root = await fs.promises.stat(this.path);
     root.contents = await sh.promises.ls(this.path, { recursive: true });
+
+    const sortRecursively = (file: FilerRecursiveStatInfo) => {
+      if (!file.isDirectory()) return;
+
+      // $FlowExpectError
+      const dir: FilerRecursiveDirectoryInfo = file;
+      dir.contents.sort(cmpFile);
+      dir.contents.forEach(f => sortRecursively(f));
+    };
+    sortRecursively(root);
+
     return root;
   }
 
