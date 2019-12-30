@@ -100,7 +100,7 @@ class RenameFileDialog extends React.Component<PropTypes, StateTypes> {
     return (
       <SimpleDialog
         id="rename-dialog"
-        open={this.state.visible}
+        open={visible}
         valid={isValid}
         title={`Rename ${label}`}
         description={`Please enter the ${label}'s new name.`}
