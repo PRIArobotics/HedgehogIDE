@@ -323,14 +323,6 @@ class Ide extends React.Component<PropTypes, StateTypes> {
       name: 'Simulator',
     });
 
-  addEditor = () =>
-    this.openOrFocusTab({
-      id: 'editor',
-      type: 'tab',
-      component: 'editor',
-      name: 'Editor',
-    });
-
   addConsole = () =>
     this.openOrFocusTab(
       {
@@ -344,14 +336,6 @@ class Ide extends React.Component<PropTypes, StateTypes> {
         alwaysNewTabset: true,
       },
     );
-
-  addBlockly = () =>
-    this.openOrFocusTab({
-      id: 'blockly',
-      type: 'tab',
-      component: 'blockly',
-      name: 'Visual Editor',
-    });
 
   getConsole = () =>
     new Promise(resolve => {
