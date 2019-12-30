@@ -188,15 +188,6 @@ class Ide extends React.Component<PropTypes, StateTypes> {
     super(props);
 
     this.refreshProject();
-
-    // legacy loading of editor state
-    const json = localStorage.getItem('IDELayout');
-    if (json) {
-      const { blocklyState } = JSON.parse(json);
-      Object.assign(this.state, {
-        blocklyState,
-      });
-    }
   }
 
   async refreshProject() {
@@ -204,17 +195,28 @@ class Ide extends React.Component<PropTypes, StateTypes> {
     const files = await project.getFiles();
     const projectUid = await project.getUid();
 
+    let persistentState = {
+      fileTreeState: { expandedKeys: [] },
+      layoutState: defaultLayout,
+      blocklyState: {},
+    };
+
     const json = localStorage.getItem(`IDE-State-${projectUid}`);
-    const { fileTreeState, layoutState: layoutStateJson } = json
-      ? JSON.parse(json)
-      : {
-          fileTreeState: { expandedKeys: [] },
-          layoutState: defaultLayout,
-        };
+    if (json) {
+      persistentState = {
+        ...persistentState,
+        ...JSON.parse(json),
+      };
+    }
+    const {
+      fileTreeState,
+      layoutState: layoutStateJson,
+      blocklyState,
+    } = persistentState;
     const layoutState = FlexLayout.Model.fromJson(layoutStateJson);
 
     const projectInfo = { project, files, projectUid };
-    this.setState({ projectInfo, fileTreeState, layoutState });
+    this.setState({ projectInfo, fileTreeState, layoutState, blocklyState });
   }
 
   save() {
@@ -225,21 +227,13 @@ class Ide extends React.Component<PropTypes, StateTypes> {
       projectInfo: { projectUid },
       fileTreeState,
       layoutState: layoutStateModel,
+      blocklyState,
     } = this.state;
     const layoutState = layoutStateModel.toJson();
 
     localStorage.setItem(
       `IDE-State-${projectUid}`,
-      JSON.stringify({ fileTreeState, layoutState }),
-    );
-
-    // legacy saving of editor state
-    const { blocklyState } = this.state;
-    localStorage.setItem(
-      'IDELayout',
-      JSON.stringify({
-        blocklyState,
-      }),
+      JSON.stringify({ fileTreeState, layoutState, blocklyState }),
     );
   }
 
