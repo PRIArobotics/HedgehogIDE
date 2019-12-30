@@ -28,9 +28,6 @@ export type FileType = 'FILE' | 'DIRECTORY';
 export type FileDesc =
   | {| type: 'DIRECTORY' |}
   | {| type: 'FILE', extension: string |};
-export type FileAction =
-  | {| action: 'CREATE', desc: FileDesc |}
-  | {| action: 'RENAME' | 'DELETE' | 'OPEN' |};
 
 export type FileReference = {|
   path: string,
@@ -41,6 +38,17 @@ export type DirReference = {|
   path: string,
   file: FilerRecursiveDirectoryInfo,
 |};
+
+export type FileAction =
+  | {|
+      action: 'CREATE',
+      parentDir: DirReference,
+      desc: FileDesc,
+    |}
+  | {|
+      action: 'RENAME' | 'DELETE' | 'OPEN',
+      file: FileReference,
+    |};
 
 /*
 --- rc-tree BUG ---
@@ -56,10 +64,7 @@ export type ControlledState = $Shape<{|
 type PropTypes = {|
   files: FilerRecursiveStatInfo,
   expandedKeys: Array<string>,
-  onFileAction: (
-    file: FileReference,
-    action: FileAction,
-  ) => void | Promise<void>,
+  onFileAction: (action: FileAction) => void | Promise<void>,
   onUpdate: (state: ControlledState) => void | Promise<void>,
 |};
 type StateTypes = {|
@@ -96,7 +101,7 @@ class FileTree extends React.Component<PropTypes, StateTypes> {
     this.setState({ selectedKeys: [file.path] });
 
     if (file.file.isDirectory()) this.setExpandDirectory(file, null);
-    else this.props.onFileAction(file, { action: 'OPEN' });
+    else this.props.onFileAction({ action: 'OPEN', file });
 
     event.preventDefault();
   }
@@ -128,7 +133,7 @@ class FileTree extends React.Component<PropTypes, StateTypes> {
       switch (event.key) {
         case ' ':
         case 'Enter':
-          this.props.onFileAction(file, { action: 'OPEN' });
+          this.props.onFileAction({ action: 'OPEN', file });
           event.preventDefault();
           break;
         default:
