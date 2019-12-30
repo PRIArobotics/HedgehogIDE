@@ -48,6 +48,11 @@ export type FileAction =
   | {|
       action: 'RENAME' | 'DELETE' | 'OPEN',
       file: FileReference,
+    |}
+  | {|
+      action: 'MOVE',
+      file: FileReference,
+      destDirPath: string,
     |};
 
 /*
@@ -140,9 +145,19 @@ class FileTree extends React.Component<PropTypes, StateTypes> {
       }
   }
 
-  // TODO implement moving files/directories via drag & drop
-  handleFileDragStart(file: FileReference) {}
-  handleFileDragEnd(file: FileReference) {}
+  handleFileDrop({ dragNode, node, dropToGap }) {
+    const file = {
+      path: dragNode.props.eventKey,
+      file: dragNode.props.file,
+    };
+    let destDirPath = node.props.eventKey;
+    if (dropToGap) {
+      if (destDirPath === '.') return;
+      destDirPath += '/..';
+    }
+
+    this.props.onFileAction({ action: 'MOVE', file, destDirPath });
+  }
 
   setExpandDirectory(file: FileReference, state: boolean | null) {
     const expandedKeys = [...this.props.expandedKeys];
@@ -215,7 +230,7 @@ class FileTree extends React.Component<PropTypes, StateTypes> {
       }
     };
 
-    const eventToFileRef = ({ node }) => ({
+    const nodeToFileRef = node => ({
       path: node.props.eventKey,
       file: node.props.file,
     });
@@ -232,8 +247,7 @@ class FileTree extends React.Component<PropTypes, StateTypes> {
           expandedKeys={this.props.expandedKeys}
           onExpand={expandedKeys => this.props.onUpdate({ expandedKeys })}
           selectedKeys={this.state.selectedKeys}
-          onDragStart={event => this.handleFileDragStart(eventToFileRef(event))}
-          onDragEnd={event => this.handleFileDragEnd(eventToFileRef(event))}
+          onDrop={event => this.handleFileDrop(event)}
         >
           {renderNode('.', this.props.files)}
         </Tree>

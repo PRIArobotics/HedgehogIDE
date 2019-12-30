@@ -382,6 +382,11 @@ class Ide extends React.Component<PropTypes, StateTypes> {
         this.beginDeleteFile(file);
         break;
       }
+      case 'MOVE': {
+        const { file, destDirPath } = action;
+        this.moveFile(file, destDirPath);
+        break;
+      }
       case 'OPEN': {
         const {
           file: { path, file },
@@ -535,6 +540,38 @@ class Ide extends React.Component<PropTypes, StateTypes> {
 
       this.closeTabsForFile(file);
       await sh.promises.rm(path, { recursive: true });
+
+      await this.refreshProject();
+      return true;
+    } catch (ex) {
+      if (ex instanceof filer.Errors.EEXIST) {
+        await this.refreshProject();
+        return false;
+      }
+      if (ex instanceof filer.Errors.ENOENT) {
+        await this.refreshProject();
+        // close the dialog, the file is gone
+        return true;
+      }
+      console.error(ex);
+      throw ex;
+    }
+  }
+
+  async moveFile(file: FileReference, destDirPath: string): Promise<boolean> {
+    // eslint-disable-next-line no-throw-literal
+    if (this.state.projectInfo === null) throw 'unreachable';
+
+    const {
+      projectInfo: { project },
+    } = this.state;
+
+    try {
+      const path = project.resolve(file.path);
+      const newPath = project.resolve(destDirPath, file.file.name);
+
+      this.closeTabsForFile(file);
+      await fs.promises.rename(path, newPath);
 
       await this.refreshProject();
       return true;
