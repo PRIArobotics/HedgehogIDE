@@ -50,16 +50,16 @@ const cmpFile = (a: FilerStatInfo, b: FilerStatInfo) => {
   let result;
 
   // sort directories before files (& symlinks)
-  const typeVal = f => f.isDirectory() ? 0 : 1;
+  const typeVal = f => (f.isDirectory() ? 0 : 1);
   result = typeVal(a) - typeVal(b);
   if (result !== 0) return result;
 
   // sort alphabetically
-  result = a.name.localeCompare(b.name)
+  result = a.name.localeCompare(b.name);
   if (result !== 0) return result;
 
   return 0;
-}
+};
 
 export class Project {
   name: string;
