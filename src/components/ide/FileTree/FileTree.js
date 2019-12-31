@@ -230,11 +230,6 @@ class FileTree extends React.Component<PropTypes, StateTypes> {
       }
     };
 
-    const nodeToFileRef = node => ({
-      path: node.props.eventKey,
-      file: node.props.file,
-    });
-
     return (
       <div ref={this.rootDivRef}>
         <Tree
