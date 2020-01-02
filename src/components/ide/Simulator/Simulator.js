@@ -37,21 +37,38 @@ class Robot {
       density: 0.3,
       frictionAir: 0.4,
     };
+    const wheelStyle = {
+      render: {
+        fillStyle: '#777777',
+      },
+    };
+    const bodyStyle = {
+      render: {
+        fillStyle: '#38b449',
+        // sprite: {
+        //   texture: '/icon.png',
+        // },
+      },
+    };
 
     this.leftWheel = Matter.Bodies.rectangle(
       ...translate(x, y, 20, -50),
       ...[30, 20],
-      { ...material },
+      { ...material, ...wheelStyle },
     );
     this.rightWheel = Matter.Bodies.rectangle(
       ...translate(x, y, 20, 50),
       ...[30, 20],
-      { ...material },
+      { ...material, ...wheelStyle },
     );
     this.body = Matter.Bodies.rectangle(
       ...translate(x, y, 0, 0),
       ...[100, 70],
-      { angle, ...material },
+      {
+        angle,
+        ...material,
+        ...bodyStyle,
+      },
     );
     this.bot = Matter.Composite.create({
       parts: [this.leftWheel, this.rightWheel, this.body],
@@ -151,36 +168,50 @@ class Simulator extends React.Component<PropTypes, StateTypes> {
   }
 
   createMatter() {
-    const engine = Matter.Engine.create();
-    engine.world.gravity.y = 0;
+    const world = Matter.World.create({
+      gravity: { x: 0, y: 0 },
+    });
 
     this.robot = new Robot({ x: 100, y: 100, angle: 0 });
 
     const box = Matter.Bodies.rectangle(300, 150, 60, 60, {
       density: 0.2,
       frictionAir: 0.4,
+      render: {
+        fillStyle: '#995544',
+        // sprite: {
+        //   texture: '/icon.png',
+        // },
+      },
     });
 
     const { width, height } = this.props;
 
-    Matter.World.add(engine.world, [
+    const boundsOptions = {
+      isStatic: true,
+      render: {
+        fillStyle: '#666677',
+      },
+    };
+
+    Matter.World.add(world, [
       Matter.Bodies.rectangle(width / 2, 6, width - 20, 8, {
-        isStatic: true,
+        ...boundsOptions,
       }),
       Matter.Bodies.rectangle(width / 2, height - 6, width - 20, 8, {
-        isStatic: true,
+        ...boundsOptions,
       }),
       Matter.Bodies.rectangle(6, height / 2, 8, height - 20, {
-        isStatic: true,
+        ...boundsOptions,
       }),
       Matter.Bodies.rectangle(width - 6, height / 2, 8, height - 20, {
-        isStatic: true,
+        ...boundsOptions,
       }),
       ...this.robot.parts,
       box,
     ]);
 
-    this.engine = engine;
+    this.engine = Matter.Engine.create({ world });
 
     const runner = Matter.Runner.create();
     Matter.Events.on(runner, 'beforeUpdate', () => {
@@ -193,11 +224,16 @@ class Simulator extends React.Component<PropTypes, StateTypes> {
   mountMatter() {
     const { width, height } = this.props;
 
-    this.renderer = Matter.Render.create({
+    const renderer = Matter.Render.create({
       element: this.renderTargetRef.current,
       engine: this.engine,
-      options: { width, height },
+      options: { width, height, wireframes: false, background: '#eeeeee' },
     });
+    Matter.Render.lookAt(renderer, {
+      min: { x: 0, y: 0 },
+      max: { x: width, y: height },
+    });
+    this.renderer = renderer;
   }
 
   startMatter() {
