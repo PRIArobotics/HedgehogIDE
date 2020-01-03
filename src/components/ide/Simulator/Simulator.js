@@ -12,7 +12,7 @@ class Robot {
   rightWheel: Matter.Body;
   body: Matter.Body;
   surfaceSensors: Array<Matter.Body>;
-  bot: Matter.Composite;
+  bot: Matter.Body;
 
   parts: Array<Matter.Body | Matter.Composite>;
 
