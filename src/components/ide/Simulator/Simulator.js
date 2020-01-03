@@ -27,11 +27,6 @@ class Robot {
       _x + dx * cos - dy * sin,
       _y + dx * sin + dy * cos,
     ];
-    const translateVec = (_x, _y, dx, dy) => {
-      // eslint-disable-next-line no-shadow
-      const [x, y] = translate(_x, _y, dx, dy);
-      return { x, y };
-    };
 
     const material = {
       density: 0.3,
@@ -66,45 +61,16 @@ class Robot {
       ...[100, 70],
       { angle, ...material, ...bodyStyle },
     );
-    this.bot = Matter.Composite.create({
+    this.bot = Matter.Body.create({
       parts: [this.leftWheel, this.rightWheel, this.body],
-      constraints: [
-        Matter.Constraint.create({
-          bodyA: this.leftWheel,
-          pointA: translateVec(0, 0, 0, -10),
-          bodyB: this.body,
-          pointB: translateVec(0, 0, 20, -60),
-          render: { visible: false },
-        }),
-        Matter.Constraint.create({
-          bodyA: this.leftWheel,
-          pointA: translateVec(0, 0, 0, 10),
-          bodyB: this.body,
-          pointB: translateVec(0, 0, 20, -40),
-          render: { visible: false },
-        }),
-        Matter.Constraint.create({
-          bodyA: this.rightWheel,
-          pointA: translateVec(0, 0, 0, -10),
-          bodyB: this.body,
-          pointB: translateVec(0, 0, 20, 40),
-          render: { visible: false },
-        }),
-        Matter.Constraint.create({
-          bodyA: this.rightWheel,
-          pointA: translateVec(0, 0, 0, 10),
-          bodyB: this.body,
-          pointB: translateVec(0, 0, 20, 60),
-          render: { visible: false },
-        }),
-      ],
+      ...material,
     });
 
     this.parts = [...this.bot.parts, this.bot];
   }
 
-  static applyForce(body, force, cos, sin) {
-    Matter.Body.applyForce(body, body.position, {
+  applyForce(pos, force, cos, sin) {
+    Matter.Body.applyForce(this.bot, pos, {
       x: force * cos,
       y: force * sin,
     });
@@ -116,8 +82,10 @@ class Robot {
   }
 
   beforeUpdate() {
-    const dx = this.leftWheel.position.x - this.rightWheel.position.x;
-    const dy = this.leftWheel.position.y - this.rightWheel.position.y;
+    const lPos = this.leftWheel.position;
+    const rPos = this.rightWheel.position;
+    const dx = lPos.x - rPos.x;
+    const dy = lPos.y - rPos.y;
     const hypot = Math.hypot(dx, dy);
 
     // cosine and sine of the angle in which the forces are directed
@@ -125,8 +93,8 @@ class Robot {
     const cos = -dy / hypot;
     const sin = dx / hypot;
 
-    Robot.applyForce(this.leftWheel, this.leftSpeed / 10, cos, sin);
-    Robot.applyForce(this.rightWheel, this.rightSpeed / 10, cos, sin);
+    this.applyForce(lPos, this.leftSpeed / 10, cos, sin);
+    this.applyForce(rPos, this.rightSpeed / 10, cos, sin);
   }
 }
 
@@ -217,7 +185,7 @@ class Simulator extends React.Component<PropTypes, StateTypes> {
         ...boundsOptions,
       }),
       ...lines,
-      ...this.robot.parts,
+      this.robot.bot,
       box,
     ]);
 
