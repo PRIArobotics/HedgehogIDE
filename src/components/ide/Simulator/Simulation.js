@@ -117,6 +117,13 @@ export class Robot {
     this.applyForce(lPos, this.leftSpeed / 10, cos, sin);
     this.applyForce(rPos, this.rightSpeed / 10, cos, sin);
   }
+
+  handleSurfaceSensor(
+    eventName: 'collisionStart' | 'collisionEnd',
+    sensor: Matter.Body,
+  ) {
+    // TODO
+  }
 }
 
 export class Simulation {
@@ -150,19 +157,16 @@ export class Simulation {
       pairs.forEach(pair => {
         const { bodyA, bodyB } = pair;
 
-        let line;
         let other;
         if (this.lines.includes(bodyA)) {
-          line = bodyA;
           other = bodyB;
         } else if (this.lines.includes(bodyB)) {
-          line = bodyB;
           other = bodyA;
         } else return;
 
         this.robots.forEach(robot => {
           if (robot.surfaceSensors.includes(other)) {
-            console.log(name);
+            robot.handleSurfaceSensor(name, other);
           }
         });
       });
