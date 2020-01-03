@@ -13,7 +13,7 @@ class Robot {
   body: Matter.Body;
   bot: Matter.Composite;
 
-  parts: (Matter.Body | Matter.Composite)[];
+  parts: Array<Matter.Body | Matter.Composite>;
 
   leftSpeed: number = 0;
   rightSpeed: number = 0;
