@@ -54,21 +54,17 @@ class Robot {
     this.leftWheel = Matter.Bodies.rectangle(
       ...translate(x, y, 20, -50),
       ...[30, 20],
-      { ...material, ...wheelStyle },
+      { angle, ...material, ...wheelStyle },
     );
     this.rightWheel = Matter.Bodies.rectangle(
       ...translate(x, y, 20, 50),
       ...[30, 20],
-      { ...material, ...wheelStyle },
+      { angle, ...material, ...wheelStyle },
     );
     this.body = Matter.Bodies.rectangle(
       ...translate(x, y, 0, 0),
       ...[100, 70],
-      {
-        angle,
-        ...material,
-        ...bodyStyle,
-      },
+      { angle, ...material, ...bodyStyle },
     );
     this.bot = Matter.Composite.create({
       parts: [this.leftWheel, this.rightWheel, this.body],
