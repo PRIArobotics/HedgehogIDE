@@ -71,29 +71,21 @@ export class Robot {
       { angle, ...material, ...bodyStyle },
     );
     this.surfaceSensors = [
-      Matter.Bodies.circle(
-        ...translate(x, y, 49, -20),
-        ...[4],
-        { ...material, ...sensorStyle },
-      ),
-      Matter.Bodies.circle(
-        ...translate(x, y, 50, 0),
-        ...[4],
-        { ...material, ...sensorStyle },
-      ),
-      Matter.Bodies.circle(
-        ...translate(x, y, 49, 20),
-        ...[4],
-        { ...material, ...sensorStyle },
-      ),
+      Matter.Bodies.circle(...translate(x, y, 49, -20), 4, {
+        ...material,
+        ...sensorStyle,
+      }),
+      Matter.Bodies.circle(...translate(x, y, 50, 0), 4, {
+        ...material,
+        ...sensorStyle,
+      }),
+      Matter.Bodies.circle(...translate(x, y, 49, 20), 4, {
+        ...material,
+        ...sensorStyle,
+      }),
     ];
     this.body = Matter.Body.create({
-      parts: [
-        this.leftWheel,
-        this.rightWheel,
-        ...this.surfaceSensors,
-        body,
-      ],
+      parts: [this.leftWheel, this.rightWheel, ...this.surfaceSensors, body],
       ...material,
     });
   }
@@ -124,5 +116,95 @@ export class Robot {
 
     this.applyForce(lPos, this.leftSpeed / 10, cos, sin);
     this.applyForce(rPos, this.rightSpeed / 10, cos, sin);
+  }
+}
+
+export class Simulation {
+  world: Matter.World;
+  engine: Matter.Engine;
+  runner: Matter.Runner;
+
+  render: Matter.Render | null;
+
+  // special bodies for simulation logic
+  lines: Array<Matter.Body | Matter.Composite> = [];
+  robots: Array<Robot> = [];
+
+  constructor() {
+    this.world = Matter.World.create({
+      gravity: { x: 0, y: 0 },
+    });
+
+    this.engine = Matter.Engine.create({ world: this.world });
+    this.runner = Matter.Runner.create();
+
+    // robot update on simulation tick
+    Matter.Events.on(this.runner, 'beforeUpdate', () => {
+      this.robots.forEach(robot => {
+        robot.beforeUpdate();
+      });
+    });
+
+    // check for line detection
+    const collisionHandler = ({ name, pairs }) => {
+      pairs.forEach(pair => {
+        const { bodyA, bodyB } = pair;
+
+        let line;
+        let other;
+        if (this.lines.includes(bodyA)) {
+          line = bodyA;
+          other = bodyB;
+        } else if (this.lines.includes(bodyB)) {
+          line = bodyB;
+          other = bodyA;
+        } else return;
+
+        this.robots.forEach(robot => {
+          if (robot.surfaceSensors.includes(other)) {
+            console.log(name);
+          }
+        });
+      });
+    };
+
+    Matter.Events.on(this.engine, 'collisionStart', collisionHandler);
+    Matter.Events.on(this.engine, 'collisionEnd', collisionHandler);
+  }
+
+  mount(element: Element, width: number, height: number) {
+    this.render = Matter.Render.create({
+      element,
+      engine: this.engine,
+      options: { width, height, wireframes: false, background: '#eeeeee' },
+    });
+  }
+
+  unmount() {
+    // TODO
+  }
+
+  startMatter() {
+    Matter.Runner.run(this.runner, this.engine);
+  }
+
+  startRender() {
+    Matter.Render.run(this.render);
+  }
+
+  stopMatter() {
+    Matter.Runner.stop(this.runner);
+  }
+
+  stopRender() {
+    Matter.Render.stop(this.render);
+  }
+
+  lookAt(bounds: { min: Point, max: Point }) {
+    Matter.Render.lookAt(this.render, bounds);
+  }
+
+  add(bodies: Array<Matter.Body | Matter.Composite>) {
+    Matter.World.add(this.world, bodies);
   }
 }

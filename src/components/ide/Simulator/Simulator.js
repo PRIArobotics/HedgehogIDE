@@ -7,7 +7,7 @@ import Matter from 'matter-js';
 
 import s from './Simulator.scss';
 
-import { Robot } from './Simulation';
+import { Robot, Simulation } from './Simulation';
 
 type PropTypes = {|
   // eslint-disable-next-line no-use-before-define
@@ -18,36 +18,43 @@ type PropTypes = {|
 type StateTypes = {||};
 
 class Simulator extends React.Component<PropTypes, StateTypes> {
-  engine: Matter.Engine;
-  runner: Matter.Runner;
+  simulation: Simulation;
   robot: Robot;
 
   renderTargetRef: RefObject<'div'> = React.createRef();
-  renderer: Matter.Render | null = null;
 
   constructor(props) {
     super(props);
-    this.createMatter();
+    this.simulation = new Simulation();
+    this.initSimulation();
   }
 
   componentDidMount() {
     this.props.forwardedRef.current = this;
-    this.mountMatter();
-    this.startMatter();
+
+    // eslint-disable-next-line no-throw-literal
+    if (this.renderTargetRef.current === null) throw 'ref is null';
+
+    const { width, height } = this.props;
+    this.simulation.mount(this.renderTargetRef.current, width, height);
+    this.simulation.lookAt({
+      min: { x: 0, y: 0 },
+      max: { x: width, y: height },
+    });
+
+    this.simulation.startMatter();
+    this.simulation.startRender();
   }
 
   componentWillUnmount() {
-    this.stopMatter();
-    this.unmountMatter();
+    this.simulation.stopRender();
+    this.simulation.stopMatter();
+    this.simulation.unmount();
     this.props.forwardedRef.current = null;
   }
 
-  createMatter() {
-    const world = Matter.World.create({
-      gravity: { x: 0, y: 0 },
-    });
-
-    this.robot = new Robot({ x: 100, y: 100, angle: 0 });
+  initSimulation() {
+    const robot = new Robot({ x: 100, y: 100, angle: 0 });
 
     const box = Matter.Bodies.rectangle(300, 150, 60, 60, {
       density: 0.2,
@@ -82,7 +89,7 @@ class Simulator extends React.Component<PropTypes, StateTypes> {
       },
     };
 
-    Matter.World.add(world, [
+    this.simulation.add([
       Matter.Bodies.rectangle(width / 2, 6, width - 20, 8, {
         ...boundsOptions,
       }),
@@ -96,67 +103,13 @@ class Simulator extends React.Component<PropTypes, StateTypes> {
         ...boundsOptions,
       }),
       ...lines,
-      this.robot.body,
+      robot.body,
       box,
     ]);
 
-    this.engine = Matter.Engine.create({ world });
-    Matter.Events.on(this.engine, 'collisionStart', event => {
-      event.pairs.forEach(pair => {
-        const { bodyA, bodyB } = pair;
-
-        let line;
-        let other;
-        if (lines.includes(bodyA)) {
-          line = bodyA;
-          other = bodyB;
-        } else if (lines.includes(bodyB)) {
-          line = bodyB;
-          other = bodyA;
-        } else return;
-
-        // other is now a body, the one that collided with a line
-        if (this.robot.surfaceSensors.includes(other)) {
-          console.log('collision');
-        }
-      });
-    });
-
-    const runner = Matter.Runner.create();
-    Matter.Events.on(runner, 'beforeUpdate', () => {
-      this.robot.beforeUpdate();
-    });
-
-    this.runner = runner;
-  }
-
-  mountMatter() {
-    const { width, height } = this.props;
-
-    const renderer = Matter.Render.create({
-      element: this.renderTargetRef.current,
-      engine: this.engine,
-      options: { width, height, wireframes: false, background: '#eeeeee' },
-    });
-    Matter.Render.lookAt(renderer, {
-      min: { x: 0, y: 0 },
-      max: { x: width, y: height },
-    });
-    this.renderer = renderer;
-  }
-
-  startMatter() {
-    Matter.Runner.run(this.runner, this.engine);
-    Matter.Render.run(this.renderer);
-  }
-
-  stopMatter() {
-    Matter.Runner.stop(this.runner);
-    Matter.Render.stop(this.renderer);
-  }
-
-  unmountMatter() {
-    // TODO
+    this.simulation.lines.push(...lines);
+    this.simulation.robots.push(robot);
+    this.robot = robot;
   }
 
   render() {
