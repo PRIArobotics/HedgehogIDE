@@ -10,11 +10,8 @@ import s from './Simulator.scss';
 class Robot {
   leftWheel: Matter.Body;
   rightWheel: Matter.Body;
-  body: Matter.Body;
   surfaceSensors: Array<Matter.Body>;
-  bot: Matter.Body;
-
-  parts: Array<Matter.Body | Matter.Composite>;
+  body: Matter.Body;
 
   leftSpeed: number = 0;
   rightSpeed: number = 0;
@@ -62,7 +59,7 @@ class Robot {
       ...[30, 20],
       { angle, ...material, ...wheelStyle },
     );
-    this.body = Matter.Bodies.rectangle(
+    const body = Matter.Bodies.rectangle(
       ...translate(x, y, 0, 0),
       ...[100, 70],
       { angle, ...material, ...bodyStyle },
@@ -84,21 +81,19 @@ class Robot {
         { ...material, ...sensorStyle },
       ),
     ];
-    this.bot = Matter.Body.create({
+    this.body = Matter.Body.create({
       parts: [
         this.leftWheel,
         this.rightWheel,
         ...this.surfaceSensors,
-        this.body,
+        body,
       ],
       ...material,
     });
-
-    this.parts = [...this.bot.parts, this.bot];
   }
 
   applyForce(pos, force, cos, sin) {
-    Matter.Body.applyForce(this.bot, pos, {
+    Matter.Body.applyForce(this.body, pos, {
       x: force * cos,
       y: force * sin,
     });
@@ -213,7 +208,7 @@ class Simulator extends React.Component<PropTypes, StateTypes> {
         ...boundsOptions,
       }),
       ...lines,
-      this.robot.bot,
+      this.robot.body,
       box,
     ]);
 
