@@ -185,6 +185,14 @@ class Simulator extends React.Component<PropTypes, StateTypes> {
       },
     });
 
+    const line = Matter.Bodies.rectangle(500, 200, 5, 300, {
+      isSensor: true,
+      isStatic: true,
+      render: {
+        fillStyle: '#000000',
+      },
+    });
+
     const { width, height } = this.props;
 
     const boundsOptions = {
@@ -207,11 +215,21 @@ class Simulator extends React.Component<PropTypes, StateTypes> {
       Matter.Bodies.rectangle(width - 6, height / 2, 8, height - 20, {
         ...boundsOptions,
       }),
+      line,
       ...this.robot.parts,
       box,
     ]);
 
     this.engine = Matter.Engine.create({ world });
+    Matter.Events.on(this.engine, 'collisionStart', event => {
+      event.pairs.forEach(pair => {
+        const { bodyA, bodyB } = pair;
+        if ((bodyA === line && bodyB === this.robot.body) || (bodyA === this.robot.body && bodyB === line)) {
+          console.log('collision', line.render.strokeStyle);
+          line.render.fillStyle = '#dd0000';
+        }
+      });
+    });
 
     const runner = Matter.Runner.create();
     Matter.Events.on(runner, 'beforeUpdate', () => {
