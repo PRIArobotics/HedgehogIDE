@@ -11,6 +11,7 @@ class Robot {
   leftWheel: Matter.Body;
   rightWheel: Matter.Body;
   body: Matter.Body;
+  surfaceSensors: Array<Matter.Body>;
   bot: Matter.Composite;
 
   parts: Array<Matter.Body | Matter.Composite>;
@@ -45,6 +46,11 @@ class Robot {
         // },
       },
     };
+    const sensorStyle = {
+      render: {
+        fillStyle: '#777777',
+      },
+    };
 
     this.leftWheel = Matter.Bodies.rectangle(
       ...translate(x, y, 20, -50),
@@ -61,8 +67,30 @@ class Robot {
       ...[100, 70],
       { angle, ...material, ...bodyStyle },
     );
+    this.surfaceSensors = [
+      Matter.Bodies.circle(
+        ...translate(x, y, 49, -20),
+        ...[4],
+        { ...material, ...sensorStyle },
+      ),
+      Matter.Bodies.circle(
+        ...translate(x, y, 50, 0),
+        ...[4],
+        { ...material, ...sensorStyle },
+      ),
+      Matter.Bodies.circle(
+        ...translate(x, y, 49, 20),
+        ...[4],
+        { ...material, ...sensorStyle },
+      ),
+    ];
     this.bot = Matter.Body.create({
-      parts: [this.leftWheel, this.rightWheel, this.body],
+      parts: [
+        this.leftWheel,
+        this.rightWheel,
+        ...this.surfaceSensors,
+        this.body,
+      ],
       ...material,
     });
 
@@ -205,7 +233,7 @@ class Simulator extends React.Component<PropTypes, StateTypes> {
         } else return;
 
         // other is now a body, the one that collided with a line
-        if (other === this.robot.body) {
+        if (this.robot.surfaceSensors.includes(other)) {
           console.log('collision');
         }
       });
