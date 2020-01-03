@@ -185,13 +185,18 @@ class Simulator extends React.Component<PropTypes, StateTypes> {
       },
     });
 
-    const line = Matter.Bodies.rectangle(500, 200, 5, 300, {
+    const lineOptions = {
       isSensor: true,
       isStatic: true,
       render: {
         fillStyle: '#000000',
       },
-    });
+    };
+
+    const lines = [
+      Matter.Bodies.rectangle(500, 200, 5, 305, lineOptions),
+      Matter.Bodies.rectangle(350, 350, 305, 5, lineOptions),
+    ];
 
     const { width, height } = this.props;
 
@@ -215,7 +220,7 @@ class Simulator extends React.Component<PropTypes, StateTypes> {
       Matter.Bodies.rectangle(width - 6, height / 2, 8, height - 20, {
         ...boundsOptions,
       }),
-      line,
+      ...lines,
       ...this.robot.parts,
       box,
     ]);
@@ -224,9 +229,20 @@ class Simulator extends React.Component<PropTypes, StateTypes> {
     Matter.Events.on(this.engine, 'collisionStart', event => {
       event.pairs.forEach(pair => {
         const { bodyA, bodyB } = pair;
-        if ((bodyA === line && bodyB === this.robot.body) || (bodyA === this.robot.body && bodyB === line)) {
-          console.log('collision', line.render.strokeStyle);
-          line.render.fillStyle = '#dd0000';
+
+        let line;
+        let other;
+        if (lines.includes(bodyA)) {
+          line = bodyA;
+          other = bodyB;
+        } else if (lines.includes(bodyB)) {
+          line = bodyB;
+          other = bodyA;
+        } else return;
+
+        // other is now a body, the one that collided with a line
+        if (other === this.robot.body) {
+          console.log('collision');
         }
       });
     });
