@@ -19,14 +19,30 @@ export class Robot {
   surfaceSensors: Array<Matter.Body>;
   body: Matter.Body;
 
-  leftSpeed: number = 0;
-  rightSpeed: number = 0;
+  // Array.from({ length: n }, (v, i) => ...):
+  // first parameter is array-like, so `length` is an array length
+  // all values (`v`) are `undefined`, map them to something else.
+
+  // motor (port = 0..4) setters for the user program
+  motors: Array<number> = Array.from({ length: 4 }, () => 0);
+  // sensor (port = 0..16) value inferred from the simulation
+  // the value here is "exact"; an analog value read by a user program should
+  // have some noise applied to it
+  sensors: Array<number> = Array.from({ length: 16 }, () => 0);
 
   constructor() {
     this.initBody();
   }
 
   initBody() {
+    const pluginData = (data: {}) => ({
+      plugin: {
+        hedgehog: {
+          robot: this,
+          ...data,
+        },
+      },
+    });
     const material = {
       density: 0.3,
       frictionAir: 0.4,
@@ -53,10 +69,12 @@ export class Robot {
     this.leftWheel = Matter.Bodies.rectangle(20, -50, 30, 20, {
       ...material,
       ...wheelStyle,
+      ...pluginData({ motorPort: 0 }),
     });
     this.rightWheel = Matter.Bodies.rectangle(20, 50, 30, 20, {
       ...material,
       ...wheelStyle,
+      ...pluginData({ motorPort: 1 }),
     });
     const body = Matter.Bodies.rectangle(0, 0, 100, 70, {
       ...material,
@@ -66,14 +84,17 @@ export class Robot {
       Matter.Bodies.circle(49, -20, 4, {
         ...material,
         ...sensorStyle,
+        ...pluginData({ sensorPort: 0, collisionCount: 0 }),
       }),
       Matter.Bodies.circle(50, 0, 4, {
         ...material,
         ...sensorStyle,
+        ...pluginData({ sensorPort: 1, collisionCount: 0 }),
       }),
       Matter.Bodies.circle(49, 20, 4, {
         ...material,
         ...sensorStyle,
+        ...pluginData({ sensorPort: 2, collisionCount: 0 }),
       }),
     ];
     this.body = Matter.Body.create({
@@ -95,8 +116,8 @@ export class Robot {
   }
 
   setSpeed(left: number, right: number) {
-    this.leftSpeed = left;
-    this.rightSpeed = right;
+    this.moveMotor(0, left);
+    this.moveMotor(1, right);
   }
 
   beforeUpdate() {
@@ -111,15 +132,45 @@ export class Robot {
     const cos = -dy / hypot;
     const sin = dx / hypot;
 
-    this.applyForce(lPos, this.leftSpeed / 10, cos, sin);
-    this.applyForce(rPos, this.rightSpeed / 10, cos, sin);
+    this.applyForce(lPos, this.motors[0] / 10, cos, sin);
+    this.applyForce(rPos, this.motors[1] / 10, cos, sin);
   }
 
   handleSurfaceSensor(
     eventName: 'collisionStart' | 'collisionEnd',
     sensor: Matter.Body,
   ) {
-    // TODO
+    const plugin = sensor.plugin.hedgehog;
+    switch (eventName) {
+      case 'collisionStart':
+        plugin.collisionCount += 1;
+        break;
+      case 'collisionEnd':
+        plugin.collisionCount -= 1;
+        break;
+      default:
+        // eslint-disable-next-line no-throw-literal
+        throw 'unreachable';
+    }
+    this.sensors[plugin.sensorPort] = plugin.collisionCount > 0 ? 4000 : 100;
+  }
+
+  moveMotor(port: number, power: number) {
+    this.motors[port] = power;
+  }
+
+  getAnalog(port: number): number {
+    // TODO noise
+    const noise = 0;
+    const result = this.sensors[port] + noise;
+
+    if (result > 4095) return 4095;
+    if (result < 0) return 0;
+    return result;
+  }
+
+  getDigital(port: number): boolean {
+    return this.getAnalog(port) > 2047;
   }
 }
 
