@@ -54,7 +54,8 @@ class Simulator extends React.Component<PropTypes, StateTypes> {
   }
 
   initSimulation() {
-    const robot = new Robot({ x: 100, y: 100, angle: 0 });
+    const robot = new Robot();
+    robot.setPose({ x: 100, y: 100, angle: 0 });
 
     const box = Matter.Bodies.rectangle(300, 150, 60, 60, {
       density: 0.2,
