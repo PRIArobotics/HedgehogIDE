@@ -23,6 +23,10 @@ export class Robot {
   rightSpeed: number = 0;
 
   constructor(pose: Pose) {
+    this.initBody(pose);
+  }
+
+  initBody(pose: Pose) {
     const { x, y, angle } = pose;
     const sin = Math.sin(angle);
     const cos = Math.cos(angle);
