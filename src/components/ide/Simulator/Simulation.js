@@ -22,20 +22,11 @@ export class Robot {
   leftSpeed: number = 0;
   rightSpeed: number = 0;
 
-  constructor(pose: Pose) {
-    this.initBody(pose);
+  constructor() {
+    this.initBody();
   }
 
-  initBody(pose: Pose) {
-    const { x, y, angle } = pose;
-    const sin = Math.sin(angle);
-    const cos = Math.cos(angle);
-
-    const translate = (_x, _y, dx, dy) => [
-      _x + dx * cos - dy * sin,
-      _y + dx * sin + dy * cos,
-    ];
-
+  initBody() {
     const material = {
       density: 0.3,
       frictionAir: 0.4,
@@ -59,31 +50,28 @@ export class Robot {
       },
     };
 
-    this.leftWheel = Matter.Bodies.rectangle(
-      ...translate(x, y, 20, -50),
-      ...[30, 20],
-      { angle, ...material, ...wheelStyle },
-    );
-    this.rightWheel = Matter.Bodies.rectangle(
-      ...translate(x, y, 20, 50),
-      ...[30, 20],
-      { angle, ...material, ...wheelStyle },
-    );
-    const body = Matter.Bodies.rectangle(
-      ...translate(x, y, 0, 0),
-      ...[100, 70],
-      { angle, ...material, ...bodyStyle },
-    );
+    this.leftWheel = Matter.Bodies.rectangle(20, -50, 30, 20, {
+      ...material,
+      ...wheelStyle,
+    });
+    this.rightWheel = Matter.Bodies.rectangle(20, 50, 30, 20, {
+      ...material,
+      ...wheelStyle,
+    });
+    const body = Matter.Bodies.rectangle(0, 0, 100, 70, {
+      ...material,
+      ...bodyStyle,
+    });
     this.surfaceSensors = [
-      Matter.Bodies.circle(...translate(x, y, 49, -20), 4, {
+      Matter.Bodies.circle(49, -20, 4, {
         ...material,
         ...sensorStyle,
       }),
-      Matter.Bodies.circle(...translate(x, y, 50, 0), 4, {
+      Matter.Bodies.circle(50, 0, 4, {
         ...material,
         ...sensorStyle,
       }),
-      Matter.Bodies.circle(...translate(x, y, 49, 20), 4, {
+      Matter.Bodies.circle(49, 20, 4, {
         ...material,
         ...sensorStyle,
       }),
@@ -92,6 +80,11 @@ export class Robot {
       parts: [this.leftWheel, this.rightWheel, ...this.surfaceSensors, body],
       ...material,
     });
+  }
+
+  setPose({ x, y, angle }: Pose) {
+    Matter.Body.setPosition(this.body, { x, y });
+    Matter.Body.setAngle(this.body, angle);
   }
 
   applyForce(pos: Point, force: number, cos: number, sin: number) {
