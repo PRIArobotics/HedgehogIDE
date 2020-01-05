@@ -18,7 +18,7 @@ import {
 
 import s from './VisualEditor.scss';
 
-import AnalogBlock from './blocks/AnalogBlock';
+import AnalogBlock from './blocks/hedgehog/AnalogBlock';
 import MoveBlock from './blocks/MoveBlock';
 import SleepBlock from './blocks/SleepBlock';
 import PrintBlock from './blocks/PrintBlock';

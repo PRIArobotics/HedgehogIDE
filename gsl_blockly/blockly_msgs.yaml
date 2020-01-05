@@ -1,0 +1,241 @@
+modules:
+  hedgehog:
+    de:
+      hedgehog_scope:
+        msg: Hedgehog scope %1 %2
+        tooltip: Alle Hedgehog Blöcke müssen sich innerhalb eines Hedgehog scope Blocks befinden
+      hedgehog_move:
+        msg: bewege Motor %1 %2 für %3 Sekunden
+        tooltip: Bewegt einen Motor in eine bestimmte Richtung
+      hedgehog_move_unlimited:
+        msg: bewege Motor %1 %2
+        tooltip: bewegt einen Motor solange bis er explizit gestoppt wird
+      hedgehog_motor_off:
+        msg: schalte Motor %1 aus
+        tooltip: schaltet einen Motor aus
+      hedgehog_brake:
+        msg: bremse Motor %1
+        tooltip: bremst einen Motor sofort
+      hedgehog_move2:
+        msg: bewege Motor %1 und %2 mit Geschwindigkeit %3 und %4 für %5 Sekunden
+        tooltip: Bewegt zwei Motor in eine bestimmte Richtung
+      hedgehog_move2_unlimited:
+        msg: bewege Motor %1 und %2 mit Geschwindigkeit %3 und %4
+        tooltip: bewegt zwei Motoren solange bis sie explizit gestoppt werden
+      hedgehog_forward:
+        msg: bewege Motor %1 und %2 %3 für %4 Sekunden
+        tooltip: Bewegt zwei Motoren in eine bestimmte Richtung
+      hedgehog_turn:
+        msg: wende mit Motor %1 und %2 %3 für %4 Sekunden
+        tooltip: wendet den Hedgehog indem zwei Motoren in entgegengesetzter Richtung laufen gelassen werden
+      hedgehog_motor_off2:
+        msg: schalte Motoren %1 und %2 aus
+        tooltip: schaltet zwei Motoren gleichzeitig aus
+      hedgehog_brake2:
+        msg: bremse Motoren %1 und %2
+        tooltip: bremst zwei Motoren gleichzeitig
+      hedgehog_servo:
+        msg: setze Servo %1 auf %2 Grad
+        tooltip: verändert die position eines Servos
+      hedgehog_servo_off:
+        msg: schalte Servo %1 aus
+        tooltip: deaktiviert einen Servo
+      hedgehog_speaker:
+        msg: schalte Lautsprecher auf %1 Hz
+        tooltip: schaltet den Lautsprecher auf eine bestimmte Frequenz
+      hedgehog_speaker_off:
+        msg: schalte Lautsprecher aus
+        tooltip: deaktiviert den Lautsprecher
+      hedgehog_pullup:
+        msg: Port %1 pullup %2
+        tooltip: Setze einen Pullup Widerstand für einen bestimmten IO Port
+      hedgehog_read_analog:
+        msg: analoger Port %1
+        tooltip: gibt den Wert eines analogen Ports zurück
+      hedgehog_read_digital:
+        msg: digitaler Port %1
+        tooltip: gibt den Wert eines analogen Ports zurück
+      hedgehog_read_imu:
+        msg: Achse %2 der %1 des Lagesensors
+        tooltip: gibt einen oder alle Werte des Lagesensors zurück
+      hedgehog_read_imu_pose:
+        msg: Pose
+      hedgehog_read_imu_acceleration:
+        msg: Beschleunigung
+      hedgehog_read_imu_rate:
+        msg: Winkelgeschwindigkeit
+      hedgehog_sleep:
+        msg: pausiere für %1 Sekunden
+        tooltip: pausiert den Programmablauf für eine spezifische Zeit
+      hedgehog_create_scope:
+        msg: iRobot Create scope %1 %2
+        tooltip: Alle Create Blöcke müssen sich innerhalb eines Create oder Create2 scope Blocks befinden
+      hedgehog_create2_scope:
+        msg: iRobot Create2 scope %1 %2
+      hedgehog_create_drive_direct:
+        msg: fahre mit dem Create %1 Sekunden lang mit Geschwindigkeiten %2 & %3
+        tooltip: Fährt den Create für eine bestimmte Zeit
+      hedgehog_lego_motor_config:
+        msg: konfiguriere Motor %1 als Lego-Motor
+        tooltip: konfiguriert einen Motor als Lego-Motor
+      hedgehog_lego_sensor_config:
+        msg: konfiguriere Sensor %1 als Lego-Sensor
+        tooltip: konfiguriert einen Sensor als Lego-Sensor
+      hedgehog_lego_move:
+        msg: bewege Motor %1 %2 für %3 Sekunden
+        tooltip: Bewegt einen Motor in eine bestimmte Richtung
+      hedgehog_lego_move_unlimited:
+        msg: bewege Motor %1 %2
+        tooltip: bewegt einen Motor solange bis er explizit gestoppt wird
+      hedgehog_lego_move2:
+        msg: bewege Motor %1 und %2 mit Geschwindigkeit %3 und %4 für %5 Sekunden
+        tooltip: Bewegt zwei Motor in eine bestimmte Richtung
+      hedgehog_lego_move2_unlimited:
+        msg: bewege Motor %1 und %2 mit Geschwindigkeit %3 und %4
+        tooltip: bewegt zwei Motoren solange bis sie explizit gestoppt werden
+      hedgehog_lego_forward:
+        msg: bewege Motor %1 und %2 %3 für %4 Sekunden
+        tooltip: Bewegt zwei Motoren in eine bestimmte Richtung
+      hedgehog_lego_turn:
+        msg: wende mit Motor %1 und %2 %3 für %4 Sekunden
+        tooltip: wendet den Hedgehog indem zwei Motoren in entgegengesetzter Richtung laufen gelassen werden
+    en:
+      hedgehog_scope:
+        msg: Hedgehog scope %1 %2
+        tooltip: All Hedgehog blocks have to be inside of this block
+      hedgehog_move:
+        msg: move motor %1 %2 for %3 seconds
+        tooltip: move one motor for a certain duration
+      hedgehog_move_unlimited:
+        msg: move motor %1 %2
+        tooltip: move motor until stopped explicitly
+      hedgehog_motor_off2:
+        msg: turn motors %1 and %2 off
+        tooltip: turns two motors off simultaneously
+      hedgehog_brake2:
+        msg: brake motors %1 and %2
+        tooltip: brakes two motors simultaneously
+      hedgehog_move2:
+        msg: move motor %1 and %2 with speeds %3 and %4 for %5 seconds
+        tooltip: move two motors for a certain duration
+      hedgehog_move2_unlimited:
+        msg: move motor %1 and %2 with speeds %3 and %4
+        tooltip: move two motors until stopped explicitly
+      hedgehog_forward:
+        msg: move motor %1 and %2 %3 for %4 seconds
+        tooltip: move two motors for a certain duration
+      hedgehog_turn:
+        msg: turn motors %1 and %2 %3 for %4 seconds
+        tooltip: turn the Hedgehog for a certain duration
+      hedgehog_motor_off:
+        msg: turn motor %1 off
+        tooltip: turns one motor off
+      hedgehog_brake:
+        msg: brake motor %1
+        tooltip: brakes a motor immediately
+      hedgehog_servo:
+        msg: set servo %1 to %2 degrees
+        tooltip: move a servo to a specified position
+      hedgehog_servo_off:
+        msg: turn servo %1 off
+        tooltip: turn a servo off
+      hedgehog_speaker:
+        msg: turn speaker to %1 Hz
+        tooltip: turns speaker to a certain frequency
+      hedgehog_speaker_off:
+        msg: turn speaker off
+        tooltip: deaktivates the speaker
+      hedgehog_pullup:
+        msg: port %1 pullup %2
+        tooltip: set the pullup state for a specified IO port
+      hedgehog_read_analog:
+        msg: analog port %1
+        tooltip: get the value of an analog port
+      hedgehog_read_digital:
+        msg: digital port %1
+        tooltip: get the value of a digital port
+      hedgehog_read_imu:
+        msg: "%2 axis of the pose sensor's %1"
+        tooltip: get one or all axes of the pose sensor
+      hedgehog_read_imu_pose:
+        msg: pose
+      hedgehog_read_imu_acceleration:
+        msg: acceleration
+      hedgehog_read_imu_rate:
+        msg: angular velocity
+      hedgehog_sleep:
+        msg: sleep for %1 seconds
+        tooltip: pause the program for a certain amount of time
+      hedgehog_create_scope:
+        msg: iRobot Create scope %1 %2
+        tooltip: All Create blocks have to be inside of this block
+      hedgehog_create2_scope:
+        msg: iRobot Create2 scope %1 %2
+      hedgehog_create_drive_direct:
+        msg: drive the Create for %1 seconds with velocities %2 & %3
+        tooltip: Drives the Create for a certain amount of time
+      hedgehog_lego_motor_config:
+        msg: configure motor %1 as Lego motor
+        tooltip: configures a motor as a Lego motor
+      hedgehog_lego_sensor_config:
+        msg: configure sensor %1 as Lego sensor
+        tooltip: configures a sensor as a Lego sensor
+      hedgehog_lego_move:
+        msg: move motor %1 %2 for %3 seconds
+        tooltip: move one motor for a certain duration
+      hedgehog_lego_move_unlimited:
+        msg: move motor %1 %2
+        tooltip: move motor until stopped explicitly
+      hedgehog_lego_move2:
+        msg: move motor %1 and %2 with speeds %3 and %4 for %5 seconds
+        tooltip: move two motors for a certain duration
+      hedgehog_lego_move2_unlimited:
+        msg: move motor %1 and %2 with speeds %3 and %4
+        tooltip: move two motors until stopped explicitly
+      hedgehog_lego_forward:
+        msg: move motor %1 and %2 %3 for %4 seconds
+        tooltip: move two motors for a certain duration
+      hedgehog_lego_turn:
+        msg: turn motors %1 and %2 %3 for %4 seconds
+        tooltip: turn the Hedgehog for a certain duration
+    cn:
+      hedgehog_scope:
+        msg: Hedgehog范围 %1 %2
+        tooltip: 所有Hedgehog区块都必须在这个区域内
+      hedgehog_move:
+        msg: 电机 %1 %2 移动 %3 秒
+        tooltip: 移动电机一段时间
+      hedgehog_move_unlimited:
+        msg: 移动电机 %1 %2
+        tooltip: 移动电机直到停止命令
+      # TODO new messages
+      hedgehog_move2:
+        msg: 移动电机 %1 和 %2 %3 %4 秒
+        tooltip: 将两台电机移动一段时间
+      hedgehog_turn:
+        msg: 转动电机 %1 和 %2 %3 %4 秒
+        tooltip: 转Hedgehog一段时间
+      hedgehog_servo:
+        msg: 设置 servo %1 到 %2 度
+        tooltip: 移动servo到指定位置
+      hedgehog_pullup:
+        msg: 接口 %1 pullup %2
+        tooltip: 设置pullup状态
+      hedgehog_read_analog:
+        msg: 类似物 接口 %1
+        tooltip: 获取模拟端口的值
+      hedgehog_read_digital:
+        msg: 数字 接口 %1
+        tooltip: 获取数字端口的价值
+      hedgehog_sleep:
+        msg: 等 %1 秒
+        tooltip: 暂停程序一段时间
+      hedgehog_create_scope:
+        msg: iRobot Create 范围 %1 %2
+        tooltip: 所有Create区块都必须在这个区域内
+      hedgehog_create2_scope:
+        msg: iRobot Create2 范围 %1 %2
+      hedgehog_create_drive_direct:
+        msg: 走 Create %1 秒 速度 %2 & %3
+        tooltip: 驱动Create一段时间
+
