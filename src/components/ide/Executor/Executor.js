@@ -72,6 +72,14 @@ class Executor extends React.Component<PropTypes, StateTypes> {
     this.sendMessage('execute', code);
   }
 
+  sendReply(value: any) {
+    this.sendMessage('reply', value);
+  }
+
+  sendErrorReply(error: any) {
+    this.sendMessage('errorReply', error);
+  }
+
   render() {
     const { executorDoc } = this.state;
 

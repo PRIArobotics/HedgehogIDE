@@ -40,7 +40,7 @@ const MoveBlock: Block = {
         'RIGHT',
         Blockly.JavaScript.ORDER_NONE,
       );
-      return `move(${valueLeft}, ${valueRight});\n`;
+      return `await move(${valueLeft}, ${valueRight});\n`;
     },
   },
   toolboxBlocks: {
