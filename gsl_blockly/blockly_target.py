@@ -25,6 +25,8 @@ def generate_block_code(model, mod, block, root):
 
     @generate(out_file)
     def code():
+        lang = block.langs.get('en', {})
+
         yield from lines(f"""\
 // @flow
 
@@ -36,7 +38,7 @@ import {{ type Block }} from '..';
 const {block.name}: Block = {{
   blockJson: {{
     type: '{block.name}',
-    message0: 'TODO',""")
+    message0: '{lang.get('msg', 'TODO')}',""")
         if 'args' in block:
             yield from lines(textwrap.indent(f"""\
 args0: {json.dumps(block.args, indent=2)},""", 4 * " "))
@@ -53,7 +55,7 @@ args0: {json.dumps(block.args, indent=2)},""", 4 * " "))
     nextStatement: null,""")
         yield from lines(f"""\
     colour: 120,
-    tooltip: 'TODO',
+    tooltip: '{lang.get('tooltip', 'TODO')}',
     helpUrl: 'TODO',
   }},
   generators: {{

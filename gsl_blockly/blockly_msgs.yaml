@@ -49,7 +49,7 @@ modules:
       hedgehog_pullup:
         msg: Port %1 pullup %2
         tooltip: Setze einen Pullup Widerstand für einen bestimmten IO Port
-      hedgehog_read_analog:
+      AnalogBlock:
         msg: analoger Port %1
         tooltip: gibt den Wert eines analogen Ports zurück
       hedgehog_read_digital:
@@ -148,7 +148,7 @@ modules:
       hedgehog_pullup:
         msg: port %1 pullup %2
         tooltip: set the pullup state for a specified IO port
-      hedgehog_read_analog:
+      AnalogBlock:
         msg: analog port %1
         tooltip: get the value of an analog port
       hedgehog_read_digital:
@@ -221,7 +221,7 @@ modules:
       hedgehog_pullup:
         msg: 接口 %1 pullup %2
         tooltip: 设置pullup状态
-      hedgehog_read_analog:
+      AnalogBlock:
         msg: 类似物 接口 %1
         tooltip: 获取模拟端口的值
       hedgehog_read_digital:

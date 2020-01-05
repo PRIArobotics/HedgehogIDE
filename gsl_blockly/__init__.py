@@ -10,6 +10,7 @@ def get_model(model_file, msg_model_file):
     def augment_module(name, mod):
         def augment_block(name, block):
             block.name = name
+            block.langs = {}
             return block
 
         def augment_lang(key, lang):
@@ -29,7 +30,10 @@ def get_model(model_file, msg_model_file):
         mod.name = name
         mod.blocks = blocks
         if name in msg_model.modules:
-            mod.langs = [augment_lang(*pair) for pair in msg_model.modules[name].items()]
+            for lang, lang_blocks in msg_model.modules[name].items():
+                for block in mod.blocks:
+                    if block.name in lang_blocks:
+                        block.langs[lang] = lang_blocks[block.name]
 
         return mod
 
@@ -39,6 +43,28 @@ def get_model(model_file, msg_model_file):
 
 
 def main():
+    # from ruamel.yaml import YAML
+    # from collections import OrderedDict
+
+    # yaml = YAML(typ='rt')
+    # yaml.default_flow_style = False
+    # with open('gsl_blockly/blockly_msgs.yaml') as f:
+    #     model = yaml.load(f)
+
+    # for module in model['modules'].values():
+    #     new_blocks = OrderedDict()
+    #     for lang, blocks in module.items():
+    #         print(lang)
+    #         for block, content in blocks.items():
+    #             if block not in new_blocks:
+    #                 new_blocks[block] = OrderedDict()
+    #             new_blocks[block][lang] = content
+    #     module.clear()
+    #     module.update(new_blocks)
+
+    # with open('gsl_blockly/blockly_msgs.yaml', mode='w') as f:
+    #     yaml.dump(model, f)
+
     from . import blockly_target
 
     model = get_model('gsl_blockly/blockly.yaml', 'gsl_blockly/blockly_msgs.yaml')
