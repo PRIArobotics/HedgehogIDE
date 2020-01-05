@@ -15,7 +15,7 @@ type ExecutorMessage = {
 
 type PropTypes = {|
   code: string,
-  handlers: { [command: string]: (payload: any, executor: Executor, source: window) => any },
+  handlers: { [command: string]: (payload: any, executor: Executor, source: window) => void | Promise<void> },
 |};
 type StateTypes = {|
   executorDoc: string | null,
@@ -78,6 +78,15 @@ class Executor extends React.Component<PropTypes, StateTypes> {
 
   sendErrorReply(error: any) {
     this.sendMessage('errorReply', error);
+  }
+
+  async withReply(cb: () => any | Promise<any>) {
+    try {
+      const value = await cb();
+      this.sendReply(value);
+    } catch(error) {
+      this.sendErrorReply(error);
+    }
   }
 
   render() {
