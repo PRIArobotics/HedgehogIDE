@@ -15,7 +15,7 @@ type ExecutorMessage = {
 
 type PropTypes = {|
   code: string,
-  handlers: { [command: string]: (window, any) => any },
+  handlers: { [command: string]: (payload: any, executor: Executor, source: window) => any },
 |};
 type StateTypes = {|
   executorDoc: string | null,
@@ -59,7 +59,7 @@ class Executor extends React.Component<PropTypes, StateTypes> {
 
     const handler = this.props.handlers[command];
     if (handler) {
-      handler(source, payload);
+      handler(payload, this, source);
     }
   };
 
