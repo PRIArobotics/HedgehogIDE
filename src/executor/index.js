@@ -32,7 +32,7 @@ global.move = async (left: number, right: number) => {
 };
 global.getAnalog = async (port: number) => {
   sendMessage('getAnalog', port);
-  return /*await*/ getReply();
+  return /* await */ getReply();
 };
 global.sleep = async (ms: number) => {
   await new Promise(resolve => setTimeout(resolve, ms));
