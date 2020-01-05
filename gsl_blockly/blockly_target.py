@@ -29,6 +29,7 @@ def generate_block_code(model, mod, block, root):
 
         yield from lines(f"""\
 // @flow
+/* eslint-disable */
 
 import * as React from 'react';
 import Blockly from 'blockly';
