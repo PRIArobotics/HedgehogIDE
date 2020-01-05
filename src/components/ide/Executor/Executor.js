@@ -39,7 +39,7 @@ class Executor extends React.Component<PropTypes, StateTypes> {
         }
 
         this.frameRef.current.onload = () => {
-          this.sendMessage('execute', this.props.code);
+          this.sendExecute(this.props.code);
         };
         window.addEventListener('message', this.receiveMessage, false);
       });
@@ -66,6 +66,10 @@ class Executor extends React.Component<PropTypes, StateTypes> {
   sendMessage(command: string, payload: any) {
     if (this.frameRef.current === null) return;
     this.frameRef.current.contentWindow.postMessage({ command, payload }, '*');
+  }
+
+  sendExecute(code: string) {
+    this.sendMessage('execute', code);
   }
 
   render() {
