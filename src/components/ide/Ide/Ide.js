@@ -694,6 +694,11 @@ class Ide extends React.Component<PropTypes, StateTypes> {
                   (await this.getSimulator()).robot.setSpeed(left, right);
                 });
               },
+              getAnalog: async (port, executor) => {
+                await executor.withReply(async () => {
+                  return (await this.getSimulator()).robot.getAnalog(port);
+                });
+              },
               exit: async error => {
                 this.setState({ runningCode: null });
                 if (error) {
