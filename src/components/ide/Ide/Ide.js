@@ -686,7 +686,7 @@ class Ide extends React.Component<PropTypes, StateTypes> {
           <Executor
             code={this.state.runningCode}
             handlers={{
-              print: async (text) => {
+              print: async text => {
                 (await this.getConsole()).consoleOut(text, 'stdout');
               },
               move: async ({ left, right }, executor) => {
@@ -694,7 +694,7 @@ class Ide extends React.Component<PropTypes, StateTypes> {
                   (await this.getSimulator()).robot.setSpeed(left, right);
                 });
               },
-              exit: async (error) => {
+              exit: async error => {
                 this.setState({ runningCode: null });
                 if (error) {
                   (await this.getConsole()).consoleOut(error, 'stderr');

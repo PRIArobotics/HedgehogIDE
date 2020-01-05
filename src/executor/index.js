@@ -5,7 +5,7 @@ const ORIGIN = __DEV__ ? 'http://localhost:3000' : 'https://ide.pria.at';
 
 // eslint-disable-next-line no-underscore-dangle
 let _source: window | null = null;
-let resolvers: Array<{|
+const resolvers: Array<{|
   resolve: any => void,
   reject: any => void,
 |}> = [];
@@ -17,9 +17,10 @@ const sendMessage = (command: string, payload: any) => {
   _source.postMessage({ command, payload }, ORIGIN);
 };
 
-const getReply = () => new Promise((resolve, reject) => {
-  resolvers.push({ resolve, reject });
-});
+const getReply = () =>
+  new Promise((resolve, reject) => {
+    resolvers.push({ resolve, reject });
+  });
 
 // exported APIs for the client function
 global.print = (text: string) => {
@@ -31,7 +32,7 @@ global.move = async (left: number, right: number) => {
 };
 global.sleep = async (ms: number) => {
   await new Promise(resolve => setTimeout(resolve, ms));
-}
+};
 
 // message listener & handlers
 const handlers = {
