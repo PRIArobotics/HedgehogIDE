@@ -695,9 +695,9 @@ class Ide extends React.Component<PropTypes, StateTypes> {
                 });
               },
               getAnalog: async (port, executor) => {
-                await executor.withReply(async () => {
-                  return (await this.getSimulator()).robot.getAnalog(port);
-                });
+                await executor.withReply(async () =>
+                  (await this.getSimulator()).robot.getAnalog(port),
+                );
               },
               exit: async error => {
                 this.setState({ runningCode: null });

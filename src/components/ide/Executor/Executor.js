@@ -18,6 +18,7 @@ type PropTypes = {|
   handlers: {
     [command: string]: (
       payload: any,
+      // eslint-disable-next-line no-use-before-define
       executor: Executor,
       source: window,
     ) => void | Promise<void>,
