@@ -8,7 +8,7 @@ import { type Block } from '..';
 const AnalogBlock: Block = {
   blockJson: {
     type: 'AnalogBlock',
-    message0: 'get analog value of sensor %1',
+    message0: 'analog port %1',
     args0: [
       {
         "type": "field_number",
@@ -21,7 +21,7 @@ const AnalogBlock: Block = {
     ],
     output: 'Number',
     colour: 120,
-    tooltip: 'TODO',
+    tooltip: 'get the value of an analog port',
     helpUrl: 'TODO',
   },
   generators: {
