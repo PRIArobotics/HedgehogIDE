@@ -5,6 +5,10 @@ const ORIGIN = __DEV__ ? 'http://localhost:3000' : 'https://ide.pria.at';
 
 // eslint-disable-next-line no-underscore-dangle
 let _source: window | null = null;
+let resolvers: Array<{|
+  resolve: any => void,
+  reject: any => void,
+|}> = [];
 
 const sendMessage = (command: string, payload: any) => {
   // eslint-disable-next-line no-throw-literal
@@ -13,10 +17,21 @@ const sendMessage = (command: string, payload: any) => {
   _source.postMessage({ command, payload }, ORIGIN);
 };
 
+const getReply = () => new Promise((resolve, reject) => {
+  resolvers.push({ resolve, reject });
+});
+
 // exported APIs for the client function
-global.print = (text: string) => sendMessage('print', text);
-global.move = (left: number, right: number) => sendMessage('move', { left, right });
-global.sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+global.print = (text: string) => {
+  sendMessage('print', text);
+};
+global.move = async (left: number, right: number) => {
+  sendMessage('move', { left, right });
+  await getReply();
+};
+global.sleep = async (ms: number) => {
+  await new Promise(resolve => setTimeout(resolve, ms));
+}
 
 // message listener & handlers
 const handlers = {
@@ -36,6 +51,14 @@ const handlers = {
         sendMessage('exit', error);
       }
     })();
+  },
+  reply(source, value: any) {
+    const { resolve } = resolvers.shift();
+    resolve(value);
+  },
+  errorReply(source, error: any) {
+    const { reject } = resolvers.shift();
+    reject(error);
   },
 };
 

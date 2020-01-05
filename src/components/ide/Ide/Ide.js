@@ -689,8 +689,9 @@ class Ide extends React.Component<PropTypes, StateTypes> {
               print: async (text) => {
                 (await this.getConsole()).consoleOut(text, 'stdout');
               },
-              move: async ({ left, right }) => {
+              move: async ({ left, right }, executor) => {
                 (await this.getSimulator()).robot.setSpeed(left, right);
+                executor.sendReply();
               },
               exit: async (error) => {
                 this.setState({ runningCode: null });
