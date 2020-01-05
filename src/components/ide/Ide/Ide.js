@@ -363,6 +363,9 @@ class Ide extends React.Component<PropTypes, StateTypes> {
 
   handleTerminate() {
     this.setState({ runningCode: null });
+    (async () => {
+      (await this.getSimulator()).robot.setSpeed(0, 0);
+    })();
   }
 
   handleFileAction(action: FileAction) {
@@ -701,6 +704,9 @@ class Ide extends React.Component<PropTypes, StateTypes> {
               },
               exit: async error => {
                 this.setState({ runningCode: null });
+                // TODO the robot may continue to move here
+                // stopping might be a good idea, but might mask the fact that
+                // the program is missing an explicit stop command
                 if (error) {
                   (await this.getConsole()).consoleOut(error, 'stderr');
                 }
