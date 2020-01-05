@@ -163,6 +163,7 @@
     "flow": "flow",
     "flow:check": "flow check",
     "codegen:use-dev-server": "apollo client:codegen --target flow",
+    "codegen:gsl-blockly": "python -m gsl_blockly",
     "codegen": "babel-node tools/run codegen",
     "test": "jest",
     "test-watch": "yarn run test --watch --notify",
