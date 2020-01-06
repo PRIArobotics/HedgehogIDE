@@ -34,7 +34,7 @@ export const HEDGEHOG_READ_ANALOG: Block = {
       // </GSL customizable: hedgehog_read_analog-body>
     },
   },
-toolboxBlocks: {
+  toolboxBlocks: {
     default: () => (
       <block type="hedgehog_read_analog">{
         // <default GSL customizable: hedgehog_read_analog-default-toolbox />
