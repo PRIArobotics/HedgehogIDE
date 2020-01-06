@@ -18,6 +18,7 @@ import {
 
 import s from './VisualEditor.scss';
 
+import './blocks/hedgehog_msg_en';
 import { HEDGEHOG_READ_ANALOG } from './blocks/hedgehog';
 import MoveBlock from './blocks/MoveBlock';
 import SleepBlock from './blocks/SleepBlock';

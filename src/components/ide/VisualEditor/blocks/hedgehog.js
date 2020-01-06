@@ -9,7 +9,7 @@ import { type Block } from '.';
 export const HEDGEHOG_READ_ANALOG: Block = {
   blockJson: {
     type: 'hedgehog_read_analog',
-    message0: 'analog port %1',
+    message0: '%{BKY_HEDGEHOG_READ_ANALOG}',
     args0: [
       {
         "type": "field_number",
@@ -22,7 +22,7 @@ export const HEDGEHOG_READ_ANALOG: Block = {
     ],
     output: 'Number',
     colour: 120,
-    tooltip: 'get the value of an analog port',
+    tooltip: '%{BKY_HEDGEHOG_READ_ANALOG_TOOLTIP}',
     helpUrl: 'TODO',
   },
   generators: {

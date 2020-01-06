@@ -12,10 +12,9 @@ def js_string(s):
 def generate_code(model, root='.'):
     for mod in model.modules:
         generate_module_code(model, mod, root)
-        # generate_generator_module_code(model, mod, root)
-        # if 'langs' in mod:
-        #     for lang in mod.langs:
-        #         generate_msg_module_code(model, mod, lang, root)
+        if 'langs' in mod:
+            for lang in mod.langs:
+                generate_msg_module_code(model, mod, lang, root)
 
 
 def generate_module_code(model, mod, root):
@@ -25,14 +24,12 @@ def generate_module_code(model, mod, root):
     @generate(out_file)
     def code():
         def block_code(block):
-            lang = block.langs.get('en', {})
-
             yield from lines(f"""\
 
 export const {block.name.upper()}: Block = {{
   blockJson: {{
     type: '{block.name}',
-    message0: '{lang.get('msg', 'TODO')}',""")
+    message0: '%{{BKY_{block.name.upper()}}}',""")
             if 'args' in block:
                 yield from lines(textwrap.indent(f"""\
 args0: {json.dumps(block.args, indent=2)},""", 4 * " "))
@@ -49,7 +46,7 @@ args0: {json.dumps(block.args, indent=2)},""", 4 * " "))
     nextStatement: null,""")
             yield from lines(f"""\
     colour: 120,
-    tooltip: '{lang.get('tooltip', 'TODO')}',
+    tooltip: '%{{BKY_{block.name.upper()}_TOOLTIP}}',
     helpUrl: 'TODO',
   }},
   generators: {{
@@ -110,3 +107,33 @@ import Blockly from 'blockly';
 import {{ type Block }} from '.';""")
         for block in mod.blocks:
             yield from block_code(block)
+
+
+def generate_msg_module_code(model, mod, lang, root):
+    out_file = os.path.join(root, 'src/components/ide/VisualEditor/blocks', f'{mod.name}_msg_{lang.key}.js')
+    os.makedirs(os.path.dirname(out_file), exist_ok=True)
+
+    @generate(out_file)
+    def code():
+        yield from lines(f"""\
+// @flow
+/* eslint-disable */
+
+import Blockly from 'blockly';
+""")
+
+        def assigment_code(block, suffix, msg_key):
+            if msg_key in block:
+                key = block.name.upper()
+                if suffix is not None:
+                    key += f"_{suffix}"
+
+                yield from lines(f"""\
+Blockly.Msg['{key}'] = {repr(block[msg_key])};""")
+
+        for block in lang.blocks:
+            yield from lines(f"""\
+
+""")
+            yield from assigment_code(block, None, 'msg')
+            yield from assigment_code(block, 'TOOLTIP', 'tooltip')
