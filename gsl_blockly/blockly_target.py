@@ -57,7 +57,7 @@ args0: {json.dumps(block.args, indent=2)},""", 4 * " "))
                         continue
                     elif arg.type == 'input_statement':
                         yield from lines(f"""\
-      const statements = Blockly.Python.statementToCode(block, {repr(arg.name)});""")
+      const statements = Blockly.JavaScript.statementToCode(block, {repr(arg.name)});""")
                     elif arg.type == 'field_checkbox':
                         yield from lines(f"""\
       const {arg.name.lower()} = block.getFieldValue({repr(arg.name)}) === 'TRUE';""")
@@ -71,7 +71,7 @@ args0: {json.dumps(block.args, indent=2)},""", 4 * " "))
                 for arg in block.args:
                     if arg.type not in {'input_dummy', 'input_statement'} and arg.type.startswith('input_'):
                         yield from lines(f"""\
-      const {arg.name.lower()} = Blockly.Python.valueToCode(block, {repr(arg.name)}, Blockly.Python.ORDER_ATOMIC);""")
+      const {arg.name.lower()} = Blockly.JavaScript.valueToCode(block, {repr(arg.name)}, Blockly.JavaScript.ORDER_ATOMIC);""")
             yield from lines(f"""\
       // TODO generate code
       const code = '';""")
