@@ -13,18 +13,6 @@ def get_model(model_file, msg_model_file):
             block.langs = {}
             return block
 
-        def augment_lang(key, lang):
-            def augment_block(name, block):
-                block.name = name
-                return block
-
-            blocks = [augment_block(*pair) for pair in lang.items()]
-            lang.clear()
-            lang.key = key
-            lang.blocks = blocks
-
-            return lang
-
         blocks = [augment_block(*pair) for pair in mod.items()]
         mod.clear()
         mod.name = name
@@ -43,28 +31,6 @@ def get_model(model_file, msg_model_file):
 
 
 def main():
-    # from ruamel.yaml import YAML
-    # from collections import OrderedDict
-
-    # yaml = YAML(typ='rt')
-    # yaml.default_flow_style = False
-    # with open('gsl_blockly/blockly_msgs.yaml') as f:
-    #     model = yaml.load(f)
-
-    # for module in model['modules'].values():
-    #     new_blocks = OrderedDict()
-    #     for lang, blocks in module.items():
-    #         print(lang)
-    #         for block, content in blocks.items():
-    #             if block not in new_blocks:
-    #                 new_blocks[block] = OrderedDict()
-    #             new_blocks[block][lang] = content
-    #     module.clear()
-    #     module.update(new_blocks)
-
-    # with open('gsl_blockly/blockly_msgs.yaml', mode='w') as f:
-    #     yaml.dump(model, f)
-
     from . import blockly_target
 
     model = get_model('gsl_blockly/blockly.yaml', 'gsl_blockly/blockly_msgs.yaml')
