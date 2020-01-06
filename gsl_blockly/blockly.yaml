@@ -213,7 +213,7 @@ modules:
       - type: field_checkbox
         name: STATE
         checked: true
-    AnalogBlock:
+    hedgehog_read_analog:
       requiresScope: hedgehog
       output: Number
       args:

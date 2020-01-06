@@ -36,7 +36,7 @@ import Blockly from 'blockly';
 
 import {{ type Block }} from '..';
 
-const {block.name}: Block = {{
+const {block.name.upper()}: Block = {{
   blockJson: {{
     type: '{block.name}',
     message0: '{lang.get('msg', 'TODO')}',""")
@@ -105,6 +105,6 @@ toolboxBlocks: {{
   }},
 }};
 
-export default {block.name};""")
+export default {block.name.upper()};""")
 
         # TODO onchange for requiresScope
