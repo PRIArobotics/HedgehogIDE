@@ -4,9 +4,9 @@
 import * as React from 'react';
 import Blockly from 'blockly';
 
-import { type Block } from '..';
+import { type Block } from '.';
 
-const HEDGEHOG_READ_ANALOG: Block = {
+export const HEDGEHOG_READ_ANALOG: Block = {
   blockJson: {
     type: 'hedgehog_read_analog',
     message0: 'analog port %1',
@@ -43,5 +43,3 @@ toolboxBlocks: {
     // <default GSL customizable: hedgehog_read_analog-extra-toolbox />
   },
 };
-
-export default HEDGEHOG_READ_ANALOG;
