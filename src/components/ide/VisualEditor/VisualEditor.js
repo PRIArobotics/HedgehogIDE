@@ -19,12 +19,10 @@ import {
 import s from './VisualEditor.scss';
 
 import './blocks/hedgehog_msg_en';
-import { HEDGEHOG_READ_ANALOG } from './blocks/hedgehog';
-import MoveBlock from './blocks/MoveBlock';
-import SleepBlock from './blocks/SleepBlock';
+import { HEDGEHOG_READ_ANALOG, HEDGEHOG_MOVE2_UNLIMITED, HEDGEHOG_SLEEP } from './blocks/hedgehog';
 import PrintBlock from './blocks/PrintBlock';
 
-const blocks = [HEDGEHOG_READ_ANALOG, MoveBlock, PrintBlock, SleepBlock];
+const blocks = [HEDGEHOG_READ_ANALOG, HEDGEHOG_MOVE2_UNLIMITED, HEDGEHOG_SLEEP, PrintBlock];
 blocks.forEach(block => {
   const { type } = block.blockJson;
 
@@ -134,8 +132,8 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
     const toolbox = (
       <xml>
         <category name="Hedgehog" colour="120">
-          {MoveBlock.toolboxBlocks.default()}
-          {SleepBlock.toolboxBlocks.default()}
+          {HEDGEHOG_MOVE2_UNLIMITED.toolboxBlocks.default()}
+          {HEDGEHOG_SLEEP.toolboxBlocks.default()}
           {HEDGEHOG_READ_ANALOG.toolboxBlocks.default()}
         </category>
         <sep />
