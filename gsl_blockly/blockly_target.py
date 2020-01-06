@@ -87,9 +87,9 @@ args0: {json.dumps(block.args, indent=2)},""", 4 * " "))
   }},
   toolboxBlocks: {{
     default: () => (
-      <block type="{block.name}">{{
-        // <default GSL customizable: {block.name}-default-toolbox />
-      }}</block>
+      <block type="{block.name}">
+        {{/* <default GSL customizable: {block.name}-default-toolbox /> */}}
+      </block>
     ),
     // <default GSL customizable: {block.name}-extra-toolbox />
   }},

@@ -59,22 +59,20 @@ export const HEDGEHOG_MOVE2_UNLIMITED: Block = {
   },
   toolboxBlocks: {
     default: () => (
-      <block type="hedgehog_move2_unlimited">{
-        // <GSL customizable: hedgehog_move2_unlimited-default-toolbox>
-        <>
-          <value name="SPEED1">
-            <shadow type="math_number">
-              <field name="NUM">100</field>
-            </shadow>
-          </value>
-          <value name="SPEED2">
-            <shadow type="math_number">
-              <field name="NUM">100</field>
-            </shadow>
-          </value>
-        </>
-        // </GSL customizable: hedgehog_move2_unlimited-default-toolbox>
-      }</block>
+      <block type="hedgehog_move2_unlimited">
+        {/* <GSL customizable: hedgehog_move2_unlimited-default-toolbox> */}
+        <value name="SPEED1">
+          <shadow type="math_number">
+            <field name="NUM">100</field>
+          </shadow>
+        </value>
+        <value name="SPEED2">
+          <shadow type="math_number">
+            <field name="NUM">100</field>
+          </shadow>
+        </value>
+        {/* </GSL customizable: hedgehog_move2_unlimited-default-toolbox> */}
+      </block>
     ),
     // <default GSL customizable: hedgehog_move2_unlimited-extra-toolbox />
   },
@@ -110,9 +108,9 @@ export const HEDGEHOG_READ_ANALOG: Block = {
   },
   toolboxBlocks: {
     default: () => (
-      <block type="hedgehog_read_analog">{
-        // <default GSL customizable: hedgehog_read_analog-default-toolbox />
-      }</block>
+      <block type="hedgehog_read_analog">
+        {/* <default GSL customizable: hedgehog_read_analog-default-toolbox /> */}
+      </block>
     ),
     // <default GSL customizable: hedgehog_read_analog-extra-toolbox />
   },
@@ -147,15 +145,15 @@ export const HEDGEHOG_SLEEP: Block = {
   },
   toolboxBlocks: {
     default: () => (
-      <block type="hedgehog_sleep">{
-        // <GSL customizable: hedgehog_sleep-default-toolbox>
+      <block type="hedgehog_sleep">
+        {/* <GSL customizable: hedgehog_sleep-default-toolbox> */}
         <value name="TIME">
           <shadow type="math_number">
             <field name="NUM">1</field>
           </shadow>
         </value>
-        // </GSL customizable: hedgehog_sleep-default-toolbox>
-      }</block>
+        {/* </GSL customizable: hedgehog_sleep-default-toolbox> */}
+      </block>
     ),
     // <default GSL customizable: hedgehog_sleep-extra-toolbox />
   },
