@@ -6,9 +6,9 @@ import Blockly from 'blockly';
 
 import { type Block } from '..';
 
-const AnalogBlock: Block = {
+const HEDGEHOG_READ_ANALOG: Block = {
   blockJson: {
-    type: 'AnalogBlock',
+    type: 'hedgehog_read_analog',
     message0: 'analog port %1',
     args0: [
       {
@@ -28,20 +28,20 @@ const AnalogBlock: Block = {
   generators: {
     JavaScript: block => {
       const port = block.getFieldValue('PORT');
-      // <GSL customizable: AnalogBlock-body>
+      // <GSL customizable: hedgehog_read_analog-body>
       const code = `await getAnalog(${port})`;
       return [code, Blockly.JavaScript.ORDER_AWAIT];
-      // </GSL customizable: AnalogBlock-body>
+      // </GSL customizable: hedgehog_read_analog-body>
     },
   },
 toolboxBlocks: {
     default: () => (
-      <block type="AnalogBlock">{
-        // <default GSL customizable: AnalogBlock-default-toolbox />
+      <block type="hedgehog_read_analog">{
+        // <default GSL customizable: hedgehog_read_analog-default-toolbox />
       }</block>
     ),
-    // <default GSL customizable: AnalogBlock-extra-toolbox />
+    // <default GSL customizable: hedgehog_read_analog-extra-toolbox />
   },
 };
 
-export default AnalogBlock;
+export default HEDGEHOG_READ_ANALOG;

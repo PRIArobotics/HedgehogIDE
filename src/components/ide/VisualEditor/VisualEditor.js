@@ -18,12 +18,12 @@ import {
 
 import s from './VisualEditor.scss';
 
-import AnalogBlock from './blocks/hedgehog/AnalogBlock';
+import HEDGEHOG_READ_ANALOG from './blocks/hedgehog/hedgehog_read_analog';
 import MoveBlock from './blocks/MoveBlock';
 import SleepBlock from './blocks/SleepBlock';
 import PrintBlock from './blocks/PrintBlock';
 
-const blocks = [AnalogBlock, MoveBlock, PrintBlock, SleepBlock];
+const blocks = [HEDGEHOG_READ_ANALOG, MoveBlock, PrintBlock, SleepBlock];
 blocks.forEach(block => {
   const { type } = block.blockJson;
 
@@ -135,7 +135,7 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
         <category name="Hedgehog" colour="120">
           {MoveBlock.toolboxBlocks.default()}
           {SleepBlock.toolboxBlocks.default()}
-          {AnalogBlock.toolboxBlocks.default()}
+          {HEDGEHOG_READ_ANALOG.toolboxBlocks.default()}
         </category>
         <sep />
         <category name="Logic" colour="%{BKY_LOGIC_HUE}">
