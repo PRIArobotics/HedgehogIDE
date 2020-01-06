@@ -50,8 +50,8 @@ export const HEDGEHOG_MOVE2_UNLIMITED: Block = {
       const port1 = block.getFieldValue('PORT1');
       const port2 = block.getFieldValue('PORT2');
       // <GSL customizable: hedgehog_move2_unlimited-body>
-      const speed1 = Blockly.JavaScript.valueToCode(block, 'SPEED1', Blockly.JavaScript.ORDER_ATOMIC);
-      const speed2 = Blockly.JavaScript.valueToCode(block, 'SPEED2', Blockly.JavaScript.ORDER_ATOMIC);
+      const speed1 = Blockly.JavaScript.valueToCode(block, 'SPEED1', Blockly.JavaScript.ORDER_NONE);
+      const speed2 = Blockly.JavaScript.valueToCode(block, 'SPEED2', Blockly.JavaScript.ORDER_NONE);
       const code = `await move(${speed1}, ${speed2});\n`;
       return code;
       // </GSL customizable: hedgehog_move2_unlimited-body>
@@ -137,7 +137,7 @@ export const HEDGEHOG_SLEEP: Block = {
   generators: {
     JavaScript: block => {
       // <GSL customizable: hedgehog_sleep-body>
-      const time = Blockly.JavaScript.valueToCode(block, 'TIME', Blockly.JavaScript.ORDER_ATOMIC);
+      const time = Blockly.JavaScript.valueToCode(block, 'TIME', Blockly.JavaScript.ORDER_MULTIPLICATION);
       const code = `await sleep(${time} * 1000);\n`;
       return code;
       // </GSL customizable: hedgehog_sleep-body>
