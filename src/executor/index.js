@@ -26,12 +26,12 @@ const getReply = () =>
 global.print = (text: string) => {
   sendMessage('print', text);
 };
-global.move = async (left: number, right: number) => {
-  sendMessage('move', { left, right });
+global.moveMotor = async (port: number, power: number) => {
+  sendMessage('moveMotor', { port, power });
   await getReply();
 };
 global.getAnalog = async (port: number) => {
-  sendMessage('getAnalog', port);
+  sendMessage('getAnalog', { port });
   return /* await */ getReply();
 };
 global.sleep = async (ms: number) => {
