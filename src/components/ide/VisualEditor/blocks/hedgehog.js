@@ -118,6 +118,45 @@ export const HEDGEHOG_READ_ANALOG: Block = {
   },
 };
 
+export const HEDGEHOG_READ_DIGITAL: Block = {
+  blockJson: {
+    type: 'hedgehog_read_digital',
+    message0: '%{BKY_HEDGEHOG_READ_DIGITAL}',
+    args0: [
+      {
+        "type": "field_number",
+        "name": "PORT",
+        "value": 0,
+        "min": 0,
+        "max": 15,
+        "precision": 1
+      }
+    ],
+    output: 'Boolean',
+    colour: 120,
+    tooltip: '%{BKY_HEDGEHOG_READ_DIGITAL_TOOLTIP}',
+    helpUrl: 'TODO',
+  },
+  generators: {
+    JavaScript: block => {
+      const port = block.getFieldValue('PORT');
+      // <GSL customizable: hedgehog_read_digital-body>
+      // TODO generate code
+      const code = `await getDigital(${port})`;
+      return [code, Blockly.JavaScript.ORDER_AWAIT];
+      // </GSL customizable: hedgehog_read_digital-body>
+    },
+  },
+  toolboxBlocks: {
+    default: () => (
+      <block type="hedgehog_read_digital">
+        {/* <default GSL customizable: hedgehog_read_digital-default-toolbox /> */}
+      </block>
+    ),
+    // <default GSL customizable: hedgehog_read_digital-extra-toolbox />
+  },
+};
+
 export const HEDGEHOG_SLEEP: Block = {
   blockJson: {
     type: 'hedgehog_sleep',

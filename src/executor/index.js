@@ -34,6 +34,10 @@ global.getAnalog = async (port: number) => {
   sendMessage('getAnalog', { port });
   return /* await */ getReply();
 };
+global.getDigital = async (port: number) => {
+  sendMessage('getDigital', { port });
+  return /* await */ getReply();
+};
 global.sleep = async (ms: number) => {
   await new Promise(resolve => setTimeout(resolve, ms));
 };

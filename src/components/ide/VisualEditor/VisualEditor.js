@@ -21,6 +21,7 @@ import s from './VisualEditor.scss';
 import './blocks/hedgehog_msg_en';
 import {
   HEDGEHOG_READ_ANALOG,
+  HEDGEHOG_READ_DIGITAL,
   HEDGEHOG_MOVE2_UNLIMITED,
   HEDGEHOG_SLEEP,
 } from './blocks/hedgehog';
@@ -28,6 +29,7 @@ import PrintBlock from './blocks/PrintBlock';
 
 const blocks = [
   HEDGEHOG_READ_ANALOG,
+  HEDGEHOG_READ_DIGITAL,
   HEDGEHOG_MOVE2_UNLIMITED,
   HEDGEHOG_SLEEP,
   PrintBlock,
@@ -144,6 +146,7 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
           {HEDGEHOG_MOVE2_UNLIMITED.toolboxBlocks.default()}
           {HEDGEHOG_SLEEP.toolboxBlocks.default()}
           {HEDGEHOG_READ_ANALOG.toolboxBlocks.default()}
+          {HEDGEHOG_READ_DIGITAL.toolboxBlocks.default()}
         </category>
         <sep />
         <category name="Logic" colour="%{BKY_LOGIC_HUE}">

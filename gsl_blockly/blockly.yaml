@@ -223,16 +223,16 @@ modules:
         min: 0
         max: 15
         precision: 1
-    # hedgehog_read_digital:
-    #   requiresScope: hedgehog
-    #   output: Boolean
-    #   args:
-    #   - type: field_number
-    #     name: PORT
-    #     value: 0
-    #     min: 0
-    #     max: 15
-    #     precision: 1
+    hedgehog_read_digital:
+      requiresScope: hedgehog
+      output: Boolean
+      args:
+      - type: field_number
+        name: PORT
+        value: 0
+        min: 0
+        max: 15
+        precision: 1
     # hedgehog_read_imu:
     #   requiresScope: hedgehog
     #   output: Number
