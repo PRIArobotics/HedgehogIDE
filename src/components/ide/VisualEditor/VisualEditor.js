@@ -19,10 +19,19 @@ import {
 import s from './VisualEditor.scss';
 
 import './blocks/hedgehog_msg_en';
-import { HEDGEHOG_READ_ANALOG, HEDGEHOG_MOVE2_UNLIMITED, HEDGEHOG_SLEEP } from './blocks/hedgehog';
+import {
+  HEDGEHOG_READ_ANALOG,
+  HEDGEHOG_MOVE2_UNLIMITED,
+  HEDGEHOG_SLEEP,
+} from './blocks/hedgehog';
 import PrintBlock from './blocks/PrintBlock';
 
-const blocks = [HEDGEHOG_READ_ANALOG, HEDGEHOG_MOVE2_UNLIMITED, HEDGEHOG_SLEEP, PrintBlock];
+const blocks = [
+  HEDGEHOG_READ_ANALOG,
+  HEDGEHOG_MOVE2_UNLIMITED,
+  HEDGEHOG_SLEEP,
+  PrintBlock,
+];
 blocks.forEach(block => {
   const { type } = block.blockJson;
 
