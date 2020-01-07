@@ -52,7 +52,9 @@ export const HEDGEHOG_MOVE2_UNLIMITED: Block = {
       // <GSL customizable: hedgehog_move2_unlimited-body>
       const speed1 = Blockly.JavaScript.valueToCode(block, 'SPEED1', Blockly.JavaScript.ORDER_NONE);
       const speed2 = Blockly.JavaScript.valueToCode(block, 'SPEED2', Blockly.JavaScript.ORDER_NONE);
-      const code = `await move(${speed1}, ${speed2});\n`;
+      let code = '';
+      code += `await moveMotor(${port1}, ${speed1});\n`;
+      code += `await moveMotor(${port2}, ${speed2});\n`;
       return code;
       // </GSL customizable: hedgehog_move2_unlimited-body>
     },

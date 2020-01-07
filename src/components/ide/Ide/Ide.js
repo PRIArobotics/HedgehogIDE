@@ -692,12 +692,12 @@ class Ide extends React.Component<PropTypes, StateTypes> {
               print: async text => {
                 (await this.getConsole()).consoleOut(text, 'stdout');
               },
-              move: async ({ left, right }, executor) => {
+              moveMotor: async ({ port, power }, executor) => {
                 await executor.withReply(async () => {
-                  (await this.getSimulator()).robot.setSpeed(left, right);
+                  (await this.getSimulator()).robot.moveMotor(port, power);
                 });
               },
-              getAnalog: async (port, executor) => {
+              getAnalog: async ({ port }, executor) => {
                 await executor.withReply(async () =>
                   (await this.getSimulator()).robot.getAnalog(port),
                 );
