@@ -38,6 +38,9 @@ global.getDigital = async (port: number) => {
   sendMessage('getDigital', { port });
   return /* await */ getReply();
 };
+global.commands = async (...cmds: Array<Promise<any>>) => {
+  await Promise.all(cmds);
+};
 global.sleep = async (ms: number) => {
   await new Promise(resolve => setTimeout(resolve, ms));
 };
