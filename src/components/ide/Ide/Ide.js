@@ -702,6 +702,11 @@ class Ide extends React.Component<PropTypes, StateTypes> {
                   (await this.getSimulator()).robot.getAnalog(port),
                 );
               },
+              getDigital: async ({ port }, executor) => {
+                await executor.withReply(async () =>
+                  (await this.getSimulator()).robot.getDigital(port),
+                );
+              },
               exit: async error => {
                 this.setState({ runningCode: null });
                 // TODO the robot may continue to move here
