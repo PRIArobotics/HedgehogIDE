@@ -20,17 +20,31 @@ import s from './VisualEditor.scss';
 
 import './blocks/hedgehog_msg_en';
 import {
+  HEDGEHOG_MOVE,
+  HEDGEHOG_MOVE_UNLIMITED,
+  HEDGEHOG_MOTOR_OFF,
+  HEDGEHOG_BRAKE,
+  HEDGEHOG_MOVE2,
+  HEDGEHOG_MOVE2_UNLIMITED,
+  HEDGEHOG_MOTOR_OFF2,
+  HEDGEHOG_BRAKE2,
   HEDGEHOG_READ_ANALOG,
   HEDGEHOG_READ_DIGITAL,
-  HEDGEHOG_MOVE2_UNLIMITED,
   HEDGEHOG_SLEEP,
 } from './blocks/hedgehog';
 import PrintBlock from './blocks/PrintBlock';
 
 const blocks = [
+  HEDGEHOG_MOVE,
+  HEDGEHOG_MOVE_UNLIMITED,
+  HEDGEHOG_MOTOR_OFF,
+  HEDGEHOG_BRAKE,
+  HEDGEHOG_MOVE2,
+  HEDGEHOG_MOVE2_UNLIMITED,
+  HEDGEHOG_MOTOR_OFF2,
+  HEDGEHOG_BRAKE2,
   HEDGEHOG_READ_ANALOG,
   HEDGEHOG_READ_DIGITAL,
-  HEDGEHOG_MOVE2_UNLIMITED,
   HEDGEHOG_SLEEP,
   PrintBlock,
 ];
@@ -144,9 +158,16 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
       <xml>
         <category name="Hedgehog" colour="120">
           {HEDGEHOG_MOVE2_UNLIMITED.toolboxBlocks.default()}
-          {HEDGEHOG_SLEEP.toolboxBlocks.default()}
+          {HEDGEHOG_MOTOR_OFF2.toolboxBlocks.default()}
+          {HEDGEHOG_BRAKE2.toolboxBlocks.default()}
+          {HEDGEHOG_MOVE2.toolboxBlocks.default()}
+          {HEDGEHOG_MOVE_UNLIMITED.toolboxBlocks.default()}
+          {HEDGEHOG_MOTOR_OFF.toolboxBlocks.default()}
+          {HEDGEHOG_BRAKE.toolboxBlocks.default()}
+          {HEDGEHOG_MOVE.toolboxBlocks.default()}
           {HEDGEHOG_READ_ANALOG.toolboxBlocks.default()}
           {HEDGEHOG_READ_DIGITAL.toolboxBlocks.default()}
+          {HEDGEHOG_SLEEP.toolboxBlocks.default()}
         </category>
         <sep />
         <category name="Logic" colour="%{BKY_LOGIC_HUE}">
