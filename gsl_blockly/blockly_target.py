@@ -88,7 +88,19 @@ args0: {json.dumps(block.args, indent=2)},""", 4 * " "))
   toolboxBlocks: {{
     default: () => (
       <block type="{block.name}">
-        {{/* <default GSL customizable: {block.name}-default-toolbox /> */}}
+        {{/* <default GSL customizable: {block.name}-default-toolbox> */}}""")
+            if 'args' in block:
+                for arg in block.args:
+                    if arg.type == 'input_value':
+                        if arg.check == 'Number':
+                            yield from lines(f"""\
+        <value name="{arg.name}">
+          <shadow type="math_number">
+            <field name="NUM">0</field>
+          </shadow>
+        </value>""")
+            yield from lines(f"""\
+        {{/* </GSL customizable: {block.name}-default-toolbox> */}}
       </block>
     ),
     // <default GSL customizable: {block.name}-extra-toolbox />

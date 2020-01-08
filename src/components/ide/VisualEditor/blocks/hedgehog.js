@@ -114,7 +114,8 @@ export const HEDGEHOG_READ_ANALOG: Block = {
   toolboxBlocks: {
     default: () => (
       <block type="hedgehog_read_analog">
-        {/* <default GSL customizable: hedgehog_read_analog-default-toolbox /> */}
+        {/* <default GSL customizable: hedgehog_read_analog-default-toolbox> */}
+        {/* </GSL customizable: hedgehog_read_analog-default-toolbox> */}
       </block>
     ),
     // <default GSL customizable: hedgehog_read_analog-extra-toolbox />
@@ -153,7 +154,8 @@ export const HEDGEHOG_READ_DIGITAL: Block = {
   toolboxBlocks: {
     default: () => (
       <block type="hedgehog_read_digital">
-        {/* <default GSL customizable: hedgehog_read_digital-default-toolbox /> */}
+        {/* <default GSL customizable: hedgehog_read_digital-default-toolbox> */}
+        {/* </GSL customizable: hedgehog_read_digital-default-toolbox> */}
       </block>
     ),
     // <default GSL customizable: hedgehog_read_digital-extra-toolbox />
