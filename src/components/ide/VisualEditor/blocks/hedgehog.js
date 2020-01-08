@@ -6,6 +6,299 @@ import Blockly from 'blockly';
 
 import { type Block } from '.';
 
+export const HEDGEHOG_MOVE: Block = {
+  blockJson: {
+    type: 'hedgehog_move',
+    message0: '%{BKY_HEDGEHOG_MOVE}',
+    args0: [
+      {
+        "type": "field_number",
+        "name": "PORT",
+        "value": 0,
+        "min": 0,
+        "max": 3,
+        "precision": 1
+      },
+      {
+        "type": "input_value",
+        "name": "SPEED",
+        "check": "Number"
+      },
+      {
+        "type": "input_value",
+        "name": "TIME",
+        "check": "Number"
+      }
+    ],
+    inputsInline: true,
+    previousStatement: null,
+    nextStatement: null,
+    colour: 120,
+    tooltip: '%{BKY_HEDGEHOG_MOVE_TOOLTIP}',
+    helpUrl: 'TODO',
+  },
+  generators: {
+    JavaScript: block => {
+      const port = block.getFieldValue('PORT');
+      // <GSL customizable: hedgehog_move-body>
+      const speed = Blockly.JavaScript.valueToCode(block, 'SPEED', Blockly.JavaScript.ORDER_NONE);
+      const time = Blockly.JavaScript.valueToCode(block, 'TIME', Blockly.JavaScript.ORDER_NONE);
+      let code = '';
+      code += `await moveMotor(${port}, ${speed});\n`;
+      code += `await sleep(${time} * 1000);\n`;
+      code += `await moveMotor(${port}, 0);\n`;
+      return code;
+      // </GSL customizable: hedgehog_move-body>
+    },
+  },
+  toolboxBlocks: {
+    default: () => (
+      <block type="hedgehog_move">
+        {/* <GSL customizable: hedgehog_move-default-toolbox> */}
+        <value name="SPEED">
+          <shadow type="math_number">
+            <field name="NUM">100</field>
+          </shadow>
+        </value>
+        <value name="TIME">
+          <shadow type="math_number">
+            <field name="NUM">1</field>
+          </shadow>
+        </value>
+        {/* </GSL customizable: hedgehog_move-default-toolbox> */}
+      </block>
+    ),
+    // <default GSL customizable: hedgehog_move-extra-toolbox />
+  },
+};
+
+export const HEDGEHOG_MOVE_UNLIMITED: Block = {
+  blockJson: {
+    type: 'hedgehog_move_unlimited',
+    message0: '%{BKY_HEDGEHOG_MOVE_UNLIMITED}',
+    args0: [
+      {
+        "type": "field_number",
+        "name": "PORT",
+        "value": 0,
+        "min": 0,
+        "max": 3,
+        "precision": 1
+      },
+      {
+        "type": "input_value",
+        "name": "SPEED",
+        "check": "Number"
+      }
+    ],
+    inputsInline: true,
+    previousStatement: null,
+    nextStatement: null,
+    colour: 120,
+    tooltip: '%{BKY_HEDGEHOG_MOVE_UNLIMITED_TOOLTIP}',
+    helpUrl: 'TODO',
+  },
+  generators: {
+    JavaScript: block => {
+      const port = block.getFieldValue('PORT');
+      // <GSL customizable: hedgehog_move_unlimited-body>
+      const speed = Blockly.JavaScript.valueToCode(block, 'SPEED', Blockly.JavaScript.ORDER_NONE);
+      const code = `await moveMotor(${port}, ${speed});\n`;
+      return code;
+      // </GSL customizable: hedgehog_move_unlimited-body>
+    },
+  },
+  toolboxBlocks: {
+    default: () => (
+      <block type="hedgehog_move_unlimited">
+        {/* <GSL customizable: hedgehog_move_unlimited-default-toolbox> */}
+        <value name="SPEED">
+          <shadow type="math_number">
+            <field name="NUM">100</field>
+          </shadow>
+        </value>
+        {/* </GSL customizable: hedgehog_move_unlimited-default-toolbox> */}
+      </block>
+    ),
+    // <default GSL customizable: hedgehog_move_unlimited-extra-toolbox />
+  },
+};
+
+export const HEDGEHOG_MOTOR_OFF: Block = {
+  blockJson: {
+    type: 'hedgehog_motor_off',
+    message0: '%{BKY_HEDGEHOG_MOTOR_OFF}',
+    args0: [
+      {
+        "type": "field_number",
+        "name": "PORT",
+        "value": 0,
+        "min": 0,
+        "max": 3,
+        "precision": 1
+      }
+    ],
+    inputsInline: true,
+    previousStatement: null,
+    nextStatement: null,
+    colour: 120,
+    tooltip: '%{BKY_HEDGEHOG_MOTOR_OFF_TOOLTIP}',
+    helpUrl: 'TODO',
+  },
+  generators: {
+    JavaScript: block => {
+      const port = block.getFieldValue('PORT');
+      // <GSL customizable: hedgehog_motor_off-body>
+      const code = `await moveMotor(${port}, 0);\n`;
+      return code;
+      // </GSL customizable: hedgehog_motor_off-body>
+    },
+  },
+  toolboxBlocks: {
+    default: () => (
+      <block type="hedgehog_motor_off">
+        {/* <default GSL customizable: hedgehog_motor_off-default-toolbox> */}
+        {/* </GSL customizable: hedgehog_motor_off-default-toolbox> */}
+      </block>
+    ),
+    // <default GSL customizable: hedgehog_motor_off-extra-toolbox />
+  },
+};
+
+export const HEDGEHOG_BRAKE: Block = {
+  blockJson: {
+    type: 'hedgehog_brake',
+    message0: '%{BKY_HEDGEHOG_BRAKE}',
+    args0: [
+      {
+        "type": "field_number",
+        "name": "PORT",
+        "value": 0,
+        "min": 0,
+        "max": 3,
+        "precision": 1
+      }
+    ],
+    inputsInline: true,
+    previousStatement: null,
+    nextStatement: null,
+    colour: 120,
+    tooltip: '%{BKY_HEDGEHOG_BRAKE_TOOLTIP}',
+    helpUrl: 'TODO',
+  },
+  generators: {
+    JavaScript: block => {
+      const port = block.getFieldValue('PORT');
+      // <GSL customizable: hedgehog_brake-body>
+      const code = `await moveMotor(${port}, 0);\n`;
+      return code;
+      // </GSL customizable: hedgehog_brake-body>
+    },
+  },
+  toolboxBlocks: {
+    default: () => (
+      <block type="hedgehog_brake">
+        {/* <default GSL customizable: hedgehog_brake-default-toolbox> */}
+        {/* </GSL customizable: hedgehog_brake-default-toolbox> */}
+      </block>
+    ),
+    // <default GSL customizable: hedgehog_brake-extra-toolbox />
+  },
+};
+
+export const HEDGEHOG_MOVE2: Block = {
+  blockJson: {
+    type: 'hedgehog_move2',
+    message0: '%{BKY_HEDGEHOG_MOVE2}',
+    args0: [
+      {
+        "type": "field_number",
+        "name": "PORT1",
+        "value": 0,
+        "min": 0,
+        "max": 3,
+        "precision": 1
+      },
+      {
+        "type": "field_number",
+        "name": "PORT2",
+        "value": 1,
+        "min": 0,
+        "max": 3,
+        "precision": 1
+      },
+      {
+        "type": "input_value",
+        "name": "SPEED1",
+        "check": "Number"
+      },
+      {
+        "type": "input_value",
+        "name": "SPEED2",
+        "check": "Number"
+      },
+      {
+        "type": "input_value",
+        "name": "TIME",
+        "check": "Number"
+      }
+    ],
+    inputsInline: true,
+    previousStatement: null,
+    nextStatement: null,
+    colour: 120,
+    tooltip: '%{BKY_HEDGEHOG_MOVE2_TOOLTIP}',
+    helpUrl: 'TODO',
+  },
+  generators: {
+    JavaScript: block => {
+      const port1 = block.getFieldValue('PORT1');
+      const port2 = block.getFieldValue('PORT2');
+      // <GSL customizable: hedgehog_move2-body>
+      const speed1 = Blockly.JavaScript.valueToCode(block, 'SPEED1', Blockly.JavaScript.ORDER_NONE);
+      const speed2 = Blockly.JavaScript.valueToCode(block, 'SPEED2', Blockly.JavaScript.ORDER_NONE);
+      const time = Blockly.JavaScript.valueToCode(block, 'TIME', Blockly.JavaScript.ORDER_NONE);
+      const indent = Blockly.JavaScript.INDENT;
+      let code = '';
+      code += 'await commands(\n';
+      code += `${indent}moveMotor(${port1}, ${speed1}),\n`;
+      code += `${indent}moveMotor(${port2}, ${speed2}),\n`;
+      code += ');\n';
+      code += `await sleep(${time} * 1000);\n`;
+      code += 'await commands(\n';
+      code += `${indent}moveMotor(${port1}, 0),\n`;
+      code += `${indent}moveMotor(${port2}, 0),\n`;
+      code += ');\n';
+      return code;
+      // </GSL customizable: hedgehog_move2-body>
+    },
+  },
+  toolboxBlocks: {
+    default: () => (
+      <block type="hedgehog_move2">
+        {/* <GSL customizable: hedgehog_move2-default-toolbox> */}
+        <value name="SPEED1">
+          <shadow type="math_number">
+            <field name="NUM">100</field>
+          </shadow>
+        </value>
+        <value name="SPEED2">
+          <shadow type="math_number">
+            <field name="NUM">100</field>
+          </shadow>
+        </value>
+        <value name="TIME">
+          <shadow type="math_number">
+            <field name="NUM">1</field>
+          </shadow>
+        </value>
+        {/* </GSL customizable: hedgehog_move2-default-toolbox> */}
+      </block>
+    ),
+    // <default GSL customizable: hedgehog_move2-extra-toolbox />
+  },
+};
+
 export const HEDGEHOG_MOVE2_UNLIMITED: Block = {
   blockJson: {
     type: 'hedgehog_move2_unlimited',
@@ -80,6 +373,116 @@ export const HEDGEHOG_MOVE2_UNLIMITED: Block = {
       </block>
     ),
     // <default GSL customizable: hedgehog_move2_unlimited-extra-toolbox />
+  },
+};
+
+export const HEDGEHOG_MOTOR_OFF2: Block = {
+  blockJson: {
+    type: 'hedgehog_motor_off2',
+    message0: '%{BKY_HEDGEHOG_MOTOR_OFF2}',
+    args0: [
+      {
+        "type": "field_number",
+        "name": "PORT1",
+        "value": 0,
+        "min": 0,
+        "max": 3,
+        "precision": 1
+      },
+      {
+        "type": "field_number",
+        "name": "PORT2",
+        "value": 1,
+        "min": 0,
+        "max": 3,
+        "precision": 1
+      }
+    ],
+    inputsInline: true,
+    previousStatement: null,
+    nextStatement: null,
+    colour: 120,
+    tooltip: '%{BKY_HEDGEHOG_MOTOR_OFF2_TOOLTIP}',
+    helpUrl: 'TODO',
+  },
+  generators: {
+    JavaScript: block => {
+      const port1 = block.getFieldValue('PORT1');
+      const port2 = block.getFieldValue('PORT2');
+      // <GSL customizable: hedgehog_motor_off2-body>
+      const indent = Blockly.JavaScript.INDENT;
+      let code = '';
+      code += 'await commands(\n';
+      code += `${indent}moveMotor(${port1}, 0),\n`;
+      code += `${indent}moveMotor(${port2}, 0),\n`;
+      code += ');\n';
+      return code;
+      // </GSL customizable: hedgehog_motor_off2-body>
+    },
+  },
+  toolboxBlocks: {
+    default: () => (
+      <block type="hedgehog_motor_off2">
+        {/* <default GSL customizable: hedgehog_motor_off2-default-toolbox> */}
+        {/* </GSL customizable: hedgehog_motor_off2-default-toolbox> */}
+      </block>
+    ),
+    // <default GSL customizable: hedgehog_motor_off2-extra-toolbox />
+  },
+};
+
+export const HEDGEHOG_BRAKE2: Block = {
+  blockJson: {
+    type: 'hedgehog_brake2',
+    message0: '%{BKY_HEDGEHOG_BRAKE2}',
+    args0: [
+      {
+        "type": "field_number",
+        "name": "PORT1",
+        "value": 0,
+        "min": 0,
+        "max": 3,
+        "precision": 1
+      },
+      {
+        "type": "field_number",
+        "name": "PORT2",
+        "value": 1,
+        "min": 0,
+        "max": 3,
+        "precision": 1
+      }
+    ],
+    inputsInline: true,
+    previousStatement: null,
+    nextStatement: null,
+    colour: 120,
+    tooltip: '%{BKY_HEDGEHOG_BRAKE2_TOOLTIP}',
+    helpUrl: 'TODO',
+  },
+  generators: {
+    JavaScript: block => {
+      const port1 = block.getFieldValue('PORT1');
+      const port2 = block.getFieldValue('PORT2');
+      // <GSL customizable: hedgehog_brake2-body>
+      const indent = Blockly.JavaScript.INDENT;
+      let code = '';
+      code += 'await commands(\n';
+      code += `${indent}moveMotor(${port1}, 0),\n`;
+      code += `${indent}moveMotor(${port2}, 0),\n`;
+      code += ');\n';
+      return code;
+      // </GSL customizable: hedgehog_brake2-body>
+    },
+  },
+  toolboxBlocks: {
+    default: () => (
+      <block type="hedgehog_brake2">
+        {/* <default GSL customizable: hedgehog_brake2-default-toolbox> */}
+        {/* </GSL customizable: hedgehog_brake2-default-toolbox> */}
+      </block>
+    ),
+    // <default GSL customizable: hedgehog_brake2-extra-toolbox />
   },
 };
 
