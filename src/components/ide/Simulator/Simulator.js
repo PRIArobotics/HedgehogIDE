@@ -57,16 +57,25 @@ class Simulator extends React.Component<PropTypes, StateTypes> {
     const robot = new Robot();
     robot.setPose({ x: 100, y: 100, angle: 0 });
 
-    const box = Matter.Bodies.rectangle(300, 150, 60, 60, {
-      density: 0.2,
-      frictionAir: 0.4,
-      render: {
-        fillStyle: '#995544',
-        // sprite: {
-        //   texture: '/icon.png',
-        // },
+    const box = Matter.Composites.softBody(
+      // x/y, rows/cols, r/c gaps, cross brace, particle radius
+      ...[275, 75, 6, 6, 0, 0, true, 5],
+      {
+        inertia: undefined,
+        density: 0.2,
+        frictionAir: 0.3,
+        render: {
+          fillStyle: '#995544',
+          // sprite: {
+          //   texture: '/icon.png',
+          // },
+        },
       },
-    });
+      {
+        stiffness: 0.8,
+        render: { visible: false },
+      },
+    );
 
     const lineOptions = {
       isSensor: true,
@@ -91,16 +100,16 @@ class Simulator extends React.Component<PropTypes, StateTypes> {
     };
 
     this.simulation.add([
-      Matter.Bodies.rectangle(width / 2, 6, width - 20, 8, {
+      Matter.Bodies.rectangle(width / 2, 3, width, 6, {
         ...boundsOptions,
       }),
-      Matter.Bodies.rectangle(width / 2, height - 6, width - 20, 8, {
+      Matter.Bodies.rectangle(width / 2, height - 3, width, 6, {
         ...boundsOptions,
       }),
-      Matter.Bodies.rectangle(6, height / 2, 8, height - 20, {
+      Matter.Bodies.rectangle(3, height / 2, 6, height, {
         ...boundsOptions,
       }),
-      Matter.Bodies.rectangle(width - 6, height / 2, 8, height - 20, {
+      Matter.Bodies.rectangle(width - 3, height / 2, 6, height, {
         ...boundsOptions,
       }),
       ...lines,
