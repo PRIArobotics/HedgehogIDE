@@ -596,6 +596,7 @@ export const HEDGEHOG_SLEEP: Block = {
     colour: 120,
     tooltip: '%{BKY_HEDGEHOG_SLEEP_TOOLTIP}',
     helpUrl: 'TODO',
+    extensions: ['requires_async_js_function'],
   },
   generators: {
     JavaScript: block => {
