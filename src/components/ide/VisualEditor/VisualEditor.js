@@ -19,7 +19,7 @@ import {
 import s from './VisualEditor.scss';
 
 import './blocks/hedgehog_msg_en';
-import './blocks/async_procedures';
+import './blocks/async_procedures_js';
 import {
   HEDGEHOG_MOVE,
   HEDGEHOG_MOVE_UNLIMITED,
