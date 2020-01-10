@@ -29,6 +29,8 @@ import {
   HEDGEHOG_MOVE2_UNLIMITED,
   HEDGEHOG_MOTOR_OFF2,
   HEDGEHOG_BRAKE2,
+  HEDGEHOG_SERVO,
+  HEDGEHOG_SERVO_OFF,
   HEDGEHOG_READ_ANALOG,
   HEDGEHOG_READ_DIGITAL,
   HEDGEHOG_SLEEP,
@@ -44,6 +46,8 @@ const blocks = [
   HEDGEHOG_MOVE2_UNLIMITED,
   HEDGEHOG_MOTOR_OFF2,
   HEDGEHOG_BRAKE2,
+  HEDGEHOG_SERVO,
+  HEDGEHOG_SERVO_OFF,
   HEDGEHOG_READ_ANALOG,
   HEDGEHOG_READ_DIGITAL,
   HEDGEHOG_SLEEP,
@@ -170,6 +174,10 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
           {HEDGEHOG_BRAKE.toolboxBlocks.default()}
           {HEDGEHOG_MOVE.toolboxBlocks.default()}
           {HEDGEHOG_SLEEP.toolboxBlocks.default()}
+        </category>
+        <category name="Servos" colour="120">
+          {HEDGEHOG_SERVO.toolboxBlocks.default()}
+          {HEDGEHOG_SERVO_OFF.toolboxBlocks.default()}
         </category>
         <category name="Sensors" colour="120">
           {HEDGEHOG_READ_DIGITAL.toolboxBlocks.default()}

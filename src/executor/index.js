@@ -30,6 +30,10 @@ global.moveMotor = async (port: number, power: number) => {
   sendMessage('moveMotor', { port, power });
   await getReply();
 };
+global.setServo = async (port: number, position: number | null) => {
+  sendMessage('setServo', { port, position });
+  await getReply();
+};
 global.getAnalog = async (port: number) => {
   sendMessage('getAnalog', { port });
   return /* await */ getReply();

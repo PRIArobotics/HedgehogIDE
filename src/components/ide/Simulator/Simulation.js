@@ -25,8 +25,10 @@ export class Robot {
   // first parameter is array-like, so `length` is an array length
   // all values (`v`) are `undefined`, map them to something else.
 
-  // motor (port = 0..4) setters for the user program
+  // motor (port = 0..4) power, -100..=100
   motors: Array<number> = Array.from({ length: 4 }, () => 0);
+  // servo (port = 0..6) positions, 0..=1000 or null
+  servos: Array<number | null> = Array.from({ length: 6 }, () => null);
   // sensor (port = 0..16) value inferred from the simulation
   // the value here is "exact"; an analog value read by a user program should
   // have some noise applied to it
@@ -160,6 +162,10 @@ export class Robot {
 
   moveMotor(port: number, power: number) {
     this.motors[port] = power;
+  }
+
+  setServo(port: number, position: number | null) {
+    this.servos[port] = position;
   }
 
   getAnalog(port: number): number {

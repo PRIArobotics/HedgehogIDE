@@ -697,6 +697,11 @@ class Ide extends React.Component<PropTypes, StateTypes> {
                   (await this.getSimulator()).robot.moveMotor(port, power);
                 });
               },
+              setServo: async ({ port, position }, executor) => {
+                await executor.withReply(async () => {
+                  (await this.getSimulator()).robot.setServo(port, position);
+                });
+              },
               getAnalog: async ({ port }, executor) => {
                 await executor.withReply(async () =>
                   (await this.getSimulator()).robot.getAnalog(port),
