@@ -36,6 +36,7 @@ export const HEDGEHOG_MOVE: Block = {
     colour: 120,
     tooltip: '%{BKY_HEDGEHOG_MOVE_TOOLTIP}',
     helpUrl: 'TODO',
+    extensions: ['requires_async_js_function'],
   },
   generators: {
     JavaScript: block => {
@@ -97,6 +98,7 @@ export const HEDGEHOG_MOVE_UNLIMITED: Block = {
     colour: 120,
     tooltip: '%{BKY_HEDGEHOG_MOVE_UNLIMITED_TOOLTIP}',
     helpUrl: 'TODO',
+    extensions: ['requires_async_js_function'],
   },
   generators: {
     JavaScript: block => {
@@ -144,6 +146,7 @@ export const HEDGEHOG_MOTOR_OFF: Block = {
     colour: 120,
     tooltip: '%{BKY_HEDGEHOG_MOTOR_OFF_TOOLTIP}',
     helpUrl: 'TODO',
+    extensions: ['requires_async_js_function'],
   },
   generators: {
     JavaScript: block => {
@@ -185,6 +188,7 @@ export const HEDGEHOG_BRAKE: Block = {
     colour: 120,
     tooltip: '%{BKY_HEDGEHOG_BRAKE_TOOLTIP}',
     helpUrl: 'TODO',
+    extensions: ['requires_async_js_function'],
   },
   generators: {
     JavaScript: block => {
@@ -249,6 +253,7 @@ export const HEDGEHOG_MOVE2: Block = {
     colour: 120,
     tooltip: '%{BKY_HEDGEHOG_MOVE2_TOOLTIP}',
     helpUrl: 'TODO',
+    extensions: ['requires_async_js_function'],
   },
   generators: {
     JavaScript: block => {
@@ -337,6 +342,7 @@ export const HEDGEHOG_MOVE2_UNLIMITED: Block = {
     colour: 120,
     tooltip: '%{BKY_HEDGEHOG_MOVE2_UNLIMITED_TOOLTIP}',
     helpUrl: 'TODO',
+    extensions: ['requires_async_js_function'],
   },
   generators: {
     JavaScript: block => {
@@ -404,6 +410,7 @@ export const HEDGEHOG_MOTOR_OFF2: Block = {
     colour: 120,
     tooltip: '%{BKY_HEDGEHOG_MOTOR_OFF2_TOOLTIP}',
     helpUrl: 'TODO',
+    extensions: ['requires_async_js_function'],
   },
   generators: {
     JavaScript: block => {
@@ -459,6 +466,7 @@ export const HEDGEHOG_BRAKE2: Block = {
     colour: 120,
     tooltip: '%{BKY_HEDGEHOG_BRAKE2_TOOLTIP}',
     helpUrl: 'TODO',
+    extensions: ['requires_async_js_function'],
   },
   generators: {
     JavaScript: block => {
@@ -504,6 +512,7 @@ export const HEDGEHOG_READ_ANALOG: Block = {
     colour: 120,
     tooltip: '%{BKY_HEDGEHOG_READ_ANALOG_TOOLTIP}',
     helpUrl: 'TODO',
+    extensions: ['requires_async_js_function'],
   },
   generators: {
     JavaScript: block => {
@@ -557,6 +566,7 @@ export const HEDGEHOG_READ_DIGITAL: Block = {
     colour: 120,
     tooltip: '%{BKY_HEDGEHOG_READ_DIGITAL_TOOLTIP}',
     helpUrl: 'TODO',
+    extensions: ['requires_async_js_function'],
   },
   generators: {
     JavaScript: block => {

@@ -47,7 +47,14 @@ args0: {json.dumps(block.args, indent=2)},""", 4 * " "))
             yield from lines(f"""\
     colour: 120,
     tooltip: '%{{BKY_{block.name.upper()}_TOOLTIP}}',
-    helpUrl: 'TODO',
+    helpUrl: 'TODO',""")
+            extensions = []
+            if block['async']:
+                extensions.append('requires_async_js_function')
+            if extensions:
+                yield from lines(f"""\
+    extensions: [{', '.join(f"'{extension}'" for extension in extensions)}],""")
+            yield from lines(f"""\
   }},
   generators: {{
     JavaScript: block => {{""")

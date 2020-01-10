@@ -21,6 +21,7 @@ modules:
       - type: input_value
         name: TIME
         check: Number
+      async: true
     hedgehog_move_unlimited:
       requiresScope: hedgehog
       args:
@@ -33,6 +34,7 @@ modules:
       - type: input_value
         name: SPEED
         check: Number
+      async: true
     hedgehog_motor_off:
       requiresScope: hedgehog
       args:
@@ -42,6 +44,7 @@ modules:
         min: 0
         max: 3
         precision: 1
+      async: true
     hedgehog_brake:
       requiresScope: hedgehog
       args:
@@ -51,6 +54,7 @@ modules:
         min: 0
         max: 3
         precision: 1
+      async: true
     hedgehog_move2:
       requiresScope: hedgehog
       args:
@@ -75,6 +79,7 @@ modules:
       - type: input_value
         name: TIME
         check: Number
+      async: true
     hedgehog_move2_unlimited:
       requiresScope: hedgehog
       args:
@@ -96,6 +101,7 @@ modules:
       - type: input_value
         name: SPEED2
         check: Number
+      async: true
     # hedgehog_forward:
     #   requiresScope: hedgehog
     #   args:
@@ -153,6 +159,7 @@ modules:
         min: 0
         max: 3
         precision: 1
+      async: true
     hedgehog_brake2:
       requiresScope: hedgehog
       args:
@@ -168,6 +175,7 @@ modules:
         min: 0
         max: 3
         precision: 1
+      async: true
     # hedgehog_servo:
     #   requiresScope: hedgehog
     #   args:
@@ -223,6 +231,7 @@ modules:
         min: 0
         max: 15
         precision: 1
+      async: true
     hedgehog_read_digital:
       requiresScope: hedgehog
       output: Boolean
@@ -233,6 +242,7 @@ modules:
         min: 0
         max: 15
         precision: 1
+      async: true
     # hedgehog_read_imu:
     #   requiresScope: hedgehog
     #   output: Number
@@ -256,6 +266,7 @@ modules:
       - type: input_value
         name: TIME
         check: Number
+      async: true
     # hedgehog_create_scope:
     #   scope: true
     #   args:
