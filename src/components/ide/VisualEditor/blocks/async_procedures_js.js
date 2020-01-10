@@ -22,9 +22,11 @@ function isAsyncProcedure(block: Blockly.Block): boolean {
 
   // a procedure is async if any descendant is async,
   // i.e. if not every descendant is not async
-  return !block.getDescendants().every(child => {
-    return !(isAsyncProcedureCall(child) || child.requiresAsyncJsFunction);
-  });
+  return !block.getDescendants().every(child => !requiresAsyncJsFunction(child));
+}
+
+function requiresAsyncJsFunction(block: Blockly.Block): boolean {
+  return isAsyncProcedureCall(block) || block.requiresAsyncJsFunction;
 }
 
 const original_procedures_callreturn_generator = Blockly.JavaScript['procedures_callreturn'];
