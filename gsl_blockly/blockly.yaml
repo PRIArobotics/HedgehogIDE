@@ -176,27 +176,27 @@ modules:
         max: 3
         precision: 1
       async: true
-    # hedgehog_servo:
-    #   requiresScope: hedgehog
-    #   args:
-    #   - type: field_number
-    #     name: PORT
-    #     value: 0
-    #     min: 0
-    #     max: 5
-    #     precision: 1
-    #   - type: input_value
-    #     name: ANGLE
-    #     check: Number
-    # hedgehog_servo_off:
-    #   requiresScope: hedgehog
-    #   args:
-    #   - type: field_number
-    #     name: PORT
-    #     value: 0
-    #     min: 0
-    #     max: 5
-    #     precision: 1
+    hedgehog_servo:
+      requiresScope: hedgehog
+      args:
+      - type: field_number
+        name: PORT
+        value: 0
+        min: 0
+        max: 5
+        precision: 1
+      - type: input_value
+        name: ANGLE
+        check: Number
+    hedgehog_servo_off:
+      requiresScope: hedgehog
+      args:
+      - type: field_number
+        name: PORT
+        value: 0
+        min: 0
+        max: 5
+        precision: 1
     # hedgehog_speaker:
     #   requiresScope: hedgehog
     #   args:

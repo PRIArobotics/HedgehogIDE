@@ -494,6 +494,99 @@ export const HEDGEHOG_BRAKE2: Block = {
   },
 };
 
+export const HEDGEHOG_SERVO: Block = {
+  blockJson: {
+    type: 'hedgehog_servo',
+    message0: '%{BKY_HEDGEHOG_SERVO}',
+    args0: [
+      {
+        "type": "field_number",
+        "name": "PORT",
+        "value": 0,
+        "min": 0,
+        "max": 5,
+        "precision": 1
+      },
+      {
+        "type": "input_value",
+        "name": "ANGLE",
+        "check": "Number"
+      }
+    ],
+    inputsInline: true,
+    previousStatement: null,
+    nextStatement: null,
+    colour: 120,
+    tooltip: '%{BKY_HEDGEHOG_SERVO_TOOLTIP}',
+    helpUrl: 'TODO',
+  },
+  generators: {
+    JavaScript: block => {
+      const port = block.getFieldValue('PORT');
+      // <GSL customizable: hedgehog_servo-body>
+      const angle = Blockly.JavaScript.valueToCode(block, 'ANGLE', Blockly.JavaScript.ORDER_MULTIPLICATION);
+      const code = `await setServo(${port}, Math.round(${angle} * 1000 / 180));\n`;
+      return code;
+      // </GSL customizable: hedgehog_servo-body>
+    },
+  },
+  toolboxBlocks: {
+    default: () => (
+      <block type="hedgehog_servo">
+        {/* <GSL customizable: hedgehog_servo-default-toolbox> */}
+        <value name="ANGLE">
+          <shadow type="math_number">
+            <field name="NUM">90</field>
+          </shadow>
+        </value>
+        {/* </GSL customizable: hedgehog_servo-default-toolbox> */}
+      </block>
+    ),
+    // <default GSL customizable: hedgehog_servo-extra-toolbox />
+  },
+};
+
+export const HEDGEHOG_SERVO_OFF: Block = {
+  blockJson: {
+    type: 'hedgehog_servo_off',
+    message0: '%{BKY_HEDGEHOG_SERVO_OFF}',
+    args0: [
+      {
+        "type": "field_number",
+        "name": "PORT",
+        "value": 0,
+        "min": 0,
+        "max": 5,
+        "precision": 1
+      }
+    ],
+    inputsInline: true,
+    previousStatement: null,
+    nextStatement: null,
+    colour: 120,
+    tooltip: '%{BKY_HEDGEHOG_SERVO_OFF_TOOLTIP}',
+    helpUrl: 'TODO',
+  },
+  generators: {
+    JavaScript: block => {
+      const port = block.getFieldValue('PORT');
+      // <GSL customizable: hedgehog_servo_off-body>
+      const code = `await setServo(${port}, null);\n`;
+      return code;
+      // </GSL customizable: hedgehog_servo_off-body>
+    },
+  },
+  toolboxBlocks: {
+    default: () => (
+      <block type="hedgehog_servo_off">
+        {/* <default GSL customizable: hedgehog_servo_off-default-toolbox> */}
+        {/* </GSL customizable: hedgehog_servo_off-default-toolbox> */}
+      </block>
+    ),
+    // <default GSL customizable: hedgehog_servo_off-extra-toolbox />
+  },
+};
+
 export const HEDGEHOG_READ_ANALOG: Block = {
   blockJson: {
     type: 'hedgehog_read_analog',
