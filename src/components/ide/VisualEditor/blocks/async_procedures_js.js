@@ -6,6 +6,8 @@ Blockly.Extensions.registerMixin('requires_async_js_function', {
   requiresAsyncJsFunction: true,
 });
 
+// TODO prevent infinite recursion for recursive functions
+
 function isAsyncProcedureCall(block: Blockly.Block): boolean {
   if (block.type !== 'procedures_callnoreturn' && block.type !== 'procedures_callreturn')
     return false;
