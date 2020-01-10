@@ -49,7 +49,7 @@ args0: {json.dumps(block.args, indent=2)},""", 4 * " "))
     tooltip: '%{{BKY_{block.name.upper()}_TOOLTIP}}',
     helpUrl: 'TODO',""")
             extensions = []
-            if block['async']:
+            if block.get('async', False):
                 extensions.append('requires_async_js_function')
             if extensions:
                 yield from lines(f"""\
