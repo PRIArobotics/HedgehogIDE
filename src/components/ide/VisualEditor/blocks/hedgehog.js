@@ -535,7 +535,7 @@ export const HEDGEHOG_READ_ANALOG: Block = {
         </value>
       </block>
     ),
-    // <GSL customizable: hedgehog_read_analog-extra-toolbox />
+    // </GSL customizable: hedgehog_read_analog-extra-toolbox>
   },
 };
 
