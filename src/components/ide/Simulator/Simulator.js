@@ -113,7 +113,7 @@ class Simulator extends React.Component<PropTypes, StateTypes> {
         ...boundsOptions,
       }),
       ...lines,
-      robot.body,
+      ...robot.bodies,
       box,
     ]);
 

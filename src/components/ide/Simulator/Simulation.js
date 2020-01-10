@@ -19,6 +19,8 @@ export class Robot {
   surfaceSensors: Array<Matter.Body>;
   body: Matter.Body;
 
+  bodies: Array<Matter.Body>;
+
   // Array.from({ length: n }, (v, i) => ...):
   // first parameter is array-like, so `length` is an array length
   // all values (`v`) are `undefined`, map them to something else.
@@ -101,6 +103,7 @@ export class Robot {
       parts: [this.leftWheel, this.rightWheel, ...this.surfaceSensors, body],
       ...material,
     });
+    this.bodies = [this.body];
   }
 
   setPose({ x, y, angle }: Pose) {
