@@ -83,6 +83,11 @@ export class Robot {
         // },
       },
     };
+    const grabberStyle = {
+      render: {
+        fillStyle: '#777777',
+      },
+    };
     const sensorStyle = {
       render: {
         fillStyle: '#777777',
@@ -171,27 +176,25 @@ export class Robot {
 
     const leftGrabber = Matter.Bodies.rectangle(185, 65, 60, 5, {
       ...grabberMaterial,
-      ...bodyStyle,
-      // collisionFilter: { mask: 0 },
+      ...grabberStyle,
     });
 
     const rightGrabber = Matter.Bodies.rectangle(185, 135, 60, 5, {
       ...grabberMaterial,
-      ...bodyStyle,
-      // collisionFilter: { mask: 0 },
+      ...grabberStyle,
     });
 
     this.leftGrabberControl = Matter.Constraint.create({
       ...controlProperties(this.body, leftGrabberPivot, leftGrabber, grabberPivotArm, 30),
       stiffness: 0.01,
       damping: 0.9,
-      // render: { visible: false },
+      render: { visible: false },
     });
     this.rightGrabberControl = Matter.Constraint.create({
       ...controlProperties(this.body, rightGrabberPivot, rightGrabber, grabberPivotArm, 30),
       stiffness: 0.01,
       damping: 0.9,
-      // render: { visible: false },
+      render: { visible: false },
     });
     // TODO workaround for https://github.com/liabru/matter-js/issues/817
     this.leftGrabberControl.plugin.hedgehog = pluginData({ pivot: leftGrabberPivot, length: 30 }).plugin.hedgehog;
@@ -207,7 +210,7 @@ export class Robot {
           ...pivotProperties(this.body, leftGrabberPivot, leftGrabber, grabberPivotArm, 30),
           stiffness: 0.7,
           damping: 0.9,
-          // render: { visible: false },
+          render: { visible: false },
         }),
         this.leftGrabberControl,
         // right grabber pivot
@@ -215,7 +218,7 @@ export class Robot {
           ...pivotProperties(this.body, rightGrabberPivot, rightGrabber, grabberPivotArm, 30),
           stiffness: 0.7,
           damping: 0.9,
-          // render: { visible: false },
+          render: { visible: false },
         }),
         this.rightGrabberControl,
       ],
