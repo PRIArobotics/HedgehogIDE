@@ -13,6 +13,19 @@ type Pose = {|
   angle: number,
 |};
 
+function transform(
+  { x, y, angle }: Pose,
+  { x: dx, y: dy, angle: dangle }: Pose,
+): Pose {
+  const cos = Math.cos(angle);
+  const sin = Math.sin(angle);
+  return {
+    x: x + cos * dx - sin * dy,
+    y: y + sin * dx + cos * dy,
+    angle: angle + dangle,
+  };
+}
+
 export class Robot {
   leftWheel: Matter.Body;
   rightWheel: Matter.Body;
@@ -155,19 +168,6 @@ export class Robot {
     leftPosition: number | null,
     rightPosition: number | null,
   ) {
-    const transform = (
-      { x, y, angle }: Pose,
-      { x: dx, y: dy, angle: dangle }: Pose,
-    ): Pose => {
-      const cos = Math.cos(angle);
-      const sin = Math.sin(angle);
-      return {
-        x: x + cos * dx - sin * dy,
-        y: y + sin * dx + cos * dy,
-        angle: angle + dangle,
-      };
-    };
-
     const applyTransform = (control: Matter.Constraint, position: number) => {
       const pivot = { x: 55, y: -35, angle: 0 };
       // position 0..=1000 should be translated into angle -90°..=90°
