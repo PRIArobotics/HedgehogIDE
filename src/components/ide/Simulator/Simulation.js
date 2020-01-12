@@ -151,7 +151,10 @@ export class Robot {
     this.bodies = [bot, ...bot.parts];
   }
 
-  setGrabberControls(leftPosition: number | null, rightPosition: number | null) {
+  setGrabberControls(
+    leftPosition: number | null,
+    rightPosition: number | null,
+  ) {
     const transform = (
       { x, y, angle }: Pose,
       { x: dx, y: dy, angle: dangle }: Pose,
