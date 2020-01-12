@@ -137,7 +137,7 @@ export class Robot {
       bodyB: leftGrabber,
       pointB: { x: 0, y: 0 },
       length: 0,
-      stiffness: 0.7,
+      stiffness: 0.01,
       damping: 0.9,
       // render: { visible: false },
     });
