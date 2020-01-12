@@ -30,6 +30,7 @@ export class Robot {
   leftWheel: Matter.Body;
   rightWheel: Matter.Body;
   leftGrabberControl: Matter.Constraint;
+  rightGrabberControl: Matter.Constraint;
   surfaceSensors: Array<Matter.Body>;
   body: Matter.Body;
 
@@ -124,12 +125,6 @@ export class Robot {
       ...material,
     });
 
-    const leftGrabber = Matter.Bodies.rectangle(180, 50, 60, 5, {
-      ...grabberMaterial,
-      ...bodyStyle,
-      // collisionFilter: { mask: 0 },
-    });
-
     const pivotProperties = (
       anchor: Matter.Body,
       pivotAnchor: Pose,
@@ -163,34 +158,66 @@ export class Robot {
         bodyB: arm,
         pointB: { x: controlArm.x, y: controlArm.y },
         length: 0,
+        // TODO this does nothing, see https://github.com/liabru/matter-js/issues/817
+        ...pluginData({ pivot: leftGrabberPivot, length: length }),
       };
     };
 
     // pivot pose in body coords
     const leftGrabberPivot = { x: 55, y: -35, angle: 0 };
+    const rightGrabberPivot = { x: 55, y: 35, angle: 0 };
     // pivot pose in arm coords
-    const leftGrabberPivotArm = { x: -30, y: 0, angle: 0 };
+    const grabberPivotArm = { x: -30, y: 0, angle: 0 };
 
-    // pointA is a dummy value, is calculated afterwards
+    const leftGrabber = Matter.Bodies.rectangle(185, 65, 60, 5, {
+      ...grabberMaterial,
+      ...bodyStyle,
+      // collisionFilter: { mask: 0 },
+    });
+
+    const rightGrabber = Matter.Bodies.rectangle(185, 135, 60, 5, {
+      ...grabberMaterial,
+      ...bodyStyle,
+      // collisionFilter: { mask: 0 },
+    });
+
     this.leftGrabberControl = Matter.Constraint.create({
-      ...controlProperties(this.body, leftGrabberPivot, leftGrabber, leftGrabberPivotArm, 30),
+      ...controlProperties(this.body, leftGrabberPivot, leftGrabber, grabberPivotArm, 30),
       stiffness: 0.01,
       damping: 0.9,
       // render: { visible: false },
     });
+    this.rightGrabberControl = Matter.Constraint.create({
+      ...controlProperties(this.body, rightGrabberPivot, rightGrabber, grabberPivotArm, 30),
+      stiffness: 0.01,
+      damping: 0.9,
+      // render: { visible: false },
+    });
+    // TODO workaround for https://github.com/liabru/matter-js/issues/817
+    this.leftGrabberControl.plugin.hedgehog = pluginData({ pivot: leftGrabberPivot, length: 30 }).plugin.hedgehog;
+    this.rightGrabberControl.plugin.hedgehog = pluginData({ pivot: rightGrabberPivot, length: 30 }).plugin.hedgehog;
+
     this.setGrabberControls(500, 500);
 
     const bot = Matter.Composite.create({
-      parts: [this.body, leftGrabber],
+      parts: [this.body, leftGrabber, rightGrabber],
       constraints: [
         // left grabber pivot
         Matter.Constraint.create({
-          ...pivotProperties(this.body, leftGrabberPivot, leftGrabber, leftGrabberPivotArm, 30),
+          ...pivotProperties(this.body, leftGrabberPivot, leftGrabber, grabberPivotArm, 30),
           stiffness: 0.7,
           damping: 0.9,
           // render: { visible: false },
         }),
         this.leftGrabberControl,
+        // right grabber pivot
+        Matter.Constraint.create({
+          ...pivotProperties(this.body, rightGrabberPivot, rightGrabber, grabberPivotArm, 30),
+          stiffness: 0.7,
+          damping: 0.9,
+          // render: { visible: false },
+        }),
+        this.rightGrabberControl,
       ],
     });
 
@@ -202,11 +229,11 @@ export class Robot {
     rightPosition: number | null,
   ) {
     const applyTransform = (control: Matter.Constraint, position: number) => {
-      const pivot = { x: 55, y: -35, angle: 0 };
+      const { pivot, length } = control.plugin.hedgehog;
       // position 0..=1000 should be translated into angle -90°..=90°
       // 0..=1000 -> -500..=500 -> -1/2..=1/2 -> PI/2..=PI/2
-      pivot.angle += ((position - 500) / 1000) * Math.PI;
-      const { x, y } = transform(pivot, { x: 30, y: 0, angle: 0 });
+      const dAngle = ((position - 500) / 1000) * Math.PI;
+      const { x, y } = transform({ ...pivot, angle: pivot.angle+dAngle }, { x: length, y: 0, angle: 0 });
 
       // eslint-disable-next-line no-param-reassign
       control.pointA = { x, y };
@@ -214,6 +241,8 @@ export class Robot {
 
     if (leftPosition !== null)
       applyTransform(this.leftGrabberControl, leftPosition);
+    if (rightPosition !== null)
+      applyTransform(this.rightGrabberControl, rightPosition);
   }
 
   setPose({ x, y, angle }: Pose) {
