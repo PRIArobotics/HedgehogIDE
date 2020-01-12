@@ -130,13 +130,50 @@ export class Robot {
       // collisionFilter: { mask: 0 },
     });
 
+    const pivotProperties = (
+      anchor: Matter.Body,
+      pivotAnchor: Pose,
+      arm: Matter.Body,
+      pivotArm: Pose,
+      length: number,
+    ) => {
+      return {
+        bodyA: anchor,
+        pointA: { x: pivotAnchor.x, y: pivotAnchor.y },
+        bodyB: arm,
+        pointB: { x: pivotArm.x, y: pivotArm.y },
+        length: 0,
+      };
+    };
+
+    const controlProperties = (
+      anchor: Matter.Body,
+      pivotAnchor: Pose,
+      arm: Matter.Body,
+      pivotArm: Pose,
+      length: number,
+    ) => {
+      const translation = { x: length, y: 0, angle: 0 };
+      const controlAnchor = transform(pivotAnchor, translation);
+      const controlArm = transform(pivotArm, translation);
+
+      return {
+        bodyA: anchor,
+        pointA: { x: controlAnchor.x, y: controlAnchor.y },
+        bodyB: arm,
+        pointB: { x: controlArm.x, y: controlArm.y },
+        length: 0,
+      };
+    };
+
+    // pivot pose in body coords
+    const leftGrabberPivot = { x: 55, y: -35, angle: 0 };
+    // pivot pose in arm coords
+    const leftGrabberPivotArm = { x: -30, y: 0, angle: 0 };
+
     // pointA is a dummy value, is calculated afterwards
     this.leftGrabberControl = Matter.Constraint.create({
-      bodyA: this.body,
-      pointA: { x: 85, y: -35 },
-      bodyB: leftGrabber,
-      pointB: { x: 0, y: 0 },
-      length: 0,
+      ...controlProperties(this.body, leftGrabberPivot, leftGrabber, leftGrabberPivotArm, 30),
       stiffness: 0.01,
       damping: 0.9,
       // render: { visible: false },
@@ -148,11 +185,7 @@ export class Robot {
       constraints: [
         // left grabber pivot
         Matter.Constraint.create({
-          bodyA: this.body,
-          pointA: { x: 55, y: -35 },
-          bodyB: leftGrabber,
-          pointB: { x: -30, y: 0 },
-          length: 0,
+          ...pivotProperties(this.body, leftGrabberPivot, leftGrabber, leftGrabberPivotArm, 30),
           stiffness: 0.7,
           damping: 0.9,
           // render: { visible: false },
