@@ -16,6 +16,7 @@ type Pose = {|
 export class Robot {
   leftWheel: Matter.Body;
   rightWheel: Matter.Body;
+  leftGrabberControl: Matter.Constraint;
   surfaceSensors: Array<Matter.Body>;
   body: Matter.Body;
 
@@ -50,6 +51,10 @@ export class Robot {
     const material = {
       density: 0.3,
       frictionAir: 0.4,
+    };
+    const grabberMaterial = {
+      density: 0.02,
+      frictionAir: 0,
     };
     const wheelStyle = {
       render: {
@@ -105,7 +110,74 @@ export class Robot {
       parts: [this.leftWheel, this.rightWheel, ...this.surfaceSensors, body],
       ...material,
     });
-    this.bodies = [this.body];
+
+    const leftGrabber = Matter.Bodies.rectangle(180, 50, 60, 5, {
+      ...grabberMaterial,
+      ...bodyStyle,
+      // collisionFilter: { mask: 0 },
+    });
+
+    // pointA is a dummy value, is calculated afterwards
+    this.leftGrabberControl = Matter.Constraint.create({
+      bodyA: this.body,
+      pointA: { x: 85, y: -35 },
+      bodyB: leftGrabber,
+      pointB: { x: 0, y: 0 },
+      length: 0,
+      stiffness: 0.7,
+      damping: 0.9,
+      // render: { visible: false },
+    });
+    this.setGrabberControls(500, 500);
+
+    const bot = Matter.Composite.create({
+      parts: [this.body, leftGrabber],
+      constraints: [
+        // left grabber pivot
+        Matter.Constraint.create({
+          bodyA: this.body,
+          pointA: { x: 55, y: -35 },
+          bodyB: leftGrabber,
+          pointB: { x: -30, y: 0 },
+          length: 0,
+          stiffness: 0.7,
+          damping: 0.9,
+          // render: { visible: false },
+        }),
+        this.leftGrabberControl,
+      ],
+    });
+
+    this.bodies = [bot, ...bot.parts];
+  }
+
+  setGrabberControls(leftPosition: number | null, rightPosition: number | null) {
+    const transform = (
+      { x, y, angle }: Pose,
+      { x: dx, y: dy, angle: dangle }: Pose,
+    ): Pose => {
+      const cos = Math.cos(angle);
+      const sin = Math.sin(angle);
+      return {
+        x: x + cos * dx - sin * dy,
+        y: y + sin * dx + cos * dy,
+        angle: angle + dangle,
+      };
+    };
+
+    const applyTransform = (control: Matter.Constraint, position: number) => {
+      const pivot = { x: 55, y: -35, angle: 0 };
+      // position 0..=1000 should be translated into angle -90°..=90°
+      // 0..=1000 -> -500..=500 -> -1/2..=1/2 -> PI/2..=PI/2
+      pivot.angle += ((position - 500) / 1000) * Math.PI;
+      const { x, y } = transform(pivot, { x: 30, y: 0, angle: 0 });
+
+      // eslint-disable-next-line no-param-reassign
+      control.pointA = { x, y };
+    };
+
+    if (leftPosition !== null)
+      applyTransform(this.leftGrabberControl, leftPosition);
   }
 
   setPose({ x, y, angle }: Pose) {
@@ -166,6 +238,10 @@ export class Robot {
 
   setServo(port: number, position: number | null) {
     this.servos[port] = position;
+
+    if (port === 0 || port === 1) {
+      this.setGrabberControls(this.servos[0], this.servos[1]);
+    }
   }
 
   getAnalog(port: number): number {
