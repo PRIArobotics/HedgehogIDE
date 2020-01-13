@@ -109,6 +109,7 @@ class Simulator extends React.Component<PropTypes, StateTypes> {
 
     this.simulation.lines.push(...lines);
     this.simulation.robots.push(robot);
+    this.simulation.updateRobots();
     this.robot = robot;
   }
 
