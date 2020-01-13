@@ -57,7 +57,6 @@ class Simulator extends React.Component<PropTypes, StateTypes> {
     const robot = new Robot();
     robot.setPose({ x: 100, y: 100, angle: 0 });
 
-
     const lineOptions = {
       isSensor: true,
       isStatic: true,
