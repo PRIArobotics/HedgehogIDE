@@ -13,18 +13,18 @@ type Pose = {|
   angle: number,
 |};
 
-function transform(
-  { x, y, angle }: Pose,
-  { x: dx, y: dy, angle: dangle }: Pose,
-): Pose {
-  const cos = Math.cos(angle);
-  const sin = Math.sin(angle);
-  return {
-    x: x + cos * dx - sin * dy,
-    y: y + sin * dx + cos * dy,
-    angle: angle + dangle,
-  };
-}
+// function transform(
+//   { x, y, angle }: Pose,
+//   { x: dx, y: dy, angle: dangle }: Pose,
+// ): Pose {
+//   const cos = Math.cos(angle);
+//   const sin = Math.sin(angle);
+//   return {
+//     x: x + cos * dx - sin * dy,
+//     y: y + sin * dx + cos * dy,
+//     angle: angle + dangle,
+//   };
+// }
 
 export class Robot {
   leftWheel: Matter.Body;
@@ -66,10 +66,10 @@ export class Robot {
       density: 0.3,
       frictionAir: 0.4,
     };
-    const grabberMaterial = {
-      density: 0.02,
-      frictionAir: 0,
-    };
+    // const grabberMaterial = {
+    //   density: 0.02,
+    //   frictionAir: 0,
+    // };
     const wheelStyle = {
       render: {
         fillStyle: '#777777',
