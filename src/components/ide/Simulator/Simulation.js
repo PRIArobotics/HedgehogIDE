@@ -111,22 +111,28 @@ export class Robot {
       label: 'bodyPart',
     });
     this.lineSensors = [
-      Matter.Bodies.circle(49, -20, 4, {
+      Matter.Bodies.circle(49, -25, 4, {
         ...material,
         ...styleLineSensor,
         ...pluginData({ sensorPort: 0, collisionCount: 0 }),
         label: 'leftLineSensor',
       }),
-      Matter.Bodies.circle(50, 0, 4, {
+      Matter.Bodies.circle(50, -10, 4, {
         ...material,
         ...styleLineSensor,
         ...pluginData({ sensorPort: 1, collisionCount: 0 }),
-        label: 'centerLineSensor',
+        label: 'centerLeftLineSensor',
       }),
-      Matter.Bodies.circle(49, 20, 4, {
+      Matter.Bodies.circle(50, 10, 4, {
         ...material,
         ...styleLineSensor,
         ...pluginData({ sensorPort: 2, collisionCount: 0 }),
+        label: 'centerRightLineSensor',
+      }),
+      Matter.Bodies.circle(49, 25, 4, {
+        ...material,
+        ...styleLineSensor,
+        ...pluginData({ sensorPort: 3, collisionCount: 0 }),
         label: 'rightLineSensor',
       }),
     ];
