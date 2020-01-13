@@ -32,6 +32,7 @@ export class Robot {
   // leftGrabberControl: Matter.Constraint;
   // rightGrabberControl: Matter.Constraint;
   lineSensors: Array<Matter.Body>;
+  touchSensors: Array<Matter.Body>;
   body: Matter.Body;
 
   bodies: Array<Matter.Body>;
@@ -89,6 +90,11 @@ export class Robot {
         fillStyle: '#777777',
       },
     };
+    const styleTouchSensor = {
+      render: {
+        fillStyle: '#777777',
+      },
+    };
     // const styleGrabber = {
     //   render: {
     //     fillStyle: '#777777',
@@ -136,8 +142,22 @@ export class Robot {
         label: 'rightLineSensor',
       }),
     ];
+    this.touchSensors = [
+      Matter.Bodies.rectangle(55, 0, 3, 60, {
+        ...material,
+        ...styleTouchSensor,
+        ...pluginData({ sensorPort: 8, collisionCount: 0 }),
+        label: 'frontTouchSensor',
+      }),
+    ];
     this.body = Matter.Body.create({
-      parts: [this.leftWheel, this.rightWheel, ...this.lineSensors, body],
+      parts: [
+        this.leftWheel,
+        this.rightWheel,
+        ...this.lineSensors,
+        ...this.touchSensors,
+        body,
+      ],
       ...material,
       label: 'body',
     });
