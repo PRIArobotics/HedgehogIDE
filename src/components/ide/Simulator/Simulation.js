@@ -31,7 +31,7 @@ export class Robot {
   rightWheel: Matter.Body;
   // leftGrabberControl: Matter.Constraint;
   // rightGrabberControl: Matter.Constraint;
-  surfaceSensors: Array<Matter.Body>;
+  lineSensors: Array<Matter.Body>;
   body: Matter.Body;
 
   bodies: Array<Matter.Body>;
@@ -62,20 +62,21 @@ export class Robot {
         },
       },
     });
+
     const material = {
       density: 0.3,
       frictionAir: 0.4,
     };
-    // const grabberMaterial = {
+    // const materialGrabber = {
     //   density: 0.02,
     //   frictionAir: 0,
     // };
-    const wheelStyle = {
+    const styleWheel = {
       render: {
         fillStyle: '#777777',
       },
     };
-    const bodyStyle = {
+    const styleBody = {
       render: {
         fillStyle: '#38b449',
         // sprite: {
@@ -83,51 +84,56 @@ export class Robot {
         // },
       },
     };
-    // const grabberStyle = {
-    //   render: {
-    //     fillStyle: '#777777',
-    //   },
-    // };
-    const sensorStyle = {
+    const styleLineSensor = {
       render: {
         fillStyle: '#777777',
       },
     };
+    // const styleGrabber = {
+    //   render: {
+    //     fillStyle: '#777777',
+    //   },
+    // };
 
     this.leftWheel = Matter.Bodies.rectangle(20, -50, 30, 20, {
       ...material,
-      ...wheelStyle,
-      ...pluginData({ motorPort: 0 }),
+      ...styleWheel,
+      label: 'leftWheel',
     });
     this.rightWheel = Matter.Bodies.rectangle(20, 50, 30, 20, {
       ...material,
-      ...wheelStyle,
-      ...pluginData({ motorPort: 1 }),
+      ...styleWheel,
+      label: 'rightWheel',
     });
     const body = Matter.Bodies.rectangle(0, 0, 100, 70, {
       ...material,
-      ...bodyStyle,
+      ...styleBody,
+      label: 'bodyPart',
     });
-    this.surfaceSensors = [
+    this.lineSensors = [
       Matter.Bodies.circle(49, -20, 4, {
         ...material,
-        ...sensorStyle,
+        ...styleLineSensor,
         ...pluginData({ sensorPort: 0, collisionCount: 0 }),
+        label: 'leftLineSensor',
       }),
       Matter.Bodies.circle(50, 0, 4, {
         ...material,
-        ...sensorStyle,
+        ...styleLineSensor,
         ...pluginData({ sensorPort: 1, collisionCount: 0 }),
+        label: 'centerLineSensor',
       }),
       Matter.Bodies.circle(49, 20, 4, {
         ...material,
-        ...sensorStyle,
+        ...styleLineSensor,
         ...pluginData({ sensorPort: 2, collisionCount: 0 }),
+        label: 'rightLineSensor',
       }),
     ];
     this.body = Matter.Body.create({
-      parts: [this.leftWheel, this.rightWheel, ...this.surfaceSensors, body],
+      parts: [this.leftWheel, this.rightWheel, ...this.lineSensors, body],
       ...material,
+      label: 'body',
     });
 
     // const pivotProperties = (
@@ -175,13 +181,13 @@ export class Robot {
     // const grabberPivotArm = { x: -30, y: 0, angle: 0 };
 
     // const leftGrabber = Matter.Bodies.rectangle(185, 65, 60, 5, {
-    //   ...grabberMaterial,
-    //   ...grabberStyle,
+    //   ...materialGrabber,
+    //   ...styleGrabber,
     // });
 
     // const rightGrabber = Matter.Bodies.rectangle(185, 135, 60, 5, {
-    //   ...grabberMaterial,
-    //   ...grabberStyle,
+    //   ...materialGrabber,
+    //   ...styleGrabber,
     // });
 
     // this.leftGrabberControl = Matter.Constraint.create({
@@ -222,6 +228,7 @@ export class Robot {
         // }),
         // this.rightGrabberControl,
       ],
+      label: 'bot',
     });
 
     this.bodies = [bot, ...bot.parts];
@@ -281,7 +288,7 @@ export class Robot {
     this.applyForce(rPos, this.motors[1] / 10, cos, sin);
   }
 
-  handleSurfaceSensor(
+  handleLineSensor(
     eventName: 'collisionStart' | 'collisionEnd',
     sensor: Matter.Body,
   ) {
@@ -366,8 +373,8 @@ export class Simulation {
         } else return;
 
         this.robots.forEach(robot => {
-          if (robot.surfaceSensors.includes(other)) {
-            robot.handleSurfaceSensor(name, other);
+          if (robot.lineSensors.includes(other)) {
+            robot.handleLineSensor(name, other);
           }
         });
       });
