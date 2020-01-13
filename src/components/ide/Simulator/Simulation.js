@@ -333,6 +333,25 @@ export class Robot {
     this.sensors[plugin.sensorPort] = plugin.collisionCount > 0 ? 4000 : 100;
   }
 
+  handleTouchSensor(
+    eventName: 'collisionStart' | 'collisionEnd',
+    sensor: Matter.Body,
+  ) {
+    const plugin = sensor.plugin.hedgehog;
+    switch (eventName) {
+      case 'collisionStart':
+        plugin.collisionCount += 1;
+        break;
+      case 'collisionEnd':
+        plugin.collisionCount -= 1;
+        break;
+      default:
+        // eslint-disable-next-line no-throw-literal
+        throw 'unreachable';
+    }
+    this.sensors[plugin.sensorPort] = plugin.collisionCount > 0 ? 4095 : 0;
+  }
+
   moveMotor(port: number, power: number) {
     this.motors[port] = power;
   }
@@ -370,6 +389,13 @@ export class Simulation {
   // special bodies for simulation logic
   lines: Array<Matter.Body | Matter.Composite> = [];
   robots: Array<Robot> = [];
+  sensorsCache: {|
+    lineSensors: Array<Matter.Body>,
+    touchSensors: Array<Matter.Body>,
+  |} = {
+    lineSensors: [],
+    touchSensors: [],
+  };
 
   constructor() {
     this.world = Matter.World.create({
@@ -391,18 +417,31 @@ export class Simulation {
       pairs.forEach(pair => {
         const { bodyA, bodyB } = pair;
 
-        let other;
-        if (this.lines.includes(bodyA)) {
-          other = bodyB;
-        } else if (this.lines.includes(bodyB)) {
-          other = bodyA;
-        } else return;
-
-        this.robots.forEach(robot => {
-          if (robot.lineSensors.includes(other)) {
-            robot.handleLineSensor(name, other);
+        let collision = null;
+        Object.keys(this.sensorsCache).forEach(key => {
+          const sensors = this.sensorsCache[key];
+          if (sensors.includes(bodyA)) {
+            collision = {
+              type: key,
+              sensor: bodyA,
+              other: bodyB,
+            };
+          } else if (sensors.includes(bodyB)) {
+            collision = {
+              type: key,
+              sensor: bodyB,
+              other: bodyA,
+            };
           }
         });
+        if (collision === null) return;
+        const { type, sensor, other } = collision;
+
+        if (type === 'lineSensors' && this.lines.includes(other)) {
+          sensor.plugin.hedgehog.robot.handleLineSensor(name, sensor);
+        } else if (type === 'touchSensors' && !this.lines.includes(other)) {
+          sensor.plugin.hedgehog.robot.handleTouchSensor(name, sensor);
+        }
       });
     };
 
@@ -444,5 +483,12 @@ export class Simulation {
 
   add(bodies: Array<Matter.Body | Matter.Composite>) {
     Matter.World.add(this.world, bodies);
+  }
+
+  updateRobots() {
+    Object.keys(this.sensorsCache).forEach(key => {
+      // $FlowExpectError
+      this.sensorsCache[key] = this.robots.flatMap(robot => robot[key]);
+    });
   }
 }
