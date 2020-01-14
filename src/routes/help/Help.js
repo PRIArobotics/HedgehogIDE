@@ -5,11 +5,12 @@ import withStyles from 'isomorphic-style-loader/lib/withStyles';
 
 import Alert from '@material-ui/lab/Alert';
 import Container from '@material-ui/core/Container';
+import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 
 import Link from '../../components/misc/Link';
 
-import s from './Help.css';
+import s from './Help.scss';
 
 function Help() {
   return (
@@ -41,6 +42,22 @@ function Help() {
         started. In your <Link to="/projects">project list</Link>, click on the
         &quot;+&quot; icon and choose a name. After you created the project,
         click on it to open it.
+      </Typography>
+      <Typography variant="body1" paragraph>
+        <Grid container spacing={1}>
+          <Grid item xs={6} md={3} className={s.gridImg}>
+            <img src="/help/1_create_project/1_open_ide.png" alt="open IDE" />
+          </Grid>
+          <Grid item xs={6} md={3} className={s.gridImg}>
+            <img src="/help/1_create_project/2_click_plus.png" alt="clik &quot;+&quot; icon" />
+          </Grid>
+          <Grid item xs={6} md={3} className={s.gridImg}>
+            <img src="/help/1_create_project/3_create_project.png" alt="name and create project" />
+          </Grid>
+          <Grid item xs={6} md={3} className={s.gridImg}>
+            <img src="/help/1_create_project/4_open_project.png" alt="open project" />
+          </Grid>
+        </Grid>
       </Typography>
     </Container>
   );

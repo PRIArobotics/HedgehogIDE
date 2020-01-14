@@ -12,3 +12,12 @@
 .root {
   padding: 40px 20px;
 }
+
+.gridImg {
+  text-align: center;
+
+  img {
+    width: 100%;
+    max-width: 250px;
+  }
+}
