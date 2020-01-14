@@ -117,6 +117,91 @@ function Help() {
           </Grid>
         </Grid>
       </Typography>
+      <Typography variant="body1" paragraph>
+        The Simulator (and the console, which is opened with the second button
+        above the project tree) opens automatically when a program gives
+        commands to the robot (or outputs text, respectively) if it is not
+        already open.
+      </Typography>
+      <Typography variant="body1" paragraph>
+        Blockly commands are organized by categories:
+      </Typography>
+      <Typography variant="body1" component="div" paragraph>
+        <ul>
+          <li>
+            <strong>Drive</strong> lets you drive the robot by starting or
+            stopping two motors at the same time. Motors can use speeds between
+            -100 and +100. The simulated robot&apos;s left wheel is motor 0, the
+            right wheel motor 1.
+          </li>
+          <li>
+            <strong>Motors</strong> lets you control motors individually.
+          </li>
+          <li>
+            <strong>Servos</strong> lets you control servos. Servo positions are
+            between 0 and 1000. The simulated robot does not yet have any
+            servos, though. Stay tuned!
+          </li>
+          <li>
+            <strong>Sensors</strong> lets you observe the simulated environment.
+            Sensor values are between 0 and 4095. The simulated robot has five
+            sensors at its front:
+            <ul>
+              <li>
+                Four line sensors that can detect the black lines on the ground;
+                these are sensors 0 to 3, from right to left. The sensor value
+                is high when a line is detected.
+              </li>
+              <li>
+                One bump sensor that is almost as wide as the robot front; this
+                is sensor 8. The sensor value is low when a collision is
+                detected.
+              </li>
+            </ul>
+          </li>
+          <li>
+            The other categories contain general programming constructs, such as
+            conditionals and loops.
+          </li>
+        </ul>
+      </Typography>
+      <Typography variant="body1" paragraph>
+        Now let&apos;s try out a simple program:
+      </Typography>
+      <Typography variant="body1" component="div" paragraph>
+        <Grid container spacing={1}>
+          <Grid item xs={12} className={`${s.gridImg} ${s.gridImgLg}`}>
+            <img
+              src="/help/4_blockly_example/1_example_program.png"
+              alt="example program"
+            />
+          </Grid>
+        </Grid>
+      </Typography>
+      <Typography variant="body1" paragraph>
+        Create this program in your project, then click the green
+        &quot;Play&quot; button; you will see the robot driving to the other
+        side of the simulation and stopping at the wall. In detail, what
+        happened is the following:
+      </Typography>
+      <Typography variant="body1" component="div" paragraph>
+        <ul>
+          <li>The first block let the robot move forward.</li>
+          <li>
+            The next block is a loop, running while the sensor on digital port 8
+            has a high value. In other words, the loop repeats until a collision
+            is detected.
+          </li>
+          <li>
+            Inside the loop, the program simply sleeps. That means that the
+            robot will continue moving as long as there was no collision.
+          </li>
+          <li>
+            After the loop, i.e. as soon as there was a collision, the robot is
+            stopped. This is the last command, so the program is finished.
+          </li>
+        </ul>
+      </Typography>
     </Container>
   );
 }
