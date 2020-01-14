@@ -1,8 +1,8 @@
-// flow-typed signature: dbf37e71299044169ddb7eb639c53be3
-// flow-typed version: c6154227d1/query-string_v6.x.x/flow_>=v0.104.x
+// flow-typed signature: 559755d92745c3c37f1994db98b5f339
+// flow-typed version: 6d6fd081f3/query-string_v6.x.x/flow_>=v0.104.x
 
 declare module 'query-string' {
-  declare type ArrayFormat = 'none' | 'bracket' | 'index'
+  declare type ArrayFormat = 'none' | 'bracket' | 'index' | 'comma'
   declare type ParseOptions = {|
     arrayFormat?: ArrayFormat,
   |}
