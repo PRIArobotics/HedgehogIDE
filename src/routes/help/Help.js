@@ -25,7 +25,7 @@ function Help() {
         data unless absolutely needed - that is, basically, the code you write
         and nothing else.
       </Typography>
-      <Typography variant="body1" paragraph>
+      <Typography variant="body1" component="div" paragraph>
         <Alert severity="info">
           The Hedgehog IDE is still at the beginning. Things may be rough around
           the edges, and not all features are there yet. Future features, such
@@ -33,7 +33,7 @@ function Help() {
           with us. Those features will be strictly optional and opt-in, though.
         </Alert>
       </Typography>
-      <Typography component="h2" variant="h4" gutterTop gutterBottom>
+      <Typography component="h2" variant="h4" gutterBottom>
         Creating a project
       </Typography>
       <Typography variant="body1" paragraph>
@@ -43,7 +43,7 @@ function Help() {
         &quot;+&quot; icon and choose a name. After you created the project,
         click on it to open it.
       </Typography>
-      <Typography variant="body1" paragraph>
+      <Typography variant="body1" component="div" paragraph>
         <Grid container spacing={1}>
           <Grid item xs={6} md={3} className={`${s.gridImg} ${s.gridImgSm}`}>
             <img src="/help/1_create_project/1_open_ide.png" alt="open IDE" />
@@ -76,7 +76,7 @@ function Help() {
         double-clicking. You will see a Blockly workspace where you can create
         your program.
       </Typography>
-      <Typography variant="body1" paragraph>
+      <Typography variant="body1" component="div" paragraph>
         <Grid container spacing={1}>
           <Grid item xs={6} sm={4} className={`${s.gridImg} ${s.gridImgSm}`}>
             <img
@@ -95,7 +95,7 @@ function Help() {
           </Grid>
         </Grid>
       </Typography>
-      <Typography component="h2" variant="h4" gutterTop gutterBottom>
+      <Typography component="h2" variant="h4" gutterBottom>
         Controlling a simulated robot with Blockly
       </Typography>
       <Typography variant="body1" paragraph>
@@ -104,7 +104,7 @@ function Help() {
         it in a new tab, then drag that tab to the side to see Blockly and the
         simulator at the same time.
       </Typography>
-      <Typography variant="body1" paragraph>
+      <Typography variant="body1" component="div" paragraph>
         <Grid container spacing={1}>
           <Grid item sm={12} md={6} className={`${s.gridImg} ${s.gridImgLg}`}>
             <img
