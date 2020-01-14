@@ -12,6 +12,7 @@ import { withStyles } from '@material-ui/styles';
 import {
   IdeIcon,
   HelpIcon,
+  ContestIcon,
   ControlsIcon,
   ApolloTestIcon,
   IndexDBTestIcon,
@@ -56,6 +57,7 @@ function Sidebar({ classes }: SidebarProps) {
     <List>
       <NavItem title="IDE" target="/projects" icon={IdeIcon} />
       <NavItem title="Help" target="/help" icon={HelpIcon} />
+      <NavItem title="Contest" target="/contest" icon={ContestIcon} />
       {/* <NavItem title="Robot Controls" target="/control" icon={ControlsIcon} /> */}
       {__DEV__ ? (
         <>
