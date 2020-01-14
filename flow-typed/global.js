@@ -36,6 +36,7 @@ declare module '@material-ui/core/TextField' { declare module.exports: any; }
 declare module '@material-ui/core/Toolbar' { declare module.exports: any; }
 declare module '@material-ui/core/Tooltip' { declare module.exports: any; }
 declare module '@material-ui/core/Typography' { declare module.exports: any; }
+declare module '@material-ui/lab/Alert' { declare module.exports: any; }
 
 declare module 'graphql' { declare module.exports: any; }
 declare module 'graphql/language' { declare module.exports: any; }
