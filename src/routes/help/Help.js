@@ -49,29 +49,46 @@ function Help() {
             <img src="/help/1_create_project/1_open_ide.png" alt="open IDE" />
           </Grid>
           <Grid item xs={6} md={3} className={s.gridImg}>
-            <img src="/help/1_create_project/2_click_plus.png" alt="click &quot;+&quot; icon" />
+            <img
+              src="/help/1_create_project/2_click_plus.png"
+              alt='click "+" icon'
+            />
           </Grid>
           <Grid item xs={6} md={3} className={s.gridImg}>
-            <img src="/help/1_create_project/3_create_project.png" alt="name and create project" />
+            <img
+              src="/help/1_create_project/3_create_project.png"
+              alt="name and create project"
+            />
           </Grid>
           <Grid item xs={6} md={3} className={s.gridImg}>
-            <img src="/help/1_create_project/4_open_project.png" alt="open project" />
+            <img
+              src="/help/1_create_project/4_open_project.png"
+              alt="open project"
+            />
           </Grid>
         </Grid>
       </Typography>
       <Typography variant="body1" paragraph>
-        After opening the project, right click the project root to create a file in it.
-        In this example, let&apos;s choose &quot;New Blockly File&quot; &ndash; Blockly allows the visual creation of programs.
-        After naming the file, make sure it&apos;s shown in the project tree, and open it by double-clicking.
-        You will see a Blockly workspace where you can create your program.
+        After opening the project, right click the project root to create a file
+        in it. In this example, let&apos;s choose &quot;New Blockly File&quot;
+        &ndash; Blockly allows the visual creation of programs. After naming the
+        file, make sure it&apos;s shown in the project tree, and open it by
+        double-clicking. You will see a Blockly workspace where you can create
+        your program.
       </Typography>
       <Typography variant="body1" paragraph>
         <Grid container spacing={1}>
           <Grid item xs={6} sm={4} className={s.gridImg}>
-            <img src="/help/2_create_file/1_context_menu.png" alt="context menu" />
+            <img
+              src="/help/2_create_file/1_context_menu.png"
+              alt="context menu"
+            />
           </Grid>
           <Grid item xs={6} sm={4} className={s.gridImg}>
-            <img src="/help/2_create_file/2_create_file.png" alt="create file" />
+            <img
+              src="/help/2_create_file/2_create_file.png"
+              alt="create file"
+            />
           </Grid>
           <Grid item xs={6} sm={4} className={s.gridImg}>
             <img src="/help/2_create_file/3_open_file.png" alt="open file" />
