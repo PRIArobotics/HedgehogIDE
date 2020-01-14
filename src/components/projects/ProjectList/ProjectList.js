@@ -3,16 +3,17 @@
 import * as React from 'react';
 import withStyles from 'isomorphic-style-loader/lib/withStyles';
 
-import Toolbar from '@material-ui/core/Toolbar';
-import Typography from '@material-ui/core/Typography';
-import Paper from '@material-ui/core/Paper';
+import Avatar from '@material-ui/core/Avatar';
+import IconButton from '@material-ui/core/IconButton';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import ListItemText from '@material-ui/core/ListItemText';
-import Avatar from '@material-ui/core/Avatar';
-import IconButton from '@material-ui/core/IconButton';
+import Paper from '@material-ui/core/Paper';
+import Toolbar from '@material-ui/core/Toolbar';
+import Tooltip from '@material-ui/core/Tooltip';
+import Typography from '@material-ui/core/Typography';
 
 import {
   LocalProjectIcon,
@@ -124,19 +125,23 @@ class ProjectList extends React.Component<PropTypes, StateTypes> {
             <Typography className={s.title} variant="h5" noWrap>
               Your projects
             </Typography>
-            <IconButton
-              aria-label="create project"
-              onClick={() => this.beginCreateProject()}
-            >
-              <CreateIcon />
-            </IconButton>
-            <IconButton
-              edge="end"
-              aria-label="refresh project list"
-              onClick={() => this.refreshProjects()}
-            >
-              <RefreshIcon />
-            </IconButton>
+            <Tooltip title="create project" placement="bottom">
+              <IconButton
+                aria-label="create project"
+                onClick={() => this.beginCreateProject()}
+              >
+                <CreateIcon />
+              </IconButton>
+            </Tooltip>
+            <Tooltip title="refresh project list" placement="bottom">
+              <IconButton
+                edge="end"
+                aria-label="refresh project list"
+                onClick={() => this.refreshProjects()}
+              >
+                <RefreshIcon />
+              </IconButton>
+            </Tooltip>
           </Toolbar>
           <List>
             {this.state.projects.map(project => (
@@ -151,24 +156,31 @@ class ProjectList extends React.Component<PropTypes, StateTypes> {
                     <LocalProjectIcon />
                   </Avatar>
                 </ListItemAvatar>
-                <ListItemText
-                  primary={project.name}
-                  // secondary="Secondary text"
-                />
+                <ListItemText primary={project.name} />
                 <ListItemSecondaryAction>
-                  <IconButton
-                    aria-label={`delete project "${project.name}"`}
-                    onClick={() => this.beginRenameProject(project)}
+                  <Tooltip
+                    title={`rename project "${project.name}"`}
+                    placement="bottom"
                   >
-                    <RenameIcon />
-                  </IconButton>
-                  <IconButton
-                    edge="end"
-                    aria-label={`delete project "${project.name}"`}
-                    onClick={() => this.beginDeleteProject(project)}
+                    <IconButton
+                      aria-label={`rename project "${project.name}"`}
+                      onClick={() => this.beginRenameProject(project)}
+                    >
+                      <RenameIcon />
+                    </IconButton>
+                  </Tooltip>
+                  <Tooltip
+                    title={`delete project "${project.name}"`}
+                    placement="bottom"
                   >
-                    <DeleteIcon />
-                  </IconButton>
+                    <IconButton
+                      edge="end"
+                      aria-label={`delete project "${project.name}"`}
+                      onClick={() => this.beginDeleteProject(project)}
+                    >
+                      <DeleteIcon />
+                    </IconButton>
+                  </Tooltip>
                 </ListItemSecondaryAction>
               </ListItem>
             ))}
