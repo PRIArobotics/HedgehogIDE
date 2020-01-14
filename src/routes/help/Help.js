@@ -12,6 +12,17 @@ import Link from '../../components/misc/Link';
 
 import s from './Help.scss';
 
+import help1img1 from './1_create_project/1_open_ide.png';
+import help1img2 from './1_create_project/2_click_plus.png';
+import help1img3 from './1_create_project/3_create_project.png';
+import help1img4 from './1_create_project/4_open_project.png';
+import help2img1 from './2_create_file/1_context_menu.png';
+import help2img2 from './2_create_file/2_create_file.png';
+import help2img3 from './2_create_file/3_open_file.png';
+import help3img1 from './3_open_simulator/1_drag_tab.png';
+import help3img2 from './3_open_simulator/2_result.png';
+import help4img1 from './4_blockly_example/1_example_program.png';
+
 function Help() {
   return (
     <Container maxWidth="md" className={s.root}>
@@ -46,25 +57,16 @@ function Help() {
       <Typography variant="body1" component="div" paragraph>
         <Grid container spacing={1}>
           <Grid item xs={6} md={3} className={`${s.gridImg} ${s.gridImgSm}`}>
-            <img src="/help/1_create_project/1_open_ide.png" alt="open IDE" />
+            <img src={help1img1} alt="open IDE" />
           </Grid>
           <Grid item xs={6} md={3} className={`${s.gridImg} ${s.gridImgSm}`}>
-            <img
-              src="/help/1_create_project/2_click_plus.png"
-              alt='click "+" icon'
-            />
+            <img src={help1img2} alt='click "+" icon' />
           </Grid>
           <Grid item xs={6} md={3} className={`${s.gridImg} ${s.gridImgSm}`}>
-            <img
-              src="/help/1_create_project/3_create_project.png"
-              alt="name and create project"
-            />
+            <img src={help1img3} alt="name and create project" />
           </Grid>
           <Grid item xs={6} md={3} className={`${s.gridImg} ${s.gridImgSm}`}>
-            <img
-              src="/help/1_create_project/4_open_project.png"
-              alt="open project"
-            />
+            <img src={help1img4} alt="open project" />
           </Grid>
         </Grid>
       </Typography>
@@ -79,19 +81,13 @@ function Help() {
       <Typography variant="body1" component="div" paragraph>
         <Grid container spacing={1}>
           <Grid item xs={6} sm={4} className={`${s.gridImg} ${s.gridImgSm}`}>
-            <img
-              src="/help/2_create_file/1_context_menu.png"
-              alt="context menu"
-            />
+            <img src={help2img1} alt="context menu" />
           </Grid>
           <Grid item xs={6} sm={4} className={`${s.gridImg} ${s.gridImgSm}`}>
-            <img
-              src="/help/2_create_file/2_create_file.png"
-              alt="create file"
-            />
+            <img src={help2img2} alt="create file" />
           </Grid>
           <Grid item xs={6} sm={4} className={`${s.gridImg} ${s.gridImgSm}`}>
-            <img src="/help/2_create_file/3_open_file.png" alt="open file" />
+            <img src={help2img3} alt="open file" />
           </Grid>
         </Grid>
       </Typography>
@@ -107,13 +103,10 @@ function Help() {
       <Typography variant="body1" component="div" paragraph>
         <Grid container spacing={1}>
           <Grid item sm={12} md={6} className={`${s.gridImg} ${s.gridImgLg}`}>
-            <img
-              src="/help/3_open_simulator/1_drag_tab.png"
-              alt="context menu"
-            />
+            <img src={help3img1} alt="context menu" />
           </Grid>
           <Grid item sm={12} md={6} className={`${s.gridImg} ${s.gridImgLg}`}>
-            <img src="/help/3_open_simulator/2_result.png" alt="create file" />
+            <img src={help3img2} alt="create file" />
           </Grid>
         </Grid>
       </Typography>
@@ -171,10 +164,7 @@ function Help() {
       <Typography variant="body1" component="div" paragraph>
         <Grid container spacing={1}>
           <Grid item xs={12} className={`${s.gridImg} ${s.gridImgLg}`}>
-            <img
-              src="/help/4_blockly_example/1_example_program.png"
-              alt="example program"
-            />
+            <img src={help4img1} alt="example program" />
           </Grid>
         </Grid>
       </Typography>
