@@ -48,7 +48,7 @@ export class Robot {
   // sensor (port = 0..16) value inferred from the simulation
   // the value here is "exact"; an analog value read by a user program should
   // have some noise applied to it
-  sensors: Array<number> = Array.from({ length: 16 }, () => 0);
+  sensors: Array<number> = Array.from({ length: 16 }, () => 4095);
 
   constructor() {
     this.initBody();
@@ -349,7 +349,7 @@ export class Robot {
         // eslint-disable-next-line no-throw-literal
         throw 'unreachable';
     }
-    this.sensors[plugin.sensorPort] = plugin.collisionCount > 0 ? 4095 : 0;
+    this.sensors[plugin.sensorPort] = plugin.collisionCount === 0 ? 4095 : 0;
   }
 
   moveMotor(port: number, power: number) {
