@@ -45,22 +45,22 @@ function Help() {
       </Typography>
       <Typography variant="body1" paragraph>
         <Grid container spacing={1}>
-          <Grid item xs={6} md={3} className={s.gridImg}>
+          <Grid item xs={6} md={3} className={`${s.gridImg} ${s.gridImgSm}`}>
             <img src="/help/1_create_project/1_open_ide.png" alt="open IDE" />
           </Grid>
-          <Grid item xs={6} md={3} className={s.gridImg}>
+          <Grid item xs={6} md={3} className={`${s.gridImg} ${s.gridImgSm}`}>
             <img
               src="/help/1_create_project/2_click_plus.png"
               alt='click "+" icon'
             />
           </Grid>
-          <Grid item xs={6} md={3} className={s.gridImg}>
+          <Grid item xs={6} md={3} className={`${s.gridImg} ${s.gridImgSm}`}>
             <img
               src="/help/1_create_project/3_create_project.png"
               alt="name and create project"
             />
           </Grid>
-          <Grid item xs={6} md={3} className={s.gridImg}>
+          <Grid item xs={6} md={3} className={`${s.gridImg} ${s.gridImgSm}`}>
             <img
               src="/help/1_create_project/4_open_project.png"
               alt="open project"
@@ -78,20 +78,42 @@ function Help() {
       </Typography>
       <Typography variant="body1" paragraph>
         <Grid container spacing={1}>
-          <Grid item xs={6} sm={4} className={s.gridImg}>
+          <Grid item xs={6} sm={4} className={`${s.gridImg} ${s.gridImgSm}`}>
             <img
               src="/help/2_create_file/1_context_menu.png"
               alt="context menu"
             />
           </Grid>
-          <Grid item xs={6} sm={4} className={s.gridImg}>
+          <Grid item xs={6} sm={4} className={`${s.gridImg} ${s.gridImgSm}`}>
             <img
               src="/help/2_create_file/2_create_file.png"
               alt="create file"
             />
           </Grid>
-          <Grid item xs={6} sm={4} className={s.gridImg}>
+          <Grid item xs={6} sm={4} className={`${s.gridImg} ${s.gridImgSm}`}>
             <img src="/help/2_create_file/3_open_file.png" alt="open file" />
+          </Grid>
+        </Grid>
+      </Typography>
+      <Typography component="h2" variant="h4" gutterTop gutterBottom>
+        Controlling a simulated robot with Blockly
+      </Typography>
+      <Typography variant="body1" paragraph>
+        Before you start adding blocks to your program, let&apos;s look at the
+        simulator. Click on the X,Y,Z axis icon above the project tree to open
+        it in a new tab, then drag that tab to the side to see Blockly and the
+        simulator at the same time.
+      </Typography>
+      <Typography variant="body1" paragraph>
+        <Grid container spacing={1}>
+          <Grid item sm={12} md={6} className={`${s.gridImg} ${s.gridImgLg}`}>
+            <img
+              src="/help/3_open_simulator/1_drag_tab.png"
+              alt="context menu"
+            />
+          </Grid>
+          <Grid item sm={12} md={6} className={`${s.gridImg} ${s.gridImgLg}`}>
+            <img src="/help/3_open_simulator/2_result.png" alt="create file" />
           </Grid>
         </Grid>
       </Typography>
