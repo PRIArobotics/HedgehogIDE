@@ -53,6 +53,10 @@ const routes = {
       load: () => import(/* webpackChunkName: 'help' */ './help'),
     },
     {
+      path: '/contest',
+      load: () => import(/* webpackChunkName: 'contest' */ './contest'),
+    },
+    {
       path: '/about',
       load: () => import(/* webpackChunkName: 'about' */ './about'),
     },

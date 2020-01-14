@@ -16,6 +16,7 @@ import LocalProjectIcon from 'mdi-material-ui/Folder';
 // IDE navigation
 import IdeIcon from 'mdi-material-ui/CodeTags';
 import HelpIcon from 'mdi-material-ui/HelpCircleOutline';
+import ContestIcon from 'mdi-material-ui/ExclamationThick';
 import ControlsIcon from 'mdi-material-ui/TuneVertical';
 import ApolloTestIcon from 'mdi-material-ui/Graphql';
 import IndexDBTestIcon from 'mdi-material-ui/Database';
@@ -48,6 +49,7 @@ export {
   LocalProjectIcon,
   IdeIcon,
   HelpIcon,
+  ContestIcon,
   ControlsIcon,
   ApolloTestIcon,
   IndexDBTestIcon,
