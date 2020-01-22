@@ -95,14 +95,14 @@ class FileMenu extends React.Component<PropTypes, StateTypes> {
     type FileMenuItemProps = {|
       title: string,
       onClick: () => void | Promise<void>,
-      disabled: boolean,
+      disabled?: boolean,
       icon: Class<React.Component<any>>,
     |};
 
     function FileMenuItem({
       title,
       onClick,
-      disabled,
+      disabled = false,
       icon: TheIcon,
     }: FileMenuItemProps) {
       return (
@@ -123,24 +123,29 @@ class FileMenu extends React.Component<PropTypes, StateTypes> {
         open={visible}
         onClose={() => this.hide()}
       >
-        <FileMenuItem
-          title="New Folder"
-          onClick={() => this.handleCreate({ type: 'DIRECTORY' })}
-          disabled={isLeaf}
-          icon={FolderIcon}
-        />
-        <FileMenuItem
-          title="New JavaScript File"
-          onClick={() => this.handleCreate({ type: 'FILE', extension: '.js' })}
-          disabled={isLeaf}
-          icon={LanguageJavascriptIcon}
-        />
-        <FileMenuItem
-          title="New Blockly File"
-          onClick={() => this.handleCreate({ type: 'FILE', extension: '.blockly' })}
-          disabled={isLeaf}
-          icon={LanguageBlocklyIcon}
-        />
+        {!isLeaf ? (
+          <>
+            <FileMenuItem
+              title="New Folder"
+              onClick={() => this.handleCreate({ type: 'DIRECTORY' })}
+              icon={FolderIcon}
+            />
+            <FileMenuItem
+              title="New JavaScript File"
+              onClick={() =>
+                this.handleCreate({ type: 'FILE', extension: '.js' })
+              }
+              icon={LanguageJavascriptIcon}
+            />
+            <FileMenuItem
+              title="New Blockly File"
+              onClick={() =>
+                this.handleCreate({ type: 'FILE', extension: '.blockly' })
+              }
+              icon={LanguageBlocklyIcon}
+            />
+          </>
+        ) : null}
         <FileMenuItem
           title="Rename"
           onClick={() => this.handleRename()}
