@@ -2,6 +2,7 @@
 
 import * as React from 'react';
 
+import Divider from '@material-ui/core/Divider';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
@@ -12,6 +13,8 @@ import {
   LanguageJavascriptIcon,
   RenameIcon,
   DeleteIcon,
+  DownloadIcon,
+  UploadIcon,
 } from '../../misc/palette';
 
 import type { FileDesc, FileReference, DirReference, FileAction } from '.';
@@ -76,6 +79,19 @@ class FileMenu extends React.Component<PropTypes, StateTypes> {
 
   handleDelete() {
     this.action(file => ({ action: 'DELETE', file }));
+  }
+
+  handleDownload() {
+    // this.action(file => ({ action: 'DOWNLOAD', file }));
+  }
+
+  handleUpload() {
+    // this.action(file => {
+    //   // $FlowExpectError
+    //   const parentDir: DirReference = file;
+
+    //   return { action: 'UPLOAD', parentDir };
+    // });
   }
 
   render() {
@@ -144,6 +160,7 @@ class FileMenu extends React.Component<PropTypes, StateTypes> {
               }
               icon={LanguageBlocklyIcon}
             />
+            <Divider />
           </>
         ) : null}
         <FileMenuItem
@@ -158,6 +175,25 @@ class FileMenu extends React.Component<PropTypes, StateTypes> {
           disabled={isRoot}
           icon={DeleteIcon}
         />
+        {!isLeaf ? (
+          <>
+            <Divider />
+            <FileMenuItem
+              title="Upload"
+              onClick={() => this.handleUpload()}
+              icon={UploadIcon}
+            />
+          </>
+        ) : (
+          <>
+            <Divider />
+            <FileMenuItem
+              title="Download"
+              onClick={() => this.handleDownload()}
+              icon={DownloadIcon}
+            />
+          </>
+        )}
       </Menu>
     );
   }

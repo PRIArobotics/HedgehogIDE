@@ -31,6 +31,8 @@ import CreateIcon from 'mdi-material-ui/Plus';
 import RenameIcon from 'mdi-material-ui/Pencil';
 import DeleteIcon from 'mdi-material-ui/Delete';
 import RefreshIcon from 'mdi-material-ui/Refresh';
+import DownloadIcon from 'mdi-material-ui/Download';
+import UploadIcon from 'mdi-material-ui/Upload';
 
 // program actions
 import ExecuteIcon from 'mdi-material-ui/Play';
@@ -59,6 +61,8 @@ export {
   CreateIcon,
   RenameIcon,
   DeleteIcon,
+  DownloadIcon,
+  UploadIcon,
   RefreshIcon,
   ExecuteIcon,
   TerminateIcon,
