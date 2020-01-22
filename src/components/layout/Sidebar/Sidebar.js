@@ -39,9 +39,7 @@ function Sidebar({ classes }: SidebarProps) {
     icon: Class<React.Component<any>>,
   |};
 
-  function NavItem({ title, target, icon }: NavItemProps) {
-    const TheIcon = icon;
-
+  function NavItem({ title, target, icon: TheIcon }: NavItemProps) {
     return (
       <Tooltip title={title} placement="right">
         <ListItem button component={Link} to={target}>
