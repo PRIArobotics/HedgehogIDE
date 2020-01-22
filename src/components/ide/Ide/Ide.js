@@ -45,6 +45,8 @@ import CreateFileDialog from '../FileTree/CreateFileDialog';
 import RenameFileDialog from '../FileTree/RenameFileDialog';
 import DeleteFileDialog from '../FileTree/DeleteFileDialog';
 
+import FileUpload from '../FileTree/FileUpload';
+
 const sh = new fs.Shell();
 
 const styled = withStylesMaterial(theme => ({
@@ -173,6 +175,7 @@ class Ide extends React.Component<PropTypes, StateTypes> {
   createFileRef: RefObject<typeof CreateFileDialog> = React.createRef();
   renameFileRef: RefObject<typeof RenameFileDialog> = React.createRef();
   deleteFileRef: RefObject<typeof DeleteFileDialog> = React.createRef();
+  fileUploadRef: RefObject<typeof FileUpload> = React.createRef();
 
   blocklyTabIds = new Set();
 
@@ -402,6 +405,16 @@ class Ide extends React.Component<PropTypes, StateTypes> {
         });
         break;
       }
+      case 'DOWNLOAD': {
+        const { file } = action;
+        this.beginDownloadFile(file);
+        break;
+      }
+      case 'UPLOAD': {
+        const { parentDir } = action;
+        this.beginUploadFiles(parentDir);
+        break;
+      }
       default:
         // eslint-disable-next-line no-throw-literal
         throw 'unreachable';
@@ -593,6 +606,54 @@ class Ide extends React.Component<PropTypes, StateTypes> {
     }
   }
 
+  async beginDownloadFile(file: FileReference): Promise<void> {
+    // eslint-disable-next-line no-throw-literal
+    if (this.state.projectInfo === null) throw 'unreachable';
+
+    console.log('download', file);
+  }
+
+  async beginUploadFiles(parentDir: DirReference): Promise<void> {
+    // eslint-disable-next-line no-throw-literal
+    if (this.fileUploadRef.current === null) throw 'ref is null';
+
+    this.fileUploadRef.current.show(parentDir);
+  }
+
+  async confirmUploadFiles(
+    parentDir: DirReference,
+    files: Array<File>,
+  ): Promise<boolean> {
+    // eslint-disable-next-line no-throw-literal
+    if (this.state.projectInfo === null) throw 'unreachable';
+
+    const {
+      projectInfo: { project },
+    } = this.state;
+
+    // TODO assume there's exactly one file
+    const file = files[0];
+
+    try {
+      const path = project.resolve(parentDir.path, file.name);
+
+      // wrap into the augmented Node-style filer.Buffer object
+      const buffer = filer.Buffer.from(await file.arrayBuffer());
+      // TODO this overwrites files without warning
+      await fs.promises.writeFile(path, buffer);
+
+      await this.refreshProject();
+      return true;
+    } catch (ex) {
+      if (ex instanceof filer.Errors.EEXIST) {
+        await this.refreshProject();
+        return false;
+      }
+      console.error(ex);
+      throw ex;
+    }
+  }
+
   closeTabsForFile(root: FileReference) {
     const nodes = this.getNodes();
     const { layoutState } = this.state;
@@ -674,6 +735,12 @@ class Ide extends React.Component<PropTypes, StateTypes> {
           <DeleteFileDialog
             ref={this.deleteFileRef}
             onDelete={file => this.confirmDeleteFile(file)}
+          />
+          <FileUpload
+            ref={this.fileUploadRef}
+            onUpload={(parentNode, files) =>
+              this.confirmUploadFiles(parentNode, files)
+            }
           />
         </Grid>
         <Grid item component={SquarePaper} className={classes.editorContainer}>

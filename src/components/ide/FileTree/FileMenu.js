@@ -82,16 +82,16 @@ class FileMenu extends React.Component<PropTypes, StateTypes> {
   }
 
   handleDownload() {
-    // this.action(file => ({ action: 'DOWNLOAD', file }));
+    this.action(file => ({ action: 'DOWNLOAD', file }));
   }
 
   handleUpload() {
-    // this.action(file => {
-    //   // $FlowExpectError
-    //   const parentDir: DirReference = file;
+    this.action(file => {
+      // $FlowExpectError
+      const parentDir: DirReference = file;
 
-    //   return { action: 'UPLOAD', parentDir };
-    // });
+      return { action: 'UPLOAD', parentDir };
+    });
   }
 
   render() {
