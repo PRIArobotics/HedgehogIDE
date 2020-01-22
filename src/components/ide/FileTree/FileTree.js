@@ -46,7 +46,11 @@ export type FileAction =
       desc: FileDesc,
     |}
   | {|
-      action: 'RENAME' | 'DELETE' | 'OPEN',
+      action: 'UPLOAD',
+      parentDir: DirReference,
+    |}
+  | {|
+      action: 'RENAME' | 'DELETE' | 'OPEN' | 'DOWNLOAD',
       file: FileReference,
     |}
   | {|
