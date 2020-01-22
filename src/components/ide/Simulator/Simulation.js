@@ -418,6 +418,10 @@ export class Simulation {
         const { bodyA, bodyB } = pair;
 
         let collision = null;
+        // go over all types of sensors in the cache,
+        // find out if the collision pair has that sensor.
+        // there's only one sensor in the collision pair,
+        // so there's no hazard of overwriting a collision through forEach
         Object.keys(this.sensorsCache).forEach(key => {
           const sensors = this.sensorsCache[key];
           if (sensors.includes(bodyA)) {
@@ -437,6 +441,7 @@ export class Simulation {
         if (collision === null) return;
         const { type, sensor, other } = collision;
 
+        // handle collision according to the type
         if (type === 'lineSensors' && this.lines.includes(other)) {
           sensor.plugin.hedgehog.robot.handleLineSensor(name, sensor);
         } else if (type === 'touchSensors' && !this.lines.includes(other)) {
