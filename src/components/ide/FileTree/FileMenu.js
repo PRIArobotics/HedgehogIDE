@@ -92,6 +92,29 @@ class FileMenu extends React.Component<PropTypes, StateTypes> {
     const isRoot = file.path === '.';
     const isLeaf = !file.file.isDirectory();
 
+    type FileMenuItemProps = {|
+      title: string,
+      onClick: () => void | Promise<void>,
+      disabled: boolean,
+      icon: Class<React.Component<any>>,
+    |};
+
+    function FileMenuItem({
+      title,
+      onClick,
+      disabled,
+      icon: TheIcon,
+    }: FileMenuItemProps) {
+      return (
+        <MenuItem onClick={onClick} disabled={disabled}>
+          <ListItemIcon>
+            <TheIcon fontSize="small" />
+          </ListItemIcon>
+          {title}
+        </MenuItem>
+      );
+    }
+
     return (
       <Menu
         keepMounted
@@ -100,47 +123,36 @@ class FileMenu extends React.Component<PropTypes, StateTypes> {
         open={visible}
         onClose={() => this.hide()}
       >
-        <MenuItem
+        <FileMenuItem
+          title="New Folder"
           onClick={() => this.handleCreate({ type: 'DIRECTORY' })}
           disabled={isLeaf}
-        >
-          <ListItemIcon>
-            <FolderIcon fontSize="small" />
-          </ListItemIcon>
-          New Folder
-        </MenuItem>
-        <MenuItem
+          icon={FolderIcon}
+        />
+        <FileMenuItem
+          title="New JavaScript File"
           onClick={() => this.handleCreate({ type: 'FILE', extension: '.js' })}
           disabled={isLeaf}
-        >
-          <ListItemIcon>
-            <LanguageJavascriptIcon fontSize="small" />
-          </ListItemIcon>
-          New JavaScript File
-        </MenuItem>
-        <MenuItem
-          onClick={() =>
-            this.handleCreate({ type: 'FILE', extension: '.blockly' })
-          }
+          icon={LanguageJavascriptIcon}
+        />
+        <FileMenuItem
+          title="New Blockly File"
+          onClick={() => this.handleCreate({ type: 'FILE', extension: '.blockly' })}
           disabled={isLeaf}
-        >
-          <ListItemIcon>
-            <LanguageBlocklyIcon fontSize="small" />
-          </ListItemIcon>
-          New Blockly File
-        </MenuItem>
-        <MenuItem onClick={() => this.handleRename()} disabled={isRoot}>
-          <ListItemIcon>
-            <RenameIcon fontSize="small" />
-          </ListItemIcon>
-          Rename
-        </MenuItem>
-        <MenuItem onClick={() => this.handleDelete()} disabled={isRoot}>
-          <ListItemIcon>
-            <DeleteIcon fontSize="small" />
-          </ListItemIcon>
-          Delete
-        </MenuItem>
+          icon={LanguageBlocklyIcon}
+        />
+        <FileMenuItem
+          title="Rename"
+          onClick={() => this.handleRename()}
+          disabled={isRoot}
+          icon={RenameIcon}
+        />
+        <FileMenuItem
+          title="Delete"
+          onClick={() => this.handleDelete()}
+          disabled={isRoot}
+          icon={DeleteIcon}
+        />
       </Menu>
     );
   }
