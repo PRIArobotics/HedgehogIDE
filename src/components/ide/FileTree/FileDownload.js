@@ -2,6 +2,8 @@
 
 import * as React from 'react';
 
+import * as AsyncReact from '../../misc/AsyncReact';
+
 type PropTypes = {||};
 type StateTypes = {|
   config: {|
@@ -17,24 +19,21 @@ class CreateFileDialog extends React.Component<PropTypes, StateTypes> {
     config: null,
   };
 
-  show(name: string, content: string) {
+  async show(name: string, content: string) {
     if (this.state.config !== null) {
       URL.revokeObjectURL(this.state.config.objectURL);
     }
 
     const objectURL = URL.createObjectURL(new Blob([content]));
 
-    this.setState(
-      {
-        config: { name, objectURL },
-      },
-      () => {
-        // eslint-disable-next-line no-throw-literal
-        if (this.linkRef.current === null) throw 'ref is null';
+    await AsyncReact.setState(this, {
+      config: { name, objectURL },
+    });
 
-        this.linkRef.current.click();
-      },
-    );
+    // eslint-disable-next-line no-throw-literal
+    if (this.linkRef.current === null) throw 'ref is null';
+
+    this.linkRef.current.click();
   }
 
   render() {
