@@ -44,8 +44,8 @@ import {
 import CreateFileDialog from '../FileTree/CreateFileDialog';
 import RenameFileDialog from '../FileTree/RenameFileDialog';
 import DeleteFileDialog from '../FileTree/DeleteFileDialog';
-
 import FileUpload from '../FileTree/FileUpload';
+import FileDownload from '../FileTree/FileDownload';
 
 const sh = new fs.Shell();
 
@@ -176,6 +176,7 @@ class Ide extends React.Component<PropTypes, StateTypes> {
   renameFileRef: RefObject<typeof RenameFileDialog> = React.createRef();
   deleteFileRef: RefObject<typeof DeleteFileDialog> = React.createRef();
   fileUploadRef: RefObject<typeof FileUpload> = React.createRef();
+  fileDownloadRef: RefObject<typeof FileDownload> = React.createRef();
 
   blocklyTabIds = new Set();
 
@@ -407,7 +408,7 @@ class Ide extends React.Component<PropTypes, StateTypes> {
       }
       case 'DOWNLOAD': {
         const { file } = action;
-        this.beginDownloadFile(file);
+        this.downloadFile(file);
         break;
       }
       case 'UPLOAD': {
@@ -606,11 +607,21 @@ class Ide extends React.Component<PropTypes, StateTypes> {
     }
   }
 
-  async beginDownloadFile(file: FileReference): Promise<void> {
+  async downloadFile(file: FileReference): Promise<void> {
+    // eslint-disable-next-line no-throw-literal
+    if (this.fileDownloadRef.current === null) throw 'ref is null';
     // eslint-disable-next-line no-throw-literal
     if (this.state.projectInfo === null) throw 'unreachable';
 
-    console.log('download', file);
+    const fileDownload = this.fileDownloadRef.current;
+    const {
+      projectInfo: { project },
+    } = this.state;
+
+    const path = project.resolve(file.path);
+    const content = await fs.promises.readFile(path, 'utf8');
+
+    fileDownload.show(file.file.name, content);
   }
 
   async beginUploadFiles(parentDir: DirReference): Promise<void> {
@@ -742,6 +753,7 @@ class Ide extends React.Component<PropTypes, StateTypes> {
               this.confirmUploadFiles(parentNode, files)
             }
           />
+          <FileDownload ref={this.fileDownloadRef} />
         </Grid>
         <Grid item component={SquarePaper} className={classes.editorContainer}>
           <FlexLayout.Layout
