@@ -2,6 +2,8 @@
 
 import * as React from 'react';
 
+import * as AsyncReact from '../../misc/AsyncReact';
+
 import type { DirReference } from '.';
 
 type PropTypes = {|
@@ -23,18 +25,15 @@ class CreateFileDialog extends React.Component<PropTypes, StateTypes> {
     config: null,
   };
 
-  show(parentDir: DirReference) {
+  async show(parentDir: DirReference) {
+    await AsyncReact.setState(this, {
+      config: { parentDir },
+    });
+
     // eslint-disable-next-line no-throw-literal
     if (this.inputRef.current === null) throw 'ref is null';
 
-    const inputElem = this.inputRef.current;
-
-    this.setState(
-      {
-        config: { parentDir },
-      },
-      () => inputElem.click(),
-    );
+    this.inputRef.current.click();
   }
 
   async confirm() {
