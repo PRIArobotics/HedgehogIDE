@@ -13,7 +13,7 @@ import {
   IdeIcon,
   HelpIcon,
   ContestIcon,
-  ControlsIcon,
+  // ControlsIcon,
   ApolloTestIcon,
   IndexDBTestIcon,
   WebRTCTestIcon,
