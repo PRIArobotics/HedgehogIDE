@@ -413,7 +413,7 @@ class Ide extends React.Component<PropTypes, StateTypes> {
       }
       case 'UPLOAD': {
         const { parentDir } = action;
-        this.beginUploadFiles(parentDir);
+        this.uploadFiles(parentDir);
         break;
       }
       default:
@@ -624,17 +624,13 @@ class Ide extends React.Component<PropTypes, StateTypes> {
     fileDownload.show(file.file.name, content);
   }
 
-  async beginUploadFiles(parentDir: DirReference): Promise<void> {
+  async uploadFiles(parentDir: DirReference): Promise<void> {
     // eslint-disable-next-line no-throw-literal
     if (this.fileUploadRef.current === null) throw 'ref is null';
 
-    this.fileUploadRef.current.show(parentDir);
-  }
+    const files = await this.fileUploadRef.current.show();
+    if (files.length === 0) return;
 
-  async confirmUploadFiles(
-    parentDir: DirReference,
-    files: Array<File>,
-  ): Promise<boolean> {
     // eslint-disable-next-line no-throw-literal
     if (this.state.projectInfo === null) throw 'unreachable';
 
@@ -642,7 +638,7 @@ class Ide extends React.Component<PropTypes, StateTypes> {
       projectInfo: { project },
     } = this.state;
 
-    // TODO assume there's exactly one file
+    // TODO assumes there's exactly one file
     const file = files[0];
 
     try {
@@ -654,11 +650,10 @@ class Ide extends React.Component<PropTypes, StateTypes> {
       await fs.promises.writeFile(path, buffer);
 
       await this.refreshProject();
-      return true;
     } catch (ex) {
       if (ex instanceof filer.Errors.EEXIST) {
         await this.refreshProject();
-        return false;
+        return;
       }
       console.error(ex);
       throw ex;
@@ -747,12 +742,7 @@ class Ide extends React.Component<PropTypes, StateTypes> {
             ref={this.deleteFileRef}
             onDelete={file => this.confirmDeleteFile(file)}
           />
-          <FileUpload
-            ref={this.fileUploadRef}
-            onUpload={(parentNode, files) =>
-              this.confirmUploadFiles(parentNode, files)
-            }
-          />
+          <FileUpload ref={this.fileUploadRef} />
           <FileDownload ref={this.fileDownloadRef} />
         </Grid>
         <Grid item component={SquarePaper} className={classes.editorContainer}>
