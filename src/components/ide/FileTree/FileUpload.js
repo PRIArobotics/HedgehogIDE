@@ -55,8 +55,9 @@ class CreateFileDialog extends React.Component<PropTypes, StateTypes> {
       <input
         ref={this.inputRef}
         type="file"
-        style={{ display: 'none' }}
         onChange={() => this.confirm()}
+        style={{ display: 'none' }}
+        aria-hidden
       />
     );
   }

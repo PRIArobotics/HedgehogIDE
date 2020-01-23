@@ -2,8 +2,6 @@
 
 import * as React from 'react';
 
-import type { DirReference } from '.';
-
 type PropTypes = {||};
 type StateTypes = {|
   config: {|
@@ -46,7 +44,16 @@ class CreateFileDialog extends React.Component<PropTypes, StateTypes> {
       config: { name, objectURL },
     } = this.state;
 
-    return <a ref={this.linkRef} href={objectURL} download={name} />;
+    return (
+      // eslint-disable-next-line jsx-a11y/anchor-has-content
+      <a
+        ref={this.linkRef}
+        href={objectURL}
+        download={name}
+        style={{ display: 'none' }}
+        aria-hidden
+      />
+    );
   }
 }
 
