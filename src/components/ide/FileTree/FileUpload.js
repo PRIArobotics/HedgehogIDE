@@ -2,51 +2,38 @@
 
 import * as React from 'react';
 
-import * as AsyncReact from '../../misc/AsyncReact';
-
-import type { DirReference } from '.';
-
-type PropTypes = {|
-  onUpload: (
-    parentDir: DirReference,
-    files: Array<File>,
-  ) => boolean | Promise<boolean>,
-|};
-type StateTypes = {|
-  config: {|
-    parentDir: DirReference,
-  |} | null,
-|};
+type PropTypes = {||};
+type StateTypes = {||};
 
 class CreateFileDialog extends React.Component<PropTypes, StateTypes> {
   inputRef: RefObject<'input'> = React.createRef();
 
-  state: StateTypes = {
-    config: null,
-  };
+  async show(): Promise<Array<File>> {
+    return /* await */ new Promise((resolve, reject) => {
+      // eslint-disable-next-line no-throw-literal
+      if (this.inputRef.current === null) throw 'ref is null';
 
-  async show(parentDir: DirReference) {
-    await AsyncReact.setState(this, {
-      config: { parentDir },
+      this.inputRef.current.value = '';
+      this.inputRef.current.click();
+
+      window.addEventListener(
+        'focus',
+        () => {
+          // wait a few millis, because at least in FF
+          // the onFocus happens before the file change...
+          setTimeout(() => {
+            if (this.inputRef.current === null) {
+              // eslint-disable-next-line prefer-promise-reject-errors
+              reject('ref is null');
+              return;
+            }
+
+            resolve(this.inputRef.current.files);
+          }, 50);
+        },
+        { once: true },
+      );
     });
-
-    // eslint-disable-next-line no-throw-literal
-    if (this.inputRef.current === null) throw 'ref is null';
-
-    this.inputRef.current.click();
-  }
-
-  async confirm() {
-    // eslint-disable-next-line no-throw-literal
-    if (this.inputRef.current === null) throw 'ref is null';
-    // eslint-disable-next-line no-throw-literal
-    if (this.state.config === null) throw 'unreachable';
-
-    const {
-      config: { parentDir },
-    } = this.state;
-
-    await this.props.onUpload(parentDir, this.inputRef.current.files);
   }
 
   render() {
@@ -54,7 +41,6 @@ class CreateFileDialog extends React.Component<PropTypes, StateTypes> {
       <input
         ref={this.inputRef}
         type="file"
-        onChange={() => this.confirm()}
         style={{ display: 'none' }}
         aria-hidden
       />
