@@ -57,7 +57,7 @@ args0: {json.dumps(block.args, indent=2)},""", 4 * " "))
             yield from lines(f"""\
   }},
   generators: {{""")
-            for language in ['JavaScript']:
+            for language in ['JavaScript', 'Python']:
                 yield from lines(f"""\
     {language}: block => {{""")
                 if 'args' in block:
