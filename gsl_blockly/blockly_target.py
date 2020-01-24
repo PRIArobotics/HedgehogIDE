@@ -57,40 +57,41 @@ args0: {json.dumps(block.args, indent=2)},""", 4 * " "))
             yield from lines(f"""\
   }},
   generators: {{""")
-            yield from lines(f"""\
-    JavaScript: block => {{""")
-            if 'args' in block:
-                for arg in block.args:
-                    if arg.type == 'input_dummy':
-                        continue
-                    elif arg.type == 'input_statement':
-                        yield from lines(f"""\
-      const statements = Blockly.JavaScript.statementToCode(block, {repr(arg.name)});""")
-                    elif arg.type == 'field_checkbox':
-                        yield from lines(f"""\
+            for language in ['JavaScript']:
+                yield from lines(f"""\
+    {language}: block => {{""")
+                if 'args' in block:
+                    for arg in block.args:
+                        if arg.type == 'input_dummy':
+                            continue
+                        elif arg.type == 'input_statement':
+                            yield from lines(f"""\
+      const statements = Blockly.{language}.statementToCode(block, {repr(arg.name)});""")
+                        elif arg.type == 'field_checkbox':
+                            yield from lines(f"""\
       const {arg.name.lower()} = block.getFieldValue({repr(arg.name)}) === 'TRUE';""")
-                    elif arg.type.startswith('field_'):
-                        yield from lines(f"""\
+                        elif arg.type.startswith('field_'):
+                            yield from lines(f"""\
       const {arg.name.lower()} = block.getFieldValue({repr(arg.name)});""")
 
-            yield from lines(f"""\
-      // <default GSL customizable: {block.name}-body-JavaScript>""")
-            if 'args' in block:
-                for arg in block.args:
-                    if arg.type not in {'input_dummy', 'input_statement'} and arg.type.startswith('input_'):
-                        yield from lines(f"""\
-      const {arg.name.lower()} = Blockly.JavaScript.valueToCode(block, {repr(arg.name)}, Blockly.JavaScript.ORDER_ATOMIC);""")
-            yield from lines(f"""\
+                yield from lines(f"""\
+      // <default GSL customizable: {block.name}-body-{language}>""")
+                if 'args' in block:
+                    for arg in block.args:
+                        if arg.type not in {'input_dummy', 'input_statement'} and arg.type.startswith('input_'):
+                            yield from lines(f"""\
+      const {arg.name.lower()} = Blockly.{language}.valueToCode(block, {repr(arg.name)}, Blockly.{language}.ORDER_ATOMIC);""")
+                yield from lines(f"""\
       // TODO generate code
       const code = '';""")
-            if 'output' not in block:
-                yield from lines(f"""\
+                if 'output' not in block:
+                    yield from lines(f"""\
       return code;""")
-            else:
+                else:
+                    yield from lines(f"""\
+      return [code, Blockly.{language}.ORDER_NONE];""")
                 yield from lines(f"""\
-      return [code, Blockly.JavaScript.ORDER_NONE];""")
-            yield from lines(f"""\
-      // </GSL customizable: {block.name}-body-JavaScript>
+      // </GSL customizable: {block.name}-body-{language}>
     }},""")
             yield from lines(f"""\
   }},
