@@ -32,6 +32,14 @@ const PrintBlock: Block = {
       );
       return `print(${valueText});\n`;
     },
+    Python: block => {
+      const valueText = Blockly.Python.valueToCode(
+        block,
+        'TEXT',
+        Blockly.Python.ORDER_NONE,
+      );
+      return `print(${valueText});\n`;
+    },
   },
   toolboxBlocks: {
     default: () => (
