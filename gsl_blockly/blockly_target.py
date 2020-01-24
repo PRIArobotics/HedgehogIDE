@@ -56,7 +56,8 @@ args0: {json.dumps(block.args, indent=2)},""", 4 * " "))
     extensions: [{', '.join(f"'{extension}'" for extension in extensions)}],""")
             yield from lines(f"""\
   }},
-  generators: {{
+  generators: {{""")
+            yield from lines(f"""\
     JavaScript: block => {{""")
             if 'args' in block:
                 for arg in block.args:
@@ -73,7 +74,7 @@ args0: {json.dumps(block.args, indent=2)},""", 4 * " "))
       const {arg.name.lower()} = block.getFieldValue({repr(arg.name)});""")
 
             yield from lines(f"""\
-      // <default GSL customizable: {block.name}-body>""")
+      // <default GSL customizable: {block.name}-body-JavaScript>""")
             if 'args' in block:
                 for arg in block.args:
                     if arg.type not in {'input_dummy', 'input_statement'} and arg.type.startswith('input_'):
@@ -89,8 +90,9 @@ args0: {json.dumps(block.args, indent=2)},""", 4 * " "))
                 yield from lines(f"""\
       return [code, Blockly.JavaScript.ORDER_NONE];""")
             yield from lines(f"""\
-      // </GSL customizable: {block.name}-body>
-    }},
+      // </GSL customizable: {block.name}-body-JavaScript>
+    }},""")
+            yield from lines(f"""\
   }},
   toolboxBlocks: {{
     default: () => (
