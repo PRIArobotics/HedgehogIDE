@@ -41,7 +41,7 @@ export const HEDGEHOG_MOVE: Block = {
   generators: {
     JavaScript: block => {
       const port = block.getFieldValue('PORT');
-      // <GSL customizable: hedgehog_move-body>
+      // <GSL customizable: hedgehog_move-body-JavaScript>
       const speed = Blockly.JavaScript.valueToCode(block, 'SPEED', Blockly.JavaScript.ORDER_NONE);
       const time = Blockly.JavaScript.valueToCode(block, 'TIME', Blockly.JavaScript.ORDER_NONE);
       let code = '';
@@ -49,7 +49,7 @@ export const HEDGEHOG_MOVE: Block = {
       code += `await sleep(${time} * 1000);\n`;
       code += `await moveMotor(${port}, 0);\n`;
       return code;
-      // </GSL customizable: hedgehog_move-body>
+      // </GSL customizable: hedgehog_move-body-JavaScript>
     },
   },
   toolboxBlocks: {
@@ -103,11 +103,11 @@ export const HEDGEHOG_MOVE_UNLIMITED: Block = {
   generators: {
     JavaScript: block => {
       const port = block.getFieldValue('PORT');
-      // <GSL customizable: hedgehog_move_unlimited-body>
+      // <GSL customizable: hedgehog_move_unlimited-body-JavaScript>
       const speed = Blockly.JavaScript.valueToCode(block, 'SPEED', Blockly.JavaScript.ORDER_NONE);
       const code = `await moveMotor(${port}, ${speed});\n`;
       return code;
-      // </GSL customizable: hedgehog_move_unlimited-body>
+      // </GSL customizable: hedgehog_move_unlimited-body-JavaScript>
     },
   },
   toolboxBlocks: {
@@ -151,10 +151,10 @@ export const HEDGEHOG_MOTOR_OFF: Block = {
   generators: {
     JavaScript: block => {
       const port = block.getFieldValue('PORT');
-      // <GSL customizable: hedgehog_motor_off-body>
+      // <GSL customizable: hedgehog_motor_off-body-JavaScript>
       const code = `await moveMotor(${port}, 0);\n`;
       return code;
-      // </GSL customizable: hedgehog_motor_off-body>
+      // </GSL customizable: hedgehog_motor_off-body-JavaScript>
     },
   },
   toolboxBlocks: {
@@ -193,10 +193,10 @@ export const HEDGEHOG_BRAKE: Block = {
   generators: {
     JavaScript: block => {
       const port = block.getFieldValue('PORT');
-      // <GSL customizable: hedgehog_brake-body>
+      // <GSL customizable: hedgehog_brake-body-JavaScript>
       const code = `await moveMotor(${port}, 0);\n`;
       return code;
-      // </GSL customizable: hedgehog_brake-body>
+      // </GSL customizable: hedgehog_brake-body-JavaScript>
     },
   },
   toolboxBlocks: {
@@ -259,7 +259,7 @@ export const HEDGEHOG_MOVE2: Block = {
     JavaScript: block => {
       const port1 = block.getFieldValue('PORT1');
       const port2 = block.getFieldValue('PORT2');
-      // <GSL customizable: hedgehog_move2-body>
+      // <GSL customizable: hedgehog_move2-body-JavaScript>
       const speed1 = Blockly.JavaScript.valueToCode(block, 'SPEED1', Blockly.JavaScript.ORDER_NONE);
       const speed2 = Blockly.JavaScript.valueToCode(block, 'SPEED2', Blockly.JavaScript.ORDER_NONE);
       const time = Blockly.JavaScript.valueToCode(block, 'TIME', Blockly.JavaScript.ORDER_NONE);
@@ -275,7 +275,7 @@ export const HEDGEHOG_MOVE2: Block = {
       code += `${indent}moveMotor(${port2}, 0),\n`;
       code += ');\n';
       return code;
-      // </GSL customizable: hedgehog_move2-body>
+      // </GSL customizable: hedgehog_move2-body-JavaScript>
     },
   },
   toolboxBlocks: {
@@ -348,7 +348,7 @@ export const HEDGEHOG_MOVE2_UNLIMITED: Block = {
     JavaScript: block => {
       const port1 = block.getFieldValue('PORT1');
       const port2 = block.getFieldValue('PORT2');
-      // <GSL customizable: hedgehog_move2_unlimited-body>
+      // <GSL customizable: hedgehog_move2_unlimited-body-JavaScript>
       const speed1 = Blockly.JavaScript.valueToCode(block, 'SPEED1', Blockly.JavaScript.ORDER_NONE);
       const speed2 = Blockly.JavaScript.valueToCode(block, 'SPEED2', Blockly.JavaScript.ORDER_NONE);
       const indent = Blockly.JavaScript.INDENT;
@@ -358,7 +358,7 @@ export const HEDGEHOG_MOVE2_UNLIMITED: Block = {
       code += `${indent}moveMotor(${port2}, ${speed2}),\n`;
       code += ');\n';
       return code;
-      // </GSL customizable: hedgehog_move2_unlimited-body>
+      // </GSL customizable: hedgehog_move2_unlimited-body-JavaScript>
     },
   },
   toolboxBlocks: {
@@ -416,7 +416,7 @@ export const HEDGEHOG_MOTOR_OFF2: Block = {
     JavaScript: block => {
       const port1 = block.getFieldValue('PORT1');
       const port2 = block.getFieldValue('PORT2');
-      // <GSL customizable: hedgehog_motor_off2-body>
+      // <GSL customizable: hedgehog_motor_off2-body-JavaScript>
       const indent = Blockly.JavaScript.INDENT;
       let code = '';
       code += 'await commands(\n';
@@ -424,7 +424,7 @@ export const HEDGEHOG_MOTOR_OFF2: Block = {
       code += `${indent}moveMotor(${port2}, 0),\n`;
       code += ');\n';
       return code;
-      // </GSL customizable: hedgehog_motor_off2-body>
+      // </GSL customizable: hedgehog_motor_off2-body-JavaScript>
     },
   },
   toolboxBlocks: {
@@ -472,7 +472,7 @@ export const HEDGEHOG_BRAKE2: Block = {
     JavaScript: block => {
       const port1 = block.getFieldValue('PORT1');
       const port2 = block.getFieldValue('PORT2');
-      // <GSL customizable: hedgehog_brake2-body>
+      // <GSL customizable: hedgehog_brake2-body-JavaScript>
       const indent = Blockly.JavaScript.INDENT;
       let code = '';
       code += 'await commands(\n';
@@ -480,7 +480,7 @@ export const HEDGEHOG_BRAKE2: Block = {
       code += `${indent}moveMotor(${port2}, 0),\n`;
       code += ');\n';
       return code;
-      // </GSL customizable: hedgehog_brake2-body>
+      // </GSL customizable: hedgehog_brake2-body-JavaScript>
     },
   },
   toolboxBlocks: {
@@ -523,11 +523,11 @@ export const HEDGEHOG_SERVO: Block = {
   generators: {
     JavaScript: block => {
       const port = block.getFieldValue('PORT');
-      // <GSL customizable: hedgehog_servo-body>
+      // <GSL customizable: hedgehog_servo-body-JavaScript>
       const angle = Blockly.JavaScript.valueToCode(block, 'ANGLE', Blockly.JavaScript.ORDER_MULTIPLICATION);
       const code = `await setServo(${port}, Math.round(${angle} * 1000 / 180));\n`;
       return code;
-      // </GSL customizable: hedgehog_servo-body>
+      // </GSL customizable: hedgehog_servo-body-JavaScript>
     },
   },
   toolboxBlocks: {
@@ -570,10 +570,10 @@ export const HEDGEHOG_SERVO_OFF: Block = {
   generators: {
     JavaScript: block => {
       const port = block.getFieldValue('PORT');
-      // <GSL customizable: hedgehog_servo_off-body>
+      // <GSL customizable: hedgehog_servo_off-body-JavaScript>
       const code = `await setServo(${port}, null);\n`;
       return code;
-      // </GSL customizable: hedgehog_servo_off-body>
+      // </GSL customizable: hedgehog_servo_off-body-JavaScript>
     },
   },
   toolboxBlocks: {
@@ -610,10 +610,10 @@ export const HEDGEHOG_READ_ANALOG: Block = {
   generators: {
     JavaScript: block => {
       const port = block.getFieldValue('PORT');
-      // <GSL customizable: hedgehog_read_analog-body>
+      // <GSL customizable: hedgehog_read_analog-body-JavaScript>
       const code = `await getAnalog(${port})`;
       return [code, Blockly.JavaScript.ORDER_AWAIT];
-      // </GSL customizable: hedgehog_read_analog-body>
+      // </GSL customizable: hedgehog_read_analog-body-JavaScript>
     },
   },
   toolboxBlocks: {
@@ -664,11 +664,11 @@ export const HEDGEHOG_READ_DIGITAL: Block = {
   generators: {
     JavaScript: block => {
       const port = block.getFieldValue('PORT');
-      // <GSL customizable: hedgehog_read_digital-body>
+      // <GSL customizable: hedgehog_read_digital-body-JavaScript>
       // TODO generate code
       const code = `await getDigital(${port})`;
       return [code, Blockly.JavaScript.ORDER_AWAIT];
-      // </GSL customizable: hedgehog_read_digital-body>
+      // </GSL customizable: hedgehog_read_digital-body-JavaScript>
     },
   },
   toolboxBlocks: {
@@ -703,11 +703,11 @@ export const HEDGEHOG_SLEEP: Block = {
   },
   generators: {
     JavaScript: block => {
-      // <GSL customizable: hedgehog_sleep-body>
+      // <GSL customizable: hedgehog_sleep-body-JavaScript>
       const time = Blockly.JavaScript.valueToCode(block, 'TIME', Blockly.JavaScript.ORDER_MULTIPLICATION);
       const code = `await sleep(${time} * 1000);\n`;
       return code;
-      // </GSL customizable: hedgehog_sleep-body>
+      // </GSL customizable: hedgehog_sleep-body-JavaScript>
     },
   },
   toolboxBlocks: {
