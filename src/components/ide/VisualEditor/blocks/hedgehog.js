@@ -53,12 +53,15 @@ export const HEDGEHOG_MOVE: Block = {
     },
     Python: block => {
       const port = block.getFieldValue('PORT');
-      // <default GSL customizable: hedgehog_move-body-Python>
-      const speed = Blockly.Python.valueToCode(block, 'SPEED', Blockly.Python.ORDER_ATOMIC);
-      const time = Blockly.Python.valueToCode(block, 'TIME', Blockly.Python.ORDER_ATOMIC);
-      // TODO generate code
-      const code = '';
-      return code;
+      // <GSL customizable: hedgehog_move-body-Python>
+      const speed = Blockly.Python.valueToCode(block, 'SPEED', Blockly.Python.ORDER_NONE);
+      const time = Blockly.Python.valueToCode(block, 'TIME', Blockly.Python.ORDER_NONE);
+      // TODO import sleep
+      let code = '';
+      code += `hedgehog.move_motor(${port}, ${speed});\n`;
+      code += `sleep(${time});\n`;
+      code += `hedgehog.brake(${port});\n`;
+        return code;
       // </GSL customizable: hedgehog_move-body-Python>
     },
   },

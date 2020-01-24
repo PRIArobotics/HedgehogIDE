@@ -5,6 +5,7 @@ import ReactDOM from 'react-dom/server';
 import withStyles from 'isomorphic-style-loader/lib/withStyles';
 
 import Blockly from 'blockly';
+import 'blockly/python';
 
 import IconButton from '@material-ui/core/IconButton';
 import { styled } from '@material-ui/styles';
@@ -62,6 +63,7 @@ blocks.forEach(block => {
     },
   };
   Blockly.JavaScript[type] = block.generators.JavaScript;
+  Blockly.Python[type] = block.generators.Python;
 });
 
 export type ControlledState = $Shape<{|
