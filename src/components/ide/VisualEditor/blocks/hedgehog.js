@@ -58,9 +58,9 @@ export const HEDGEHOG_MOVE: Block = {
       const time = Blockly.Python.valueToCode(block, 'TIME', Blockly.Python.ORDER_NONE);
       // TODO import sleep
       let code = '';
-      code += `hedgehog.move_motor(${port}, ${speed});\n`;
-      code += `sleep(${time});\n`;
-      code += `hedgehog.brake(${port});\n`;
+      code += `hedgehog.move_motor(${port}, ${speed})\n`;
+      code += `sleep(${time})\n`;
+      code += `hedgehog.brake(${port})\n`;
         return code;
       // </GSL customizable: hedgehog_move-body-Python>
     },
@@ -124,10 +124,9 @@ export const HEDGEHOG_MOVE_UNLIMITED: Block = {
     },
     Python: block => {
       const port = block.getFieldValue('PORT');
-      // <default GSL customizable: hedgehog_move_unlimited-body-Python>
-      const speed = Blockly.Python.valueToCode(block, 'SPEED', Blockly.Python.ORDER_ATOMIC);
-      // TODO generate code
-      const code = '';
+      // <GSL customizable: hedgehog_move_unlimited-body-Python>
+      const speed = Blockly.Python.valueToCode(block, 'SPEED', Blockly.Python.ORDER_NONE);
+      const code = `hedgehog.move_motor(${port}, ${speed})\n`;
       return code;
       // </GSL customizable: hedgehog_move_unlimited-body-Python>
     },
@@ -180,9 +179,8 @@ export const HEDGEHOG_MOTOR_OFF: Block = {
     },
     Python: block => {
       const port = block.getFieldValue('PORT');
-      // <default GSL customizable: hedgehog_motor_off-body-Python>
-      // TODO generate code
-      const code = '';
+      // <GSL customizable: hedgehog_motor_off-body-Python>
+      const code = `hedgehog.motor_off(${port})\n`;
       return code;
       // </GSL customizable: hedgehog_motor_off-body-Python>
     },
@@ -230,9 +228,8 @@ export const HEDGEHOG_BRAKE: Block = {
     },
     Python: block => {
       const port = block.getFieldValue('PORT');
-      // <default GSL customizable: hedgehog_brake-body-Python>
-      // TODO generate code
-      const code = '';
+      // <GSL customizable: hedgehog_brake-body-Python>
+      const code = `hedgehog.brake(${port})\n`;
       return code;
       // </GSL customizable: hedgehog_brake-body-Python>
     },
@@ -318,12 +315,21 @@ export const HEDGEHOG_MOVE2: Block = {
     Python: block => {
       const port1 = block.getFieldValue('PORT1');
       const port2 = block.getFieldValue('PORT2');
-      // <default GSL customizable: hedgehog_move2-body-Python>
-      const speed1 = Blockly.Python.valueToCode(block, 'SPEED1', Blockly.Python.ORDER_ATOMIC);
-      const speed2 = Blockly.Python.valueToCode(block, 'SPEED2', Blockly.Python.ORDER_ATOMIC);
-      const time = Blockly.Python.valueToCode(block, 'TIME', Blockly.Python.ORDER_ATOMIC);
-      // TODO generate code
-      const code = '';
+      // <GSL customizable: hedgehog_move2-body-Python>
+      const speed1 = Blockly.Python.valueToCode(block, 'SPEED1', Blockly.Python.ORDER_NONE);
+      const speed2 = Blockly.Python.valueToCode(block, 'SPEED2', Blockly.Python.ORDER_NONE);
+      const time = Blockly.Python.valueToCode(block, 'TIME', Blockly.Python.ORDER_NONE);
+      const indent = Blockly.Python.INDENT;
+      let code = '';
+      code += 'hedgehog.commands(\n';
+      code += `${indent}hedgehog.move_motor_cmd(${port1}, ${speed1}),\n`;
+      code += `${indent}hedgehog.move_motor_cmd(${port2}, ${speed2}),\n`;
+      code += ')\n';
+      code += `sleep(${time})\n`;
+      code += 'hedgehog.commands(\n';
+      code += `${indent}hedgehog.brake_cmd(${port1}),\n`;
+      code += `${indent}hedgehog.brake_cmd(${port2}),\n`;
+      code += ')\n';
       return code;
       // </GSL customizable: hedgehog_move2-body-Python>
     },
@@ -413,11 +419,15 @@ export const HEDGEHOG_MOVE2_UNLIMITED: Block = {
     Python: block => {
       const port1 = block.getFieldValue('PORT1');
       const port2 = block.getFieldValue('PORT2');
-      // <default GSL customizable: hedgehog_move2_unlimited-body-Python>
-      const speed1 = Blockly.Python.valueToCode(block, 'SPEED1', Blockly.Python.ORDER_ATOMIC);
-      const speed2 = Blockly.Python.valueToCode(block, 'SPEED2', Blockly.Python.ORDER_ATOMIC);
-      // TODO generate code
-      const code = '';
+      // <GSL customizable: hedgehog_move2_unlimited-body-Python>
+      const speed1 = Blockly.Python.valueToCode(block, 'SPEED1', Blockly.Python.ORDER_NONE);
+      const speed2 = Blockly.Python.valueToCode(block, 'SPEED2', Blockly.Python.ORDER_NONE);
+      const indent = Blockly.Python.INDENT;
+      let code = '';
+      code += 'hedgehog.commands(\n';
+      code += `${indent}hedgehog.move_motor_cmd(${port1}, ${speed1}),\n`;
+      code += `${indent}hedgehog.move_motor_cmd(${port2}, ${speed2}),\n`;
+      code += ')\n';
       return code;
       // </GSL customizable: hedgehog_move2_unlimited-body-Python>
     },
@@ -490,9 +500,13 @@ export const HEDGEHOG_MOTOR_OFF2: Block = {
     Python: block => {
       const port1 = block.getFieldValue('PORT1');
       const port2 = block.getFieldValue('PORT2');
-      // <default GSL customizable: hedgehog_motor_off2-body-Python>
-      // TODO generate code
-      const code = '';
+      // <GSL customizable: hedgehog_motor_off2-body-Python>
+      const indent = Blockly.Python.INDENT;
+      let code = '';
+      code += 'hedgehog.commands(\n';
+      code += `${indent}hedgehog.motor_off_cmd(${port1}),\n`;
+      code += `${indent}hedgehog.motor_off_cmd(${port2}),\n`;
+      code += ')\n';
       return code;
       // </GSL customizable: hedgehog_motor_off2-body-Python>
     },
@@ -555,9 +569,13 @@ export const HEDGEHOG_BRAKE2: Block = {
     Python: block => {
       const port1 = block.getFieldValue('PORT1');
       const port2 = block.getFieldValue('PORT2');
-      // <default GSL customizable: hedgehog_brake2-body-Python>
-      // TODO generate code
-      const code = '';
+      // <GSL customizable: hedgehog_brake2-body-Python>
+      const indent = Blockly.Python.INDENT;
+      let code = '';
+      code += 'hedgehog.commands(\n';
+      code += `${indent}hedgehog.brake_cmd(${port1}),\n`;
+      code += `${indent}hedgehog.brake_cmd(${port2}),\n`;
+      code += ')\n';
       return code;
       // </GSL customizable: hedgehog_brake2-body-Python>
     },
@@ -610,11 +628,12 @@ export const HEDGEHOG_SERVO: Block = {
     },
     Python: block => {
       const port = block.getFieldValue('PORT');
-      // <default GSL customizable: hedgehog_servo-body-Python>
-      const angle = Blockly.Python.valueToCode(block, 'ANGLE', Blockly.Python.ORDER_ATOMIC);
-      // TODO generate code
-      const code = '';
-      return code;
+      // <GSL customizable: hedgehog_servo-body-Python>
+      const angle = Blockly.Python.valueToCode(block, 'ANGLE', Blockly.Python.ORDER_MULTIPLICATIVE);
+      let code = '';
+      code += `hedgehog.set_servo(${port}, int(${angle} * 1000 / 180))\n`;
+      code += 'sleep(0.1)\n';
+        return code;
       // </GSL customizable: hedgehog_servo-body-Python>
     },
   },
@@ -665,9 +684,8 @@ export const HEDGEHOG_SERVO_OFF: Block = {
     },
     Python: block => {
       const port = block.getFieldValue('PORT');
-      // <default GSL customizable: hedgehog_servo_off-body-Python>
-      // TODO generate code
-      const code = '';
+      // <GSL customizable: hedgehog_servo_off-body-Python>
+      const code = `hedgehog.set_servo(${port}, None)\n`;
       return code;
       // </GSL customizable: hedgehog_servo_off-body-Python>
     },
@@ -713,10 +731,9 @@ export const HEDGEHOG_READ_ANALOG: Block = {
     },
     Python: block => {
       const port = block.getFieldValue('PORT');
-      // <default GSL customizable: hedgehog_read_analog-body-Python>
-      // TODO generate code
-      const code = '';
-      return [code, Blockly.Python.ORDER_NONE];
+      // <GSL customizable: hedgehog_read_analog-body-Python>
+      const code = `hedgehog.get_analog(${port})`;
+      return [code, Blockly.Python.ORDER_MEMBER];
       // </GSL customizable: hedgehog_read_analog-body-Python>
     },
   },
@@ -776,10 +793,9 @@ export const HEDGEHOG_READ_DIGITAL: Block = {
     },
     Python: block => {
       const port = block.getFieldValue('PORT');
-      // <default GSL customizable: hedgehog_read_digital-body-Python>
-      // TODO generate code
-      const code = '';
-      return [code, Blockly.Python.ORDER_NONE];
+      // <GSL customizable: hedgehog_read_digital-body-Python>
+      const code = `hedgehog.get_digital(${port})`;
+      return [code, Blockly.Python.ORDER_MEMBER];
       // </GSL customizable: hedgehog_read_digital-body-Python>
     },
   },
@@ -825,7 +841,7 @@ export const HEDGEHOG_SLEEP: Block = {
       // <default GSL customizable: hedgehog_sleep-body-Python>
       const time = Blockly.Python.valueToCode(block, 'TIME', Blockly.Python.ORDER_ATOMIC);
       // TODO generate code
-      const code = '';
+      const code = `sleep(${time})\n`;
       return code;
       // </GSL customizable: hedgehog_sleep-body-Python>
     },
