@@ -142,7 +142,7 @@ function Help() {
             <ul>
               <li>
                 Four line sensors that can detect the black lines on the ground;
-                these are sensors 0 to 3, from right to left. The sensor value
+                these are sensors 0 to 3, from left to right. The sensor value
                 is high when a line is detected.
               </li>
               <li>
