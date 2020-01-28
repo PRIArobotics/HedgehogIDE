@@ -406,7 +406,7 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
               }}
               disableRipple
               color="limegreen"
-              disabled={code === null}
+              disabled={code === null || codeLanguage !== 'JavaScript'}
             >
               <ExecuteIcon />
             </ColoredIconButton>
