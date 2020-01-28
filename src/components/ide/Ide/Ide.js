@@ -763,7 +763,7 @@ class Ide extends React.Component<PropTypes, StateTypes> {
               },
               commands: async (cmds, executor) => {
                 await executor.withReply(async () => {
-                  const robot = (await this.getSimulator()).robot;
+                  const robot = (await this.getSimulator()).robots.get('hedgehog');
 
                   return cmds.map(([command, payload]) => {
                     console.log(command, payload);
@@ -774,23 +774,27 @@ class Ide extends React.Component<PropTypes, StateTypes> {
               },
               moveMotor: async ({ port, power }, executor) => {
                 await executor.withReply(async () => {
-                  (await this.getSimulator()).robot.moveMotor(port, power);
+                  const robot = (await this.getSimulator()).robots.get('hedgehog');
+                  robot.moveMotor(port, power);
                 });
               },
               setServo: async ({ port, position }, executor) => {
                 await executor.withReply(async () => {
-                  (await this.getSimulator()).robot.setServo(port, position);
+                  const robot = (await this.getSimulator()).robots.get('hedgehog');
+                  robot.setServo(port, position);
                 });
               },
               getAnalog: async ({ port }, executor) => {
-                await executor.withReply(async () =>
-                  (await this.getSimulator()).robot.getAnalog(port),
-                );
+                await executor.withReply(async () => {
+                  const robot = (await this.getSimulator()).robots.get('hedgehog');
+                  return robot.getAnalog(port);
+                });
               },
               getDigital: async ({ port }, executor) => {
-                await executor.withReply(async () =>
-                  (await this.getSimulator()).robot.getDigital(port),
-                );
+                await executor.withReply(async () => {
+                  const robot = (await this.getSimulator()).robots.get('hedgehog');
+                  return robot.getDigital(port);
+                });
               },
               exit: async error => {
                 this.setState({ runningCode: null });
