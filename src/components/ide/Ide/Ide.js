@@ -698,6 +698,9 @@ class Ide extends React.Component<PropTypes, StateTypes> {
       getSimulator,
       onExit,
     }: IdeExecutorProps) {
+      const getRobot = async (name: string) =>
+        (await getSimulator()).robots.get(name);
+
       return (
         <Executor
           code={code}
@@ -707,7 +710,7 @@ class Ide extends React.Component<PropTypes, StateTypes> {
             },
             commands: async (cmds, executor) => {
               await executor.withReply(async () => {
-                const robot = (await getSimulator()).robots.get('hedgehog');
+                const robot = await getRobot('hedgehog');
 
                 return cmds.map(([command, payload]) => {
                   console.log(command, payload);
@@ -718,25 +721,25 @@ class Ide extends React.Component<PropTypes, StateTypes> {
             },
             moveMotor: async ({ port, power }, executor) => {
               await executor.withReply(async () => {
-                const robot = (await getSimulator()).robots.get('hedgehog');
+                const robot = await getRobot('hedgehog');
                 robot.moveMotor(port, power);
               });
             },
             setServo: async ({ port, position }, executor) => {
               await executor.withReply(async () => {
-                const robot = (await getSimulator()).robots.get('hedgehog');
+                const robot = await getRobot('hedgehog');
                 robot.setServo(port, position);
               });
             },
             getAnalog: async ({ port }, executor) => {
               await executor.withReply(async () => {
-                const robot = (await getSimulator()).robots.get('hedgehog');
+                const robot = await getRobot('hedgehog');
                 return robot.getAnalog(port);
               });
             },
             getDigital: async ({ port }, executor) => {
               await executor.withReply(async () => {
-                const robot = (await getSimulator()).robots.get('hedgehog');
+                const robot = await getRobot('hedgehog');
                 return robot.getDigital(port);
               });
             },
