@@ -704,7 +704,7 @@ class Ide extends React.Component<PropTypes, StateTypes> {
         (await getSimulator()).robots.get(name);
 
       const handlers = {
-        commands(robot, cmds) {
+        commands(robot, { cmds }) {
           return cmds.map(([command, payload]) =>
             handlers[command](robot, payload),
           );
@@ -723,9 +723,9 @@ class Ide extends React.Component<PropTypes, StateTypes> {
         },
       };
 
-      const handle = (handler) => async (payload, executor) =>
+      const handle = (handler) => async ({ robot, ...payload }, executor) =>
         await executor.withReply(async () => {
-          return handler(await getRobot('hedgehog'), payload);
+          return handler(await getRobot(robot), payload);
         });
 
       return (

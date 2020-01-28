@@ -8,15 +8,24 @@ export interface Connection {
 type Command = [string, any];
 
 export default class Hedgehog {
+  name: string;
   connection: Connection;
 
-  constructor(connection: Connection) {
+  constructor(name: string, connection: Connection) {
+    this.name = name;
     this.connection = connection;
   }
 
-  async commands(...cmds: Array<Command>): Promise<Array<any>> {
-    this.connection.send('commands', cmds);
+  async send(command: string, payload: any) {
+    await this.connection.send(command, {
+      robot: this.name,
+      ...payload,
+    });
     return /* await */ this.connection.recv();
+  }
+
+  async commands(...cmds: Array<Command>): Promise<Array<any>> {
+    return /* await */ this.send('commands', { cmds });
   }
 
   static moveMotorCmd(port: number, power: number): Command {
@@ -24,8 +33,7 @@ export default class Hedgehog {
   }
 
   async moveMotor(port: number, power: number) {
-    this.connection.send(...Hedgehog.moveMotorCmd(port, power));
-    await this.connection.recv();
+    await this.send(...Hedgehog.moveMotorCmd(port, power));
   }
 
   static setServoCmd(port: number, position: number | null): Command {
@@ -33,8 +41,7 @@ export default class Hedgehog {
   }
 
   async setServo(port: number, position: number | null) {
-    this.connection.send(...Hedgehog.setServoCmd(port, position));
-    await this.connection.recv();
+    await this.send(...Hedgehog.setServoCmd(port, position));
   }
 
   static getAnalogCmd(port: number): Command {
@@ -42,8 +49,7 @@ export default class Hedgehog {
   }
 
   async getAnalog(port: number): Promise<number> {
-    this.connection.send('getAnalog', { port });
-    return /* await */ this.connection.recv();
+    return /* await */ this.send('getAnalog', { port });
   }
 
   static getDigitalCmd(port: number): Command {
@@ -51,7 +57,6 @@ export default class Hedgehog {
   }
 
   async getDigital(port: number): Promise<boolean> {
-    this.connection.send('getDigital', { port });
-    return /* await */ this.connection.recv();
+    return /* await */ this.send('getDigital', { port });
   }
 }
