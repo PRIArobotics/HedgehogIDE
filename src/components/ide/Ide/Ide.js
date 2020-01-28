@@ -761,6 +761,17 @@ class Ide extends React.Component<PropTypes, StateTypes> {
               print: async text => {
                 (await this.getConsole()).consoleOut(text, 'stdout');
               },
+              commands: async (cmds, executor) => {
+                await executor.withReply(async () => {
+                  const robot = (await this.getSimulator()).robot;
+
+                  return cmds.map(([command, payload]) => {
+                    console.log(command, payload);
+                    const { port, power } = payload;
+                    return robot.moveMotor(port, power);
+                  });
+                });
+              },
               moveMotor: async ({ port, power }, executor) => {
                 await executor.withReply(async () => {
                   (await this.getSimulator()).robot.moveMotor(port, power);
