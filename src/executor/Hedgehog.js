@@ -19,7 +19,7 @@ export default class Hedgehog {
     return /* await */ this.connection.recv();
   }
 
-  static moveMotorCmd(port: number, power: number) {
+  static moveMotorCmd(port: number, power: number): Command {
     return ['moveMotor', { port, power }];
   }
 
@@ -28,14 +28,26 @@ export default class Hedgehog {
     await this.connection.recv();
   }
 
+  static setServoCmd(port: number, position: number | null): Command {
+    return ['setServo', { port, position }];
+  }
+
   async setServo(port: number, position: number | null) {
-    this.connection.send('setServo', { port, position });
+    this.connection.send(...Hedgehog.setServoCmd(port, position));
     await this.connection.recv();
+  }
+
+  static getAnalogCmd(port: number): Command {
+    return ['getAnalog', { port }];
   }
 
   async getAnalog(port: number): Promise<number> {
     this.connection.send('getAnalog', { port });
     return /* await */ this.connection.recv();
+  }
+
+  static getDigitalCmd(port: number): Command {
+    return ['getDigital', { port }];
   }
 
   async getDigital(port: number): Promise<boolean> {
