@@ -368,7 +368,9 @@ class Ide extends React.Component<PropTypes, StateTypes> {
   handleTerminate() {
     this.setState({ runningCode: null });
     (async () => {
-      (await this.getSimulator()).robot.setSpeed(0, 0);
+      (await this.getSimulator()).robots.forEach(robot => {
+        robot.setSpeed(0, 0);
+      });
     })();
   }
 
