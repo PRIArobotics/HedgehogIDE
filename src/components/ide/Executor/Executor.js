@@ -92,6 +92,7 @@ class Executor extends React.Component<PropTypes, StateTypes> {
       const value = await cb();
       this.sendReply(value);
     } catch (error) {
+      console.error(error);
       this.sendErrorReply(error.toString());
     }
   }
