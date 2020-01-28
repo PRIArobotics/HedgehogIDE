@@ -19,7 +19,7 @@ type StateTypes = {||};
 
 class Simulator extends React.Component<PropTypes, StateTypes> {
   simulation: Simulation;
-  robot: Robot;
+  robots: Map<string, Robot> = new Map<string, Robot>();
 
   renderTargetRef: RefObject<'div'> = React.createRef();
 
@@ -110,7 +110,7 @@ class Simulator extends React.Component<PropTypes, StateTypes> {
     this.simulation.lines.push(...lines);
     this.simulation.robots.push(robot);
     this.simulation.updateRobots();
-    this.robot = robot;
+    this.robots.set('hedgehog', robot);
   }
 
   render() {
