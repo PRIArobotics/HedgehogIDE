@@ -87,7 +87,7 @@ window.addEventListener(
 
 // global APIs for the client function
 global.Hedgehog = Hedgehog;
-global.hedgehog = new Hedgehog(connection);
+global.hedgehog = new Hedgehog('hedgehog', connection);
 
 global.print = (text: string) => {
   connection.send('print', text);
