@@ -701,6 +701,31 @@ class Ide extends React.Component<PropTypes, StateTypes> {
       const getRobot = async (name: string) =>
         (await getSimulator()).robots.get(name);
 
+      const handlers = {
+        commands(robot, cmds) {
+          return cmds.map(([command, payload]) =>
+            handlers[command](robot, payload),
+          );
+        },
+        moveMotor(robot, { port, power }) {
+          robot.moveMotor(port, power);
+        },
+        setServo(robot, { port, position }) {
+          robot.setServo(port, position);
+        },
+        getAnalog(robot, { port }) {
+          return robot.getAnalog(port);
+        },
+        getDigital(robot, { port }) {
+          return robot.getDigital(port);
+        },
+      };
+
+      const handle = (handler) => async (payload, executor) =>
+        await executor.withReply(async () => {
+          return handler(await getRobot('hedgehog'), payload);
+        });
+
       return (
         <Executor
           code={code}
@@ -708,41 +733,11 @@ class Ide extends React.Component<PropTypes, StateTypes> {
             print: async text => {
               (await getConsole()).consoleOut(text, 'stdout');
             },
-            commands: async (cmds, executor) => {
-              await executor.withReply(async () => {
-                const robot = await getRobot('hedgehog');
-
-                return cmds.map(([command, payload]) => {
-                  console.log(command, payload);
-                  const { port, power } = payload;
-                  return robot.moveMotor(port, power);
-                });
-              });
-            },
-            moveMotor: async ({ port, power }, executor) => {
-              await executor.withReply(async () => {
-                const robot = await getRobot('hedgehog');
-                robot.moveMotor(port, power);
-              });
-            },
-            setServo: async ({ port, position }, executor) => {
-              await executor.withReply(async () => {
-                const robot = await getRobot('hedgehog');
-                robot.setServo(port, position);
-              });
-            },
-            getAnalog: async ({ port }, executor) => {
-              await executor.withReply(async () => {
-                const robot = await getRobot('hedgehog');
-                return robot.getAnalog(port);
-              });
-            },
-            getDigital: async ({ port }, executor) => {
-              await executor.withReply(async () => {
-                const robot = await getRobot('hedgehog');
-                return robot.getDigital(port);
-              });
-            },
+            commands: handle(handlers.commands),
+            moveMotor: handle(handlers.moveMotor),
+            setServo: handle(handlers.setServo),
+            getAnalog: handle(handlers.getAnalog),
+            getDigital: handle(handlers.getDigital),
             exit: async error => {
               // TODO the robot may continue to move here
               // stopping might be a good idea, but might mask the fact that
