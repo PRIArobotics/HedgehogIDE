@@ -9,6 +9,7 @@ import FolderOpenIcon from 'mdi-material-ui/FolderOpen';
 // files: code
 import LanguageBlocklyIcon from 'mdi-material-ui/Widgets';
 import LanguageJavascriptIcon from 'mdi-material-ui/LanguageJavascript';
+import LanguagePythonIcon from 'mdi-material-ui/LanguagePython';
 
 // projects
 import LocalProjectIcon from 'mdi-material-ui/Folder';
@@ -48,6 +49,7 @@ export {
   FolderOpenIcon,
   LanguageBlocklyIcon,
   LanguageJavascriptIcon,
+  LanguagePythonIcon,
   LocalProjectIcon,
   IdeIcon,
   HelpIcon,

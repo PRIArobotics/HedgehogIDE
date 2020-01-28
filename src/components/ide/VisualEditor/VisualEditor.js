@@ -15,6 +15,8 @@ import {
   TerminateIcon,
   SlideLeftIcon,
   SlideRightIcon,
+  LanguageJavascriptIcon,
+  LanguagePythonIcon,
 } from '../../misc/palette';
 
 import s from './VisualEditor.scss';
@@ -68,12 +70,14 @@ blocks.forEach(block => {
 
 export type ControlledState = $Shape<{|
   codeCollapsed: boolean,
+  codeLanguage: 'JavaScript' | 'Python',
 |}>;
 
 type PropTypes = {|
   content: string | null,
   onContentChange: (content: string) => void | Promise<void>,
   codeCollapsed: boolean,
+  codeLanguage: 'JavaScript' | 'Python',
   onUpdate: (state: ControlledState) => void | Promise<void>,
   onExecute: (code: string) => void | Promise<void>,
   onTerminate: () => void | Promise<void>,
@@ -92,6 +96,11 @@ const ColoredIconButton = styled(({ color, ...other }) => (
 });
 
 class VisualEditor extends React.Component<PropTypes, StateTypes> {
+  static defaultProps = {
+    codeCollapsed: true,
+    codeLanguage: 'JavaScript',
+  };
+
   containerRef: RefObject<'div'> = React.createRef();
   blocklyRef: RefObject<'div'> = React.createRef();
   codeRef: RefObject<'pre'> = React.createRef();
@@ -122,13 +131,16 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
   // TODO remove blockly in componentWillUnmount
 
   componentDidUpdate(prevProps) {
-    const { content: prevContent } = prevProps;
-    const { content } = this.props;
+    const { content: prevContent, codeLanguage: prevCodeLanguage } = prevProps;
+    const { content, codeLanguage } = this.props;
 
     if (prevContent === null && content !== null) {
       // load contents only once
       this.initializeBlockly(content);
     }
+
+    // refresh code when language is changed
+    if (prevCodeLanguage !== codeLanguage) this.refreshCode();
   }
 
   initializeBlockly(workspaceXml: string) {
@@ -332,19 +344,33 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
     }, 0);
   }
 
+  refreshCode() {
+    // eslint-disable-next-line no-throw-literal
+    if (this.workspace === null) throw 'unreachable';
+
+    const { workspace } = this;
+
+    const language = Blockly[this.props.codeLanguage];
+    const code = language.workspaceToCode(workspace);
+    this.setState({ code });
+  }
+
   handleWorkspaceChange() {
     // eslint-disable-next-line no-throw-literal
     if (this.workspace === null) throw 'unreachable';
 
     const { workspace } = this;
 
-    const code = Blockly.JavaScript.workspaceToCode(workspace);
-    this.setState({ code });
+    this.refreshCode();
 
     const workspaceXml = Blockly.Xml.domToText(
       Blockly.Xml.workspaceToDom(workspace),
     );
     this.props.onContentChange(workspaceXml);
+  }
+
+  setCodeLanguage(codeLanguage: 'JavaScript' | 'Python') {
+    this.props.onUpdate({ codeLanguage });
   }
 
   handleToggleCodeCollapsed = () => {
@@ -356,6 +382,7 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
   };
 
   render() {
+    const { codeLanguage } = this.props;
     const { code } = this.state;
 
     return (
@@ -390,6 +417,23 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
             disableRipple
           >
             {this.props.codeCollapsed ? <SlideLeftIcon /> : <SlideRightIcon />}
+          </ColoredIconButton>
+          <br />
+          <br />
+          <ColoredIconButton
+            onClick={() => this.setCodeLanguage('JavaScript')}
+            disableRipple
+            color={codeLanguage === 'JavaScript' ? 'black' : 'gray'}
+          >
+            <LanguageJavascriptIcon />
+          </ColoredIconButton>
+          <br />
+          <ColoredIconButton
+            onClick={() => this.setCodeLanguage('Python')}
+            disableRipple
+            color={codeLanguage === 'Python' ? 'black' : 'gray'}
+          >
+            <LanguagePythonIcon />
           </ColoredIconButton>
         </div>
         <pre
