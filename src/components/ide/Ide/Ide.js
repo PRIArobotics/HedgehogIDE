@@ -723,10 +723,10 @@ class Ide extends React.Component<PropTypes, StateTypes> {
         },
       };
 
-      const handle = (handler) => async ({ robot, ...payload }, executor) =>
-        await executor.withReply(async () => {
-          return handler(await getRobot(robot), payload);
-        });
+      const handle = handler => async ({ robot, ...payload }, executor) =>
+        /* await */ executor.withReply(async () =>
+          handler(await getRobot(robot), payload),
+        );
 
       return (
         <Executor
