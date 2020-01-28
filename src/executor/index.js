@@ -57,7 +57,8 @@ const handlers = {
         await fn();
         connection.send('exit');
       } catch (error) {
-        connection.send('exit', error);
+        console.error(error);
+        connection.send('exit', error.toString());
       }
     })();
   },
