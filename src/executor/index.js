@@ -33,22 +33,6 @@ global.hedgehog = new Hedgehog({
 global.print = (text: string) => {
   sendMessage('print', text);
 };
-global.moveMotor = async (port: number, power: number) => {
-  sendMessage('moveMotor', { port, power });
-  await getReply();
-};
-global.setServo = async (port: number, position: number | null) => {
-  sendMessage('setServo', { port, position });
-  await getReply();
-};
-global.getAnalog = async (port: number) => {
-  sendMessage('getAnalog', { port });
-  return /* await */ getReply();
-};
-global.getDigital = async (port: number) => {
-  sendMessage('getDigital', { port });
-  return /* await */ getReply();
-};
 global.commands = async (...cmds: Array<Promise<any>>) => {
   await Promise.all(cmds);
 };
