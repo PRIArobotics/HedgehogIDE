@@ -1,5 +1,7 @@
 // @flow
 
+import Hedgehog from './Hedgehog';
+
 // TODO hardcoded domain name
 const ORIGIN = __DEV__ ? 'http://localhost:3000' : 'https://ide.pria.at';
 
@@ -23,6 +25,11 @@ const getReply = () =>
   });
 
 // exported APIs for the client function
+global.hedgehog = new Hedgehog({
+  send: sendMessage,
+  recv: getReply,
+});
+
 global.print = (text: string) => {
   sendMessage('print', text);
 };
