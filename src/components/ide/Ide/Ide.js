@@ -685,6 +685,75 @@ class Ide extends React.Component<PropTypes, StateTypes> {
 
     if (projectInfo === null) return null;
 
+    type IdeExecutorProps = {|
+      code: string,
+      getConsole: () => Promise<Console>,
+      getSimulator: () => Promise<Simulator>,
+      onExit: () => void | Promise<void>,
+    |};
+
+    function IdeExecutor({
+      code,
+      getConsole,
+      getSimulator,
+      onExit,
+    }: IdeExecutorProps) {
+      return (
+        <Executor
+          code={code}
+          handlers={{
+            print: async text => {
+              (await getConsole()).consoleOut(text, 'stdout');
+            },
+            commands: async (cmds, executor) => {
+              await executor.withReply(async () => {
+                const robot = (await getSimulator()).robots.get('hedgehog');
+
+                return cmds.map(([command, payload]) => {
+                  console.log(command, payload);
+                  const { port, power } = payload;
+                  return robot.moveMotor(port, power);
+                });
+              });
+            },
+            moveMotor: async ({ port, power }, executor) => {
+              await executor.withReply(async () => {
+                const robot = (await getSimulator()).robots.get('hedgehog');
+                robot.moveMotor(port, power);
+              });
+            },
+            setServo: async ({ port, position }, executor) => {
+              await executor.withReply(async () => {
+                const robot = (await getSimulator()).robots.get('hedgehog');
+                robot.setServo(port, position);
+              });
+            },
+            getAnalog: async ({ port }, executor) => {
+              await executor.withReply(async () => {
+                const robot = (await getSimulator()).robots.get('hedgehog');
+                return robot.getAnalog(port);
+              });
+            },
+            getDigital: async ({ port }, executor) => {
+              await executor.withReply(async () => {
+                const robot = (await getSimulator()).robots.get('hedgehog');
+                return robot.getDigital(port);
+              });
+            },
+            exit: async error => {
+              // TODO the robot may continue to move here
+              // stopping might be a good idea, but might mask the fact that
+              // the program is missing an explicit stop command
+              if (error) {
+                (await getConsole()).consoleOut(error, 'stderr');
+              }
+              onExit();
+            },
+          }}
+        />
+      );
+    }
+
     return (
       <Grid className={classes.root} container direction="row" wrap="nowrap">
         <Grid
@@ -755,57 +824,11 @@ class Ide extends React.Component<PropTypes, StateTypes> {
           />
         </Grid>
         {this.state.runningCode ? (
-          <Executor
+          <IdeExecutor
             code={this.state.runningCode}
-            handlers={{
-              print: async text => {
-                (await this.getConsole()).consoleOut(text, 'stdout');
-              },
-              commands: async (cmds, executor) => {
-                await executor.withReply(async () => {
-                  const robot = (await this.getSimulator()).robots.get('hedgehog');
-
-                  return cmds.map(([command, payload]) => {
-                    console.log(command, payload);
-                    const { port, power } = payload;
-                    return robot.moveMotor(port, power);
-                  });
-                });
-              },
-              moveMotor: async ({ port, power }, executor) => {
-                await executor.withReply(async () => {
-                  const robot = (await this.getSimulator()).robots.get('hedgehog');
-                  robot.moveMotor(port, power);
-                });
-              },
-              setServo: async ({ port, position }, executor) => {
-                await executor.withReply(async () => {
-                  const robot = (await this.getSimulator()).robots.get('hedgehog');
-                  robot.setServo(port, position);
-                });
-              },
-              getAnalog: async ({ port }, executor) => {
-                await executor.withReply(async () => {
-                  const robot = (await this.getSimulator()).robots.get('hedgehog');
-                  return robot.getAnalog(port);
-                });
-              },
-              getDigital: async ({ port }, executor) => {
-                await executor.withReply(async () => {
-                  const robot = (await this.getSimulator()).robots.get('hedgehog');
-                  return robot.getDigital(port);
-                });
-              },
-              exit: async error => {
-                this.setState({ runningCode: null });
-                // TODO the robot may continue to move here
-                // stopping might be a good idea, but might mask the fact that
-                // the program is missing an explicit stop command
-                if (error) {
-                  (await this.getConsole()).consoleOut(error, 'stderr');
-                }
-              },
-            }}
+            getConsole={() => this.getConsole()}
+            getSimulator={() => this.getSimulator()}
+            onExit={() => this.setState({ runningCode: null })}
           />
         ) : null}
       </Grid>
