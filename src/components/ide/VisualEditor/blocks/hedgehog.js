@@ -300,14 +300,14 @@ export const HEDGEHOG_MOVE2: Block = {
       const time = Blockly.JavaScript.valueToCode(block, 'TIME', Blockly.JavaScript.ORDER_NONE);
       const indent = Blockly.JavaScript.INDENT;
       let code = '';
-      code += 'await commands(\n';
-      code += `${indent}hedgehog.moveMotor(${port1}, ${speed1}),\n`;
-      code += `${indent}hedgehog.moveMotor(${port2}, ${speed2}),\n`;
+      code += 'await hedgehog.commands(\n';
+      code += `${indent}Hedgehog.moveMotorCmd(${port1}, ${speed1}),\n`;
+      code += `${indent}Hedgehog.moveMotorCmd(${port2}, ${speed2}),\n`;
       code += ');\n';
       code += `await sleep(${time} * 1000);\n`;
-      code += 'await commands(\n';
-      code += `${indent}hedgehog.moveMotor(${port1}, 0),\n`;
-      code += `${indent}hedgehog.moveMotor(${port2}, 0),\n`;
+      code += 'await hedgehog.commands(\n';
+      code += `${indent}Hedgehog.moveMotorCmd(${port1}, 0),\n`;
+      code += `${indent}Hedgehog.moveMotorCmd(${port2}, 0),\n`;
       code += ');\n';
       return code;
       // </GSL customizable: hedgehog_move2-body-JavaScript>

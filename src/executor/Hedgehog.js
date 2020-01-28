@@ -5,6 +5,8 @@ export interface Connection {
   recv(): Promise<any>;
 }
 
+type Command = [string, any];
+
 export default class Hedgehog {
   connection: Connection;
 
@@ -12,8 +14,17 @@ export default class Hedgehog {
     this.connection = connection;
   }
 
+  async commands(...cmds: Array<Command>): Promise<Array<any>> {
+    this.connection.send('commands', cmds);
+    return /* await */ this.connection.recv();
+  }
+
+  static moveMotorCmd(port: number, power: number) {
+    return ['moveMotor', { port, power }];
+  }
+
   async moveMotor(port: number, power: number) {
-    this.connection.send('moveMotor', { port, power });
+    this.connection.send(...Hedgehog.moveMotorCmd(port, power));
     await this.connection.recv();
   }
 
