@@ -106,7 +106,7 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
   codeRef: RefObject<'pre'> = React.createRef();
   workspace: Blockly.Workspace | null = null;
 
-  resizeAnim: IntervalID | null;
+  resizeAnim: AnimationFrameID | null;
 
   state = {
     code: null,
@@ -121,8 +121,11 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
     layoutNode.setEventListener('resize', this.handleResize);
     layoutNode.setEventListener('visibility', this.handleVisibilityChange);
     codeRefCurrent.addEventListener('transitionend', () => {
-      if (this.resizeAnim) clearInterval(this.resizeAnim);
-      this.refreshSize();
+      if (this.resizeAnim) {
+        cancelAnimationFrame(this.resizeAnim);
+        this.resizeAnim = null;
+      }
+      this.refreshSize(true);
     });
   }
 
@@ -334,19 +337,28 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
   }
 
   handleResize = () => {
-    this.refreshSize();
+    this.refreshSize(true);
   };
 
   handleVisibilityChange = ({ visible }) => {
     if (visible) {
-      this.refreshSize();
+      this.refreshSize(true);
     } else {
       Blockly.hideChaff();
     }
   };
 
-  refreshSize() {
-    setTimeout(() => {
+  animateWorkspaceSize() {
+    this.resizeAnim = requestAnimationFrame(() => {
+      this.refreshSize(false);
+      this.animateWorkspaceSize();
+    });
+  }
+
+  refreshSize(deferred: boolean = false) {
+    if (deferred) {
+      setTimeout(() => this.refreshSize(), 0);
+    } else {
       const container = this.containerRef.current;
       const blockly = this.blocklyRef.current;
       if (container === null || blockly === null || this.workspace === null)
@@ -355,7 +367,7 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
       blockly.style.width = `${container.offsetWidth}px`;
       blockly.style.height = `${container.offsetHeight}px`;
       Blockly.svgResize(this.workspace);
-    }, 0);
+    }
   }
 
   refreshCode() {
@@ -389,8 +401,7 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
 
   handleToggleCodeCollapsed = () => {
     this.props.onUpdate({ codeCollapsed: !this.props.codeCollapsed });
-    // TODO requestAnimationFrame?
-    this.resizeAnim = setInterval(() => this.refreshSize(), 17);
+    this.animateWorkspaceSize();
   };
 
   render() {
