@@ -258,6 +258,12 @@ export class Robot {
     });
 
     this.bodies = [bot, ...bot.parts];
+
+    // line sensors are not collided by default!
+    this.sensors[0] = 100;
+    this.sensors[1] = 100;
+    this.sensors[2] = 100;
+    this.sensors[3] = 100;
   }
 
   // setGrabberControls(
