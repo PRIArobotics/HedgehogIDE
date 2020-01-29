@@ -70,10 +70,28 @@ function Contest() {
         und Entscheidungen vorgenommen werden.
       </Typography>
       <Typography component="h2" variant="h4" gutterBottom>
-        Aufgabe 2
+        Aufgabe 2 &ndash; Navigation
       </Typography>
       <Typography variant="body1" paragraph>
-        Ankündigung folgt am 27.1.2020!
+        Aufbauend auf der Lösung zur Aufgabe 1 sollte die zweite Aufgabe leicht
+        zu lösen sein: finde den Weg von der links oberen zur rechts unteren,
+        schräg gegenüber liegenden Ecke. Dort soll das Programm beendet werden
+        und der Roboter stehen bleiben.
+      </Typography>
+      <Typography variant="body1" paragraph>
+        Wie in Aufgabe 1 sollen die Entscheidungspunkte im Modell deutlich
+        identifizierbar sein. Das bedeutet, dass der Ablauf
+      </Typography>
+      <Typography variant="body1" component="div" paragraph>
+        <ul>
+          <li>fahre an der ersten Kreuzung gerade aus,</li>
+          <li>biege an der zweiten Kreuzung rechts ab,</li>
+          <li>biege an der dritten Kreuzung links ab</li>
+        </ul>
+      </Typography>
+      <Typography variant="body1" paragraph>
+        im Modell leicht erkennbar sein müsste. Nutze wieder die
+        Blockly-Kommentarfunktion, um wichtige Stellen zu dokumentieren.
       </Typography>
     </Container>
   );
