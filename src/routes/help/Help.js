@@ -22,6 +22,8 @@ import help2img3 from './2_create_file/3_open_file.png';
 import help3img1 from './3_open_simulator/1_drag_tab.png';
 import help3img2 from './3_open_simulator/2_result.png';
 import help4img1 from './4_blockly_example/1_example_program.png';
+import help5img1 from './5_import_export/1_export.png';
+import help5img2 from './5_import_export/2_import.png';
 
 function Help() {
   return (
@@ -191,6 +193,37 @@ function Help() {
             stopped. This is the last command, so the program is finished.
           </li>
         </ul>
+      </Typography>
+      <Typography component="h2" variant="h4" gutterBottom>
+        Exporting & importing files
+      </Typography>
+      <Typography variant="body1" paragraph>
+        To download one of your files so that you can, for example, share it
+        with others, right click on that file and choose &quot;Download&quot;.
+        Likewise, to import a file into the Hedgehog IDE, right click on a
+        folder and choose &quot;Upload&quot;. Beware, currently the Hedgehog IDE
+        replaces existing files without warning!
+      </Typography>
+      <Typography variant="body1" paragraph>
+        Despite the name of these operations, your files are stored locally in
+        your browser, not on our servers. Future features may allow that, but
+        you will always be asked if you want to share data with us.
+      </Typography>
+      <Typography variant="body1" component="div" paragraph>
+        <Alert severity="info">
+          Up- and downloading whole folders is not possible at the moment,
+          sorry!
+        </Alert>
+      </Typography>
+      <Typography variant="body1" component="div" paragraph>
+        <Grid container spacing={1}>
+          <Grid item sm={12} md={6} className={`${s.gridImg} ${s.gridImgSm}`}>
+            <img src={help5img1} alt="download a file" />
+          </Grid>
+          <Grid item sm={12} md={6} className={`${s.gridImg} ${s.gridImgSm}`}>
+            <img src={help5img2} alt="upload a file" />
+          </Grid>
+        </Grid>
       </Typography>
     </Container>
   );
