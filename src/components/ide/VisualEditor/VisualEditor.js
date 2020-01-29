@@ -123,8 +123,6 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
     codeRefCurrent.addEventListener('transitionend', () => {
       if (this.resizeAnim) clearInterval(this.resizeAnim);
       this.refreshSize();
-      if (!this.props.codeCollapsed && this.codeRef.current !== null)
-        this.codeRef.current.style.overflow = 'auto';
     });
   }
 
@@ -391,8 +389,6 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
 
   handleToggleCodeCollapsed = () => {
     this.props.onUpdate({ codeCollapsed: !this.props.codeCollapsed });
-    if (this.codeRef.current !== null)
-      this.codeRef.current.style.overflow = 'hidden';
     // TODO requestAnimationFrame?
     this.resizeAnim = setInterval(() => this.refreshSize(), 17);
   };
