@@ -154,6 +154,22 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
         drag: true,
         wheel: false,
       },
+      zoom: {
+        controls: false,
+        wheel: true,
+        startScale: 1.0,
+        maxScale: 1.5,
+        minScale: 0.4,
+        scaleSpeed: 1.02,
+      },
+      grid: {
+        spacing: 20,
+        length: 3,
+        colour: '#ccc',
+        snap: true,
+      },
+      trashcan: false,
+      scrollbars: true,
     });
 
     try {
