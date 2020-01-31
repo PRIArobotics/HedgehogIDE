@@ -38,8 +38,8 @@ class Simulator extends React.Component<PropTypes, StateTypes> {
     const { width, height } = this.props;
     this.simulation.mount(this.renderTargetRef.current, width, height);
     this.simulation.lookAt({
-      min: { x: 0, y: 0 },
-      max: { x: width, y: height },
+      min: { x: -width / 2, y: -height / 2 },
+      max: { x: width / 2, y: height / 2 },
     });
 
     this.simulation.startMatter();
@@ -55,7 +55,7 @@ class Simulator extends React.Component<PropTypes, StateTypes> {
 
   initSimulation() {
     const robot = new Robot();
-    robot.setPose({ x: 100, y: 100, angle: 0 });
+    robot.setPose({ x: -200, y: -100, angle: 0 });
 
     const lineOptions = {
       isSensor: true,
@@ -65,20 +65,23 @@ class Simulator extends React.Component<PropTypes, StateTypes> {
       },
     };
 
+    const wLine = 13;
+    const lLine = 100 + wLine;
+
     const lines = [
-      Matter.Bodies.rectangle(150, 100, 116, 16, lineOptions),
-      Matter.Bodies.rectangle(250, 100, 116, 16, lineOptions),
-      Matter.Bodies.rectangle(350, 100, 116, 16, lineOptions),
-      Matter.Bodies.rectangle(450, 100, 116, 16, lineOptions),
-      Matter.Bodies.rectangle(200, 150, 16, 116, lineOptions),
-      Matter.Bodies.rectangle(300, 150, 16, 116, lineOptions),
-      Matter.Bodies.rectangle(500, 150, 16, 116, lineOptions),
-      Matter.Bodies.rectangle(100, 250, 16, 116, lineOptions),
-      Matter.Bodies.rectangle(300, 250, 16, 116, lineOptions),
-      Matter.Bodies.rectangle(150, 300, 116, 16, lineOptions),
-      Matter.Bodies.rectangle(250, 300, 116, 16, lineOptions),
-      Matter.Bodies.rectangle(350, 300, 116, 16, lineOptions),
-      Matter.Bodies.rectangle(450, 300, 116, 16, lineOptions),
+      Matter.Bodies.rectangle(-150, -100, lLine, wLine, lineOptions),
+      Matter.Bodies.rectangle(-50, -100, lLine, wLine, lineOptions),
+      Matter.Bodies.rectangle(50, -100, lLine, wLine, lineOptions),
+      Matter.Bodies.rectangle(150, -100, lLine, wLine, lineOptions),
+      Matter.Bodies.rectangle(-100, -50, wLine, lLine, lineOptions),
+      Matter.Bodies.rectangle(0, -50, wLine, lLine, lineOptions),
+      Matter.Bodies.rectangle(200, -50, wLine, lLine, lineOptions),
+      Matter.Bodies.rectangle(-200, 50, wLine, lLine, lineOptions),
+      Matter.Bodies.rectangle(0, 50, wLine, lLine, lineOptions),
+      Matter.Bodies.rectangle(-150, 100, lLine, wLine, lineOptions),
+      Matter.Bodies.rectangle(-50, 100, lLine, wLine, lineOptions),
+      Matter.Bodies.rectangle(50, 100, lLine, wLine, lineOptions),
+      Matter.Bodies.rectangle(150, 100, lLine, wLine, lineOptions),
     ];
 
     const { width, height } = this.props;
@@ -91,16 +94,16 @@ class Simulator extends React.Component<PropTypes, StateTypes> {
     };
 
     this.simulation.add([
-      Matter.Bodies.rectangle(width / 2, 3, width, 6, {
+      Matter.Bodies.rectangle(0, -height / 2 + 3, width, 6, {
         ...boundsOptions,
       }),
-      Matter.Bodies.rectangle(width / 2, height - 3, width, 6, {
+      Matter.Bodies.rectangle(0, height / 2 - 3, width, 6, {
         ...boundsOptions,
       }),
-      Matter.Bodies.rectangle(3, height / 2, 6, height, {
+      Matter.Bodies.rectangle(-width / 2 + 3, 0, 6, height, {
         ...boundsOptions,
       }),
-      Matter.Bodies.rectangle(width - 3, height / 2, 6, height, {
+      Matter.Bodies.rectangle(width / 2 - 3, 0, 6, height, {
         ...boundsOptions,
       }),
       ...lines,

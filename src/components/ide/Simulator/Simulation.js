@@ -65,7 +65,7 @@ export class Robot {
     });
 
     const material = {
-      density: 0.3,
+      density: 1,
       frictionAir: 0.4,
     };
     // const materialGrabber = {
@@ -101,41 +101,41 @@ export class Robot {
     //   },
     // };
 
-    this.leftWheel = Matter.Bodies.rectangle(20, -50, 30, 20, {
+    this.leftWheel = Matter.Bodies.rectangle(7, -21, 20, 4, {
       ...material,
       ...styleWheel,
       label: 'leftWheel',
     });
-    this.rightWheel = Matter.Bodies.rectangle(20, 50, 30, 20, {
+    this.rightWheel = Matter.Bodies.rectangle(7, 21, 20, 4, {
       ...material,
       ...styleWheel,
       label: 'rightWheel',
     });
-    const body = Matter.Bodies.rectangle(0, 0, 100, 70, {
+    const body = Matter.Bodies.rectangle(0, 0, 40, 32, {
       ...material,
       ...styleBody,
       label: 'bodyPart',
     });
     this.lineSensors = [
-      Matter.Bodies.circle(49, -25, 4, {
+      Matter.Bodies.circle(22, -22, 2, {
         ...material,
         ...styleLineSensor,
         ...pluginData({ sensorPort: 0, collisionCount: 0 }),
         label: 'leftLineSensor',
       }),
-      Matter.Bodies.circle(50, -10, 4, {
+      Matter.Bodies.circle(22, -8, 2, {
         ...material,
         ...styleLineSensor,
         ...pluginData({ sensorPort: 1, collisionCount: 0 }),
         label: 'centerLeftLineSensor',
       }),
-      Matter.Bodies.circle(50, 10, 4, {
+      Matter.Bodies.circle(22, 8, 2, {
         ...material,
         ...styleLineSensor,
         ...pluginData({ sensorPort: 2, collisionCount: 0 }),
         label: 'centerRightLineSensor',
       }),
-      Matter.Bodies.circle(49, 25, 4, {
+      Matter.Bodies.circle(22, 22, 2, {
         ...material,
         ...styleLineSensor,
         ...pluginData({ sensorPort: 3, collisionCount: 0 }),
@@ -143,7 +143,7 @@ export class Robot {
       }),
     ];
     this.touchSensors = [
-      Matter.Bodies.rectangle(55, 0, 3, 60, {
+      Matter.Bodies.rectangle(24, 0, 3, 32, {
         ...material,
         ...styleTouchSensor,
         ...pluginData({ sensorPort: 8, collisionCount: 0 }),
