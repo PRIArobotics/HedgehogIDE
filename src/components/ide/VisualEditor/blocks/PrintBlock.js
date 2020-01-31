@@ -38,7 +38,7 @@ const PrintBlock: Block = {
         'TEXT',
         Blockly.Python.ORDER_NONE,
       );
-      return `print(${valueText});\n`;
+      return `print(${valueText})\n`;
     },
   },
   toolboxBlocks: {
