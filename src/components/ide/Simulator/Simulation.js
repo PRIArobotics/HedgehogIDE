@@ -316,8 +316,8 @@ export class Robot {
     const cos = -dy / hypot;
     const sin = dx / hypot;
 
-    this.applyForce(lPos, this.motors[0] / 10, cos, sin);
-    this.applyForce(rPos, this.motors[1] / 10, cos, sin);
+    this.applyForce(lPos, this.motors[0] / 800, cos, sin);
+    this.applyForce(rPos, this.motors[1] / 800, cos, sin);
   }
 
   handleLineSensor(
