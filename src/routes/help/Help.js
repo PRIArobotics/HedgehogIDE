@@ -126,8 +126,8 @@ function Help() {
           <li>
             <strong>Drive</strong> lets you drive the robot by starting or
             stopping two motors at the same time. Motors can use speeds between
-            -100 and +100. The simulated robot&apos;s left wheel is motor 0, the
-            right wheel motor 1.
+            -1000 and +1000. The simulated robot&apos;s left wheel is motor 0,
+            the right wheel motor 1.
           </li>
           <li>
             <strong>Motors</strong> lets you control motors individually.
