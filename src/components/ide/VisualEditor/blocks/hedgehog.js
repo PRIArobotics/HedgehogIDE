@@ -71,7 +71,7 @@ export const HEDGEHOG_MOVE: Block = {
         {/* <GSL customizable: hedgehog_move-default-toolbox> */}
         <value name="SPEED">
           <shadow type="math_number">
-            <field name="NUM">100</field>
+            <field name="NUM">1000</field>
           </shadow>
         </value>
         <value name="TIME">
@@ -137,7 +137,7 @@ export const HEDGEHOG_MOVE_UNLIMITED: Block = {
         {/* <GSL customizable: hedgehog_move_unlimited-default-toolbox> */}
         <value name="SPEED">
           <shadow type="math_number">
-            <field name="NUM">100</field>
+            <field name="NUM">1000</field>
           </shadow>
         </value>
         {/* </GSL customizable: hedgehog_move_unlimited-default-toolbox> */}
@@ -340,12 +340,12 @@ export const HEDGEHOG_MOVE2: Block = {
         {/* <GSL customizable: hedgehog_move2-default-toolbox> */}
         <value name="SPEED1">
           <shadow type="math_number">
-            <field name="NUM">100</field>
+            <field name="NUM">1000</field>
           </shadow>
         </value>
         <value name="SPEED2">
           <shadow type="math_number">
-            <field name="NUM">100</field>
+            <field name="NUM">1000</field>
           </shadow>
         </value>
         <value name="TIME">
@@ -438,12 +438,12 @@ export const HEDGEHOG_MOVE2_UNLIMITED: Block = {
         {/* <GSL customizable: hedgehog_move2_unlimited-default-toolbox> */}
         <value name="SPEED1">
           <shadow type="math_number">
-            <field name="NUM">100</field>
+            <field name="NUM">1000</field>
           </shadow>
         </value>
         <value name="SPEED2">
           <shadow type="math_number">
-            <field name="NUM">100</field>
+            <field name="NUM">1000</field>
           </shadow>
         </value>
         {/* </GSL customizable: hedgehog_move2_unlimited-default-toolbox> */}
