@@ -838,9 +838,8 @@ export const HEDGEHOG_SLEEP: Block = {
       // </GSL customizable: hedgehog_sleep-body-JavaScript>
     },
     Python: block => {
-      // <default GSL customizable: hedgehog_sleep-body-Python>
+      // <GSL customizable: hedgehog_sleep-body-Python>
       const time = Blockly.Python.valueToCode(block, 'TIME', Blockly.Python.ORDER_ATOMIC);
-      // TODO generate code
       const code = `sleep(${time})\n`;
       return code;
       // </GSL customizable: hedgehog_sleep-body-Python>
