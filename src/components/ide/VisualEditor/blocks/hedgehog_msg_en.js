@@ -6,10 +6,10 @@ import Blockly from 'blockly';
 Blockly.Msg['HEDGEHOG_SCOPE'] = 'Hedgehog scope %1 %2';
 Blockly.Msg['HEDGEHOG_SCOPE_TOOLTIP'] = 'All Hedgehog blocks have to be inside of this block';
 
-Blockly.Msg['HEDGEHOG_MOVE'] = 'move motor %1 %2 for %3 seconds';
+Blockly.Msg['HEDGEHOG_MOVE'] = 'move motor %1 with speeds %2 for %3 seconds';
 Blockly.Msg['HEDGEHOG_MOVE_TOOLTIP'] = 'move one motor for a certain duration';
 
-Blockly.Msg['HEDGEHOG_MOVE_UNLIMITED'] = 'move motor %1 %2';
+Blockly.Msg['HEDGEHOG_MOVE_UNLIMITED'] = 'move motor %1 with speeds %2';
 Blockly.Msg['HEDGEHOG_MOVE_UNLIMITED_TOOLTIP'] = 'move motor until stopped explicitly';
 
 Blockly.Msg['HEDGEHOG_MOTOR_OFF2'] = 'turn motors %1 and %2 off';

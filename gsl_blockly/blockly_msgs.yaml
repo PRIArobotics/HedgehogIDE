@@ -5,10 +5,10 @@ modules:
         msg: Hedgehog scope %1 %2
         tooltip: Alle Hedgehog Blöcke müssen sich innerhalb eines Hedgehog scope Blocks befinden
       hedgehog_move:
-        msg: bewege Motor %1 %2 für %3 Sekunden
+        msg: bewege Motor %1 mit Geschwindigkeit %2 für %3 Sekunden
         tooltip: Bewegt einen Motor in eine bestimmte Richtung
       hedgehog_move_unlimited:
-        msg: bewege Motor %1 %2
+        msg: bewege Motor %1 mit Geschwindigkeit %2
         tooltip: bewegt einen Motor solange bis er explizit gestoppt wird
       hedgehog_motor_off:
         msg: schalte Motor %1 aus
@@ -104,10 +104,10 @@ modules:
         msg: Hedgehog scope %1 %2
         tooltip: All Hedgehog blocks have to be inside of this block
       hedgehog_move:
-        msg: move motor %1 %2 for %3 seconds
+        msg: move motor %1 with speeds %2 for %3 seconds
         tooltip: move one motor for a certain duration
       hedgehog_move_unlimited:
-        msg: move motor %1 %2
+        msg: move motor %1 with speeds %2
         tooltip: move motor until stopped explicitly
       hedgehog_motor_off2:
         msg: turn motors %1 and %2 off
