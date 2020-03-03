@@ -23,7 +23,9 @@ import router from '../core/router';
 import setupNetworkStatus from './networkStatus';
 
 if ('serviceWorker' in navigator)
-  navigator.serviceWorker.register('/sw.js', { scope: '/' });
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js', { scope: '/' });
+  });
 
 const apolloClient = createApolloClient();
 
