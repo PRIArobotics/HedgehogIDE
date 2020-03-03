@@ -368,8 +368,7 @@ const clientConfig = {
     }),
 
     new WorkboxPlugin.InjectManifest({
-      importWorkboxFrom: 'local',
-      swSrc: 'src/serviceworker/index.js',
+      swSrc: './src/serviceworker/index.js',
       swDest: '../sw.js',
       exclude: [/\/asset-manifest\.json/],
     }),
