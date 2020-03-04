@@ -1,8 +1,13 @@
 /* eslint-disable no-restricted-globals */
 /* eslint no-underscore-dangle: ["error", { "allow": ["__WB_MANIFEST"] }] */
 
-import { skipWaiting, clientsClaim } from 'workbox-core';
+import { skipWaiting, clientsClaim, setCacheNameDetails } from 'workbox-core';
 import { precacheAndRoute } from 'workbox-precaching';
+
+setCacheNameDetails({
+  prefix: 'hedgehog-ide',
+  // suffix: 'v1',
+});
 
 const WB_MANIFEST = self.__WB_MANIFEST;
 
