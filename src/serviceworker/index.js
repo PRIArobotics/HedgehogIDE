@@ -2,7 +2,8 @@
 /* eslint no-underscore-dangle: ["error", { "allow": ["__WB_MANIFEST"] }] */
 
 import { skipWaiting, clientsClaim, setCacheNameDetails } from 'workbox-core';
-import { precacheAndRoute } from 'workbox-precaching';
+import { precacheAndRoute, createHandlerBoundToURL } from 'workbox-precaching';
+import { NavigationRoute, registerRoute } from 'workbox-routing';
 
 setCacheNameDetails({
   prefix: 'hedgehog-ide',
@@ -24,3 +25,7 @@ const precacheManifest = [].concat(
   WB_MANIFEST || [],
 );
 precacheAndRoute(precacheManifest, {});
+registerRoute(new NavigationRoute(createHandlerBoundToURL('/'), {
+  denylist: [
+  ],
+}));
