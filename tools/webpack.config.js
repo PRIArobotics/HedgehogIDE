@@ -13,6 +13,7 @@ import webpack from 'webpack';
 import WebpackAssetsManifest from 'webpack-assets-manifest';
 import nodeExternals from 'webpack-node-externals';
 import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer';
+import CopyPlugin  from 'copy-webpack-plugin';
 import WorkboxPlugin from 'workbox-webpack-plugin';
 import overrideRules from './lib/overrideRules';
 import pkg from '../package.json';
@@ -328,6 +329,10 @@ const clientConfig = {
       'process.env.BROWSER': true,
       __DEV__: isDebug,
     }),
+
+    new CopyPlugin([
+      { from: './public', to: '..' },
+    ]),
 
     // Emit a file with assets paths
     // https://github.com/webdeveric/webpack-assets-manifest#options
