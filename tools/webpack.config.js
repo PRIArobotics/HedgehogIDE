@@ -370,6 +370,7 @@ const clientConfig = {
     new WorkboxPlugin.InjectManifest({
       swSrc: './src/serviceworker/index.js',
       swDest: '../sw.js',
+      maximumFileSizeToCacheInBytes: 16*1024*1024, // 16 MB
       exclude: [/\/asset-manifest\.json/],
     }),
 
