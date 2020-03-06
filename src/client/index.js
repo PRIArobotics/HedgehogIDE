@@ -70,7 +70,11 @@ const history = setupHistory(async (history, location, isInitialRender) => {
       return;
     }
 
-    const renderReactApp = isInitialRender ? ReactDOM.hydrate : ReactDOM.render;
+    // if window.App is not set, we're operating from the app shell
+    // that means we're not hydrating an SSR page, even in the initial render.
+    const isHydrateSSR = isInitialRender && !!window.App;
+
+    const renderReactApp = isHydrateSSR ? ReactDOM.hydrate : ReactDOM.render;
     appInstance = renderReactApp(
       <App context={context}>{route.component}</App>,
       container,
@@ -81,7 +85,10 @@ const history = setupHistory(async (history, location, isInitialRender) => {
           if (window.history && 'scrollRestoration' in window.history) {
             window.history.scrollRestoration = 'manual';
           }
+        }
 
+        if (isHydrateSSR) {
+          // SSR adds styles that we need to replace with client generated CSS
           {
             const elem = document.getElementById('css');
             if (elem) elem.parentNode.removeChild(elem);
@@ -90,25 +97,27 @@ const history = setupHistory(async (history, location, isInitialRender) => {
             const elem = document.getElementById('material-css');
             if (elem) elem.parentNode.removeChild(elem);
           }
-          return;
+        } else {
+          // set stuff necessary when performing client-side navigation & rendering
+          document.title = route.title;
+
+          updateMeta('description', route.description);
+          // Update necessary tags in <head> at runtime here, ie:
+          // updateMeta('keywords', route.keywords);
+          // updateCustomMeta('og:url', route.canonicalUrl);
+          // updateCustomMeta('og:image', route.imageUrl);
+          // updateLink('canonical', route.canonicalUrl);
+          // etc.
         }
 
-        document.title = route.title;
+        if (!isInitialRender) {
+          history.restoreScrolling(location);
 
-        updateMeta('description', route.description);
-        // Update necessary tags in <head> at runtime here, ie:
-        // updateMeta('keywords', route.keywords);
-        // updateCustomMeta('og:url', route.canonicalUrl);
-        // updateCustomMeta('og:image', route.imageUrl);
-        // updateLink('canonical', route.canonicalUrl);
-        // etc.
-
-        history.restoreScrolling(location);
-
-        // Google Analytics tracking. Don't send 'pageview' event after
-        // the initial rendering, as it was already sent
-        if (window.ga) {
-          window.ga('send', 'pageview', createPath(location));
+          // Google Analytics tracking. Don't send 'pageview' event after
+          // the initial rendering, as it was already sent
+          if (window.ga) {
+            window.ga('send', 'pageview', createPath(location));
+          }
         }
       },
     );

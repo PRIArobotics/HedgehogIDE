@@ -21,11 +21,11 @@ clientsClaim();
  * See https://goo.gl/S9QRab
  */
 const precacheManifest = [].concat(
-  [{ url: '/' }, { url: '/executor' }],
+  [{ url: '/app-shell.html' }, { url: '/executor' }],
   WB_MANIFEST || [],
 );
 precacheAndRoute(precacheManifest, {});
-registerRoute(new NavigationRoute(createHandlerBoundToURL('/'), {
+registerRoute(new NavigationRoute(createHandlerBoundToURL('/app-shell.html'), {
   denylist: [
   ],
 }));
