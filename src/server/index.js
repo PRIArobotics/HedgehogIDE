@@ -188,6 +188,19 @@ app.get('/executor', async (req, res, next) => {
   }
 });
 
+app.get('/app-shell.html', async (req, res, next) => {
+  try {
+    const html = renderHtml(null, {
+      styles: [],
+      scripts: loadScripts('client'),
+    });
+    res.status(200);
+    res.send(html);
+  } catch (err) {
+    next(err);
+  }
+});
+
 app.get('*', async (req, res, next) => {
   try {
     const isomorphicStyleLoader = new IsomorphicStyleLoader();
