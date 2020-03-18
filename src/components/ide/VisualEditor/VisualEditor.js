@@ -174,11 +174,13 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
     });
 
     try {
-      if (workspaceXml !== '')
-        Blockly.Xml.domToWorkspace(
+      if (workspaceXml !== '') {
+        Blockly.Xml.clearWorkspaceAndLoadFromXml(
           Blockly.Xml.textToDom(workspaceXml),
           workspace,
         );
+        workspace.clearUndo();
+      }
     } catch (ex) {
       console.warn(ex);
     }
