@@ -173,6 +173,7 @@
   left: 0;
   right: 0;
   overflow: hidden;
+  background-image: linear-gradient(#fff, #eee);
 }
 
 .flexlayout__tab_header_inner {
