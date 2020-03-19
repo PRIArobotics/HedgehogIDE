@@ -25,7 +25,8 @@ const precacheManifest = [].concat(
   WB_MANIFEST || [],
 );
 precacheAndRoute(precacheManifest, {});
-registerRoute(new NavigationRoute(createHandlerBoundToURL('/app-shell.html'), {
-  denylist: [
-  ],
-}));
+registerRoute(
+  new NavigationRoute(createHandlerBoundToURL('/app-shell.html'), {
+    denylist: [],
+  }),
+);

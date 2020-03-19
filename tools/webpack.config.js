@@ -13,7 +13,7 @@ import webpack from 'webpack';
 import WebpackAssetsManifest from 'webpack-assets-manifest';
 import nodeExternals from 'webpack-node-externals';
 import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer';
-import CopyPlugin  from 'copy-webpack-plugin';
+import CopyPlugin from 'copy-webpack-plugin';
 import WorkboxPlugin from 'workbox-webpack-plugin';
 import overrideRules from './lib/overrideRules';
 import pkg from '../package.json';
@@ -330,9 +330,7 @@ const clientConfig = {
       __DEV__: isDebug,
     }),
 
-    new CopyPlugin([
-      { from: './public', to: '..' },
-    ]),
+    new CopyPlugin([{ from: './public', to: '..' }]),
 
     // Emit a file with assets paths
     // https://github.com/webdeveric/webpack-assets-manifest#options
@@ -375,7 +373,7 @@ const clientConfig = {
     new WorkboxPlugin.InjectManifest({
       swSrc: './src/serviceworker/index.js',
       swDest: '../sw.js',
-      maximumFileSizeToCacheInBytes: 16*1024*1024, // 16 MB
+      maximumFileSizeToCacheInBytes: 16 * 1024 * 1024, // 16 MB
       exclude: [/\/asset-manifest\.json/],
     }),
 

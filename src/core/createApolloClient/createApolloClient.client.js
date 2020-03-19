@@ -10,8 +10,7 @@ import clientSchema from '../graphql/schema';
 
 export default function createApolloClient() {
   const cache = createCache();
-  if (window.App)
-    cache.restore(window.App.cache);
+  if (window.App) cache.restore(window.App.cache);
 
   const errorLink = onError(({ graphQLErrors, networkError }) => {
     if (graphQLErrors)
