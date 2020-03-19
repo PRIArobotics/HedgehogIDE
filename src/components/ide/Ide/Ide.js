@@ -754,6 +754,11 @@ class Ide extends React.Component<PropTypes, StateTypes> {
       );
     }
 
+    const filter = (path: string, child: FilerRecursiveStatInfo) => {
+      if (path === '.' && child.name === '.metadata') return false;
+      return true;
+    }
+
     return (
       <Grid className={classes.root} container direction="row" wrap="nowrap">
         <Grid
@@ -792,6 +797,7 @@ class Ide extends React.Component<PropTypes, StateTypes> {
           <FileTree
             files={projectInfo.files}
             {...this.state.fileTreeState}
+            filter={filter}
             onFileAction={action => this.handleFileAction(action)}
             onUpdate={fileTreeState =>
               this.setState({ fileTreeState }, () => this.save())

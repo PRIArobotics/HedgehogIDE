@@ -73,6 +73,7 @@ export type ControlledState = $Shape<{|
 type PropTypes = {|
   files: FilerRecursiveStatInfo,
   expandedKeys: Array<string>,
+  filter?: (path: string, child: FilerRecursiveStatInfo) => boolean,
   onFileAction: (action: FileAction) => void | Promise<void>,
   onUpdate: (state: ControlledState) => void | Promise<void>,
 |};
@@ -180,18 +181,24 @@ class FileTree extends React.Component<PropTypes, StateTypes> {
   }
 
   render() {
+    const { expandedKeys, files, filter } = this.props;
+
     const renderChildren = (
       path: string,
       children: Array<FilerRecursiveStatInfo>,
-    ) =>
-      children.map(child =>
+    ) => {
+      if (filter) {
+        children = children.filter(child => filter(path, child));
+      }
+      return children.map(child =>
         // eslint-disable-next-line no-use-before-define
         renderNode(`${path}/${child.name}`, child),
       );
+    }
 
     const renderNode = (path: string, file: FilerRecursiveStatInfo) => {
       const isLeaf = !file.isDirectory();
-      const isExpanded = this.props.expandedKeys.includes(path);
+      const isExpanded = expandedKeys.includes(path);
 
       const TheIcon = (() => {
         if (isLeaf) {
@@ -243,12 +250,12 @@ class FileTree extends React.Component<PropTypes, StateTypes> {
           checkable={false}
           selectable
           draggable
-          expandedKeys={this.props.expandedKeys}
+          expandedKeys={expandedKeys}
           onExpand={expandedKeys => this.props.onUpdate({ expandedKeys })}
           selectedKeys={this.state.selectedKeys}
           onDrop={event => this.handleFileDrop(event)}
         >
-          {renderNode('.', this.props.files)}
+          {renderNode('.', files)}
         </Tree>
         <FileMenu ref={this.menuRef} onFileAction={this.props.onFileAction} />
       </div>
