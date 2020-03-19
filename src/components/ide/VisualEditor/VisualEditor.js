@@ -19,6 +19,9 @@ import {
   LanguagePythonIcon,
 } from '../../misc/palette';
 
+import ToolBar from '../ToolBar';
+import ToolBarItem from '../ToolBar/ToolBarItem';
+
 import s from './VisualEditor.scss';
 
 import './blocks/hedgehog_msg_en';
@@ -415,52 +418,60 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
         <div ref={this.containerRef} className={s.blocklyContainer}>
           <div ref={this.blocklyRef} className={s.blockly} />
         </div>
-        <div className={s.sidebar}>
-          {this.props.running ? (
+        <ToolBar>
+          <ToolBarItem>
+            {this.props.running ? (
+              <ColoredIconButton
+                onClick={() => this.props.onTerminate()}
+                disableRipple
+                color="red"
+              >
+                <TerminateIcon />
+              </ColoredIconButton>
+            ) : (
+              <ColoredIconButton
+                onClick={() => {
+                  if (code !== null) this.props.onExecute(code);
+                }}
+                disableRipple
+                color="limegreen"
+                disabled={code === null || codeLanguage !== 'JavaScript'}
+              >
+                <ExecuteIcon />
+              </ColoredIconButton>
+            )}
+          </ToolBarItem>
+          <ToolBarItem>
             <ColoredIconButton
-              onClick={() => this.props.onTerminate()}
+              onClick={this.handleToggleCodeCollapsed}
               disableRipple
-              color="red"
             >
-              <TerminateIcon />
+              {this.props.codeCollapsed ? (
+                <SlideLeftIcon />
+              ) : (
+                <SlideRightIcon />
+              )}
             </ColoredIconButton>
-          ) : (
+          </ToolBarItem>
+          <ToolBarItem>
             <ColoredIconButton
-              onClick={() => {
-                if (code !== null) this.props.onExecute(code);
-              }}
+              onClick={() => this.setCodeLanguage('JavaScript')}
               disableRipple
-              color="limegreen"
-              disabled={code === null || codeLanguage !== 'JavaScript'}
+              color={codeLanguage === 'JavaScript' ? 'black' : 'gray'}
             >
-              <ExecuteIcon />
+              <LanguageJavascriptIcon />
             </ColoredIconButton>
-          )}
-          <br />
-          <ColoredIconButton
-            onClick={this.handleToggleCodeCollapsed}
-            disableRipple
-          >
-            {this.props.codeCollapsed ? <SlideLeftIcon /> : <SlideRightIcon />}
-          </ColoredIconButton>
-          <br />
-          <br />
-          <ColoredIconButton
-            onClick={() => this.setCodeLanguage('JavaScript')}
-            disableRipple
-            color={codeLanguage === 'JavaScript' ? 'black' : 'gray'}
-          >
-            <LanguageJavascriptIcon />
-          </ColoredIconButton>
-          <br />
-          <ColoredIconButton
-            onClick={() => this.setCodeLanguage('Python')}
-            disableRipple
-            color={codeLanguage === 'Python' ? 'black' : 'gray'}
-          >
-            <LanguagePythonIcon />
-          </ColoredIconButton>
-        </div>
+          </ToolBarItem>
+          <ToolBarItem>
+            <ColoredIconButton
+              onClick={() => this.setCodeLanguage('Python')}
+              disableRipple
+              color={codeLanguage === 'Python' ? 'black' : 'gray'}
+            >
+              <LanguagePythonIcon />
+            </ColoredIconButton>
+          </ToolBarItem>
+        </ToolBar>
         <pre
           ref={this.codeRef}
           className={

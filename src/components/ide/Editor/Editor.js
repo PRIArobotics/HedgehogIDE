@@ -14,6 +14,8 @@ import IconButton from '@material-ui/core/IconButton';
 import { ExecuteIcon, TerminateIcon } from '../../misc/palette';
 
 import s from './Editor.scss';
+import ToolBar from '../ToolBar';
+import ToolBarItem from '../ToolBar/ToolBarItem';
 
 type PropTypes = {|
   layoutNode: any,
@@ -66,29 +68,6 @@ class Editor extends React.Component<PropTypes, StateTypes> {
 
     return (
       <div className={s.root}>
-        <div className={s.sidebar}>
-          {running ? (
-            <ColoredIconButton
-              onClick={() => this.props.onTerminate()}
-              disableRipple
-              color="red"
-            >
-              <TerminateIcon />
-            </ColoredIconButton>
-          ) : (
-            <ColoredIconButton
-              onClick={() => {
-                if (content !== null) this.props.onExecute(content);
-              }}
-              disableRipple
-              color="limegreen"
-              disabled={content === null}
-            >
-              <ExecuteIcon />
-            </ColoredIconButton>
-          )}
-          <br />
-        </div>
         <div className={s.container} ref={this.containerRef}>
           {content === null ? null : (
             <AceEditor
@@ -120,6 +99,30 @@ class Editor extends React.Component<PropTypes, StateTypes> {
             />
           )}
         </div>
+        <ToolBar>
+          <ToolBarItem>
+            {running ? (
+              <ColoredIconButton
+                onClick={() => this.props.onTerminate()}
+                disableRipple
+                color="red"
+              >
+                <TerminateIcon />
+              </ColoredIconButton>
+            ) : (
+              <ColoredIconButton
+                onClick={() => {
+                  if (content !== null) this.props.onExecute(content);
+                }}
+                disableRipple
+                color="limegreen"
+                disabled={content === null}
+              >
+                <ExecuteIcon />
+              </ColoredIconButton>
+            )}
+          </ToolBarItem>
+        </ToolBar>
       </div>
     );
   }
