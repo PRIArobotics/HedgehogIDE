@@ -84,6 +84,7 @@ type StateTypes = {|
     projectUid: string,
   |} | null,
   fileTreeState: FileTreeState,
+  showMetadataFolder: boolean,
   layoutState: FlexLayout.Model,
   blocklyState: { [key: string]: VisualEditorState },
   runningCode: string | null,
@@ -183,6 +184,7 @@ class Ide extends React.Component<PropTypes, StateTypes> {
   state = {
     projectInfo: null,
     fileTreeState: {},
+    showMetadataFolder: false,
     layoutState: FlexLayout.Model.fromJson(defaultLayout),
     blocklyState: {},
     runningCode: null,
@@ -201,6 +203,7 @@ class Ide extends React.Component<PropTypes, StateTypes> {
 
     let persistentState = {
       fileTreeState: { expandedKeys: [] },
+      showMetadataFolder: false,
       layoutState: defaultLayout,
       blocklyState: {},
     };
@@ -214,13 +217,20 @@ class Ide extends React.Component<PropTypes, StateTypes> {
     }
     const {
       fileTreeState,
+      showMetadataFolder,
       layoutState: layoutStateJson,
       blocklyState,
     } = persistentState;
     const layoutState = FlexLayout.Model.fromJson(layoutStateJson);
 
     const projectInfo = { project, files, projectUid };
-    this.setState({ projectInfo, fileTreeState, layoutState, blocklyState });
+    this.setState({
+      projectInfo,
+      fileTreeState,
+      showMetadataFolder,
+      layoutState,
+      blocklyState,
+    });
   }
 
   save() {
@@ -230,6 +240,7 @@ class Ide extends React.Component<PropTypes, StateTypes> {
     const {
       projectInfo: { projectUid },
       fileTreeState,
+      showMetadataFolder,
       layoutState: layoutStateModel,
       blocklyState,
     } = this.state;
@@ -237,7 +248,12 @@ class Ide extends React.Component<PropTypes, StateTypes> {
 
     localStorage.setItem(
       `IDE-State-${projectUid}`,
-      JSON.stringify({ fileTreeState, layoutState, blocklyState }),
+      JSON.stringify({
+        fileTreeState,
+        showMetadataFolder,
+        layoutState,
+        blocklyState,
+      }),
     );
   }
 
@@ -683,7 +699,7 @@ class Ide extends React.Component<PropTypes, StateTypes> {
 
   render() {
     const { classes } = this.props;
-    const { projectInfo } = this.state;
+    const { projectInfo, showMetadataFolder } = this.state;
 
     if (projectInfo === null) return null;
 
@@ -755,7 +771,8 @@ class Ide extends React.Component<PropTypes, StateTypes> {
     }
 
     const filter = (path: string, child: FilerRecursiveStatInfo) => {
-      if (path === '.' && child.name === '.metadata') return false;
+      if (path === '.' && child.name === '.metadata' && !showMetadataFolder)
+        return false;
       return true;
     };
 
@@ -788,6 +805,24 @@ class Ide extends React.Component<PropTypes, StateTypes> {
                 color="primary"
                 size="small"
                 onClick={this.addConsole}
+              >
+                <ConsoleIcon />
+              </IconButton>
+            </Tooltip>
+            <Tooltip title="Show Metadata">
+              <IconButton
+                variant="contained"
+                color="primary"
+                size="small"
+                onClick={() => {
+                  this.setState(
+                    oldState => ({
+                      ...oldState,
+                      showMetadataFolder: !oldState.showMetadataFolder,
+                    }),
+                    () => this.save(),
+                  );
+                }}
               >
                 <ConsoleIcon />
               </IconButton>
