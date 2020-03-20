@@ -194,7 +194,7 @@ class FileTree extends React.Component<PropTypes, StateTypes> {
         // eslint-disable-next-line no-use-before-define
         renderNode(`${path}/${child.name}`, child),
       );
-    }
+    };
 
     const renderNode = (path: string, file: FilerRecursiveStatInfo) => {
       const isLeaf = !file.isDirectory();

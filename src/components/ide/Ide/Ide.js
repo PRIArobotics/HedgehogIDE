@@ -757,7 +757,7 @@ class Ide extends React.Component<PropTypes, StateTypes> {
     const filter = (path: string, child: FilerRecursiveStatInfo) => {
       if (path === '.' && child.name === '.metadata') return false;
       return true;
-    }
+    };
 
     return (
       <Grid className={classes.root} container direction="row" wrap="nowrap">
