@@ -19,7 +19,13 @@ import {
   UploadIcon,
 } from '../../misc/palette';
 
-import type { FileDesc, FileReference, DirReference, FileAction } from '.';
+import type {
+  FileDesc,
+  MetadataDesc,
+  FileReference,
+  DirReference,
+  FileAction,
+} from '.';
 
 type Position = {|
   left: number,
@@ -66,7 +72,7 @@ class FileMenu extends React.Component<PropTypes, StateTypes> {
     this.props.onFileAction(action);
   }
 
-  handleCreate(desc: FileDesc) {
+  handleCreate(desc: FileDesc | MetadataDesc) {
     this.action(file => {
       // $FlowExpectError
       const parentDir: DirReference = file;
@@ -152,14 +158,14 @@ class FileMenu extends React.Component<PropTypes, StateTypes> {
             <FileMenuItem
               title="Create Simulator Configuration"
               onClick={() =>
-                this.handleCreate({ type: 'FILE', extension: '' })
+                this.handleCreate({ type: 'METADATA', name: 'simulator' })
               }
               icon={MetadataSimulatorIcon}
             />
             <FileMenuItem
               title="Create Toolbox Configuration"
               onClick={() =>
-                this.handleCreate({ type: 'FILE', extension: '' })
+                this.handleCreate({ type: 'METADATA', name: 'toolbox' })
               }
               icon={MetadataToolboxIcon}
             />

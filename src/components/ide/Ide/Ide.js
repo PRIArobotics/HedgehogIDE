@@ -398,7 +398,11 @@ class Ide extends React.Component<PropTypes, StateTypes> {
     switch (action.action) {
       case 'CREATE': {
         const { parentDir, desc } = action;
-        this.beginCreateFile(parentDir, desc);
+        if (desc.type === 'METADATA') {
+          this.confirmCreateFile(parentDir, desc.name, 'FILE');
+        } else {
+          this.beginCreateFile(parentDir, desc);
+        }
         break;
       }
       case 'RENAME': {

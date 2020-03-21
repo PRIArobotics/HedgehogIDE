@@ -30,6 +30,7 @@ export type FileType = 'FILE' | 'DIRECTORY';
 export type FileDesc =
   | {| type: 'DIRECTORY' |}
   | {| type: 'FILE', extension: string |};
+export type MetadataDesc = {| type: 'METADATA', name: string |};
 
 export type FileReference = {|
   path: string,
@@ -45,7 +46,7 @@ export type FileAction =
   | {|
       action: 'CREATE',
       parentDir: DirReference,
-      desc: FileDesc,
+      desc: FileDesc | MetadataDesc,
     |}
   | {|
       action: 'UPLOAD',
