@@ -410,7 +410,7 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
   };
 
   render() {
-    const { codeLanguage } = this.props;
+    const { codeCollapsed, codeLanguage } = this.props;
     const { code } = this.state;
 
     return (
@@ -446,11 +446,7 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
               onClick={this.handleToggleCodeCollapsed}
               disableRipple
             >
-              {this.props.codeCollapsed ? (
-                <SlideLeftIcon />
-              ) : (
-                <SlideRightIcon />
-              )}
+              {codeCollapsed ? <SlideLeftIcon /> : <SlideRightIcon />}
             </ColoredIconButton>
           </ToolBarItem>
           <ToolBarItem>
@@ -475,7 +471,7 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
         <pre
           ref={this.codeRef}
           className={
-            this.props.codeCollapsed
+            codeCollapsed
               ? `${s.codeContainer} ${s.collapsed}`
               : s.codeContainer
           }
