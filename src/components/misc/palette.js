@@ -14,6 +14,9 @@ import LanguagePythonIcon from 'mdi-material-ui/LanguagePython';
 // projects
 import LocalProjectIcon from 'mdi-material-ui/Folder';
 
+// project actions
+import SettingsIcon from 'mdi-material-ui/Cogs';
+
 // IDE navigation
 import IdeIcon from 'mdi-material-ui/CodeTags';
 import HelpIcon from 'mdi-material-ui/HelpCircleOutline';
@@ -51,6 +54,7 @@ export {
   LanguageJavascriptIcon,
   LanguagePythonIcon,
   LocalProjectIcon,
+  SettingsIcon,
   IdeIcon,
   HelpIcon,
   ContestIcon,

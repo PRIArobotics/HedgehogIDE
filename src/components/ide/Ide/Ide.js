@@ -4,7 +4,9 @@ import * as React from 'react';
 import withStyles from 'isomorphic-style-loader/lib/withStyles';
 import { compose } from 'react-apollo';
 
+import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
+import Menu from '@material-ui/core/Menu';
 import Paper from '@material-ui/core/Paper';
 import { withStyles as withStylesMaterial } from '@material-ui/styles';
 import IconButton from '@material-ui/core/IconButton';
@@ -16,7 +18,7 @@ import FlexLayout from 'flexlayout-react';
 // eslint-disable-next-line css-modules/no-unused-class
 import FlexLayoutTheme from './flex_layout_ide.css';
 
-import { ConsoleIcon, SimulatorIcon } from '../../misc/palette';
+import { SettingsIcon, ConsoleIcon, SimulatorIcon } from '../../misc/palette';
 
 import Console from '../Console';
 import Editor from '../Editor';
@@ -88,6 +90,7 @@ type StateTypes = {|
   layoutState: FlexLayout.Model,
   blocklyState: { [key: string]: VisualEditorState },
   runningCode: string | null,
+  controlsMenuAnchor: ReactDOM.Node | null,
 |};
 
 type OpenOrFocusTabOptions = {|
@@ -188,6 +191,7 @@ class Ide extends React.Component<PropTypes, StateTypes> {
     layoutState: FlexLayout.Model.fromJson(defaultLayout),
     blocklyState: {},
     runningCode: null,
+    controlsMenuAnchor: null,
   };
 
   constructor(props: PropTypes) {
@@ -705,6 +709,7 @@ class Ide extends React.Component<PropTypes, StateTypes> {
       layoutState,
       runningCode,
       showMetadataFolder,
+      controlsMenuAnchor,
     } = this.state;
 
     if (projectInfo === null) return null;
@@ -815,8 +820,30 @@ class Ide extends React.Component<PropTypes, StateTypes> {
                 <ConsoleIcon />
               </IconButton>
             </Tooltip>
-            <Tooltip title="Show Metadata">
+            <Tooltip title="Project settings">
               <IconButton
+                variant="contained"
+                color="primary"
+                size="small"
+                aria-controls="project-controls-menu"
+                aria-haspopup="true"
+                onClick={event => {
+                  this.setState({ controlsMenuAnchor: event.currentTarget });
+                }}
+              >
+                <SettingsIcon />
+              </IconButton>
+            </Tooltip>
+            <Menu
+              id="project-controls-menu"
+              anchorEl={controlsMenuAnchor}
+              keepMounted
+              open={!!controlsMenuAnchor}
+              onClose={() => {
+                this.setState({ controlsMenuAnchor: null });
+              }}
+            >
+              <Button
                 variant="contained"
                 color="primary"
                 size="small"
@@ -825,14 +852,15 @@ class Ide extends React.Component<PropTypes, StateTypes> {
                     oldState => ({
                       ...oldState,
                       showMetadataFolder: !oldState.showMetadataFolder,
+                      controlsMenuAnchor: null,
                     }),
                     () => this.save(),
                   );
                 }}
               >
-                <ConsoleIcon />
-              </IconButton>
-            </Tooltip>
+                {showMetadataFolder ? 'Hide Metadata' : 'Show Metadata'}
+              </Button>
+            </Menu>
             <hr />
           </div>
           <FileTree
