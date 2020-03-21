@@ -699,7 +699,13 @@ class Ide extends React.Component<PropTypes, StateTypes> {
 
   render() {
     const { classes } = this.props;
-    const { projectInfo, showMetadataFolder } = this.state;
+    const {
+      projectInfo,
+      fileTreeState,
+      layoutState,
+      runningCode,
+      showMetadataFolder,
+    } = this.state;
 
     if (projectInfo === null) return null;
 
@@ -831,7 +837,7 @@ class Ide extends React.Component<PropTypes, StateTypes> {
           </div>
           <FileTree
             files={projectInfo.files}
-            {...this.state.fileTreeState}
+            {...fileTreeState}
             filter={filter}
             onFileAction={action => this.handleFileAction(action)}
             onUpdate={fileTreeState =>
@@ -857,16 +863,16 @@ class Ide extends React.Component<PropTypes, StateTypes> {
         </Grid>
         <Grid item component={SquarePaper} className={classes.editorContainer}>
           <FlexLayout.Layout
-            model={this.state.layoutState}
+            model={layoutState}
             ref={this.flexRef}
             factory={this.factory}
             classNameMapper={className => FlexLayoutTheme[className]}
             onModelChange={() => this.save()}
           />
         </Grid>
-        {this.state.runningCode ? (
+        {runningCode ? (
           <IdeExecutor
-            code={this.state.runningCode}
+            code={runningCode}
             getConsole={() => this.getConsole()}
             getSimulator={() => this.getSimulator()}
             onExit={() => this.setState({ runningCode: null })}
