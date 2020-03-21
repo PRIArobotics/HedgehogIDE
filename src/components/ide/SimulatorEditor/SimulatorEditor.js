@@ -15,6 +15,19 @@ import ToolBarItem from '../ToolBar/ToolBarItem';
 
 import s from './SimulatorEditor.scss';
 
+import { SIMULATOR_ROOT, SIMULATOR_SHAPE } from './blocks';
+
+const blocks = [SIMULATOR_ROOT, SIMULATOR_SHAPE];
+blocks.forEach(block => {
+  const { type } = block.blockJson;
+
+  Blockly.Blocks[type] = {
+    init() {
+      this.jsonInit(block.blockJson);
+    },
+  };
+});
+
 export type ControlledState = $Shape<{|
   jsonCollapsed: boolean,
 |}>;
@@ -125,7 +138,11 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
   createToolbox(): string {
     const toolbox = (
       <xml>
-        <block type="controls_if" />
+        <category name="Simulation" colour="120">
+          {SIMULATOR_ROOT.toolboxBlocks.default()}
+          {SIMULATOR_SHAPE.toolboxBlocks.rect()}
+          {SIMULATOR_SHAPE.toolboxBlocks.ellipse()}
+        </category>
       </xml>
     );
     return ReactDOM.renderToStaticMarkup(toolbox);
