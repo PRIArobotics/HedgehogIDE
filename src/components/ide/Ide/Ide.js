@@ -90,7 +90,7 @@ type StateTypes = {|
   layoutState: FlexLayout.Model,
   blocklyState: { [key: string]: VisualEditorState },
   runningCode: string | null,
-  controlsMenuAnchor: ReactDOM.Node | null,
+  controlsMenuAnchor: React.Node | null,
 |};
 
 type OpenOrFocusTabOptions = {|
