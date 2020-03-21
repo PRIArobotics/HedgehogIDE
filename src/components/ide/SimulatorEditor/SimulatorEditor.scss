@@ -1,0 +1,34 @@
+@import '../../variables.scss';
+
+.tabRoot {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-flow: row nowrap;
+  overflow: hidden;
+}
+
+.blocklyContainer {
+  flex: 1 0 auto;
+  position: relative;
+
+  .blockly {
+    position: absolute;
+  }
+}
+
+.codeContainer {
+  flex: 0 1 auto;
+  width: 400px;
+  overflow: auto;
+  padding: 6px 0 0 4px;
+  margin: 0;
+  transition-property: width;
+  transition-duration: 0.3s;
+
+  &.collapsed {
+    overflow: hidden;
+    padding-left: 0;
+    width: 0;
+  }
+}

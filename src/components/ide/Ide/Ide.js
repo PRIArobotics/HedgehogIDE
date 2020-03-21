@@ -36,6 +36,7 @@ import Simulator from '../Simulator';
 import VisualEditor, {
   type ControlledState as VisualEditorState,
 } from '../VisualEditor';
+import SimulatorEditor from '../SimulatorEditor';
 
 import {
   type FilerRecursiveStatInfo,
@@ -162,6 +163,20 @@ class Ide extends React.Component<PropTypes, StateTypes> {
                 onExecute={code => this.handleExecute(code)}
                 onTerminate={() => this.handleTerminate()}
                 running={!!this.state.runningCode}
+              />
+            )}
+          </FileTab>
+        );
+      }
+      case 'simulator-editor': {
+        return (
+          <FileTab project={project} path={id}>
+            {(content, onContentChange) => (
+              <SimulatorEditor
+                layoutNode={node}
+                content={content}
+                onContentChange={onContentChange}
+                onUpdate={() => {}}
               />
             )}
           </FileTab>
@@ -424,10 +439,19 @@ class Ide extends React.Component<PropTypes, StateTypes> {
         const {
           file: { path, file },
         } = action;
+
+        const component = (() => {
+          if (path === './.metadata/simulator') return 'simulator-editor';
+          // if (path === './.metadata/toolbox') return 'toolbox-editor';
+          if (file.name.endsWith('.blockly')) return 'blockly';
+          if (file.name.endsWith('.js')) return 'editor';
+          return 'editor';
+        })();
+
         this.openOrFocusTab({
           id: path,
           type: 'tab',
-          component: file.name.endsWith('.blockly') ? 'blockly' : 'editor',
+          component,
           name: file.name,
         });
         break;
