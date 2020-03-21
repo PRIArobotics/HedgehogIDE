@@ -11,6 +11,10 @@ import LanguageBlocklyIcon from 'mdi-material-ui/Widgets';
 import LanguageJavascriptIcon from 'mdi-material-ui/LanguageJavascript';
 import LanguagePythonIcon from 'mdi-material-ui/LanguagePython';
 
+// files: metadata
+import MetadataSimulatorIcon from 'mdi-material-ui/Cogs';
+import MetadataToolboxIcon from 'mdi-material-ui/Cogs';
+
 // projects
 import LocalProjectIcon from 'mdi-material-ui/Folder';
 
@@ -53,6 +57,8 @@ export {
   LanguageBlocklyIcon,
   LanguageJavascriptIcon,
   LanguagePythonIcon,
+  MetadataSimulatorIcon,
+  MetadataToolboxIcon,
   LocalProjectIcon,
   SettingsIcon,
   IdeIcon,

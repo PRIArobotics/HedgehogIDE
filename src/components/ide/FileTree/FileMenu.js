@@ -11,6 +11,8 @@ import {
   FolderIcon,
   LanguageBlocklyIcon,
   LanguageJavascriptIcon,
+  MetadataSimulatorIcon,
+  MetadataToolboxIcon,
   RenameIcon,
   DeleteIcon,
   DownloadIcon,
@@ -107,6 +109,7 @@ class FileMenu extends React.Component<PropTypes, StateTypes> {
 
     const isRoot = file.path === '.';
     const isLeaf = !file.file.isDirectory();
+    const isMetadata = file.path === './.metadata' && !isLeaf;
 
     type FileMenuItemProps = {|
       title: string,
@@ -139,7 +142,30 @@ class FileMenu extends React.Component<PropTypes, StateTypes> {
         open={visible}
         onClose={() => this.hide()}
       >
-        {!isLeaf ? (
+        {isMetadata ? (
+          <>
+            <FileMenuItem
+              title="New Folder"
+              onClick={() => this.handleCreate({ type: 'DIRECTORY' })}
+              icon={FolderIcon}
+            />
+            <FileMenuItem
+              title="Create Simulator Configuration"
+              onClick={() =>
+                this.handleCreate({ type: 'FILE', extension: '' })
+              }
+              icon={MetadataSimulatorIcon}
+            />
+            <FileMenuItem
+              title="Create Toolbox Configuration"
+              onClick={() =>
+                this.handleCreate({ type: 'FILE', extension: '' })
+              }
+              icon={MetadataToolboxIcon}
+            />
+            <Divider />
+          </>
+        ) : !isLeaf ? (
           <>
             <FileMenuItem
               title="New Folder"

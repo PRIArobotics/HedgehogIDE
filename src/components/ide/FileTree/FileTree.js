@@ -13,6 +13,8 @@ import {
   FolderOpenIcon,
   LanguageBlocklyIcon,
   LanguageJavascriptIcon,
+  MetadataSimulatorIcon,
+  MetadataToolboxIcon,
 } from '../../misc/palette';
 
 import s from './FileTree.scss';
@@ -202,6 +204,8 @@ class FileTree extends React.Component<PropTypes, StateTypes> {
 
       const TheIcon = (() => {
         if (isLeaf) {
+          if (path === './.metadata/simulator') return MetadataSimulatorIcon;
+          if (path === './.metadata/toolbox') return MetadataToolboxIcon;
           if (file.name.endsWith('.blockly')) return LanguageBlocklyIcon;
           if (file.name.endsWith('.js')) return LanguageJavascriptIcon;
           return FileIcon;
