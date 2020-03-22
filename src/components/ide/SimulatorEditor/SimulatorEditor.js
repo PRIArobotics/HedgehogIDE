@@ -15,9 +15,19 @@ import ToolBarItem from '../ToolBar/ToolBarItem';
 
 import s from './SimulatorEditor.scss';
 
-import { SIMULATOR_ROOT, SIMULATOR_SHAPE } from './blocks';
+import {
+  SIMULATOR_ROOT,
+  SIMULATOR_SHAPE,
+  SIMULATOR_BOUNDING_BOX_CENTER_DIMENSION,
+  SIMULATOR_BOUNDING_BOX_CORNERS,
+} from './blocks';
 
-const blocks = [SIMULATOR_ROOT, SIMULATOR_SHAPE];
+const blocks = [
+  SIMULATOR_ROOT,
+  SIMULATOR_SHAPE,
+  SIMULATOR_BOUNDING_BOX_CENTER_DIMENSION,
+  SIMULATOR_BOUNDING_BOX_CORNERS,
+];
 blocks.forEach(block => {
   const { type } = block.blockJson;
 
@@ -142,6 +152,8 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
           {SIMULATOR_ROOT.toolboxBlocks.default()}
           {SIMULATOR_SHAPE.toolboxBlocks.rect()}
           {SIMULATOR_SHAPE.toolboxBlocks.ellipse()}
+          {SIMULATOR_BOUNDING_BOX_CENTER_DIMENSION.toolboxBlocks.default()}
+          {SIMULATOR_BOUNDING_BOX_CORNERS.toolboxBlocks.default()}
         </category>
       </xml>
     );
