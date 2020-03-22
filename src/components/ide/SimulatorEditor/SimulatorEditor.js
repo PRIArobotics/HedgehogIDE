@@ -17,16 +17,26 @@ import s from './SimulatorEditor.scss';
 
 import {
   SIMULATOR_ROOT,
-  SIMULATOR_SHAPE,
-  SIMULATOR_BOUNDING_BOX_CENTER_DIMENSION,
-  SIMULATOR_BOUNDING_BOX_CORNERS,
+  SIMULATOR_RECT,
+  SIMULATOR_CIRCLE,
+  SIMULATOR_ROBOT,
+  SIMULATOR_SETTINGS_TRANSLATE,
+  SIMULATOR_SETTINGS_ROTATE,
+  SIMULATOR_SETTINGS_COLOR,
+  SIMULATOR_SETTINGS_STATIC,
+  SIMULATOR_GROUP,
 } from './blocks';
 
 const blocks = [
   SIMULATOR_ROOT,
-  SIMULATOR_SHAPE,
-  SIMULATOR_BOUNDING_BOX_CENTER_DIMENSION,
-  SIMULATOR_BOUNDING_BOX_CORNERS,
+  SIMULATOR_RECT,
+  SIMULATOR_CIRCLE,
+  SIMULATOR_ROBOT,
+  SIMULATOR_SETTINGS_TRANSLATE,
+  SIMULATOR_SETTINGS_ROTATE,
+  SIMULATOR_SETTINGS_COLOR,
+  SIMULATOR_SETTINGS_STATIC,
+  SIMULATOR_GROUP,
 ];
 blocks.forEach(block => {
   const { type } = block.blockJson;
@@ -150,10 +160,14 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
       <xml>
         <category name="Simulation" colour="120">
           {SIMULATOR_ROOT.toolboxBlocks.default()}
-          {SIMULATOR_SHAPE.toolboxBlocks.rect()}
-          {SIMULATOR_SHAPE.toolboxBlocks.ellipse()}
-          {SIMULATOR_BOUNDING_BOX_CENTER_DIMENSION.toolboxBlocks.default()}
-          {SIMULATOR_BOUNDING_BOX_CORNERS.toolboxBlocks.default()}
+          {SIMULATOR_RECT.toolboxBlocks.default()}
+          {SIMULATOR_CIRCLE.toolboxBlocks.default()}
+          {SIMULATOR_SETTINGS_TRANSLATE.toolboxBlocks.default()}
+          {SIMULATOR_SETTINGS_ROTATE.toolboxBlocks.default()}
+          {SIMULATOR_SETTINGS_COLOR.toolboxBlocks.default()}
+          {SIMULATOR_SETTINGS_STATIC.toolboxBlocks.default()}
+          {SIMULATOR_GROUP.toolboxBlocks.default()}
+          {SIMULATOR_ROBOT.toolboxBlocks.default()}
         </category>
       </xml>
     );
