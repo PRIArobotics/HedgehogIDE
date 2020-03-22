@@ -162,11 +162,11 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
           {SIMULATOR_ROOT.toolboxBlocks.default()}
           {SIMULATOR_RECT.toolboxBlocks.default()}
           {SIMULATOR_CIRCLE.toolboxBlocks.default()}
+          {SIMULATOR_GROUP.toolboxBlocks.default()}
           {SIMULATOR_SETTINGS_TRANSLATE.toolboxBlocks.default()}
           {SIMULATOR_SETTINGS_ROTATE.toolboxBlocks.default()}
           {SIMULATOR_SETTINGS_COLOR.toolboxBlocks.default()}
           {SIMULATOR_SETTINGS_STATIC.toolboxBlocks.default()}
-          {SIMULATOR_GROUP.toolboxBlocks.default()}
           {SIMULATOR_ROBOT.toolboxBlocks.default()}
         </category>
       </xml>

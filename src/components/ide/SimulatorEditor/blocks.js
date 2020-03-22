@@ -63,7 +63,7 @@ export const SIMULATOR_RECT = {
     ],
     previousStatement: 'Tree',
     nextStatement: 'Tree',
-    colour: 120,
+    colour: 240,
     tooltip: 'Rectangle defined by its width and height',
     helpUrl: 'TODO',
   },
@@ -91,7 +91,7 @@ export const SIMULATOR_CIRCLE = {
     ],
     previousStatement: 'Tree',
     nextStatement: 'Tree',
-    colour: 120,
+    colour: 240,
     tooltip: 'Circle defined by its radius',
     helpUrl: 'TODO',
   },
@@ -100,10 +100,39 @@ export const SIMULATOR_CIRCLE = {
   },
 };
 
+export const SIMULATOR_GROUP = {
+  blockJson: {
+    type: 'simulator_group',
+    message0: 'Group %1 %2',
+    args0: [
+      {
+        type: 'input_value',
+        name: 'SETTINGS',
+        check: 'SimulatorObjectSettings',
+      },
+      {
+        type: 'input_statement',
+        name: 'OBJECTS',
+        check: 'Tree',
+      },
+    ],
+    previousStatement: 'Tree',
+    nextStatement: 'Tree',
+    colour: 270,
+    tooltip:
+      'Groups multiple objects and applies the settings to all of them. ' +
+      'More specific settings win; moving and rotating are composed.',
+    helpUrl: 'TODO',
+  },
+  toolboxBlocks: {
+    default: () => <block type="simulator_group" />,
+  },
+};
+
 export const SIMULATOR_ROBOT = {
   blockJson: {
     type: 'simulator_robot',
-    message0: 'Robot "%1" at (%2, %3) and %4',
+    message0: 'Robot "%1" at (%2, %3) and %4 colored %5',
     args0: [
       {
         type: 'field_input',
@@ -127,10 +156,15 @@ export const SIMULATOR_ROBOT = {
         name: 'ANGLE',
         angle: 0,
       },
+      {
+        type: 'field_colour',
+        name: 'COLOUR',
+        colour: '#007c3c',
+      },
     ],
     previousStatement: 'Robot',
     nextStatement: 'Robot',
-    colour: 120,
+    colour: 90,
     tooltip: 'simulated robot',
     helpUrl: 'TODO',
   },
@@ -164,7 +198,7 @@ export const SIMULATOR_SETTINGS_TRANSLATE = {
     ],
     inputsInline: false,
     output: 'SimulatorObjectSettings',
-    colour: 120,
+    colour: 180,
     tooltip: 'moves an object or group by the given x/y offset',
     helpUrl: 'TODO',
   },
@@ -191,7 +225,7 @@ export const SIMULATOR_SETTINGS_ROTATE = {
     ],
     inputsInline: false,
     output: 'SimulatorObjectSettings',
-    colour: 120,
+    colour: 180,
     tooltip: 'torates an object or group by the given angle',
     helpUrl: 'TODO',
   },
@@ -218,7 +252,7 @@ export const SIMULATOR_SETTINGS_COLOR = {
     ],
     inputsInline: false,
     output: 'SimulatorObjectSettings',
-    colour: 120,
+    colour: 180,
     tooltip: 'sets the color of an object or group',
     helpUrl: 'TODO',
   },
@@ -245,40 +279,11 @@ export const SIMULATOR_SETTINGS_STATIC = {
     ],
     inputsInline: false,
     output: 'SimulatorObjectSettings',
-    colour: 120,
+    colour: 180,
     tooltip: 'makes an object or group immovable or movable',
     helpUrl: 'TODO',
   },
   toolboxBlocks: {
     default: () => <block type="simulator_settings_static" />,
-  },
-};
-
-export const SIMULATOR_GROUP = {
-  blockJson: {
-    type: 'simulator_group',
-    message0: 'Group %1 %2',
-    args0: [
-      {
-        type: 'input_value',
-        name: 'SETTINGS',
-        check: 'SimulatorObjectSettings',
-      },
-      {
-        type: 'input_statement',
-        name: 'OBJECTS',
-        check: 'Tree',
-      },
-    ],
-    previousStatement: 'Tree',
-    nextStatement: 'Tree',
-    colour: 120,
-    tooltip:
-      'Groups multiple objects and applies the settings to all of them. ' +
-      'More specific settings win; moving and rotating are composed.',
-    helpUrl: 'TODO',
-  },
-  toolboxBlocks: {
-    default: () => <block type="simulator_group" />,
   },
 };
