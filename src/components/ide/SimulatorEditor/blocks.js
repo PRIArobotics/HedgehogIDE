@@ -485,11 +485,15 @@ export const SIMULATOR_SETTINGS_FRICTION_AIR = {
     inputsInline: false,
     output: 'SimulatorObjectSettings',
     colour: 180,
-    tooltip: 'friction determines how much resistance a sliding object experiences',
+    tooltip:
+      'friction determines how much resistance a sliding object experiences',
     helpUrl: 'TODO',
   },
   blockExtras: {
-    onchange: forbidsAncestor(['simulator_robot'], 'robots have fixed friction'),
+    onchange: forbidsAncestor(
+      ['simulator_robot'],
+      'robots have fixed friction',
+    ),
     getSettings() {
       return {
         frictionAir: this.getFieldValue('FRICTION_AIR'),
