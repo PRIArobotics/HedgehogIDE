@@ -38,7 +38,7 @@ import VisualEditor, {
 } from '../VisualEditor';
 import SimulatorEditor, {
   type ControlledState as SimulatorEditorState,
-}  from '../SimulatorEditor';
+} from '../SimulatorEditor';
 
 import {
   type FilerRecursiveStatInfo,
