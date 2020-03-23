@@ -69,6 +69,14 @@ export const SIMULATOR_ROOT = {
     tooltip: 'Configuration for the whole simulation',
     helpUrl: 'TODO',
   },
+  blockExtras: {
+    onchange() {
+      const roots = this.workspace.getBlocksByType('simulator_root');
+      this.setWarningText(
+        roots.length >= 2 ? 'only one configuration root allowed' : null,
+      );
+    },
+  },
   toolboxBlocks: {
     default: () => <block type="simulator_root" />,
   },
