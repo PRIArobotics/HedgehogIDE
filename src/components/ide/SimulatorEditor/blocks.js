@@ -253,7 +253,7 @@ export const SIMULATOR_SETTINGS_ROTATE = {
     inputsInline: false,
     output: 'SimulatorObjectSettings',
     colour: 180,
-    tooltip: 'torates an object or group by the given angle',
+    tooltip: 'rotates an object or group by the given angle',
     helpUrl: 'TODO',
   },
   toolboxBlocks: {
