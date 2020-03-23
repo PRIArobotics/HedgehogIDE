@@ -222,18 +222,34 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
       this.setState({ json: '' });
       return;
     }
+
+    const objectTypes = [
+      'simulator_robot',
+      'simulator_rect',
+      'simulator_circle',
+    ];
+
     const [simulation] = roots;
     const descendants = simulation.getDescendants();
     const objects = descendants.filter(
-      block => ['simulator_robot', 'simulator_rect', 'simulator_circle'].indexOf(block.type) !== -1,
+      block => objectTypes.indexOf(block.type) !== -1,
     );
 
     const collectSettings = block => {
+      // position and angle are treated separately to other settings
       let position = { x: 0, y: 0 };
       let angle = 0;
       let settings = {};
-      for (let b = block; b.type !== 'simulator_root'; b = b.getSurroundParent()) {
-        const { position: outerPosition, angle: outerAngle, ...outer } = b.getSettings();
+      for (
+        let b = block;
+        b.type !== 'simulator_root';
+        b = b.getSurroundParent()
+      ) {
+        const {
+          position: outerPosition,
+          angle: outerAngle,
+          ...outer
+        } = b.getSettings();
 
         const cos = Math.cos(outerAngle);
         const sin = Math.sin(outerAngle);

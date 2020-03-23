@@ -132,7 +132,7 @@ export const SIMULATOR_RECT = {
     helpUrl: 'TODO',
   },
   blockExtras: {
-    getFields(settings) {
+    getFields() {
       return {
         type: 'rectangle',
         width: this.getFieldValue('W'),
@@ -170,7 +170,7 @@ export const SIMULATOR_CIRCLE = {
     helpUrl: 'TODO',
   },
   blockExtras: {
-    getFields(settings) {
+    getFields() {
       return {
         type: 'circle',
         radius: this.getFieldValue('R'),
@@ -238,7 +238,7 @@ export const SIMULATOR_ROBOT = {
     helpUrl: 'TODO',
   },
   blockExtras: {
-    getFields(settings) {
+    getFields() {
       return {
         type: 'robot',
         name: this.getFieldValue('NAME'),
@@ -320,7 +320,7 @@ export const SIMULATOR_SETTINGS_ROTATE = {
   blockExtras: {
     getSettings() {
       return {
-        angle: this.getFieldValue('ANGLE') / 180 * Math.PI,
+        angle: (this.getFieldValue('ANGLE') / 180) * Math.PI,
       };
     },
   },
