@@ -243,7 +243,7 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
 
   render() {
     const { jsonCollapsed } = this.props;
-    const { code } = this.state;
+    const { json } = this.state;
 
     return (
       <div className={s.tabRoot}>
@@ -261,11 +261,11 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
           ref={this.jsonRef}
           className={
             jsonCollapsed
-              ? `${s.codeContainer} ${s.collapsed}`
-              : s.codeContainer
+              ? `${s.jsonContainer} ${s.collapsed}`
+              : s.jsonContainer
           }
         >
-          {code}
+          {json}
         </pre>
       </div>
     );
