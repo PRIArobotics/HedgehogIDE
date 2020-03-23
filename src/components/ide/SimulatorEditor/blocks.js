@@ -8,7 +8,7 @@ function forbidsAncestor(types, warning) {
     if (this.workspace.isDragging()) return;
     let legal = true;
     // Is the block nested in a scope?
-    for (let block = this; block = block.getSurroundParent(); block) {
+    for (let block = this; (block = block.getSurroundParent()) !== null; ) {
       if (types.indexOf(block.type) !== -1) {
         legal = false;
         break;
@@ -23,7 +23,7 @@ function forbidsAncestor(types, warning) {
         this.setDisabled(true);
       }
     }
-  }
+  };
 }
 
 export const SIMULATOR_ROOT = {
