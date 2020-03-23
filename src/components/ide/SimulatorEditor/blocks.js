@@ -215,6 +215,7 @@ export const SIMULATOR_ROBOT = {
   blockExtras: {
     getFields(settings) {
       return {
+        type: 'robot',
         name: this.getFieldValue('NAME'),
       };
     },

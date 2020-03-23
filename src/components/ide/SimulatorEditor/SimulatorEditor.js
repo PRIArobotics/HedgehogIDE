@@ -224,11 +224,8 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
     }
     const [simulation] = roots;
     const descendants = simulation.getDescendants();
-    const robots = descendants.filter(
-      block => block.type === 'simulator_robot',
-    );
     const objects = descendants.filter(
-      block => ['simulator_rect', 'simulator_circle'].indexOf(block.type) !== -1,
+      block => ['simulator_robot', 'simulator_rect', 'simulator_circle'].indexOf(block.type) !== -1,
     );
 
     const collectSettings = block => {
@@ -279,10 +276,6 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
       },
       width: simulation.getFieldValue('W'),
       height: simulation.getFieldValue('H'),
-      robots: robots.map(robot => ({
-        ...robot.getFields(),
-        ...collectSettings(robot),
-      })),
       objects: objects.map(object => ({
         ...object.getFields(),
         ...collectSettings(object),
