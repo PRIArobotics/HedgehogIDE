@@ -217,9 +217,72 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
     if (this.workspace === null) throw 'unreachable';
 
     const { workspace } = this;
+    const roots = this.workspace.getBlocksByType('simulator_root');
+    if (roots.length !== 1) {
+      this.setState({ json: '' });
+      return;
+    }
+    const [simulation] = roots;
+    const descendants = simulation.getDescendants();
+    const robots = descendants.filter(
+      block => block.type === 'simulator_robot',
+    );
 
-    const json = '';
-    this.setState({ json });
+    const collectSettings = block => {
+      // collects the settings that are applied directly to a block
+      const collectDirectSettings = block => {
+        let settings = {
+          pose: { x: 0, y: 0, angle: 0 },
+        };
+        // check the descendant blocks first
+        for (
+          let s = block.getInputTargetBlock('SETTINGS');
+          s !== null;
+          s = s.getInputTargetBlock('MORE')
+        ) {
+          settings = s.addSettings(settings);
+        }
+        return settings;
+      };
+
+      // apply settings for the block and its ancestor groups
+      let settings = {
+        pose: { x: 0, y: 0, angle: 0 },
+      };
+      for (let b = block; b.type !== 'simulator_root'; b = b.getSurroundParent()) {
+        const outer = collectDirectSettings(b);
+        const cos = Math.cos(outer.pose.angle);
+        const sin = Math.sin(outer.pose.angle);
+        const pose = {
+          x: outer.pose.x + cos * settings.pose.x - sin * settings.pose.y,
+          y: outer.pose.y + sin * settings.pose.x + cos * settings.pose.y,
+          angle: outer.pose.angle + settings.pose.angle,
+        }
+        settings = {
+          // we're going from most to least specific, so don't override properties already present
+          ...outer,
+          ...settings,
+          // the pose is combined differently
+          pose,
+        };
+      }
+      return settings;
+    };
+
+    const json = {
+      center: {
+        x: simulation.getFieldValue('X'),
+        y: simulation.getFieldValue('Y'),
+      },
+      width: simulation.getFieldValue('W'),
+      height: simulation.getFieldValue('H'),
+      robots: robots.map(robot => ({
+        name: robot.getFieldValue('NAME'),
+        ...collectSettings(robot),
+      })),
+    };
+
+    this.setState({ json: JSON.stringify(json, undefined, 2) });
   }
 
   handleWorkspaceChange() {

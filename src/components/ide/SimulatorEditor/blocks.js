@@ -229,6 +229,18 @@ export const SIMULATOR_SETTINGS_TRANSLATE = {
     tooltip: 'moves an object or group by the given x/y offset',
     helpUrl: 'TODO',
   },
+  blockExtras: {
+    addSettings(settings) {
+      return {
+        ...settings,
+        pose: {
+          ...settings.pose,
+          x: this.getFieldValue('X'),
+          y: this.getFieldValue('Y'),
+        },
+      };
+    },
+  },
   toolboxBlocks: {
     default: () => <block type="simulator_settings_translate" />,
   },
@@ -256,6 +268,17 @@ export const SIMULATOR_SETTINGS_ROTATE = {
     tooltip: 'rotates an object or group by the given angle',
     helpUrl: 'TODO',
   },
+  blockExtras: {
+    addSettings(settings) {
+      return {
+        ...settings,
+        pose: {
+          ...settings.pose,
+          angle: this.getFieldValue('ANGLE') / 180 * Math.PI,
+        },
+      };
+    },
+  },
   toolboxBlocks: {
     default: () => <block type="simulator_settings_rotate" />,
   },
@@ -282,6 +305,14 @@ export const SIMULATOR_SETTINGS_COLOR = {
     colour: 180,
     tooltip: 'sets the color of an object or group',
     helpUrl: 'TODO',
+  },
+  blockExtras: {
+    addSettings(settings) {
+      return {
+        ...settings,
+        color: this.getFieldValue('COLOUR'),
+      };
+    },
   },
   toolboxBlocks: {
     default: () => <block type="simulator_settings_color" />,
@@ -312,6 +343,12 @@ export const SIMULATOR_SETTINGS_STATIC = {
   },
   blockExtras: {
     onchange: forbidsAncestor(['simulator_robot'], 'robots can not be fixed'),
+    addSettings(settings) {
+      return {
+        ...settings,
+        static: this.getField('STATIC').getValueBoolean(),
+      };
+    },
   },
   toolboxBlocks: {
     default: () => <block type="simulator_settings_static" />,
@@ -342,6 +379,12 @@ export const SIMULATOR_SETTINGS_SENSOR = {
   },
   blockExtras: {
     onchange: forbidsAncestor(['simulator_robot'], 'robots can not be passive'),
+    addSettings(settings) {
+      return {
+        ...settings,
+        sensor: this.getField('SENSOR').getValueBoolean(),
+      };
+    },
   },
   toolboxBlocks: {
     default: () => <block type="simulator_settings_sensor" />,
