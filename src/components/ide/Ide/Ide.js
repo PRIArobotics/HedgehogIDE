@@ -76,6 +76,10 @@ const defaultLayout = {
   },
 };
 
+type EditorState = {|
+  blockly?: VisualEditorState,
+|};
+
 type PropTypes = {|
   classes: Object,
   projectName: string,
@@ -89,7 +93,7 @@ type StateTypes = {|
   fileTreeState: FileTreeState,
   showMetadataFolder: boolean,
   layoutState: FlexLayout.Model,
-  blocklyState: { [key: string]: VisualEditorState },
+  editorStates: { [key: string]: EditorState },
   runningCode: string | null,
   controlsMenuAnchor: React.Node | null,
 |};
@@ -106,6 +110,32 @@ class Ide extends React.Component<PropTypes, StateTypes> {
     // eslint-disable-next-line no-throw-literal
     if (this.state.projectInfo === null) throw 'unreachable';
     const { project } = this.state.projectInfo;
+
+    const getEditorState = (id: string, editorType: string) => {
+      const editorState = this.state.editorStates[id];
+      return editorState ? editorState[editorType] : null;
+    };
+
+    const editorStateSetter = (id: string, editorType: string) => state => {
+      this.setState(
+        oldState => {
+          const oldEditorState = oldState.editorStates[id];
+          return {
+            editorStates: {
+              ...oldState.editorStates,
+              [id]: {
+                ...oldEditorState,
+                [editorType]: {
+                  ...(oldEditorState ? oldEditorState[editorType] : null),
+                  ...state,
+                },
+              },
+            },
+          };
+        },
+        () => this.save(),
+      );
+    };
 
     const id = node.getId();
     switch (node.getComponent()) {
@@ -145,21 +175,8 @@ class Ide extends React.Component<PropTypes, StateTypes> {
                 layoutNode={node}
                 content={content}
                 onContentChange={onContentChange}
-                {...this.state.blocklyState[id]}
-                onUpdate={state => {
-                  this.setState(
-                    oldState => ({
-                      blocklyState: {
-                        ...oldState.blocklyState,
-                        [id]: {
-                          ...oldState.blocklyState[id],
-                          ...state,
-                        },
-                      },
-                    }),
-                    () => this.save(),
-                  );
-                }}
+                {...getEditorState(id, 'blockly')}
+                onUpdate={editorStateSetter(id, 'blockly')}
                 onExecute={code => this.handleExecute(code)}
                 onTerminate={() => this.handleTerminate()}
                 running={!!this.state.runningCode}
@@ -204,7 +221,7 @@ class Ide extends React.Component<PropTypes, StateTypes> {
     fileTreeState: {},
     showMetadataFolder: false,
     layoutState: FlexLayout.Model.fromJson(defaultLayout),
-    blocklyState: {},
+    editorStates: {},
     runningCode: null,
     controlsMenuAnchor: null,
   };
@@ -224,7 +241,7 @@ class Ide extends React.Component<PropTypes, StateTypes> {
       fileTreeState: { expandedKeys: [] },
       showMetadataFolder: false,
       layoutState: defaultLayout,
-      blocklyState: {},
+      editorStates: {},
     };
 
     const json = localStorage.getItem(`IDE-State-${projectUid}`);
@@ -238,7 +255,7 @@ class Ide extends React.Component<PropTypes, StateTypes> {
       fileTreeState,
       showMetadataFolder,
       layoutState: layoutStateJson,
-      blocklyState,
+      editorStates,
     } = persistentState;
     const layoutState = FlexLayout.Model.fromJson(layoutStateJson);
 
@@ -248,7 +265,7 @@ class Ide extends React.Component<PropTypes, StateTypes> {
       fileTreeState,
       showMetadataFolder,
       layoutState,
-      blocklyState,
+      editorStates,
     });
   }
 
@@ -261,7 +278,7 @@ class Ide extends React.Component<PropTypes, StateTypes> {
       fileTreeState,
       showMetadataFolder,
       layoutState: layoutStateModel,
-      blocklyState,
+      editorStates,
     } = this.state;
     const layoutState = layoutStateModel.toJson();
 
@@ -271,7 +288,7 @@ class Ide extends React.Component<PropTypes, StateTypes> {
         fileTreeState,
         showMetadataFolder,
         layoutState,
-        blocklyState,
+        editorStates,
       }),
     );
   }
