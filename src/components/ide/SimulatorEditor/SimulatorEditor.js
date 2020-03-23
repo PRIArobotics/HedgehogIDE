@@ -226,74 +226,13 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
     const roots = this.workspace.getBlocksByType('simulator_root');
     if (roots.length !== 1) {
       this.setState({ json: '' });
-      return;
+    } else {
+      const [simulation] = roots;
+
+      this.setState({
+        json: JSON.stringify(simulation.serialize(), undefined, 2),
+      });
     }
-
-    const objectTypes = [
-      'simulator_robot',
-      'simulator_rect',
-      'simulator_circle',
-    ];
-
-    const [simulation] = roots;
-    const descendants = simulation.getDescendants();
-    const objects = descendants.filter(
-      block => objectTypes.indexOf(block.type) !== -1,
-    );
-
-    const collectSettings = block => {
-      // position and angle are treated separately to other settings
-      let position = { x: 0, y: 0 };
-      let angle = 0;
-      let settings = {};
-      for (
-        let b = block;
-        b.type !== 'simulator_root';
-        b = b.getSurroundParent()
-      ) {
-        const {
-          position: outerPosition,
-          angle: outerAngle,
-          ...outer
-        } = b.getSettings();
-
-        const cos = Math.cos(outerAngle);
-        const sin = Math.sin(outerAngle);
-        position = {
-          x: outerPosition.x + cos * position.x - sin * position.y,
-          y: outerPosition.y + sin * position.x + cos * position.y,
-        };
-        angle += outerAngle;
-
-        settings = {
-          // we're going from most to least specific, so don't override properties already present
-          ...outer,
-          ...settings,
-        };
-      }
-      return {
-        position,
-        angle,
-        ...settings,
-      };
-    };
-
-    const json = {
-      simulation: {
-        center: {
-          x: simulation.getFieldValue('X'),
-          y: simulation.getFieldValue('Y'),
-        },
-        width: simulation.getFieldValue('W'),
-        height: simulation.getFieldValue('H'),
-      },
-      objects: objects.map(object => ({
-        ...object.getFields(),
-        ...collectSettings(object),
-      })),
-    };
-
-    this.setState({ json: JSON.stringify(json, undefined, 2) });
   }
 
   handleWorkspaceChange() {

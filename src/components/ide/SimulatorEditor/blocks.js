@@ -46,6 +46,43 @@ function getSettings() {
   return settings;
 }
 
+// collects settings from the object and all its ancestor groups and collects them into one setting object
+function collectSettings(object) {
+  // position and angle are treated separately to other settings
+  let { position, angle, ...settings } = object.getSettings();
+
+  for (
+    let group = object.getSurroundParent();
+    group.type === 'simulator_group';
+    group = group.getSurroundParent()
+  ) {
+    const {
+      position: outerPosition,
+      angle: outerAngle,
+      ...outerSettings
+    } = group.getSettings();
+
+    const cos = Math.cos(outerAngle);
+    const sin = Math.sin(outerAngle);
+    position = {
+      x: outerPosition.x + cos * position.x - sin * position.y,
+      y: outerPosition.y + sin * position.x + cos * position.y,
+    };
+    angle += outerAngle;
+
+    settings = {
+      // we're going from most to least specific, so don't override properties already present
+      ...outerSettings,
+      ...settings,
+    };
+  }
+  return {
+    position,
+    angle,
+    ...settings,
+  };
+}
+
 export const SIMULATOR_ROOT = {
   blockJson: {
     type: 'simulator_root',
@@ -96,6 +133,29 @@ export const SIMULATOR_ROOT = {
         roots.length >= 2 ? 'only one configuration root allowed' : null,
       );
     },
+    serialize() {
+      const objectTypes = [
+        'simulator_robot',
+        'simulator_rect',
+        'simulator_circle',
+      ];
+
+      const objects = this.getDescendants()
+        .filter(block => objectTypes.indexOf(block.type) !== -1)
+        .map(object => object.serialize());
+
+      return {
+        simulation: {
+          center: {
+            x: this.getFieldValue('X'),
+            y: this.getFieldValue('Y'),
+          },
+          width: this.getFieldValue('W'),
+          height: this.getFieldValue('H'),
+        },
+        objects,
+      };
+    },
   },
   toolboxBlocks: {
     default: () => <block type="simulator_root" />,
@@ -140,6 +200,12 @@ export const SIMULATOR_RECT = {
       };
     },
     getSettings,
+    serialize() {
+      return {
+        ...this.getFields(),
+        ...collectSettings(this),
+      };
+    },
   },
   toolboxBlocks: {
     default: () => <block type="simulator_rect" />,
@@ -177,6 +243,12 @@ export const SIMULATOR_CIRCLE = {
       };
     },
     getSettings,
+    serialize() {
+      return {
+        ...this.getFields(),
+        ...collectSettings(this),
+      };
+    },
   },
   toolboxBlocks: {
     default: () => <block type="simulator_circle" />,
@@ -245,6 +317,20 @@ export const SIMULATOR_ROBOT = {
       };
     },
     getSettings,
+    serialize() {
+      const {
+        static: _static,
+        sensor,
+        density,
+        frictionAir,
+        ...settings
+      } = collectSettings(this);
+
+      return {
+        ...this.getFields(),
+        ...settings,
+      };
+    },
   },
   toolboxBlocks: {
     default: () => <block type="simulator_robot" />,
