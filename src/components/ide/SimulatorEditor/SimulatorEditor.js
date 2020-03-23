@@ -273,12 +273,14 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
     };
 
     const json = {
-      center: {
-        x: simulation.getFieldValue('X'),
-        y: simulation.getFieldValue('Y'),
+      simulation: {
+        center: {
+          x: simulation.getFieldValue('X'),
+          y: simulation.getFieldValue('Y'),
+        },
+        width: simulation.getFieldValue('W'),
+        height: simulation.getFieldValue('H'),
       },
-      width: simulation.getFieldValue('W'),
-      height: simulation.getFieldValue('H'),
       objects: objects.map(object => ({
         ...object.getFields(),
         ...collectSettings(object),
