@@ -260,13 +260,11 @@ export const SIMULATOR_SETTINGS_TRANSLATE = {
         type: 'field_number',
         name: 'X',
         value: 0,
-        precision: 1,
       },
       {
         type: 'field_number',
         name: 'Y',
         value: 0,
-        precision: 1,
       },
       {
         type: 'input_value',
@@ -430,5 +428,75 @@ export const SIMULATOR_SETTINGS_SENSOR = {
   },
   toolboxBlocks: {
     default: () => <block type="simulator_settings_sensor" />,
+  },
+};
+
+export const SIMULATOR_SETTINGS_DENSITY = {
+  blockJson: {
+    type: 'simulator_settings_density',
+    message0: 'density: %1 %2',
+    args0: [
+      {
+        type: 'field_number',
+        name: 'DENSITY',
+        value: 1,
+      },
+      {
+        type: 'input_value',
+        name: 'MORE',
+        check: 'SimulatorObjectSettings',
+      },
+    ],
+    inputsInline: false,
+    output: 'SimulatorObjectSettings',
+    colour: 180,
+    tooltip: 'density together with object size determines its weight',
+    helpUrl: 'TODO',
+  },
+  blockExtras: {
+    onchange: forbidsAncestor(['simulator_robot'], 'robots have fixed density'),
+    getSettings() {
+      return {
+        density: this.getFieldValue('DENSITY'),
+      };
+    },
+  },
+  toolboxBlocks: {
+    default: () => <block type="simulator_settings_density" />,
+  },
+};
+
+export const SIMULATOR_SETTINGS_FRICTION_AIR = {
+  blockJson: {
+    type: 'simulator_settings_friction_air',
+    message0: 'friction: %1 %2',
+    args0: [
+      {
+        type: 'field_number',
+        name: 'FRICTION_AIR',
+        value: 0.4,
+      },
+      {
+        type: 'input_value',
+        name: 'MORE',
+        check: 'SimulatorObjectSettings',
+      },
+    ],
+    inputsInline: false,
+    output: 'SimulatorObjectSettings',
+    colour: 180,
+    tooltip: 'friction determines how much resistance a sliding object experiences',
+    helpUrl: 'TODO',
+  },
+  blockExtras: {
+    onchange: forbidsAncestor(['simulator_robot'], 'robots have fixed friction'),
+    getSettings() {
+      return {
+        frictionAir: this.getFieldValue('FRICTION_AIR'),
+      };
+    },
+  },
+  toolboxBlocks: {
+    default: () => <block type="simulator_settings_friction_air" />,
   },
 };
