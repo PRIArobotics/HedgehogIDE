@@ -36,7 +36,9 @@ import Simulator from '../Simulator';
 import VisualEditor, {
   type ControlledState as VisualEditorState,
 } from '../VisualEditor';
-import SimulatorEditor from '../SimulatorEditor';
+import SimulatorEditor, {
+  type ControlledState as SimulatorEditorState,
+}  from '../SimulatorEditor';
 
 import {
   type FilerRecursiveStatInfo,
@@ -78,6 +80,7 @@ const defaultLayout = {
 
 type EditorState = {|
   blockly?: VisualEditorState,
+  'simulator-editor'?: SimulatorEditorState,
 |};
 
 type PropTypes = {|
@@ -193,7 +196,8 @@ class Ide extends React.Component<PropTypes, StateTypes> {
                 layoutNode={node}
                 content={content}
                 onContentChange={onContentChange}
-                onUpdate={() => {}}
+                {...getEditorState(id, 'simulator-editor')}
+                onUpdate={editorStateSetter(id, 'simulator-editor')}
               />
             )}
           </FileTab>
