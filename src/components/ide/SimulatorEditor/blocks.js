@@ -2,11 +2,59 @@
 
 import * as React from 'react';
 
+function forbidsAncestor(types, warning) {
+  return function onchange(event) {
+    // Don't change state at the start of a drag.
+    if (this.workspace.isDragging()) return;
+    let legal = true;
+    // Is the block nested in a scope?
+    for (let block = this; block = block.getSurroundParent(); block) {
+      if (types.indexOf(block.type) !== -1) {
+        legal = false;
+        break;
+      }
+    }
+    if (legal) {
+      this.setWarningText(null);
+      if (!this.isInFlyout) this.setDisabled(false);
+    } else {
+      this.setWarningText(warning);
+      if (!this.isInFlyout && !this.getInheritedDisabled()) {
+        this.setDisabled(true);
+      }
+    }
+  }
+}
+
 export const SIMULATOR_ROOT = {
   blockJson: {
     type: 'simulator_root',
-    message0: 'Simulation settings: %1 Objects %2 Lines %3 Robots %4',
+    message0: 'Simulation centered at (%1, %2) sized %3 x %4 %5 %6',
     args0: [
+      {
+        type: 'field_number',
+        name: 'X',
+        value: 0,
+        precision: 1,
+      },
+      {
+        type: 'field_number',
+        name: 'Y',
+        value: 0,
+        precision: 1,
+      },
+      {
+        type: 'field_number',
+        name: 'W',
+        value: 600,
+        precision: 1,
+      },
+      {
+        type: 'field_number',
+        name: 'H',
+        value: 400,
+        precision: 1,
+      },
       {
         type: 'input_dummy',
       },
@@ -14,19 +62,7 @@ export const SIMULATOR_ROOT = {
         type: 'input_statement',
         name: 'OBJECTS',
         align: 'RIGHT',
-        check: 'Tree',
-      },
-      {
-        type: 'input_statement',
-        name: 'LINES',
-        align: 'RIGHT',
-        check: 'Tree',
-      },
-      {
-        type: 'input_statement',
-        name: 'ROBOTS',
-        align: 'RIGHT',
-        check: 'Robot',
+        check: 'SimulatorObject',
       },
     ],
     colour: 120,
@@ -61,8 +97,8 @@ export const SIMULATOR_RECT = {
         check: 'SimulatorObjectSettings',
       },
     ],
-    previousStatement: 'Tree',
-    nextStatement: 'Tree',
+    previousStatement: 'SimulatorObject',
+    nextStatement: 'SimulatorObject',
     colour: 240,
     tooltip: 'Rectangle defined by its width and height',
     helpUrl: 'TODO',
@@ -89,8 +125,8 @@ export const SIMULATOR_CIRCLE = {
         check: 'SimulatorObjectSettings',
       },
     ],
-    previousStatement: 'Tree',
-    nextStatement: 'Tree',
+    previousStatement: 'SimulatorObject',
+    nextStatement: 'SimulatorObject',
     colour: 240,
     tooltip: 'Circle defined by its radius',
     helpUrl: 'TODO',
@@ -113,11 +149,11 @@ export const SIMULATOR_GROUP = {
       {
         type: 'input_statement',
         name: 'OBJECTS',
-        check: 'Tree',
+        check: 'SimulatorObject',
       },
     ],
-    previousStatement: 'Tree',
-    nextStatement: 'Tree',
+    previousStatement: 'SimulatorObject',
+    nextStatement: 'SimulatorObject',
     colour: 270,
     tooltip:
       'Groups multiple objects and applies the settings to all of them. ' +
@@ -132,7 +168,7 @@ export const SIMULATOR_GROUP = {
 export const SIMULATOR_ROBOT = {
   blockJson: {
     type: 'simulator_robot',
-    message0: 'Robot "%1" at (%2, %3) and %4 colored %5',
+    message0: 'Robot "%1" %2',
     args0: [
       {
         type: 'field_input',
@@ -140,30 +176,13 @@ export const SIMULATOR_ROBOT = {
         text: 'hedgehog',
       },
       {
-        type: 'field_number',
-        name: 'X',
-        value: 0,
-        precision: 1,
-      },
-      {
-        type: 'field_number',
-        name: 'Y',
-        value: 0,
-        precision: 1,
-      },
-      {
-        type: 'field_angle',
-        name: 'ANGLE',
-        angle: 0,
-      },
-      {
-        type: 'field_colour',
-        name: 'COLOUR',
-        colour: '#007c3c',
+        type: 'input_value',
+        name: 'SETTINGS',
+        check: 'SimulatorObjectSettings',
       },
     ],
-    previousStatement: 'Robot',
-    nextStatement: 'Robot',
+    previousStatement: 'SimulatorObject',
+    nextStatement: 'SimulatorObject',
     colour: 90,
     tooltip: 'simulated robot',
     helpUrl: 'TODO',
@@ -280,10 +299,43 @@ export const SIMULATOR_SETTINGS_STATIC = {
     inputsInline: false,
     output: 'SimulatorObjectSettings',
     colour: 180,
-    tooltip: 'makes an object or group immovable or movable',
+    tooltip: 'a static object can not be moved',
     helpUrl: 'TODO',
+  },
+  blockExtras: {
+    onchange: forbidsAncestor(['simulator_robot'], 'robots can not be fixed'),
   },
   toolboxBlocks: {
     default: () => <block type="simulator_settings_static" />,
+  },
+};
+
+export const SIMULATOR_SETTINGS_SENSOR = {
+  blockJson: {
+    type: 'simulator_settings_sensor',
+    message0: 'passive: %1 %2',
+    args0: [
+      {
+        type: 'field_checkbox',
+        name: 'SENSOR',
+        checked: true,
+      },
+      {
+        type: 'input_value',
+        name: 'MORE',
+        check: 'SimulatorObjectSettings',
+      },
+    ],
+    inputsInline: false,
+    output: 'SimulatorObjectSettings',
+    colour: 180,
+    tooltip: 'a passive object does not interact with other objects',
+    helpUrl: 'TODO',
+  },
+  blockExtras: {
+    onchange: forbidsAncestor(['simulator_robot'], 'robots can not be passive'),
+  },
+  toolboxBlocks: {
+    default: () => <block type="simulator_settings_sensor" />,
   },
 };

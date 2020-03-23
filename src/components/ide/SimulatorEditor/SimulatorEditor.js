@@ -24,6 +24,7 @@ import {
   SIMULATOR_SETTINGS_ROTATE,
   SIMULATOR_SETTINGS_COLOR,
   SIMULATOR_SETTINGS_STATIC,
+  SIMULATOR_SETTINGS_SENSOR,
   SIMULATOR_GROUP,
 } from './blocks';
 
@@ -36,6 +37,7 @@ const blocks = [
   SIMULATOR_SETTINGS_ROTATE,
   SIMULATOR_SETTINGS_COLOR,
   SIMULATOR_SETTINGS_STATIC,
+  SIMULATOR_SETTINGS_SENSOR,
   SIMULATOR_GROUP,
 ];
 blocks.forEach(block => {
@@ -45,6 +47,7 @@ blocks.forEach(block => {
     init() {
       this.jsonInit(block.blockJson);
     },
+    ...block.blockExtras,
   };
 });
 
@@ -167,6 +170,7 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
           {SIMULATOR_SETTINGS_ROTATE.toolboxBlocks.default()}
           {SIMULATOR_SETTINGS_COLOR.toolboxBlocks.default()}
           {SIMULATOR_SETTINGS_STATIC.toolboxBlocks.default()}
+          {SIMULATOR_SETTINGS_SENSOR.toolboxBlocks.default()}
           {SIMULATOR_ROBOT.toolboxBlocks.default()}
         </category>
       </xml>
