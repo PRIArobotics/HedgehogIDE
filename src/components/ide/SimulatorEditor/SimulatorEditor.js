@@ -229,44 +229,31 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
     );
 
     const collectSettings = block => {
-      // collects the settings that are applied directly to a block
-      const collectDirectSettings = block => {
-        let settings = {
-          pose: { x: 0, y: 0, angle: 0 },
-        };
-        // check the descendant blocks first
-        for (
-          let s = block.getInputTargetBlock('SETTINGS');
-          s !== null;
-          s = s.getInputTargetBlock('MORE')
-        ) {
-          settings = s.addSettings(settings);
-        }
-        return settings;
-      };
-
-      // apply settings for the block and its ancestor groups
-      let settings = {
-        pose: { x: 0, y: 0, angle: 0 },
-      };
+      let position = { x: 0, y: 0 };
+      let angle = 0;
+      let settings = {};
       for (let b = block; b.type !== 'simulator_root'; b = b.getSurroundParent()) {
-        const outer = collectDirectSettings(b);
-        const cos = Math.cos(outer.pose.angle);
-        const sin = Math.sin(outer.pose.angle);
-        const pose = {
-          x: outer.pose.x + cos * settings.pose.x - sin * settings.pose.y,
-          y: outer.pose.y + sin * settings.pose.x + cos * settings.pose.y,
-          angle: outer.pose.angle + settings.pose.angle,
-        }
+        const { position: outerPosition, angle: outerAngle, ...outer } = b.getSettings();
+
+        const cos = Math.cos(outerAngle);
+        const sin = Math.sin(outerAngle);
+        position = {
+          x: outerPosition.x + cos * position.x - sin * position.y,
+          y: outerPosition.y + sin * position.x + cos * position.y,
+        };
+        angle += outerAngle;
+
         settings = {
           // we're going from most to least specific, so don't override properties already present
           ...outer,
           ...settings,
-          // the pose is combined differently
-          pose,
         };
       }
-      return settings;
+      return {
+        position,
+        angle,
+        ...settings,
+      };
     };
 
     const json = {

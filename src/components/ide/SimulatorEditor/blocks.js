@@ -26,6 +26,26 @@ function forbidsAncestor(types, warning) {
   };
 }
 
+// reads the SETTINGS input and recursively that block's MORE input
+// to get a settings object
+function getSettings() {
+  let settings = {
+    position: { x: 0, y: 0 },
+    angle: 0,
+  };
+  for (
+    let block = this.getInputTargetBlock('SETTINGS');
+    block !== null;
+    block = block.getInputTargetBlock('MORE')
+  ) {
+    settings = {
+      ...settings,
+      ...block.getSettings(),
+    };
+  }
+  return settings;
+}
+
 export const SIMULATOR_ROOT = {
   blockJson: {
     type: 'simulator_root',
@@ -119,6 +139,7 @@ export const SIMULATOR_RECT = {
         height: this.getFieldValue('H'),
       };
     },
+    getSettings,
   },
   toolboxBlocks: {
     default: () => <block type="simulator_rect" />,
@@ -155,6 +176,7 @@ export const SIMULATOR_CIRCLE = {
         radius: this.getFieldValue('R'),
       };
     },
+    getSettings,
   },
   toolboxBlocks: {
     default: () => <block type="simulator_circle" />,
@@ -184,6 +206,9 @@ export const SIMULATOR_GROUP = {
       'Groups multiple objects and applies the settings to all of them. ' +
       'More specific settings win; moving and rotating are composed.',
     helpUrl: 'TODO',
+  },
+  blockExtras: {
+    getSettings,
   },
   toolboxBlocks: {
     default: () => <block type="simulator_group" />,
@@ -219,6 +244,7 @@ export const SIMULATOR_ROBOT = {
         name: this.getFieldValue('NAME'),
       };
     },
+    getSettings,
   },
   toolboxBlocks: {
     default: () => <block type="simulator_robot" />,
@@ -255,11 +281,9 @@ export const SIMULATOR_SETTINGS_TRANSLATE = {
     helpUrl: 'TODO',
   },
   blockExtras: {
-    addSettings(settings) {
+    getSettings() {
       return {
-        ...settings,
-        pose: {
-          ...settings.pose,
+        position: {
           x: this.getFieldValue('X'),
           y: this.getFieldValue('Y'),
         },
@@ -294,13 +318,9 @@ export const SIMULATOR_SETTINGS_ROTATE = {
     helpUrl: 'TODO',
   },
   blockExtras: {
-    addSettings(settings) {
+    getSettings() {
       return {
-        ...settings,
-        pose: {
-          ...settings.pose,
-          angle: this.getFieldValue('ANGLE') / 180 * Math.PI,
-        },
+        angle: this.getFieldValue('ANGLE') / 180 * Math.PI,
       };
     },
   },
@@ -332,9 +352,8 @@ export const SIMULATOR_SETTINGS_COLOR = {
     helpUrl: 'TODO',
   },
   blockExtras: {
-    addSettings(settings) {
+    getSettings() {
       return {
-        ...settings,
         color: this.getFieldValue('COLOUR'),
       };
     },
@@ -368,9 +387,8 @@ export const SIMULATOR_SETTINGS_STATIC = {
   },
   blockExtras: {
     onchange: forbidsAncestor(['simulator_robot'], 'robots can not be fixed'),
-    addSettings(settings) {
+    getSettings() {
       return {
-        ...settings,
         static: this.getField('STATIC').getValueBoolean(),
       };
     },
@@ -404,9 +422,8 @@ export const SIMULATOR_SETTINGS_SENSOR = {
   },
   blockExtras: {
     onchange: forbidsAncestor(['simulator_robot'], 'robots can not be passive'),
-    addSettings(settings) {
+    getSettings() {
       return {
-        ...settings,
         sensor: this.getField('SENSOR').getValueBoolean(),
       };
     },
