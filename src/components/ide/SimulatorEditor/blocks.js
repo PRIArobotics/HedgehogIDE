@@ -111,6 +111,15 @@ export const SIMULATOR_RECT = {
     tooltip: 'Rectangle defined by its width and height',
     helpUrl: 'TODO',
   },
+  blockExtras: {
+    getFields(settings) {
+      return {
+        type: 'rectangle',
+        width: this.getFieldValue('W'),
+        height: this.getFieldValue('H'),
+      };
+    },
+  },
   toolboxBlocks: {
     default: () => <block type="simulator_rect" />,
   },
@@ -138,6 +147,14 @@ export const SIMULATOR_CIRCLE = {
     colour: 240,
     tooltip: 'Circle defined by its radius',
     helpUrl: 'TODO',
+  },
+  blockExtras: {
+    getFields(settings) {
+      return {
+        type: 'circle',
+        radius: this.getFieldValue('R'),
+      };
+    },
   },
   toolboxBlocks: {
     default: () => <block type="simulator_circle" />,
@@ -194,6 +211,13 @@ export const SIMULATOR_ROBOT = {
     colour: 90,
     tooltip: 'simulated robot',
     helpUrl: 'TODO',
+  },
+  blockExtras: {
+    getFields(settings) {
+      return {
+        name: this.getFieldValue('NAME'),
+      };
+    },
   },
   toolboxBlocks: {
     default: () => <block type="simulator_robot" />,

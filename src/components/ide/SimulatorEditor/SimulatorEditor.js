@@ -227,6 +227,9 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
     const robots = descendants.filter(
       block => block.type === 'simulator_robot',
     );
+    const objects = descendants.filter(
+      block => ['simulator_rect', 'simulator_circle'].indexOf(block.type) !== -1,
+    );
 
     const collectSettings = block => {
       // collects the settings that are applied directly to a block
@@ -277,8 +280,12 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
       width: simulation.getFieldValue('W'),
       height: simulation.getFieldValue('H'),
       robots: robots.map(robot => ({
-        name: robot.getFieldValue('NAME'),
+        ...robot.getFields(),
         ...collectSettings(robot),
+      })),
+      objects: objects.map(object => ({
+        ...object.getFields(),
+        ...collectSettings(object),
       })),
     };
 
