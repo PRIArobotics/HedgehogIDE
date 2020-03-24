@@ -16,6 +16,7 @@ import { ExecuteIcon, TerminateIcon } from '../../misc/palette';
 import s from './Editor.scss';
 import ToolBar from '../ToolBar';
 import ToolBarItem from '../ToolBar/ToolBarItem';
+import { ColoredIconButton } from '../../misc/ColoredIconButton';
 
 type PropTypes = {|
   layoutNode: any,
@@ -29,13 +30,6 @@ type StateTypes = {|
   editorWidth: string,
   editorHeight: string,
 |};
-
-const ColoredIconButton = styled(({ color, ...other }) => (
-  <IconButton {...other} />
-))({
-  color: props => props.color,
-  padding: '4px',
-});
 
 class Editor extends React.Component<PropTypes, StateTypes> {
   containerRef: RefObject<'div'> = React.createRef();

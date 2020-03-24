@@ -4,10 +4,15 @@ import * as React from 'react';
 import withStyles from 'isomorphic-style-loader/lib/withStyles';
 
 import Matter from 'matter-js';
+import RotateLeftIcon from '@material-ui/icons/RotateLeft';
 
 import s from './Simulator.scss';
 
 import { Robot, Simulation } from './Simulation';
+import ToolBar from '../ToolBar';
+
+import ToolBarItem from '../ToolBar/ToolBarItem';
+import { ColoredIconButton } from '../../misc/ColoredIconButton';
 
 type PropTypes = {|
   // eslint-disable-next-line no-use-before-define
@@ -55,7 +60,9 @@ class Simulator extends React.Component<PropTypes, StateTypes> {
 
   initSimulation() {
     const robot = new Robot();
-    robot.setPose({ x: -200, y: -100, angle: 0 });
+    const robotPose = { x: -200, y: -100, angle: 0 };
+    robot.setPose(robotPose);
+    robot.setInitialPose(robotPose);
 
     const lineOptions = {
       isSensor: true,
@@ -122,6 +129,16 @@ class Simulator extends React.Component<PropTypes, StateTypes> {
         <div className={s.container}>
           <div className={s.canvas} ref={this.renderTargetRef} />
         </div>
+        <ToolBar>
+          <ToolBarItem>
+            <ColoredIconButton
+              onClick={() => this.simulation.reset()}
+              disableRipple
+            >
+              <RotateLeftIcon />
+            </ColoredIconButton>
+          </ToolBarItem>
+        </ToolBar>
       </div>
     );
   }

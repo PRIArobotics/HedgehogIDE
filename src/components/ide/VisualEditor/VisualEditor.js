@@ -42,6 +42,7 @@ import {
   HEDGEHOG_SLEEP,
 } from './blocks/hedgehog';
 import PrintBlock from './blocks/PrintBlock';
+import { ColoredIconButton } from '../../misc/ColoredIconButton';
 
 const blocks = [
   HEDGEHOG_MOVE,
@@ -90,13 +91,6 @@ type PropTypes = {|
 type StateTypes = {|
   code: string | null,
 |};
-
-const ColoredIconButton = styled(({ color, ...other }) => (
-  <IconButton {...other} />
-))({
-  color: props => props.color,
-  padding: '4px',
-});
 
 class VisualEditor extends React.Component<PropTypes, StateTypes> {
   static defaultProps = {

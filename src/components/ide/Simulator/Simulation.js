@@ -160,6 +160,7 @@ export class Robot {
       ],
       ...material,
       label: 'body',
+      plugin: {},
     });
 
     // const pivotProperties = (
@@ -290,6 +291,14 @@ export class Robot {
   setPose({ x, y, angle }: Pose) {
     Matter.Body.setPosition(this.body, { x, y });
     Matter.Body.setAngle(this.body, angle);
+  }
+
+  setInitialPose(pose: Pose) {
+    this.body.plugin = {
+      hedgehog: {
+        initialPose: pose,
+      },
+    };
   }
 
   applyForce(pos: Point, force: number, cos: number, sin: number) {
@@ -500,6 +509,19 @@ export class Simulation {
     Object.keys(this.sensorsCache).forEach(key => {
       // $FlowExpectError
       this.sensorsCache[key] = this.robots.flatMap(robot => robot[key]);
+    });
+  }
+
+  reset() {
+    [
+      ...Matter.Composite.allComposites(this.world),
+      ...Matter.Composite.allBodies(this.world),
+    ].forEach(composite => {
+      if(composite.plugin && composite.plugin.hedgehog && composite.plugin.hedgehog.initialPose) {
+        const { x, y, angle } = composite.plugin.hedgehog.initialPose;
+        Matter.Body.setPosition(composite, { x, y });
+        Matter.Body.setAngle(composite, angle);
+      }
     });
   }
 }
