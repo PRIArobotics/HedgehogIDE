@@ -20,7 +20,7 @@ $ yarn add sass-loader --dev
 
 ### Step 2
 
-Update [`webpack.config.js`](../../tools/webpack.config.js) file to use `sass-loader` for `.scss` files:
+Update [`webpack.config.js`](../../../tools/webpack.config.js) file to use `sass-loader` for `.scss` files:
 
 ```js
 const config = {

@@ -9,7 +9,7 @@ and [Browsersync](http://www.browsersync.io/). Helping you to stay productive
 following the best practices. A solid starting point for both professionals
 and newcomers to the industry.
 
-**See** [getting started guide](./docs/getting-started.md), [demo][demo],
+**See** [getting started guide](docs/getting-started.md), [demo][demo],
 [docs](https://github.com/kriasoft/react-starter-kit/tree/master/docs),
 [roadmap](https://github.com/kriasoft/react-starter-kit/projects/1) &nbsp;|&nbsp;
 **Join** [#react-starter-kit][chat] chat room on Gitter &nbsp;|&nbsp;
@@ -23,9 +23,9 @@ and newcomers to the industry.
 
 ### Getting Started
 
-* Follow the [getting started guide](./docs/getting-started.md) to download and run the project
+* Follow the [getting started guide](docs/getting-started.md) to download and run the project
   ([Node.js](https://nodejs.org/) >= 6.5)
-* Check the [code recipes](./docs/recipes) used in this boilerplate, or share yours
+* Check the [code recipes](docs/recipes) used in this boilerplate, or share yours
 
 ### Customization
 
@@ -35,13 +35,13 @@ branches that you can use either as a reference or merge into your project:
 
   * [feature/redux](https://github.com/kriasoft/react-starter-kit/tree/feature/redux) ([PR](https://github.com/kriasoft/react-starter-kit/pull/1084))
     — isomorphic Redux by [Pavel Lang](https://github.com/langpavel)
-    (see [how to integrate Redux](./docs/recipes/how-to-integrate-redux.md)) (based on `master`)
+    (see [how to integrate Redux](docs/recipes/how-to-integrate-redux.md)) (based on `master`)
   * [feature/apollo](https://github.com/kriasoft/react-starter-kit/tree/feature/apollo) ([PR](https://github.com/kriasoft/react-starter-kit/pull/1147))
     — isomorphic Apollo Client by [Pavel Lang](https://github.com/langpavel)
     (see [Tracking PR #1147](https://github.com/kriasoft/react-starter-kit/pull/1147)) (based on `feature/redux`)
   * [feature/react-intl](https://github.com/kriasoft/react-starter-kit/tree/feature/react-intl) ([PR](https://github.com/kriasoft/react-starter-kit/pull/1135))
     — isomorphic Redux and React Intl by [Pavel Lang](https://github.com/langpavel)
-    (see [how to integrate React Intl](./docs/recipes/how-to-integrate-react-intl.md)) (based on `feature/apollo`)
+    (see [how to integrate React Intl](docs/recipes/how-to-integrate-react-intl.md)) (based on `feature/apollo`)
   * [feature/apollo-pure](https://github.com/kriasoft/react-starter-kit/tree/feature/apollo-pure) ([PR](https://github.com/kriasoft/react-starter-kit/pull/1664))
     — bare Apollo codebase by [piglovesyou](https://github.com/piglovesyou) (based on `master`)
 

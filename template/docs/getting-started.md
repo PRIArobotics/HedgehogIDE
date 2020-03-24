@@ -6,7 +6,7 @@
 * [Yarn](https://yarnpkg.com/) package + [Node.js](https://nodejs.org/) v6.5 or
   newer
 * Text editor or IDE pre-configured with React/JSX/Flow/ESlint
-  ([learn more](./how-to-configure-text-editors.md))
+  ([learn more](how-to-configure-text-editors.md))
 
 ### Directory Layout
 
@@ -64,7 +64,7 @@ or by using
 #### 2. Run `yarn install`
 
 This will install both run-time project dependencies and developer tools listed
-in [package.json](../package.json) file.
+in [package.json](../../package.json) file.
 
 #### 3. Run `yarn start`
 
