@@ -2,6 +2,7 @@
 Start using Hedgehog IDE at [ide.pria.at](https://ide.pria.at)
 
 ### License
+```
 Hedgehog IDE - Integrated development environment of the Hedgehog platform.
 Copyright (C) 2020  Practical Robotics Institute Austria
 
@@ -17,3 +18,4 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
+```
