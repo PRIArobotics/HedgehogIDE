@@ -7,9 +7,6 @@ import withStyles from 'isomorphic-style-loader/lib/withStyles';
 import Blockly from 'blockly';
 import 'blockly/python';
 
-import IconButton from '@material-ui/core/IconButton';
-import { styled } from '@material-ui/styles';
-
 import {
   ExecuteIcon,
   TerminateIcon,
@@ -19,6 +16,7 @@ import {
   LanguagePythonIcon,
 } from '../../misc/palette';
 
+import ColoredIconButton from '../../misc/ColoredIconButton';
 import ToolBar from '../ToolBar';
 import ToolBarItem from '../ToolBar/ToolBarItem';
 
@@ -42,7 +40,6 @@ import {
   HEDGEHOG_SLEEP,
 } from './blocks/hedgehog';
 import PrintBlock from './blocks/PrintBlock';
-import { ColoredIconButton } from '../../misc/ColoredIconButton';
 
 const blocks = [
   HEDGEHOG_MOVE,

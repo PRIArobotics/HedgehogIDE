@@ -7,13 +7,13 @@ import Matter from 'matter-js';
 
 import { ResetIcon } from '../../misc/palette';
 
+import ColoredIconButton from '../../misc/ColoredIconButton';
+import ToolBar from '../ToolBar';
+import ToolBarItem from '../ToolBar/ToolBarItem';
+
 import s from './Simulator.scss';
 
 import { Robot, Simulation } from './Simulation';
-import ToolBar from '../ToolBar';
-
-import ToolBarItem from '../ToolBar/ToolBarItem';
-import { ColoredIconButton } from '../../misc/ColoredIconButton';
 
 type PropTypes = {|
   // eslint-disable-next-line no-use-before-define

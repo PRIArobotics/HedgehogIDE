@@ -8,15 +8,13 @@ import 'brace/mode/javascript';
 import 'brace/ext/language_tools';
 import 'brace/theme/github';
 
-import { styled } from '@material-ui/styles';
-import IconButton from '@material-ui/core/IconButton';
-
 import { ExecuteIcon, TerminateIcon } from '../../misc/palette';
 
-import s from './Editor.scss';
+import ColoredIconButton from '../../misc/ColoredIconButton';
 import ToolBar from '../ToolBar';
 import ToolBarItem from '../ToolBar/ToolBarItem';
-import { ColoredIconButton } from '../../misc/ColoredIconButton';
+
+import s from './Editor.scss';
 
 type PropTypes = {|
   layoutNode: any,
