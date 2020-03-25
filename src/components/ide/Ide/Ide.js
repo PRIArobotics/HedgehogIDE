@@ -769,79 +769,11 @@ class Ide extends React.Component<PropTypes, StateTypes> {
       projectInfo,
       fileTreeState,
       layoutState,
-      runningCode,
       showMetadataFolder,
       controlsMenuAnchor,
     } = this.state;
 
     if (projectInfo === null) return null;
-
-    type IdeExecutorProps = {|
-      code: string,
-      getConsole: () => Promise<Console>,
-      getSimulator: () => Promise<Simulator>,
-      onExit: () => void | Promise<void>,
-    |};
-
-    function IdeExecutor({
-      code,
-      getConsole,
-      getSimulator,
-      onExit,
-    }: IdeExecutorProps) {
-      const getRobot = async (name: string) =>
-        (await getSimulator()).robots.get(name);
-
-      const handlers = {
-        commands(robot, { cmds }) {
-          return cmds.map(([command, payload]) =>
-            handlers[command](robot, payload),
-          );
-        },
-        moveMotor(robot, { port, power }) {
-          robot.moveMotor(port, power);
-        },
-        setServo(robot, { port, position }) {
-          robot.setServo(port, position);
-        },
-        getAnalog(robot, { port }) {
-          return robot.getAnalog(port);
-        },
-        getDigital(robot, { port }) {
-          return robot.getDigital(port);
-        },
-      };
-
-      const handle = handler => async ({ robot, ...payload }, executor) =>
-        /* await */ executor.withReply(async () =>
-          handler(await getRobot(robot), payload),
-        );
-
-      return (
-        <ExecutorTask
-          code={code}
-          handlers={{
-            print: async text => {
-              (await getConsole()).consoleOut(text, 'stdout');
-            },
-            commands: handle(handlers.commands),
-            moveMotor: handle(handlers.moveMotor),
-            setServo: handle(handlers.setServo),
-            getAnalog: handle(handlers.getAnalog),
-            getDigital: handle(handlers.getDigital),
-            exit: async error => {
-              // TODO the robot may continue to move here
-              // stopping might be a good idea, but might mask the fact that
-              // the program is missing an explicit stop command
-              if (error) {
-                (await getConsole()).consoleOut(error, 'stderr');
-              }
-              onExit();
-            },
-          }}
-        />
-      );
-    }
 
     const filter = (path: string, child: FilerRecursiveStatInfo) => {
       if (path === '.' && child.name === '.metadata' && !showMetadataFolder)
@@ -960,14 +892,6 @@ class Ide extends React.Component<PropTypes, StateTypes> {
             onModelChange={() => this.save()}
           />
         </Grid>
-        {/* runningCode ? (
-          <IdeExecutor
-            code={runningCode}
-            getConsole={() => this.getConsole()}
-            getSimulator={() => this.getSimulator()}
-            onExit={() => this.setState({ runningCode: null })}
-          />
-        ) : null */}
         <Executor ref={this.executorRef} />
       </Grid>
     );
