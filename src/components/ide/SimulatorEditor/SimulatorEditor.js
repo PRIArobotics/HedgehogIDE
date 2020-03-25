@@ -222,7 +222,6 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
     // eslint-disable-next-line no-throw-literal
     if (this.workspace === null) throw 'unreachable';
 
-    const { workspace } = this;
     const roots = this.workspace.getBlocksByType('simulator_root');
     if (roots.length !== 1) {
       this.setState({ json: '' });
