@@ -4,7 +4,8 @@ import * as React from 'react';
 import withStyles from 'isomorphic-style-loader/lib/withStyles';
 
 import Matter from 'matter-js';
-import RotateLeftIcon from '@material-ui/icons/RotateLeft';
+
+import { ResetIcon } from '../../misc/palette';
 
 import s from './Simulator.scss';
 
@@ -135,7 +136,7 @@ class Simulator extends React.Component<PropTypes, StateTypes> {
               onClick={() => this.simulation.reset()}
               disableRipple
             >
-              <RotateLeftIcon />
+              <ResetIcon />
             </ColoredIconButton>
           </ToolBarItem>
         </ToolBar>

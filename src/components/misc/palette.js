@@ -46,6 +46,9 @@ import UploadIcon from 'mdi-material-ui/Upload';
 import ExecuteIcon from 'mdi-material-ui/Play';
 import TerminateIcon from 'mdi-material-ui/Stop';
 
+// simulator actions
+import ResetIcon from 'mdi-material-ui/RotateLeft';
+
 // misc actions
 import SlideLeftIcon from 'mdi-material-ui/ChevronLeft';
 import SlideRightIcon from 'mdi-material-ui/ChevronRight';
@@ -78,6 +81,7 @@ export {
   RefreshIcon,
   ExecuteIcon,
   TerminateIcon,
+  ResetIcon,
   SlideLeftIcon,
   SlideRightIcon,
 };
