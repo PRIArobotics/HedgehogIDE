@@ -51,6 +51,8 @@ import RenameFileDialog from '../FileTree/RenameFileDialog';
 import DeleteFileDialog from '../FileTree/DeleteFileDialog';
 import FileUpload from '../FileTree/FileUpload';
 import FileDownload from '../FileTree/FileDownload';
+import Executor from '../Executor';
+import RobotSDK from '../../../sdk/RobotSDK';
 
 const sh = new fs.Shell();
 
@@ -97,7 +99,7 @@ type StateTypes = {|
   showMetadataFolder: boolean,
   layoutState: FlexLayout.Model,
   editorStates: { [key: string]: EditorState },
-  runningCode: string | null,
+  runningTask: Task | null,
   controlsMenuAnchor: React.Node | null,
 |};
 
@@ -152,7 +154,7 @@ class Ide extends React.Component<PropTypes, StateTypes> {
                 onContentChange={onContentChange}
                 onExecute={code => this.handleExecute(code)}
                 onTerminate={() => this.handleTerminate()}
-                running={!!this.state.runningCode}
+                running={!!this.state.runningTask}
               />
             )}
           </FileTab>
@@ -182,7 +184,7 @@ class Ide extends React.Component<PropTypes, StateTypes> {
                 onUpdate={editorStateSetter(id, 'blockly')}
                 onExecute={code => this.handleExecute(code)}
                 onTerminate={() => this.handleTerminate()}
-                running={!!this.state.runningCode}
+                running={!!this.state.runningTask}
               />
             )}
           </FileTab>
@@ -211,6 +213,7 @@ class Ide extends React.Component<PropTypes, StateTypes> {
   flexRef: RefObject<typeof FlexLayout.Layout> = React.createRef();
   consoleRef: RefObject<typeof Console> = React.createRef();
   simulatorRef: RefObject<typeof Simulator> = React.createRef();
+  executorRef: RefObject<typeof Executor> = React.createRef();
 
   createFileRef: RefObject<typeof CreateFileDialog> = React.createRef();
   renameFileRef: RefObject<typeof RenameFileDialog> = React.createRef();
@@ -226,7 +229,6 @@ class Ide extends React.Component<PropTypes, StateTypes> {
     showMetadataFolder: false,
     layoutState: FlexLayout.Model.fromJson(defaultLayout),
     editorStates: {},
-    runningCode: null,
     controlsMenuAnchor: null,
   };
 
@@ -418,11 +420,22 @@ class Ide extends React.Component<PropTypes, StateTypes> {
     });
 
   handleExecute(code: string) {
-    this.setState({ runningCode: `return (async () => {${code}})();` });
+    const task = {
+      code,
+      api: new RobotSDK(
+        () => this.getConsole(),
+        () => this.getSimulator(),
+        () => this.setState({ runningTask: null }),
+      ).getHandlers(),
+    };
+    this.setState({
+      runningTask: this.executorRef.current.addTask(task),
+    });
   }
 
   handleTerminate() {
-    this.setState({ runningCode: null });
+    this.executorRef.current.removeTask(this.state.runningTask);
+    this.setState({ runningTask: null });
     (async () => {
       (await this.getSimulator()).robots.forEach(robot => {
         robot.setSpeed(0, 0);
@@ -947,14 +960,15 @@ class Ide extends React.Component<PropTypes, StateTypes> {
             onModelChange={() => this.save()}
           />
         </Grid>
-        {runningCode ? (
+        {/* runningCode ? (
           <IdeExecutor
             code={runningCode}
             getConsole={() => this.getConsole()}
             getSimulator={() => this.getSimulator()}
             onExit={() => this.setState({ runningCode: null })}
           />
-        ) : null}
+        ) : null */}
+        <Executor ref={this.executorRef} />
       </Grid>
     );
   }
