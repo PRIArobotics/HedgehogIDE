@@ -7152,10 +7152,10 @@ flexlayout-react@^0.3.4:
   resolved "https://registry.yarnpkg.com/flexlayout-react/-/flexlayout-react-0.3.4.tgz#7eb1068dcda28e3b8bdafc2bf7d1f30238739dc7"
   integrity sha512-jKMeXUcO1wrMgb4IE9OJtj+QUjv6Kom6GLTMRvsTKru9FfXQGT5lc5ZcTLin1Hte1uU75Vk/7v+qiTchdMyxPw==
 
-flow-bin@^0.110.1:
-  version "0.110.1"
-  resolved "https://registry.yarnpkg.com/flow-bin/-/flow-bin-0.110.1.tgz#24ac70bf0871a5d6bc181ba99801ded4d5e3b442"
-  integrity sha512-6FhvNKNvPQ523mx7sqNxTQvI/HgAWa/pbIsQuCst53qRqs387EFfYqgm4I3Zae5HLaVFacBwgWKmjKd92vf19w==
+flow-bin@^0.117:
+  version "0.117.0"
+  resolved "https://registry.yarnpkg.com/flow-bin/-/flow-bin-0.117.0.tgz#2fd331f476dac31f7dae6ac9b557581ebc84e8ad"
+  integrity sha512-LwDdiApyQsO26ubieaLBcW//K8QNcFR50FSUUDo5roy+2nsvkfRdJa0Qse2De6/2fwBElLDDrc3rrSzvC3hy2Q==
 
 flow-parser@^0.*:
   version "0.94.0"
