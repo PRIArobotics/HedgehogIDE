@@ -10,6 +10,7 @@ import IconButton from '@material-ui/core/IconButton';
 
 import { SlideLeftIcon, SlideRightIcon } from '../../misc/palette';
 
+import BlocklyComponent from '../Blockly';
 import ToolBar from '../ToolBar';
 import ToolBarItem from '../ToolBar/ToolBarItem';
 
@@ -75,52 +76,27 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
     jsonCollapsed: true,
   };
 
-  containerRef: RefObject<'div'> = React.createRef();
-  blocklyRef: RefObject<'div'> = React.createRef();
-  jsonRef: RefObject<'pre'> = React.createRef();
-  workspace: Blockly.Workspace | null = null;
-
-  resizeAnim: AnimationFrameID | null;
-
-  state = {
-    json: null,
-  };
-
-  componentDidMount() {
-    // eslint-disable-next-line no-throw-literal
-    if (this.jsonRef.current === null) throw 'ref is null in componentDidMount';
-    const jsonRefCurrent = this.jsonRef.current;
-
-    const { layoutNode } = this.props;
-    layoutNode.setEventListener('resize', this.handleResize);
-    layoutNode.setEventListener('visibility', this.handleVisibilityChange);
-    jsonRefCurrent.addEventListener('transitionend', () => {
-      if (this.resizeAnim) {
-        cancelAnimationFrame(this.resizeAnim);
-        this.resizeAnim = null;
-      }
-      this.refreshSize(true);
-    });
-  }
-
-  // TODO remove blockly in componentWillUnmount
-
-  componentDidUpdate(prevProps) {
-    const { content: prevContent } = prevProps;
-    const { content } = this.props;
-
-    if (prevContent === null && content !== null) {
-      // load contents only once
-      this.initializeBlockly(content);
-    }
-  }
-
-  initializeBlockly(workspaceXml: string) {
-    // eslint-disable-next-line no-throw-literal
-    if (this.blocklyRef.current === null) throw 'ref is null';
-
-    const workspace = Blockly.inject(this.blocklyRef.current, {
-      toolbox: this.createToolbox(),
+  static blocklyWorkspaceOptions = (() => {
+    const toolbox = ReactDOM.renderToStaticMarkup(
+      <xml>
+        <category name="Simulation" colour="120">
+          {SIMULATOR_ROOT.toolboxBlocks.default()}
+          {SIMULATOR_RECT.toolboxBlocks.default()}
+          {SIMULATOR_CIRCLE.toolboxBlocks.default()}
+          {SIMULATOR_GROUP.toolboxBlocks.default()}
+          {SIMULATOR_SETTINGS_TRANSLATE.toolboxBlocks.default()}
+          {SIMULATOR_SETTINGS_ROTATE.toolboxBlocks.default()}
+          {SIMULATOR_SETTINGS_COLOR.toolboxBlocks.default()}
+          {SIMULATOR_SETTINGS_STATIC.toolboxBlocks.default()}
+          {SIMULATOR_SETTINGS_SENSOR.toolboxBlocks.default()}
+          {SIMULATOR_SETTINGS_DENSITY.toolboxBlocks.default()}
+          {SIMULATOR_SETTINGS_FRICTION_AIR.toolboxBlocks.default()}
+          {SIMULATOR_ROBOT.toolboxBlocks.default()}
+        </category>
+      </xml>
+    );
+    return {
+      toolbox,
       move: {
         scrollbars: true,
         drag: true,
@@ -142,87 +118,58 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
       },
       trashcan: false,
       scrollbars: true,
+    };
+  })();
+
+  blocklyRef: RefObject<BlocklyComponent> = React.createRef();
+  jsonRef: RefObject<'pre'> = React.createRef();
+
+  resizeAnim: AnimationFrameID | null;
+
+  state = {
+    json: null,
+  };
+
+  componentDidMount() {
+    // eslint-disable-next-line no-throw-literal
+    if (this.jsonRef.current === null) throw 'ref is null in componentDidMount';
+    const jsonRefCurrent = this.jsonRef.current;
+
+    const { layoutNode } = this.props;
+    layoutNode.setEventListener('resize', () => {
+      if (this.blocklyRef.current)
+        this.blocklyRef.current.refreshSizeDeferred();
     });
-
-    try {
-      if (workspaceXml !== '') {
-        Blockly.Xml.clearWorkspaceAndLoadFromXml(
-          Blockly.Xml.textToDom(workspaceXml),
-          workspace,
-        );
-        workspace.clearUndo();
+    layoutNode.setEventListener('visibility', ({ visible }) => {
+      if (this.blocklyRef.current)
+        this.blocklyRef.current.updateVisibility(visible)
+    });
+    jsonRefCurrent.addEventListener('transitionend', () => {
+      if (this.resizeAnim) {
+        cancelAnimationFrame(this.resizeAnim);
+        this.resizeAnim = null;
       }
-    } catch (ex) {
-      console.warn(ex);
-    }
 
-    workspace.addChangeListener(() => this.handleWorkspaceChange());
-
-    this.workspace = workspace;
-    this.refreshSize();
+      if (this.blocklyRef.current)
+        this.blocklyRef.current.refreshSizeDeferred();
+    });
   }
-
-  createToolbox(): string {
-    const toolbox = (
-      <xml>
-        <category name="Simulation" colour="120">
-          {SIMULATOR_ROOT.toolboxBlocks.default()}
-          {SIMULATOR_RECT.toolboxBlocks.default()}
-          {SIMULATOR_CIRCLE.toolboxBlocks.default()}
-          {SIMULATOR_GROUP.toolboxBlocks.default()}
-          {SIMULATOR_SETTINGS_TRANSLATE.toolboxBlocks.default()}
-          {SIMULATOR_SETTINGS_ROTATE.toolboxBlocks.default()}
-          {SIMULATOR_SETTINGS_COLOR.toolboxBlocks.default()}
-          {SIMULATOR_SETTINGS_STATIC.toolboxBlocks.default()}
-          {SIMULATOR_SETTINGS_SENSOR.toolboxBlocks.default()}
-          {SIMULATOR_SETTINGS_DENSITY.toolboxBlocks.default()}
-          {SIMULATOR_SETTINGS_FRICTION_AIR.toolboxBlocks.default()}
-          {SIMULATOR_ROBOT.toolboxBlocks.default()}
-        </category>
-      </xml>
-    );
-    return ReactDOM.renderToStaticMarkup(toolbox);
-  }
-
-  handleResize = () => {
-    this.refreshSize(true);
-  };
-
-  handleVisibilityChange = ({ visible }) => {
-    if (visible) {
-      this.refreshSize(true);
-    } else {
-      Blockly.hideChaff();
-    }
-  };
 
   animateWorkspaceSize() {
     this.resizeAnim = requestAnimationFrame(() => {
-      this.refreshSize(false);
+      if (this.blocklyRef.current)
+        this.blocklyRef.current.refreshSize();
       this.animateWorkspaceSize();
     });
   }
 
-  refreshSize(deferred: boolean = false) {
-    if (deferred) {
-      setTimeout(() => this.refreshSize(), 0);
-    } else {
-      const container = this.containerRef.current;
-      const blockly = this.blocklyRef.current;
-      if (container === null || blockly === null || this.workspace === null)
-        return;
-
-      blockly.style.width = `${container.offsetWidth}px`;
-      blockly.style.height = `${container.offsetHeight}px`;
-      Blockly.svgResize(this.workspace);
-    }
-  }
-
   refreshJson() {
     // eslint-disable-next-line no-throw-literal
-    if (this.workspace === null) throw 'unreachable';
+    if (this.blocklyRef.current === null) throw 'ref is null';
 
-    const roots = this.workspace.getBlocksByType('simulator_root');
+    const workspace = this.blocklyRef.current.workspace;
+
+    const roots = workspace.getBlocksByType('simulator_root');
     if (roots.length !== 1) {
       this.setState({ json: '' });
     } else {
@@ -234,12 +181,7 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
     }
   }
 
-  handleWorkspaceChange() {
-    // eslint-disable-next-line no-throw-literal
-    if (this.workspace === null) throw 'unreachable';
-
-    const { workspace } = this;
-
+  handleBlocklyChange = (workspace) => {
     this.refreshJson();
 
     const workspaceXml = Blockly.Xml.domToText(
@@ -254,14 +196,17 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
   };
 
   render() {
-    const { jsonCollapsed } = this.props;
+    const { content, jsonCollapsed } = this.props;
     const { json } = this.state;
 
     return (
       <div className={s.tabRoot}>
-        <div ref={this.containerRef} className={s.blocklyContainer}>
-          <div ref={this.blocklyRef} className={s.blockly} />
-        </div>
+        {content === null ? null : <BlocklyComponent
+          forwardedRef={this.blocklyRef}
+          initialWorkspaceXml={content}
+          workspaceOptions={VisualEditor.blocklyWorkspaceOptions}
+          onChange={this.handleBlocklyChange}
+        />}
         <ToolBar>
           <ToolBarItem>
             <IconButton onClick={this.handleToggleJsonCollapsed} disableRipple>

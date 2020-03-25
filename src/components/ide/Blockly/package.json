@@ -1,0 +1,6 @@
+{
+  "name": "Blockly",
+  "version": "0.0.0",
+  "private": true,
+  "main": "Blockly.js"
+}

@@ -17,6 +17,7 @@ import {
 } from '../../misc/palette';
 
 import ColoredIconButton from '../../misc/ColoredIconButton';
+import BlocklyComponent from '../Blockly';
 import ToolBar from '../ToolBar';
 import ToolBarItem from '../ToolBar/ToolBarItem';
 
@@ -95,98 +96,8 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
     codeLanguage: 'JavaScript',
   };
 
-  containerRef: RefObject<'div'> = React.createRef();
-  blocklyRef: RefObject<'div'> = React.createRef();
-  codeRef: RefObject<'pre'> = React.createRef();
-  workspace: Blockly.Workspace | null = null;
-
-  resizeAnim: AnimationFrameID | null;
-
-  state = {
-    code: null,
-  };
-
-  componentDidMount() {
-    // eslint-disable-next-line no-throw-literal
-    if (this.codeRef.current === null) throw 'ref is null in componentDidMount';
-    const codeRefCurrent = this.codeRef.current;
-
-    const { layoutNode } = this.props;
-    layoutNode.setEventListener('resize', this.handleResize);
-    layoutNode.setEventListener('visibility', this.handleVisibilityChange);
-    codeRefCurrent.addEventListener('transitionend', () => {
-      if (this.resizeAnim) {
-        cancelAnimationFrame(this.resizeAnim);
-        this.resizeAnim = null;
-      }
-      this.refreshSize(true);
-    });
-  }
-
-  // TODO remove blockly in componentWillUnmount
-
-  componentDidUpdate(prevProps) {
-    const { content: prevContent, codeLanguage: prevCodeLanguage } = prevProps;
-    const { content, codeLanguage } = this.props;
-
-    if (prevContent === null && content !== null) {
-      // load contents only once
-      this.initializeBlockly(content);
-    }
-
-    // refresh code when language is changed
-    if (prevCodeLanguage !== codeLanguage) this.refreshCode();
-  }
-
-  initializeBlockly(workspaceXml: string) {
-    // eslint-disable-next-line no-throw-literal
-    if (this.blocklyRef.current === null) throw 'ref is null';
-
-    const workspace = Blockly.inject(this.blocklyRef.current, {
-      toolbox: this.createToolbox(),
-      move: {
-        scrollbars: true,
-        drag: true,
-        wheel: false,
-      },
-      zoom: {
-        controls: false,
-        wheel: true,
-        startScale: 1.0,
-        maxScale: 1.5,
-        minScale: 0.4,
-        scaleSpeed: 1.02,
-      },
-      grid: {
-        spacing: 20,
-        length: 3,
-        colour: '#ccc',
-        snap: true,
-      },
-      trashcan: false,
-      scrollbars: true,
-    });
-
-    try {
-      if (workspaceXml !== '') {
-        Blockly.Xml.clearWorkspaceAndLoadFromXml(
-          Blockly.Xml.textToDom(workspaceXml),
-          workspace,
-        );
-        workspace.clearUndo();
-      }
-    } catch (ex) {
-      console.warn(ex);
-    }
-
-    workspace.addChangeListener(() => this.handleWorkspaceChange());
-
-    this.workspace = workspace;
-    this.refreshSize();
-  }
-
-  createToolbox(): string {
-    const toolbox = (
+  static blocklyWorkspaceOptions = (() => {
+    const toolbox = ReactDOM.renderToStaticMarkup(
       <xml>
         <category name="Drive" colour="120">
           {HEDGEHOG_MOVE2_UNLIMITED.toolboxBlocks.default()}
@@ -329,60 +240,94 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
         </category>
       </xml>
     );
-    return ReactDOM.renderToStaticMarkup(toolbox);
+    return {
+      toolbox,
+      move: {
+        scrollbars: true,
+        drag: true,
+        wheel: false,
+      },
+      zoom: {
+        controls: false,
+        wheel: true,
+        startScale: 1.0,
+        maxScale: 1.5,
+        minScale: 0.4,
+        scaleSpeed: 1.02,
+      },
+      grid: {
+        spacing: 20,
+        length: 3,
+        colour: '#ccc',
+        snap: true,
+      },
+      trashcan: false,
+      scrollbars: true,
+    };
+  })();
+
+  blocklyRef: RefObject<BlocklyComponent> = React.createRef();
+  codeRef: RefObject<'pre'> = React.createRef();
+
+  resizeAnim: AnimationFrameID | null;
+
+  state = {
+    code: null,
+  };
+
+  componentDidMount() {
+    // eslint-disable-next-line no-throw-literal
+    if (this.codeRef.current === null) throw 'ref is null in componentDidMount';
+    const codeRefCurrent = this.codeRef.current;
+
+    const { layoutNode } = this.props;
+    layoutNode.setEventListener('resize', () => {
+      if (this.blocklyRef.current)
+        this.blocklyRef.current.refreshSizeDeferred();
+    });
+    layoutNode.setEventListener('visibility', ({ visible }) => {
+      if (this.blocklyRef.current)
+        this.blocklyRef.current.updateVisibility(visible)
+    });
+    codeRefCurrent.addEventListener('transitionend', () => {
+      if (this.resizeAnim) {
+        cancelAnimationFrame(this.resizeAnim);
+        this.resizeAnim = null;
+      }
+
+      if (this.blocklyRef.current)
+        this.blocklyRef.current.refreshSizeDeferred();
+    });
   }
 
-  handleResize = () => {
-    this.refreshSize(true);
-  };
+  componentDidUpdate(prevProps) {
+    const { codeLanguage: prevCodeLanguage } = prevProps;
+    const { codeLanguage } = this.props;
 
-  handleVisibilityChange = ({ visible }) => {
-    if (visible) {
-      this.refreshSize(true);
-    } else {
-      Blockly.hideChaff();
-    }
-  };
+    // refresh code when language is changed
+    if (prevCodeLanguage !== codeLanguage) this.refreshCode();
+  }
 
   animateWorkspaceSize() {
     this.resizeAnim = requestAnimationFrame(() => {
-      this.refreshSize(false);
+      if (this.blocklyRef.current)
+        this.blocklyRef.current.refreshSize();
       this.animateWorkspaceSize();
     });
   }
 
-  refreshSize(deferred: boolean = false) {
-    if (deferred) {
-      setTimeout(() => this.refreshSize(), 0);
-    } else {
-      const container = this.containerRef.current;
-      const blockly = this.blocklyRef.current;
-      if (container === null || blockly === null || this.workspace === null)
-        return;
-
-      blockly.style.width = `${container.offsetWidth}px`;
-      blockly.style.height = `${container.offsetHeight}px`;
-      Blockly.svgResize(this.workspace);
-    }
-  }
-
   refreshCode() {
     // eslint-disable-next-line no-throw-literal
-    if (this.workspace === null) throw 'unreachable';
+    if (this.blocklyRef.current === null) throw 'ref is null';
 
-    const { workspace } = this;
+    const workspace = this.blocklyRef.current.workspace;
 
     const language = Blockly[this.props.codeLanguage];
     const code = language.workspaceToCode(workspace);
     this.setState({ code });
   }
 
-  handleWorkspaceChange() {
-    // eslint-disable-next-line no-throw-literal
-    if (this.workspace === null) throw 'unreachable';
-
-    const { workspace } = this;
-
+  handleBlocklyChange = (workspace) => {
     this.refreshCode();
 
     const workspaceXml = Blockly.Xml.domToText(
@@ -401,14 +346,17 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
   };
 
   render() {
-    const { codeCollapsed, codeLanguage } = this.props;
+    const { content, codeCollapsed, codeLanguage } = this.props;
     const { code } = this.state;
 
     return (
       <div className={s.tabRoot}>
-        <div ref={this.containerRef} className={s.blocklyContainer}>
-          <div ref={this.blocklyRef} className={s.blockly} />
-        </div>
+        {content === null ? null : <BlocklyComponent
+          forwardedRef={this.blocklyRef}
+          initialWorkspaceXml={content}
+          workspaceOptions={VisualEditor.blocklyWorkspaceOptions}
+          onChange={this.handleBlocklyChange}
+        />}
         <ToolBar>
           <ToolBarItem>
             {this.props.running ? (

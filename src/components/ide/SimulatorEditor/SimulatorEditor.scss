@@ -8,15 +8,6 @@
   overflow: hidden;
 }
 
-.blocklyContainer {
-  flex: 1 0 auto;
-  position: relative;
-
-  .blockly {
-    position: absolute;
-  }
-}
-
 .jsonContainer {
   flex: 0 1 auto;
   width: 400px;
