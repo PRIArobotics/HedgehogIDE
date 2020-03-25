@@ -19,7 +19,7 @@ type PropTypes = {|
     [command: string]: (
       payload: any,
       // eslint-disable-next-line no-use-before-define
-      executor: Executor,
+      executor: ExecutorTask,
       source: window,
     ) => void | Promise<void>,
   },
@@ -30,7 +30,7 @@ type StateTypes = {|
 
 const fetchExecutorDoc = fetch('/executor').then(response => response.text());
 
-class Executor extends React.Component<PropTypes, StateTypes> {
+class ExecutorTask extends React.Component<PropTypes, StateTypes> {
   frameRef: RefObject<'iframe'> = React.createRef();
 
   state = {
@@ -113,4 +113,4 @@ class Executor extends React.Component<PropTypes, StateTypes> {
   }
 }
 
-export default Executor;
+export default ExecutorTask;

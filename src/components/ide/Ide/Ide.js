@@ -22,7 +22,7 @@ import { SettingsIcon, ConsoleIcon, SimulatorIcon } from '../../misc/palette';
 
 import Console from '../Console';
 import Editor from '../Editor';
-import Executor from '../Executor';
+import ExecutorTask from '../Executor/ExecutorTask';
 import FileTab from '../FileTab';
 import FileTree, {
   type DirReference,
@@ -805,7 +805,7 @@ class Ide extends React.Component<PropTypes, StateTypes> {
         );
 
       return (
-        <Executor
+        <ExecutorTask
           code={code}
           handlers={{
             print: async text => {
