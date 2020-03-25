@@ -5,7 +5,7 @@ import * as React from 'react';
 type PropTypes = {||};
 type StateTypes = {||};
 
-class CreateFileDialog extends React.Component<PropTypes, StateTypes> {
+class FileUpload extends React.Component<PropTypes, StateTypes> {
   inputRef: RefObject<'input'> = React.createRef();
 
   async show(): Promise<Array<File>> {
@@ -48,4 +48,4 @@ class CreateFileDialog extends React.Component<PropTypes, StateTypes> {
   }
 }
 
-export default CreateFileDialog;
+export default FileUpload;

@@ -12,7 +12,7 @@ type StateTypes = {|
   |} | null,
 |};
 
-class CreateFileDialog extends React.Component<PropTypes, StateTypes> {
+class FileDownload extends React.Component<PropTypes, StateTypes> {
   linkRef: RefObject<'a'> = React.createRef();
 
   state: StateTypes = {
@@ -56,4 +56,4 @@ class CreateFileDialog extends React.Component<PropTypes, StateTypes> {
   }
 }
 
-export default CreateFileDialog;
+export default FileDownload;
