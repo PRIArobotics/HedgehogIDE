@@ -399,7 +399,7 @@ export class Simulation {
   engine: Matter.Engine;
   runner: Matter.Runner;
 
-  render: Matter.Render | null;
+  render: Matter.Render | null = null;
 
   // special bodies for simulation logic
   lines: (Matter.Body | Matter.Composite)[] = [];
@@ -470,6 +470,8 @@ export class Simulation {
   }
 
   mount(element: Element, width: number, height: number) {
+    this.unmount();
+
     this.render = Matter.Render.create({
       element,
       engine: this.engine,
@@ -478,7 +480,8 @@ export class Simulation {
   }
 
   unmount() {
-    // TODO
+    if (this.render !== null) this.stopRender();
+    this.render = null;
   }
 
   startMatter() {
