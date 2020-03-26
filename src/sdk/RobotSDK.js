@@ -10,35 +10,13 @@ class RobotSDK extends SDKBase {
   onExit: () => void | Promise<void>;
 
   handlers = {
-    commands: ({ robot, cmds }) => {
-      cmds.map(([command, payload]) =>
-        this.handlers[command]({ robot, ...payload }),
-      );
-    },
-    moveMotor: async ({ robot, port, power }) => {
-      (await this.getRobot(robot)).moveMotor(port, power);
-    },
-    setServo: async ({ robot, port, position }) => {
-      (await this.getRobot(robot)).setServo(port, position);
-    },
-    getAnalog: async ({ robot, port }) => {
-      (await this.getRobot(robot)).getAnalog(port);
-    },
-    getDigital: async ({ robot, port }) => {
-      (await this.getRobot(robot)).getDigital(port);
-    },
-    print: async text => {
-      (await this.getConsole()).consoleOut(text, 'stdout');
-    },
-    exit: async error => {
-      // TODO the robot may continue to move here
-      // stopping might be a good idea, but might mask the fact that
-      // the program is missing an explicit stop command
-      if (error) {
-        (await this.getConsole()).consoleOut(error, 'stderr');
-      }
-      this.onExit();
-    },
+    commands: RobotSDK.withReply(this.commands.bind(this)),
+    moveMotor: RobotSDK.withReply(this.moveMotor.bind(this)),
+    setServo: RobotSDK.withReply(this.setServo.bind(this)),
+    getAnalog: RobotSDK.withReply(this.getAnalog.bind(this)),
+    getDigital: RobotSDK.withReply(this.getDigital.bind(this)),
+    print: this.print.bind(this),
+    exit: this.exit.bind(this),
   };
 
   constructor(
@@ -50,6 +28,46 @@ class RobotSDK extends SDKBase {
     this.getConsole = getConsole;
     this.getSimulator = getSimulator;
     this.onExit = onExit;
+  }
+
+  commands({ robot, cmds }) {
+    cmds.map(([command, payload]) => {
+      if (Object.prototype.hasOwnProperty.call(this.handlers, command)) {
+        return this[command]({ robot, ...payload });
+      } else {
+        return null;
+      }
+    });
+  }
+
+  async moveMotor({ robot, port, power }) {
+    (await this.getRobot(robot)).moveMotor(port, power);
+  }
+
+  async setServo({ robot, port, position }) {
+    (await this.getRobot(robot)).setServo(port, position);
+  }
+
+  async getAnalog({ robot, port }) {
+    return (await this.getRobot(robot)).getAnalog(port);
+  }
+
+  async getDigital({ robot, port }) {
+    return (await this.getRobot(robot)).getDigital(port);
+  }
+
+  async print(text) {
+    (await this.getConsole()).consoleOut(text, 'stdout');
+  }
+
+  async exit(error) {
+    // TODO the robot may continue to move here
+    // stopping might be a good idea, but might mask the fact that
+    // the program is missing an explicit stop command
+    if (error) {
+      (await this.getConsole()).consoleOut(error, 'stderr');
+    }
+    this.onExit();
   }
 
   async getRobot(name: string) {

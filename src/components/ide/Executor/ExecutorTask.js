@@ -20,7 +20,6 @@ type PropTypes = {|
       payload: any,
       // eslint-disable-next-line no-use-before-define
       executor: ExecutorTask,
-      source: window,
     ) => void | Promise<void>,
   },
 |};
@@ -66,7 +65,7 @@ class ExecutorTask extends React.Component<PropTypes, StateTypes> {
 
     const handler = this.props.handlers[command];
     if (handler) {
-      handler(payload, this, source);
+      handler(payload, this);
     }
   };
 

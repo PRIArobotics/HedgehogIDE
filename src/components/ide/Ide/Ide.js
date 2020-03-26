@@ -430,7 +430,7 @@ class Ide extends React.Component<PropTypes, StateTypes> {
         () => this.getConsole(),
         () => this.getSimulator(),
         () => this.setState({ runningTask: null }),
-      ).getHandlers(),
+      ).handlers,
     };
     this.setState({
       runningTask: executorRefCurrent.addTask(task),
