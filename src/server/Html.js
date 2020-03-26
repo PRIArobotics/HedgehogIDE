@@ -23,7 +23,7 @@ type PropTypes = {|
     id: string,
     cssText: string,
   }>,
-  scripts: Array<string>,
+  scripts: string[],
   app: Object,
   children: string,
 |};

@@ -18,7 +18,7 @@ type StateTypes = {|
   visible: boolean,
   config: {|
     file: FileReference,
-    siblingNames: Array<string>,
+    siblingNames: string[],
   |} | null,
   newFileName: string,
 |};
@@ -30,7 +30,7 @@ class RenameFileDialog extends React.Component<PropTypes, StateTypes> {
     newFileName: '',
   };
 
-  show(file: FileReference, siblingNames: Array<string>) {
+  show(file: FileReference, siblingNames: string[]) {
     this.setState({
       visible: true,
       config: {

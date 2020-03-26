@@ -92,7 +92,7 @@ global.hedgehog = new Hedgehog('hedgehog', connection);
 global.print = (text: string) => {
   connection.send('print', text);
 };
-global.commands = async (...cmds: Array<Promise<any>>) => {
+global.commands = async (...cmds: Promise<any>[]) => {
   await Promise.all(cmds);
 };
 global.sleep = async (ms: number) => {

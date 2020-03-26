@@ -24,7 +24,7 @@ export default class Hedgehog {
     return /* await */ this.connection.recv();
   }
 
-  async commands(...cmds: Array<Command>): Promise<Array<any>> {
+  async commands(...cmds: Command[]): Promise<any[]> {
     return /* await */ this.send('commands', { cmds });
   }
 

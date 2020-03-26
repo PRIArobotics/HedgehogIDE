@@ -31,24 +31,24 @@ export class Robot {
   rightWheel: Matter.Body;
   // leftGrabberControl: Matter.Constraint;
   // rightGrabberControl: Matter.Constraint;
-  lineSensors: Array<Matter.Body>;
-  touchSensors: Array<Matter.Body>;
+  lineSensors: Matter.Body[];
+  touchSensors: Matter.Body[];
   body: Matter.Body;
 
-  bodies: Array<Matter.Body>;
+  bodies: Matter.Body[];
 
   // Array.from({ length: n }, (v, i) => ...):
   // first parameter is array-like, so `length` is an array length
   // all values (`v`) are `undefined`, map them to something else.
 
   // motor (port = 0..4) power, -100..=100
-  motors: Array<number> = Array.from({ length: 4 }, () => 0);
+  motors: number[] = Array.from({ length: 4 }, () => 0);
   // servo (port = 0..6) positions, 0..=1000 or null
-  servos: Array<number | null> = Array.from({ length: 6 }, () => null);
+  servos: (number | null)[] = Array.from({ length: 6 }, () => null);
   // sensor (port = 0..16) value inferred from the simulation
   // the value here is "exact"; an analog value read by a user program should
   // have some noise applied to it
-  sensors: Array<number> = Array.from({ length: 16 }, () => 4095);
+  sensors: number[] = Array.from({ length: 16 }, () => 4095);
 
   constructor() {
     this.initBody();
@@ -402,11 +402,11 @@ export class Simulation {
   render: Matter.Render | null;
 
   // special bodies for simulation logic
-  lines: Array<Matter.Body | Matter.Composite> = [];
-  robots: Array<Robot> = [];
+  lines: (Matter.Body | Matter.Composite)[] = [];
+  robots: Robot[] = [];
   sensorsCache: {|
-    lineSensors: Array<Matter.Body>,
-    touchSensors: Array<Matter.Body>,
+    lineSensors: Matter.Body[],
+    touchSensors: Matter.Body[],
   |} = {
     lineSensors: [],
     touchSensors: [],
@@ -501,7 +501,7 @@ export class Simulation {
     Matter.Render.lookAt(this.render, bounds);
   }
 
-  add(bodies: Array<Matter.Body | Matter.Composite>) {
+  add(bodies: (Matter.Body | Matter.Composite)[]) {
     Matter.World.add(this.world, bodies);
   }
 

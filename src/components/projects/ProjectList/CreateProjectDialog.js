@@ -10,7 +10,7 @@ import { Project } from '../../../core/store/projects';
 
 type PropTypes = {|
   onCreate: string => boolean | Promise<boolean>,
-  allProjects: Array<Project>,
+  allProjects: Project[],
 |};
 type StateTypes = {|
   visible: boolean,

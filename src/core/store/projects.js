@@ -35,7 +35,7 @@ export interface FilerStatInfo {
 export type FilerRecursiveDirectoryInfo = FilerStatInfo & {
   // contents are added for sh.ls()
   // eslint-disable-next-line no-use-before-define
-  +contents: Array<FilerRecursiveStatInfo>,
+  +contents: FilerRecursiveStatInfo[],
 };
 
 export type FilerRecursiveStatInfo =
@@ -68,7 +68,7 @@ export class Project {
     this.name = name;
   }
 
-  static async getProjects(): Promise<Array<Project>> {
+  static async getProjects(): Promise<Project[]> {
     const projectNames = await fs.promises.readdir('/');
     return projectNames.map(name => new Project(name));
   }
@@ -99,7 +99,7 @@ export class Project {
     }
   }
 
-  resolve(...fragments: Array<string>): string {
+  resolve(...fragments: string[]): string {
     return filer.path.resolve('/', this.name, ...fragments);
   }
 

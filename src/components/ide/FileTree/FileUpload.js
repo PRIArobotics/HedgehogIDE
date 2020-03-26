@@ -8,7 +8,7 @@ type StateTypes = {||};
 class FileUpload extends React.Component<PropTypes, StateTypes> {
   inputRef: RefObject<'input'> = React.createRef();
 
-  async show(): Promise<Array<File>> {
+  async show(): Promise<File[]> {
     return /* await */ new Promise((resolve, reject) => {
       // eslint-disable-next-line no-throw-literal
       if (this.inputRef.current === null) throw 'ref is null';

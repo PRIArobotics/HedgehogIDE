@@ -34,7 +34,7 @@ import RenameProjectDialog from './RenameProjectDialog';
 
 type PropTypes = {||};
 type StateTypes = {|
-  projects: Array<Project>,
+  projects: Project[],
 |};
 
 class ProjectList extends React.Component<PropTypes, StateTypes> {

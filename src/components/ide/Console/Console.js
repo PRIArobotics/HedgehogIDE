@@ -16,7 +16,7 @@ type PropTypes = {|
   forwardedRef: RefObject<typeof Console>,
 |};
 type StateTypes = {|
-  consoleText: Array<ConsoleItem>,
+  consoleText: ConsoleItem[],
 |};
 
 class Console extends React.Component<PropTypes, StateTypes> {

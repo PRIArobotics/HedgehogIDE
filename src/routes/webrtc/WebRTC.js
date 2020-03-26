@@ -13,7 +13,7 @@ type Message = {|
 |};
 
 type ChatProps = {|
-  messages: Array<Message>,
+  messages: Message[],
   connection: RTCPeerConnection,
   channel: RTCDataChannel,
   onSend: (text: string) => void | Promise<void>,

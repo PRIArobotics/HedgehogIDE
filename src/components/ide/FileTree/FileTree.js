@@ -70,18 +70,18 @@ defined in the localstorage.
 */
 
 export type ControlledState = $Shape<{|
-  expandedKeys: Array<string>,
+  expandedKeys: string[],
 |}>;
 
 type PropTypes = {|
   files: FilerRecursiveStatInfo,
-  expandedKeys: Array<string>,
+  expandedKeys: string[],
   filter?: (path: string, child: FilerRecursiveStatInfo) => boolean,
   onFileAction: (action: FileAction) => void | Promise<void>,
   onUpdate: (state: ControlledState) => void | Promise<void>,
 |};
 type StateTypes = {|
-  selectedKeys: Array<string>,
+  selectedKeys: string[],
 |};
 
 class FileTree extends React.Component<PropTypes, StateTypes> {
@@ -188,7 +188,7 @@ class FileTree extends React.Component<PropTypes, StateTypes> {
 
     const renderChildren = (
       path: string,
-      children: Array<FilerRecursiveStatInfo>,
+      children: FilerRecursiveStatInfo[],
     ) => {
       if (filter) {
         children = children.filter(child => filter(path, child));
