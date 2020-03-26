@@ -3,7 +3,7 @@
 import * as React from 'react';
 import ExecutorTask from './ExecutorTask';
 
-type Task = {
+export type Task = {
   code: string,
   api: {
     [command: string]: (
@@ -15,10 +15,11 @@ type Task = {
   },
 };
 
+type PropTypes = {||};
 type StateTypes = {|
-  tasks: [Task],
+  tasks: Task[],
 |};
-class Executor extends React.Component<{}, StateTypes> {
+class Executor extends React.Component<PropTypes, StateTypes> {
   state = {
     tasks: [],
   };
@@ -37,13 +38,19 @@ class Executor extends React.Component<{}, StateTypes> {
   }
 
   render() {
-    return this.state.tasks.map((task: Task, index) => (
-      <ExecutorTask
-        key={index}
-        code={`return (async () => {${task.code}})();`}
-        handlers={task.api}
-      />
-    ));
+    const { tasks } = this.state;
+
+    return (
+      <>
+        {tasks.map((task: Task, index) => (
+          <ExecutorTask
+            key={index}
+            code={`return (async () => {${task.code}})();`}
+            handlers={task.api}
+          />
+        ))}
+      </>
+    );
   }
 }
 export default Executor;

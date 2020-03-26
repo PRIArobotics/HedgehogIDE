@@ -1,20 +1,26 @@
 // @flow
 
-import Executor from '../components/ide/Executor';
+import ExecutorTask from '../components/ide/Executor/ExecutorTask';
+
+type HandlerFunction = (args: any) => any | Promise<any>;
+type Handler = (args: any, executorTask: ExecutorTask) => Promise<void>;
 
 class SDKBase {
-  handlers = {};
+  handlers: { [command: string]: HandlerFunction } = {};
 
-  static handlerFor(handler) {
-    return async (args, executor: Executor) => {
-      executor.withReply(handler.bind(null, args));
+  static handlerFor(handler: HandlerFunction): Handler {
+    return async (args: any, executorTask: ExecutorTask) => {
+      executorTask.withReply(handler.bind(null, args));
     };
   }
 
-  getHandlers() {
+  getHandlers(): { [command: string]: Handler } {
     const handlers = Object.fromEntries(
-      Object.entries(this.handlers)
-        .map(([name, handler]) => [name, SDKBase.handlerFor(handler)]),
+      Object.entries(this.handlers).map(([command, handlerMixed]) => {
+        // $FlowExpectError
+        const handler: HandlerFunction = handlerMixed;
+        return [command, SDKBase.handlerFor(handler)];
+      }),
     );
     return handlers;
   }

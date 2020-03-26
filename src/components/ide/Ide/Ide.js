@@ -22,7 +22,6 @@ import { SettingsIcon, ConsoleIcon, SimulatorIcon } from '../../misc/palette';
 
 import Console from '../Console';
 import Editor from '../Editor';
-import ExecutorTask from '../Executor/ExecutorTask';
 import FileTab from '../FileTab';
 import FileTree, {
   type DirReference,
@@ -51,7 +50,7 @@ import RenameFileDialog from '../FileTree/RenameFileDialog';
 import DeleteFileDialog from '../FileTree/DeleteFileDialog';
 import FileUpload from '../FileTree/FileUpload';
 import FileDownload from '../FileTree/FileDownload';
-import Executor from '../Executor';
+import Executor, { type Task } from '../Executor';
 import RobotSDK from '../../../sdk/RobotSDK';
 
 const sh = new fs.Shell();
@@ -229,6 +228,7 @@ class Ide extends React.Component<PropTypes, StateTypes> {
     showMetadataFolder: false,
     layoutState: FlexLayout.Model.fromJson(defaultLayout),
     editorStates: {},
+    runningTask: null,
     controlsMenuAnchor: null,
   };
 
@@ -420,6 +420,10 @@ class Ide extends React.Component<PropTypes, StateTypes> {
     });
 
   handleExecute(code: string) {
+    // eslint-disable-next-line no-throw-literal
+    if (this.executorRef.current === null) throw 'ref is null';
+    const executorRefCurrent = this.executorRef.current;
+
     const task = {
       code,
       api: new RobotSDK(
@@ -429,11 +433,14 @@ class Ide extends React.Component<PropTypes, StateTypes> {
       ).getHandlers(),
     };
     this.setState({
-      runningTask: this.executorRef.current.addTask(task),
+      runningTask: executorRefCurrent.addTask(task),
     });
   }
 
   handleTerminate() {
+    // eslint-disable-next-line no-throw-literal
+    if (this.executorRef.current === null) throw 'ref is null';
+
     this.executorRef.current.removeTask(this.state.runningTask);
     this.setState({ runningTask: null });
     (async () => {
