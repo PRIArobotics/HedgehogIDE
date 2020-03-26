@@ -93,7 +93,7 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
           {SIMULATOR_SETTINGS_FRICTION_AIR.toolboxBlocks.default()}
           {SIMULATOR_ROBOT.toolboxBlocks.default()}
         </category>
-      </xml>
+      </xml>,
     );
     return {
       toolbox,
@@ -142,7 +142,7 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
     });
     layoutNode.setEventListener('visibility', ({ visible }) => {
       if (this.blocklyRef.current)
-        this.blocklyRef.current.updateVisibility(visible)
+        this.blocklyRef.current.updateVisibility(visible);
     });
     jsonRefCurrent.addEventListener('transitionend', () => {
       if (this.resizeAnim) {
@@ -157,8 +157,7 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
 
   animateWorkspaceSize() {
     this.resizeAnim = requestAnimationFrame(() => {
-      if (this.blocklyRef.current)
-        this.blocklyRef.current.refreshSize();
+      if (this.blocklyRef.current) this.blocklyRef.current.refreshSize();
       this.animateWorkspaceSize();
     });
   }
@@ -167,7 +166,7 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
     // eslint-disable-next-line no-throw-literal
     if (this.blocklyRef.current === null) throw 'ref is null';
 
-    const workspace = this.blocklyRef.current.workspace;
+    const { workspace } = this.blocklyRef.current;
 
     const roots = workspace.getBlocksByType('simulator_root');
     if (roots.length !== 1) {
@@ -181,14 +180,14 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
     }
   }
 
-  handleBlocklyChange = (workspace) => {
+  handleBlocklyChange = workspace => {
     this.refreshJson();
 
     const workspaceXml = Blockly.Xml.domToText(
       Blockly.Xml.workspaceToDom(workspace),
     );
     this.props.onContentChange(workspaceXml);
-  }
+  };
 
   handleToggleJsonCollapsed = () => {
     this.props.onUpdate({ jsonCollapsed: !this.props.jsonCollapsed });
@@ -201,12 +200,14 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
 
     return (
       <div className={s.tabRoot}>
-        {content === null ? null : <BlocklyComponent
-          forwardedRef={this.blocklyRef}
-          initialWorkspaceXml={content}
-          workspaceOptions={VisualEditor.blocklyWorkspaceOptions}
-          onChange={this.handleBlocklyChange}
-        />}
+        {content === null ? null : (
+          <BlocklyComponent
+            forwardedRef={this.blocklyRef}
+            initialWorkspaceXml={content}
+            workspaceOptions={VisualEditor.blocklyWorkspaceOptions}
+            onChange={this.handleBlocklyChange}
+          />
+        )}
         <ToolBar>
           <ToolBarItem>
             <IconButton onClick={this.handleToggleJsonCollapsed} disableRipple>

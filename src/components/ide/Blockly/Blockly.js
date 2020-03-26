@@ -14,8 +14,7 @@ type PropTypes = {|
   workspaceOptions?: Object,
   onChange: (workspace: Blockly.Workspace) => void | Promise<void>,
 |};
-type StateTypes = {|
-|};
+type StateTypes = {||};
 
 class BlocklyComponent extends React.Component<PropTypes, StateTypes> {
   containerRef: RefObject<'div'> = React.createRef();

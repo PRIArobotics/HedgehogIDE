@@ -238,7 +238,7 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
           {PrintBlock.toolboxBlocks.default()}
           <block type="text" />
         </category>
-      </xml>
+      </xml>,
     );
     return {
       toolbox,
@@ -287,7 +287,7 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
     });
     layoutNode.setEventListener('visibility', ({ visible }) => {
       if (this.blocklyRef.current)
-        this.blocklyRef.current.updateVisibility(visible)
+        this.blocklyRef.current.updateVisibility(visible);
     });
     codeRefCurrent.addEventListener('transitionend', () => {
       if (this.resizeAnim) {
@@ -310,8 +310,7 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
 
   animateWorkspaceSize() {
     this.resizeAnim = requestAnimationFrame(() => {
-      if (this.blocklyRef.current)
-        this.blocklyRef.current.refreshSize();
+      if (this.blocklyRef.current) this.blocklyRef.current.refreshSize();
       this.animateWorkspaceSize();
     });
   }
@@ -320,21 +319,21 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
     // eslint-disable-next-line no-throw-literal
     if (this.blocklyRef.current === null) throw 'ref is null';
 
-    const workspace = this.blocklyRef.current.workspace;
+    const { workspace } = this.blocklyRef.current;
 
     const language = Blockly[this.props.codeLanguage];
     const code = language.workspaceToCode(workspace);
     this.setState({ code });
   }
 
-  handleBlocklyChange = (workspace) => {
+  handleBlocklyChange = workspace => {
     this.refreshCode();
 
     const workspaceXml = Blockly.Xml.domToText(
       Blockly.Xml.workspaceToDom(workspace),
     );
     this.props.onContentChange(workspaceXml);
-  }
+  };
 
   setCodeLanguage(codeLanguage: 'JavaScript' | 'Python') {
     this.props.onUpdate({ codeLanguage });
@@ -351,12 +350,14 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
 
     return (
       <div className={s.tabRoot}>
-        {content === null ? null : <BlocklyComponent
-          forwardedRef={this.blocklyRef}
-          initialWorkspaceXml={content}
-          workspaceOptions={VisualEditor.blocklyWorkspaceOptions}
-          onChange={this.handleBlocklyChange}
-        />}
+        {content === null ? null : (
+          <BlocklyComponent
+            forwardedRef={this.blocklyRef}
+            initialWorkspaceXml={content}
+            workspaceOptions={VisualEditor.blocklyWorkspaceOptions}
+            onChange={this.handleBlocklyChange}
+          />
+        )}
         <ToolBar>
           <ToolBarItem>
             {this.props.running ? (
