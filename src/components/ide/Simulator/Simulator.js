@@ -33,7 +33,6 @@ class Simulator extends React.Component<PropTypes, StateTypes> {
   constructor(props) {
     super(props);
     this.simulation = new Simulation();
-    this.initSimulation();
   }
 
   componentDidMount() {
@@ -44,10 +43,7 @@ class Simulator extends React.Component<PropTypes, StateTypes> {
 
     const { width, height } = this.props;
     this.simulation.mount(this.renderTargetRef.current, width, height);
-    this.simulation.lookAt({
-      min: { x: -width / 2, y: -height / 2 },
-      max: { x: width / 2, y: height / 2 },
-    });
+    this.initSimulation();
 
     this.simulation.startMatter();
     this.simulation.startRender();
@@ -61,26 +57,20 @@ class Simulator extends React.Component<PropTypes, StateTypes> {
   }
 
   initSimulationJson(json: SimulationSchema.SimulatorJson) {
-    // TODO width and height are props and can't be set in here
-    // this also means no reason to access the canvas here
-
-    // // eslint-disable-next-line no-throw-literal
-    // if (this.renderTargetRef.current === null) throw 'ref is null';
-
     this.robots.clear();
     this.simulation.clear(false);
 
-    // {
-    //   const {
-    //     center: { x, y },
-    //     width,
-    //     height,
-    //   } = json.simulation;
-    //   this.simulation.lookAt({
-    //     min: { x: x - width / 2, y: y - height / 2 },
-    //     max: { x: x + width / 2, y: y + height / 2 },
-    //   });
-    // }
+    {
+      const {
+        center: { x, y },
+        width,
+        height,
+      } = json.simulation;
+      this.simulation.lookAt({
+        min: { x: x - width / 2, y: y - height / 2 },
+        max: { x: x + width / 2, y: y + height / 2 },
+      });
+    }
 
     json.objects.forEach(object => {
       switch (object.type) {
@@ -123,68 +113,279 @@ class Simulator extends React.Component<PropTypes, StateTypes> {
   }
 
   initSimulation() {
-    const robot = new Robot();
-    const robotPose = { x: -200, y: -100, angle: 0 };
-    robot.setPose(robotPose);
-    robot.setInitialPose(robotPose);
-
-    const lineOptions = {
-      isSensor: true,
-      isStatic: true,
-      render: {
-        fillStyle: '#000000',
+    this.initSimulationJson({
+      simulation: {
+        center: {
+          x: 0,
+          y: 0,
+        },
+        width: 600,
+        height: 400,
       },
-    };
-
-    const wLine = 13;
-    const lLine = 100 + wLine;
-
-    const lines = [
-      Matter.Bodies.rectangle(-150, -100, lLine, wLine, lineOptions),
-      Matter.Bodies.rectangle(-50, -100, lLine, wLine, lineOptions),
-      Matter.Bodies.rectangle(50, -100, lLine, wLine, lineOptions),
-      Matter.Bodies.rectangle(150, -100, lLine, wLine, lineOptions),
-      Matter.Bodies.rectangle(-100, -50, wLine, lLine, lineOptions),
-      Matter.Bodies.rectangle(0, -50, wLine, lLine, lineOptions),
-      Matter.Bodies.rectangle(200, -50, wLine, lLine, lineOptions),
-      Matter.Bodies.rectangle(-200, 50, wLine, lLine, lineOptions),
-      Matter.Bodies.rectangle(0, 50, wLine, lLine, lineOptions),
-      Matter.Bodies.rectangle(-150, 100, lLine, wLine, lineOptions),
-      Matter.Bodies.rectangle(-50, 100, lLine, wLine, lineOptions),
-      Matter.Bodies.rectangle(50, 100, lLine, wLine, lineOptions),
-      Matter.Bodies.rectangle(150, 100, lLine, wLine, lineOptions),
-    ];
-
-    const { width, height } = this.props;
-
-    const boundsOptions = {
-      isStatic: true,
-      render: {
-        fillStyle: '#666677',
-      },
-    };
-
-    this.simulation.add([
-      Matter.Bodies.rectangle(0, -height / 2 + 3, width, 6, {
-        ...boundsOptions,
-      }),
-      Matter.Bodies.rectangle(0, height / 2 - 3, width, 6, {
-        ...boundsOptions,
-      }),
-      Matter.Bodies.rectangle(-width / 2 + 3, 0, 6, height, {
-        ...boundsOptions,
-      }),
-      Matter.Bodies.rectangle(width / 2 - 3, 0, 6, height, {
-        ...boundsOptions,
-      }),
-      ...lines,
-      ...robot.bodies,
-    ]);
-
-    this.simulation.lines.push(...lines);
-    this.simulation.robots.push(robot);
-    this.simulation.updateRobots();
-    this.robots.set('hedgehog', robot);
+      objects: [
+        {
+          type: 'rectangle',
+          width: 600,
+          height: 6,
+          position: {
+            x: 0,
+            y: -197,
+          },
+          angle: 0,
+          isStatic: true,
+          render: {
+            fillStyle: '#666666',
+          },
+        },
+        {
+          type: 'rectangle',
+          width: 600,
+          height: 6,
+          position: {
+            x: 0,
+            y: 197,
+          },
+          angle: 0,
+          isStatic: true,
+          render: {
+            fillStyle: '#666666',
+          },
+        },
+        {
+          type: 'rectangle',
+          width: 6,
+          height: 400,
+          position: {
+            x: -297,
+            y: 0,
+          },
+          angle: 0,
+          isStatic: true,
+          render: {
+            fillStyle: '#666666',
+          },
+        },
+        {
+          type: 'rectangle',
+          width: 6,
+          height: 400,
+          position: {
+            x: 297,
+            y: 0,
+          },
+          angle: 0,
+          isStatic: true,
+          render: {
+            fillStyle: '#666666',
+          },
+        },
+        {
+          type: 'rectangle',
+          width: 13,
+          height: 113,
+          position: {
+            x: -100,
+            y: -50,
+          },
+          angle: 0,
+          isStatic: true,
+          isSensor: true,
+          render: {
+            fillStyle: '#000000',
+          },
+        },
+        {
+          type: 'rectangle',
+          width: 13,
+          height: 113,
+          position: {
+            x: 0,
+            y: -50,
+          },
+          angle: 0,
+          isStatic: true,
+          isSensor: true,
+          render: {
+            fillStyle: '#000000',
+          },
+        },
+        {
+          type: 'rectangle',
+          width: 13,
+          height: 113,
+          position: {
+            x: 200,
+            y: -50,
+          },
+          angle: 0,
+          isStatic: true,
+          isSensor: true,
+          render: {
+            fillStyle: '#000000',
+          },
+        },
+        {
+          type: 'rectangle',
+          width: 13,
+          height: 113,
+          position: {
+            x: -200,
+            y: 50,
+          },
+          angle: 0,
+          isStatic: true,
+          isSensor: true,
+          render: {
+            fillStyle: '#000000',
+          },
+        },
+        {
+          type: 'rectangle',
+          width: 13,
+          height: 113,
+          position: {
+            x: 0,
+            y: 50,
+          },
+          angle: 0,
+          isStatic: true,
+          isSensor: true,
+          render: {
+            fillStyle: '#000000',
+          },
+        },
+        {
+          type: 'rectangle',
+          width: 113,
+          height: 13,
+          position: {
+            x: -150,
+            y: -100,
+          },
+          angle: 0,
+          isStatic: true,
+          isSensor: true,
+          render: {
+            fillStyle: '#000000',
+          },
+        },
+        {
+          type: 'rectangle',
+          width: 113,
+          height: 13,
+          position: {
+            x: -50,
+            y: -100,
+          },
+          angle: 0,
+          isStatic: true,
+          isSensor: true,
+          render: {
+            fillStyle: '#000000',
+          },
+        },
+        {
+          type: 'rectangle',
+          width: 113,
+          height: 13,
+          position: {
+            x: 50,
+            y: -100,
+          },
+          angle: 0,
+          isStatic: true,
+          isSensor: true,
+          render: {
+            fillStyle: '#000000',
+          },
+        },
+        {
+          type: 'rectangle',
+          width: 113,
+          height: 13,
+          position: {
+            x: 150,
+            y: -100,
+          },
+          angle: 0,
+          isStatic: true,
+          isSensor: true,
+          render: {
+            fillStyle: '#000000',
+          },
+        },
+        {
+          type: 'rectangle',
+          width: 113,
+          height: 13,
+          position: {
+            x: -150,
+            y: 100,
+          },
+          angle: 0,
+          isStatic: true,
+          isSensor: true,
+          render: {
+            fillStyle: '#000000',
+          },
+        },
+        {
+          type: 'rectangle',
+          width: 113,
+          height: 13,
+          position: {
+            x: -50,
+            y: 100,
+          },
+          angle: 0,
+          isStatic: true,
+          isSensor: true,
+          render: {
+            fillStyle: '#000000',
+          },
+        },
+        {
+          type: 'rectangle',
+          width: 113,
+          height: 13,
+          position: {
+            x: 50,
+            y: 100,
+          },
+          angle: 0,
+          isStatic: true,
+          isSensor: true,
+          render: {
+            fillStyle: '#000000',
+          },
+        },
+        {
+          type: 'rectangle',
+          width: 113,
+          height: 13,
+          position: {
+            x: 150,
+            y: 100,
+          },
+          angle: 0,
+          isStatic: true,
+          isSensor: true,
+          render: {
+            fillStyle: '#000000',
+          },
+        },
+        {
+          type: 'robot',
+          name: 'hedgehog',
+          position: {
+            x: -200,
+            y: -100,
+          },
+          angle: 0,
+          isStatic: true,
+        },
+      ],
+    });
   }
 
   render() {
