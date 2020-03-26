@@ -438,7 +438,9 @@ export const SIMULATOR_SETTINGS_COLOR = {
   blockExtras: {
     getSettings() {
       return {
-        color: this.getFieldValue('COLOUR'),
+        render: {
+          fillStyle: this.getFieldValue('COLOUR'),
+        },
       };
     },
   },
@@ -473,7 +475,7 @@ export const SIMULATOR_SETTINGS_STATIC = {
     onchange: forbidsAncestor(['simulator_robot'], 'robots can not be fixed'),
     getSettings() {
       return {
-        static: this.getField('STATIC').getValueBoolean(),
+        isStatic: this.getField('STATIC').getValueBoolean(),
       };
     },
   },
@@ -508,7 +510,7 @@ export const SIMULATOR_SETTINGS_SENSOR = {
     onchange: forbidsAncestor(['simulator_robot'], 'robots can not be passive'),
     getSettings() {
       return {
-        sensor: this.getField('SENSOR').getValueBoolean(),
+        isSensor: this.getField('SENSOR').getValueBoolean(),
       };
     },
   },

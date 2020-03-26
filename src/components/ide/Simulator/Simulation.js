@@ -515,6 +515,10 @@ export class Simulation {
     });
   }
 
+  clear(keepStatic: boolean) {
+    Matter.Composite.clear(this.world, keepStatic);
+  }
+
   reset() {
     [
       ...Matter.Composite.allComposites(this.world),
