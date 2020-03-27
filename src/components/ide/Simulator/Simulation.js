@@ -55,7 +55,7 @@ export class Robot {
   }
 
   initBody() {
-    const pluginData = (data: {}) => ({
+    const pluginData = (data: { robot?: Robot }) => ({
       plugin: {
         hedgehog: {
           robot: this,
