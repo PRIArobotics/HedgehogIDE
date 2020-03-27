@@ -2,8 +2,10 @@
 
 import * as React from 'react';
 
+import Blockly from 'blockly';
+
 function forbidsAncestor(types, warning) {
-  return function onchange(event) {
+  return function onchange(event: Blockly.Events.Abstract) {
     // Don't change state at the start of a drag.
     if (this.workspace.isDragging()) return;
     let legal = true;
