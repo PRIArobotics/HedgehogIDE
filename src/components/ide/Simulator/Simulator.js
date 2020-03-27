@@ -13,7 +13,7 @@ import ToolBarItem from '../ToolBar/ToolBarItem';
 
 import s from './Simulator.scss';
 
-import { Robot, Simulation, type Point, type Pose } from './Simulation';
+import { Robot, Simulation } from './Simulation';
 import * as SimulationSchema from '../SimulatorEditor/SimulatorJson';
 
 type PropTypes = {|
