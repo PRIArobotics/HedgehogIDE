@@ -20,11 +20,11 @@ function forbidsAncestor(types, warning) {
     }
     if (legal) {
       this.setWarningText(null);
-      if (!this.isInFlyout) this.setDisabled(false);
+      if (!this.isInFlyout) this.setEnabled(true);
     } else {
       this.setWarningText(warning);
       if (!this.isInFlyout && !this.getInheritedDisabled()) {
-        this.setDisabled(true);
+        this.setEnabled(false);
       }
     }
   };
