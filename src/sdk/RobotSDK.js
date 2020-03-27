@@ -1,8 +1,9 @@
 // @flow
 
-import SDKBase from './SDKBase';
+import SDKBase, { type Handler } from './SDKBase';
 import Console from '../components/ide/Console';
 import Simulator from '../components/ide/Simulator';
+import { Robot } from '../components/ide/Simulator/Simulation';
 
 class RobotSDK extends SDKBase {
   getConsole: () => Promise<Console>;
@@ -30,12 +31,13 @@ class RobotSDK extends SDKBase {
     this.onExit = onExit;
   }
 
-  commands({ robot, cmds }) {
+  commands({ robot, cmds }, executorTask) {
     cmds.map(([command, payload]) => {
       if (Object.prototype.hasOwnProperty.call(this.handlers, command)) {
-        return this[command]({ robot, ...payload });
+        // $FlowExpectError
+        return this[command]({ robot, ...payload }, executorTask);
       } else {
-        return null;
+        return undefined;
       }
     });
   }
@@ -70,7 +72,7 @@ class RobotSDK extends SDKBase {
     this.onExit();
   }
 
-  async getRobot(name: string) {
+  async getRobot(name: string): Promise<Robot> {
     return (await this.getSimulator()).robots.get(name);
   }
 }
