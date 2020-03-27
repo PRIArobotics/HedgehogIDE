@@ -64,7 +64,10 @@ export type ControlledState = $Shape<{|
 
 type PropTypes = {|
   content: string | null,
-  onContentChange: (content: string) => void | Promise<void>,
+  onContentChange: (
+    content: string,
+    schema: SimulationSchema.SimulatorJson | null,
+  ) => void | Promise<void>,
   jsonCollapsed: boolean,
   onUpdate: (state: ControlledState) => void | Promise<void>,
   layoutNode: any,
@@ -164,31 +167,32 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
     });
   }
 
-  refreshJson() {
+  getSchema(): SimulationSchema.SimulatorJson | null {
     // eslint-disable-next-line no-throw-literal
     if (this.blocklyRef.current === null) throw 'ref is null';
 
     const { workspace } = this.blocklyRef.current;
 
     const roots = workspace.getBlocksByType('simulator_root');
-    if (roots.length !== 1) {
-      this.setState({ json: '' });
-    } else {
-      const [simulation] = roots;
+    if (roots.length !== 1) return null;
 
-      const schema: SimulationSchema.SimulatorJson = simulation.serialize();
-      const json = JSON.stringify(schema, undefined, 2);
-      this.setState({ json });
-    }
+    const [simulation] = roots;
+    return simulation.serialize();
+  }
+
+  refreshJson(schema: SimulationSchema.SimulatorJson | null) {
+    const json = schema === null ? '' : JSON.stringify(schema, undefined, 2);
+    this.setState({ json });
   }
 
   handleBlocklyChange = workspace => {
-    this.refreshJson();
+    const schema = this.getSchema();
+    this.refreshJson(schema);
 
     const workspaceXml = Blockly.Xml.domToText(
       Blockly.Xml.workspaceToDom(workspace),
     );
-    this.props.onContentChange(workspaceXml);
+    this.props.onContentChange(workspaceXml, schema);
   };
 
   handleToggleJsonCollapsed = () => {

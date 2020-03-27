@@ -56,7 +56,7 @@ class Simulator extends React.Component<PropTypes, StateTypes> {
     this.props.forwardedRef.current = null;
   }
 
-  initSimulationJson(json: SimulationSchema.SimulatorJson) {
+  initSimulationJson(schema: SimulationSchema.SimulatorJson) {
     this.robots.clear();
     this.simulation.clear(false);
 
@@ -65,14 +65,14 @@ class Simulator extends React.Component<PropTypes, StateTypes> {
         center: { x, y },
         width,
         height,
-      } = json.simulation;
+      } = schema.simulation;
       this.simulation.lookAt({
         min: { x: x - width / 2, y: y - height / 2 },
         max: { x: x + width / 2, y: y + height / 2 },
       });
     }
 
-    json.objects.forEach(object => {
+    schema.objects.forEach(object => {
       switch (object.type) {
         case 'rectangle': {
           const { type, width, height, ...options } = object;

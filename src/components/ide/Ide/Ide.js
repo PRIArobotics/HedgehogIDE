@@ -196,7 +196,11 @@ class Ide extends React.Component<PropTypes, StateTypes> {
               <SimulatorEditor
                 layoutNode={node}
                 content={content}
-                onContentChange={onContentChange}
+                onContentChange={(content, schema) => {
+                  onContentChange(content);
+                  if (this.simulatorRef.current && schema)
+                    this.simulatorRef.current.initSimulationJson(schema);
+                }}
                 {...getEditorState(id, 'simulator-editor')}
                 onUpdate={editorStateSetter(id, 'simulator-editor')}
               />
