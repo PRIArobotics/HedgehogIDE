@@ -16,6 +16,8 @@ import ToolBarItem from '../ToolBar/ToolBarItem';
 
 import s from './SimulatorEditor.scss';
 
+import * as SimulationSchema from './SimulationSchema';
+
 import {
   SIMULATOR_ROOT,
   SIMULATOR_RECT,
@@ -174,9 +176,9 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
     } else {
       const [simulation] = roots;
 
-      this.setState({
-        json: JSON.stringify(simulation.serialize(), undefined, 2),
-      });
+      const schema: SimulationSchema.SimulatorJson = simulation.serialize();
+      const json = JSON.stringify(schema, undefined, 2);
+      this.setState({ json });
     }
   }
 
