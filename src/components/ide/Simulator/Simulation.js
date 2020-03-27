@@ -2,12 +2,12 @@
 
 import Matter from 'matter-js';
 
-type Point = {|
+export type Point = {|
   x: number,
   y: number,
 |};
 
-type Pose = {|
+export type Pose = {|
   x: number,
   y: number,
   angle: number,

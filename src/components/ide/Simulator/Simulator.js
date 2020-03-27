@@ -13,7 +13,7 @@ import ToolBarItem from '../ToolBar/ToolBarItem';
 
 import s from './Simulator.scss';
 
-import { Robot, Simulation } from './Simulation';
+import { Robot, Simulation, type Point, type Pose } from './Simulation';
 import * as SimulationSchema from '../SimulatorEditor/SimulatorJson';
 
 type PropTypes = {|
@@ -89,12 +89,15 @@ class Simulator extends React.Component<PropTypes, StateTypes> {
           break;
         }
         case 'robot': {
-          const { type, name, ...options } = object;
+          const {
+            type,
+            name,
+            position: { x, y },
+            angle,
+            ...options
+          } = object;
           const robot = new Robot();
-          const pose = {
-            ...options.position,
-            angle: options.angle,
-          };
+          const pose = { x, y, angle };
           robot.setPose(pose);
           robot.setInitialPose(pose);
           // TODO color

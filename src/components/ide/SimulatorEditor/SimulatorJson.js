@@ -1,13 +1,13 @@
 // @flow
 
-type Point = { x: number, y: number };
+import { type Point } from '../Simulator/Simulation';
 
 type Translation = {|
-  position?: Point,
+  position: Point,
 |};
 
 type Rotation = {|
-  angle?: number,
+  angle: number,
 |};
 
 type Color = {|
