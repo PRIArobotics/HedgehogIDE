@@ -14,7 +14,7 @@ import ToolBarItem from '../ToolBar/ToolBarItem';
 import s from './Simulator.scss';
 
 import { Robot, Simulation } from './Simulation';
-import * as SimulationSchema from '../SimulatorEditor/SimulatorJson';
+import * as SimulationSchema from '../SimulatorEditor/SimulationSchema';
 
 type PropTypes = {|
   // eslint-disable-next-line no-use-before-define
