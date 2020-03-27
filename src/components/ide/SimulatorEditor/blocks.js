@@ -4,6 +4,8 @@ import * as React from 'react';
 
 import Blockly from 'blockly';
 
+import * as SimulationSchema from './SimulationSchema';
+
 function forbidsAncestor(types, warning) {
   return function onchange(event: Blockly.Events.Abstract) {
     // Don't change state at the start of a drag.
@@ -135,7 +137,7 @@ export const SIMULATOR_ROOT = {
         roots.length >= 2 ? 'only one configuration root allowed' : null,
       );
     },
-    serialize() {
+    serialize(): SimulationSchema.SimulatorJson {
       const objectTypes = [
         'simulator_robot',
         'simulator_rect',
@@ -202,7 +204,7 @@ export const SIMULATOR_RECT = {
       };
     },
     getSettings,
-    serialize() {
+    serialize(): SimulationSchema.Rectangle {
       return {
         ...this.getFields(),
         ...collectSettings(this),
@@ -245,7 +247,7 @@ export const SIMULATOR_CIRCLE = {
       };
     },
     getSettings,
-    serialize() {
+    serialize(): SimulationSchema.Circle {
       return {
         ...this.getFields(),
         ...collectSettings(this),
@@ -319,7 +321,7 @@ export const SIMULATOR_ROBOT = {
       };
     },
     getSettings,
-    serialize() {
+    serialize(): SimulationSchema.Robot {
       const {
         static: _static,
         sensor,
