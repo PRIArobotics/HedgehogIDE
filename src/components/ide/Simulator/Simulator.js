@@ -94,7 +94,7 @@ class Simulator extends React.Component<PropTypes, StateTypes> {
             name,
             position: { x, y },
             angle,
-            ...options
+            // color,
           } = object;
           const robot = new Robot();
           const pose = { x, y, angle };

@@ -1,6 +1,6 @@
 // @flow
 
-import SDKBase, { type Handler } from './SDKBase';
+import SDKBase from './SDKBase';
 import Console from '../components/ide/Console';
 import Simulator from '../components/ide/Simulator';
 import { Robot } from '../components/ide/Simulator/Simulation';
