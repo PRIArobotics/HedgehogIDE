@@ -2,47 +2,47 @@
 
 type Point = { x: number, y: number };
 
-type Translation = {
+type Translation = {|
   position?: Point,
-};
+|};
 
-type Rotation = {
+type Rotation = {|
   angle?: number,
-};
+|};
 
-type Color = {
+type Color = {|
   color?: string,
-};
+|};
 
-type Static = {
+type Static = {|
   static?: boolean,
-};
+|};
 
-type Sensor = {
+type Sensor = {|
   sensor?: boolean,
-};
+|};
 
-type Density = {
+type Density = {|
   density?: number,
-};
+|};
 
-type FrictionAir = {
+type FrictionAir = {|
   frictionAir?: number,
-};
+|};
 
-type RobotProps = {
+type RobotProps = {|
   ...Translation,
   ...Rotation,
   ...Color,
-};
+|};
 
-type AllProps = {
+type AllProps = {|
   ...RobotProps,
   ...Static,
   ...Sensor,
   ...Density,
   ...FrictionAir,
-};
+|};
 
 export type Rectangle = {
   type: 'rectangle',
