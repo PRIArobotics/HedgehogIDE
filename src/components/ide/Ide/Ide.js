@@ -52,6 +52,7 @@ import FileUpload from '../FileTree/FileUpload';
 import FileDownload from '../FileTree/FileDownload';
 import Executor, { type Task } from '../Executor';
 import RobotSDK from '../../../sdk/RobotSDK';
+import PluginManager from '../../../sdk/PluginManager';
 
 const sh = new fs.Shell();
 
@@ -226,6 +227,8 @@ class Ide extends React.Component<PropTypes, StateTypes> {
 
   blocklyTabIds = new Set();
 
+  pluginManager: PluginManager | null = null;
+
   state = {
     projectInfo: null,
     fileTreeState: {},
@@ -277,6 +280,9 @@ class Ide extends React.Component<PropTypes, StateTypes> {
       layoutState,
       editorStates,
     });
+
+    this.pluginManager = new PluginManager(this.executorRef.current);
+    await this.pluginManager.loadFromProjectMetadata(project);
   }
 
   save() {
