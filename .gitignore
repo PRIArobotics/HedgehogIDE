@@ -28,5 +28,9 @@ yarn-error.log*
 !.vscode/launch.json
 !.vscode/extensions.json
 
+# Python specific
+__pycache__
+*.pyc
+
 # Misc
 .DS_Store

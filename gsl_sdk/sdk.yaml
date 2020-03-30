@@ -1,0 +1,11 @@
+classes:
+  Hedgehog:
+    constructor:
+      args:
+      - name: 'name'
+    methods:
+      moveMotor:
+        args:
+        - name: 'port'
+        - name: 'power'
+
