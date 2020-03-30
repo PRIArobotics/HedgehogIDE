@@ -12,6 +12,8 @@ import { withStyles as withStylesMaterial } from '@material-ui/styles';
 import IconButton from '@material-ui/core/IconButton';
 import Tooltip from '@material-ui/core/Tooltip';
 
+import PopupState, { bindTrigger, bindMenu } from 'material-ui-popup-state';
+
 import filer, { fs } from 'filer';
 
 import FlexLayout from 'flexlayout-react';
@@ -100,7 +102,6 @@ type StateTypes = {|
   layoutState: FlexLayout.Model,
   editorStates: { [key: string]: EditorState },
   runningTask: Task | null,
-  controlsMenuAnchor: React.Node | null,
 |};
 
 type OpenOrFocusTabOptions = {|
@@ -236,7 +237,6 @@ class Ide extends React.Component<PropTypes, StateTypes> {
     layoutState: FlexLayout.Model.fromJson(defaultLayout),
     editorStates: {},
     runningTask: null,
-    controlsMenuAnchor: null,
   };
 
   constructor(props: PropTypes) {
@@ -787,7 +787,6 @@ class Ide extends React.Component<PropTypes, StateTypes> {
       fileTreeState,
       layoutState,
       showMetadataFolder,
-      controlsMenuAnchor,
     } = this.state;
 
     if (projectInfo === null) return null;
@@ -831,47 +830,43 @@ class Ide extends React.Component<PropTypes, StateTypes> {
                 <ConsoleIcon />
               </IconButton>
             </Tooltip>
-            <Tooltip title="Project settings">
-              <IconButton
-                variant="contained"
-                color="primary"
-                size="small"
-                aria-controls="project-controls-menu"
-                aria-haspopup="true"
-                onClick={event => {
-                  this.setState({ controlsMenuAnchor: event.currentTarget });
-                }}
-              >
-                <SettingsIcon />
-              </IconButton>
-            </Tooltip>
-            <Menu
-              id="project-controls-menu"
-              anchorEl={controlsMenuAnchor}
-              keepMounted
-              open={!!controlsMenuAnchor}
-              onClose={() => {
-                this.setState({ controlsMenuAnchor: null });
-              }}
-            >
-              <Button
-                variant="contained"
-                color="primary"
-                size="small"
-                onClick={() => {
-                  this.setState(
-                    oldState => ({
-                      ...oldState,
-                      showMetadataFolder: !oldState.showMetadataFolder,
-                      controlsMenuAnchor: null,
-                    }),
-                    () => this.save(),
-                  );
-                }}
-              >
-                {showMetadataFolder ? 'Hide Metadata' : 'Show Metadata'}
-              </Button>
-            </Menu>
+            <PopupState variant="popover" popupId="project-controls-menu">
+              {(popupState) => (
+                <>
+                  <Tooltip title="Project settings">
+                    <IconButton
+                      variant="contained"
+                      color="primary"
+                      size="small"
+                      {...bindTrigger(popupState)}
+                    >
+                      <SettingsIcon />
+                    </IconButton>
+                  </Tooltip>
+                  <Menu
+                    keepMounted
+                    {...bindMenu(popupState)}
+                  >
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      size="small"
+                      onClick={() => {
+                        popupState.close();
+                        this.setState(
+                          oldState => ({
+                            showMetadataFolder: !oldState.showMetadataFolder,
+                          }),
+                          () => this.save(),
+                        );
+                      }}
+                    >
+                      {showMetadataFolder ? 'Hide Metadata' : 'Show Metadata'}
+                    </Button>
+                  </Menu>
+                </>
+              )}
+            </PopupState>
             <hr />
           </div>
           <FileTree
