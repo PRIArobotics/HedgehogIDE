@@ -13,6 +13,7 @@ import * as React from 'react';
 import PropTypes from 'prop-types';
 import { ApolloProvider } from 'react-apollo';
 import { ThemeProvider } from '@material-ui/styles';
+import { IntlProvider } from 'react-intl';
 import CssBaseline from '@material-ui/core/CssBaseline';
 
 import theme from './theme';
@@ -25,6 +26,7 @@ type ContextType = {|
   pathname: string,
   query: Object,
   client: Object,
+  locale: string,
 |};
 
 type Props = {|
@@ -41,6 +43,8 @@ const ContextRuntimeType = {
   query: PropTypes.object,
   // Apollo Client
   client: PropTypes.object.isRequired,
+  // Locale
+  locale: PropTypes.string.isRequired,
 };
 
 const PropTypesRuntimeType = {
@@ -81,14 +85,16 @@ class App extends React.PureComponent<Props> {
 
   render() {
     // Here, we are at universe level, sure? ;-)
-    const { client } = this.props.context;
+    const { client, locale } = this.props.context;
     // NOTE: If you need to add or modify header, footer etc. of the app,
     // please do that inside the Layout component.
     return (
       <ApolloProvider client={client}>
         <ThemeProvider theme={theme}>
-          <CssBaseline />
-          {this.props.children}
+          <IntlProvider locale={locale}>
+            <CssBaseline />
+            {this.props.children}
+          </IntlProvider>,
         </ThemeProvider>
       </ApolloProvider>
     );

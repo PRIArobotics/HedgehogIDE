@@ -43,6 +43,8 @@ const context = {
   },
   // For react-apollo
   client: apolloClient,
+  // TODO locale
+  locale: 'en',
 };
 
 const container = document.getElementById('app');
