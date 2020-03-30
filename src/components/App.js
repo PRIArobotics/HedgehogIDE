@@ -18,6 +18,8 @@ import CssBaseline from '@material-ui/core/CssBaseline';
 
 import theme from './theme';
 
+import { getTranslations } from '../translations';
+
 // Since the current React Starter Kit uses older React Context API that cannot be typed,
 // here we declare duplicate type information.
 
@@ -91,7 +93,7 @@ class App extends React.PureComponent<Props> {
     return (
       <ApolloProvider client={client}>
         <ThemeProvider theme={theme}>
-          <IntlProvider locale={locale}>
+          <IntlProvider locale={locale} messages={getTranslations(locale)}>
             <CssBaseline />
             {this.props.children}
           </IntlProvider>,
