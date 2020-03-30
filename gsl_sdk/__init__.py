@@ -9,6 +9,8 @@ def get_model(model_file):
     def augment_class(name, cls):
         def augment_method(name, method):
           method.name = name
+          if not 'static' in method:
+            method.static = False
           return method
 
         methods = [augment_method(*pair) for pair in cls.methods.items()]

@@ -4,6 +4,10 @@ classes:
       args:
       - name: 'name'
     methods:
+      getRobot:
+        static: true
+        args:
+        - name: 'name'
       moveMotor:
         args:
         - name: 'port'
