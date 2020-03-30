@@ -22,6 +22,7 @@ import LocalProjectIcon from 'mdi-material-ui/Folder';
 import SettingsIcon from 'mdi-material-ui/Cogs';
 
 // IDE navigation
+import SelectLanguageIcon from 'mdi-material-ui/Translate';
 import IdeIcon from 'mdi-material-ui/CodeTags';
 import HelpIcon from 'mdi-material-ui/HelpCircleOutline';
 import ContestIcon from 'mdi-material-ui/ExclamationThick';
@@ -64,6 +65,7 @@ export {
   MetadataToolboxIcon,
   LocalProjectIcon,
   SettingsIcon,
+  SelectLanguageIcon,
   IdeIcon,
   HelpIcon,
   ContestIcon,
