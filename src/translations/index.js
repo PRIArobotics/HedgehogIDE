@@ -1,8 +1,6 @@
-import messages_en from './locales/en';
 import messages_de from './locales/de';
 
 export const messages = {
-  en: messages_en,
   de: messages_de,
 };
 
