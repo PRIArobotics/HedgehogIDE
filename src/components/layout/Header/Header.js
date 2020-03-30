@@ -11,6 +11,8 @@ import Icon from '@material-ui/core/Icon';
 import IconButton from '@material-ui/core/IconButton';
 import { withStyles } from '@material-ui/styles';
 
+import PopupState, { bindTrigger, bindMenu } from 'material-ui-popup-state';
+
 import Link from '../../misc/Link';
 import { SelectLanguageIcon } from '../../misc/palette';
 
@@ -31,8 +33,6 @@ type HeaderProps = {|
 |};
 
 function Header({ classes }: HeaderProps) {
-  const [selectLanguageMenuAnchorEl, setSelectLanguageMenuAnchorEl] = React.useState(null);
-
   return (
     <Toolbar classes={{ gutters: classes.gutters }}>
       <IconButton
@@ -49,35 +49,36 @@ function Header({ classes }: HeaderProps) {
       <Typography className={classes.brandTxt} variant="h6" noWrap>
         Hedgehog IDE
       </Typography>
-      <Tooltip title="Select Language">
-        <IconButton
-          edge="end"
-          color="inherit"
-          aria-controls="select-language-menu"
-          aria-haspopup="true"
-          onClick={event => setSelectLanguageMenuAnchorEl(event.currentTarget)}
-        >
-          <SelectLanguageIcon />
-        </IconButton>
-      </Tooltip>
-      <Menu
-        id="select-language-menu"
-        anchorEl={selectLanguageMenuAnchorEl}
-        anchorOrigin={{ horizontal: 'right', vertical: 'top' }}
-        transformOrigin={{ horizontal: 'right', vertical: 'top' }}
-        keepMounted
-        open={!!selectLanguageMenuAnchorEl}
-        onClose={() => setSelectLanguageMenuAnchorEl(null)}
-      >
-        <Button
-          variant="contained"
-          color="primary"
-          size="small"
-          onClick={() => setSelectLanguageMenuAnchorEl(null)}
-        >
-          English
-        </Button>
-      </Menu>
+      <PopupState variant="popover" popupId="select-language-menu">
+        {(popupState) => (
+          <>
+            <Tooltip title="Select Language">
+              <IconButton
+                edge="end"
+                color="inherit"
+                {...bindTrigger(popupState)}
+              >
+                <SelectLanguageIcon />
+              </IconButton>
+            </Tooltip>
+            <Menu
+              anchorOrigin={{ horizontal: 'right', vertical: 'top' }}
+              transformOrigin={{ horizontal: 'right', vertical: 'top' }}
+              keepMounted
+              {...bindMenu(popupState)}
+              >
+              <Button
+                variant="contained"
+                color="primary"
+                size="small"
+                onClick={popupState.close}
+              >
+                English
+              </Button>
+            </Menu>
+          </>
+        )}
+      </PopupState>
     </Toolbar>
   );
 }

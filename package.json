@@ -47,6 +47,7 @@
     "jsonwebtoken": "^8.3.0",
     "jsstore": "^3.4.3",
     "lodash.merge": "^4.6.1",
+    "material-ui-popup-state": "^1.5.3",
     "matter-js": "^0.14.2",
     "mdi-material-ui": "^6.10.0",
     "node-fetch": "^2.2.0",
