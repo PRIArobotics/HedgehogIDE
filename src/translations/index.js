@@ -4,6 +4,8 @@ import { MessageFormatElement } from 'react-intl';
 
 // eslint-disable-next-line camelcase
 import messages_de from './locales/de';
+// eslint-disable-next-line camelcase
+import messages_en from './locales/en';
 
 type Messages =
   | { [key: string]: string }
@@ -11,6 +13,7 @@ type Messages =
 
 export const messages: { [key: string]: Messages } = {
   de: messages_de,
+  en: messages_en,
 };
 
 export function getTranslations(locales: string[]): Messages | void {
