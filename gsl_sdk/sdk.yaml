@@ -1,25 +1,62 @@
 modules:
-  hedgehog:
+  misc:
     init:
       args:
-      - name: 'console'
-        type: 'Promise<Console>'
-      - name: 'simulator'
-        type: 'Promise<Simulator>'
+      - name: getConsole
+        type: () => Promise<Console>
+      - name: onExit
+        type: () => void | Promise<void>
+    functions:
+      print:
+        args:
+        - name: text
+          type: string
+      exit:
+        args:
+        - name: error
+          type: any
+  hedgehog:
+    includeLookup: true
+    init:
+      args:
+      - name: getSimulator
+        type: () => Promise<Simulator>
     functions:
       commands:
         args:
-        - name: 'robot'
+        - name: robot
           type: string
-        - name: 'cmds'
+        - name: cmds
           type: Command[]
       moveMotor:
         hasReply: true
         args:
-        - name: 'robot'
+        - name: robot
           type: string
-        - name: 'port'
+        - name: port
           type: number
-        - name: 'power'
+        - name: power
           type: number
-
+      setServo:
+        hasReply: true
+        args:
+        - name: robot
+          type: string
+        - name: port
+          type: number
+        - name: position
+          type: number
+      getAnalog:
+        hasReply: true
+        args:
+        - name: robot
+          type: number
+        - name: port
+          type: number
+      getDigital:
+        hasReply: true
+        args:
+          - name: robot
+            type: number
+          - name: port
+            type: number

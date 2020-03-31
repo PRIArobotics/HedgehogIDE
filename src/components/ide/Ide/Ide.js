@@ -54,7 +54,8 @@ import DeleteFileDialog from '../FileTree/DeleteFileDialog';
 import FileUpload from '../FileTree/FileUpload';
 import FileDownload from '../FileTree/FileDownload';
 import Executor, { type Task } from '../Executor';
-import RobotSDK from '../../../sdk/RobotSDK';
+import { default as initMiscSdk } from '../../../sdk/misc';
+import { default as initHedgehogSdk } from '../../../sdk/hedgehog';
 import PluginManager from '../../../sdk/PluginManager';
 
 const messages = defineMessages({
@@ -453,18 +454,20 @@ class Ide extends React.Component<PropTypes, StateTypes> {
       tryIt();
     });
 
-  handleExecute(code: string) {
+  async handleExecute(code: string) {
     // eslint-disable-next-line no-throw-literal
     if (this.executorRef.current === null) throw 'ref is null';
     const executorRefCurrent = this.executorRef.current;
 
     const task = {
       code,
-      api: new RobotSDK(
-        () => this.getConsole(),
-        () => this.getSimulator(),
-        () => this.setState({ runningTask: null }),
-      ).handlers,
+      api: {
+        ...(await initMiscSdk(
+          this.getConsole.bind(this),
+          () => this.setState({ runningTask: null })
+        )),
+        ...(await initHedgehogSdk(this.getSimulator.bind(this))),
+      },
     };
     this.setState({
       runningTask: executorRefCurrent.addTask(task),

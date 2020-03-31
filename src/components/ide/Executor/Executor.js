@@ -45,7 +45,7 @@ class Executor extends React.Component<PropTypes, StateTypes> {
         {tasks.map((task: Task, index) => (
           <ExecutorTask
             key={index}
-            code={`return (async () => {${task.code}})();`}
+            code={`return (async () => {${task.code}\n})();`}
             handlers={task.api}
           />
         ))}

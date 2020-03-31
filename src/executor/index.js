@@ -1,6 +1,8 @@
 // @flow
 
 import Hedgehog, { type Connection } from './Hedgehog';
+import * as misc from './sdk/misc';
+import * as hedgehog from './sdk/hedgehog';
 
 // TODO hardcoded domain name
 const ORIGIN = __DEV__ ? 'http://localhost:3000' : 'https://ide.pria.at';
@@ -55,10 +57,10 @@ const handlers = {
       const fn = new Function(code);
       try {
         await fn();
-        connection.send('exit');
+        sdk.misc.exit('exit');
       } catch (error) {
         console.error(error);
-        connection.send('exit', error.toString());
+        sdk.misc.exit('exit', error.toString());
       }
     })();
   },
@@ -86,11 +88,18 @@ window.addEventListener(
 );
 
 // global APIs for the client function
+
+global.connection = connection;
+global.sdk = {
+  misc,
+  hedgehog,
+};
+
 global.Hedgehog = Hedgehog;
 global.hedgehog = new Hedgehog('hedgehog', connection);
 
 global.print = (text: string) => {
-  connection.send('print', text);
+  sdk.misc.print(text);
 };
 global.commands = async (...cmds: Promise<any>[]) => {
   await Promise.all(cmds);

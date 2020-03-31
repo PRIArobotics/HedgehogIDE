@@ -62,7 +62,6 @@ class ExecutorTask extends React.Component<PropTypes, StateTypes> {
       return;
 
     const { command, payload } = (data: ExecutorMessage);
-
     const handler = this.props.handlers[command];
     if (handler) {
       handler(payload, this);

@@ -9,23 +9,13 @@ type Command = [string, any];
 
 export default class Hedgehog {
   name: string;
-  connection: Connection;
 
-  constructor(name: string, connection: Connection) {
+  constructor(name: string) {
     this.name = name;
-    this.connection = connection;
-  }
-
-  async send(command: string, payload: any) {
-    await this.connection.send(command, {
-      robot: this.name,
-      ...payload,
-    });
-    return /* await */ this.connection.recv();
   }
 
   async commands(...cmds: Command[]): Promise<any[]> {
-    return /* await */ this.send('commands', { cmds });
+    return sdk.hedgehog.commands(this.name, cmds);
   }
 
   static moveMotorCmd(port: number, power: number): Command {
@@ -33,7 +23,7 @@ export default class Hedgehog {
   }
 
   async moveMotor(port: number, power: number) {
-    await this.send(...Hedgehog.moveMotorCmd(port, power));
+    return sdk.hedgehog.moveMotor(this.name, port, power);
   }
 
   static setServoCmd(port: number, position: number | null): Command {
@@ -41,7 +31,7 @@ export default class Hedgehog {
   }
 
   async setServo(port: number, position: number | null) {
-    await this.send(...Hedgehog.setServoCmd(port, position));
+    return sdk.hedgehog.setServo(this.name, port, position);
   }
 
   static getAnalogCmd(port: number): Command {
@@ -49,7 +39,7 @@ export default class Hedgehog {
   }
 
   async getAnalog(port: number): Promise<number> {
-    return /* await */ this.send('getAnalog', { port });
+    return sdk.hedgehog.getAnalog(this.name, port);
   }
 
   static getDigitalCmd(port: number): Command {
@@ -57,6 +47,6 @@ export default class Hedgehog {
   }
 
   async getDigital(port: number): Promise<boolean> {
-    return /* await */ this.send('getDigital', { port });
+    return sdk.hedgehog.getDigital(this.name, port);
   }
 }

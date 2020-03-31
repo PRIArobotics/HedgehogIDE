@@ -19,11 +19,13 @@ def generate_ide_code(model, module, root):
   def handler_function_code(function):
     if function.hasReply:
       yield from lines(f"""\
-    '{command_for(module, function.name)}': withReply({function.name}),
+    '{command_for(module, function.name)}': async ({{ {', '.join([arg.name for arg in function.args])} }}, executorTask: ExecutorTask) => {{
+      return executorTask.withReply({function.name}.bind(null, {', '.join([arg.name for arg in function.args])}));
+    }},
 """)
     else:
       yield from lines(f"""\
-    '{command_for(module, function.name)}': (payload: any) => {function.name}(...payload),
+    '{command_for(module, function.name)}': ({{ {', '.join([arg.name for arg in function.args])} }}) => {function.name}({', '.join([arg.name for arg in function.args])}),
 """)
 
   def handler_code():
@@ -46,6 +48,16 @@ def generate_ide_code(model, module, root):
   }}
 \n""")
 
+  def lookup_code():
+    yield from lines(f"""\
+  const moduleFunctions = {{
+""")
+    for function in module.functions:
+      yield f'    \'{function.name}\': ({{ {", ".join([arg.name for arg in function.args])} }}) => {function.name}({", ".join([arg.name for arg in function.args])}),'
+    yield from lines(f"""\
+  }};
+\n""")
+
   def impl_code():
     for function in module.functions:
       yield from function_code(function)
@@ -57,7 +69,7 @@ def generate_ide_code(model, module, root):
 /* eslint-disable */
 // DO NOT DELETE GSL TAGS
 
-import {{ withReply }} from './SDKBase';
+import ExecutorTask from '../components/ide/Executor/ExecutorTask';
 // <default GSL customizable: {module.name}-imports>
 // Put your imports tags here
 
@@ -69,6 +81,8 @@ export default async function init({', '.join([f"{arg.name}: {arg.type}" for arg
 
   // </GSL customizable: {module.name}-init>
 \n""")
+    if module.includeLookup:
+      yield from lookup_code()
     yield from impl_code()
     yield from handler_code()
     yield from lines(f"""\

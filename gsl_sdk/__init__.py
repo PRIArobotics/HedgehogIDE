@@ -6,17 +6,19 @@ def get_model(model_file):
         yaml = YAML(typ='safe')
         model = yaml.load(f)
 
-    def augment_module(name, cls):
+    def augment_module(name, mod):
         def augment_function(name, function):
           function.name = name
           if not 'hasReply' in function:
             function.hasReply = False
           return function
 
-        functions = [augment_function(*pair) for pair in cls.functions.items()]
-        cls.functions = functions
-        cls.name = name
-        return cls
+        if not 'includeLookup' in mod:
+          mod.includeLookup = False
+        functions = [augment_function(*pair) for pair in mod.functions.items()]
+        mod.functions = functions
+        mod.name = name
+        return mod
 
     model.modules = [augment_module(*pair) for pair in model.modules.items()]
 
