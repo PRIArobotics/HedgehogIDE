@@ -831,7 +831,7 @@ class Ide extends React.Component<PropTypes, StateTypes> {
               </IconButton>
             </Tooltip>
             <PopupState variant="popover" popupId="project-controls-menu">
-              {(popupState) => (
+              {popupState => (
                 <>
                   <Tooltip title="Project settings">
                     <IconButton
@@ -843,10 +843,7 @@ class Ide extends React.Component<PropTypes, StateTypes> {
                       <SettingsIcon />
                     </IconButton>
                   </Tooltip>
-                  <Menu
-                    keepMounted
-                    {...bindMenu(popupState)}
-                  >
+                  <Menu keepMounted {...bindMenu(popupState)}>
                     <Button
                       variant="contained"
                       color="primary"

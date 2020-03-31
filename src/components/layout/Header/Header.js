@@ -50,7 +50,7 @@ function Header({ classes }: HeaderProps) {
         Hedgehog IDE
       </Typography>
       <PopupState variant="popover" popupId="select-language-menu">
-        {(popupState) => (
+        {popupState => (
           <>
             <Tooltip title="Select Language">
               <IconButton
@@ -66,7 +66,7 @@ function Header({ classes }: HeaderProps) {
               transformOrigin={{ horizontal: 'right', vertical: 'top' }}
               keepMounted
               {...bindMenu(popupState)}
-              >
+            >
               <Button
                 variant="contained"
                 color="primary"

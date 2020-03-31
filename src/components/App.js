@@ -96,7 +96,7 @@ class App extends React.PureComponent<Props> {
           <IntlProvider locale={locale} messages={getTranslations(locale)}>
             <CssBaseline />
             {this.props.children}
-          </IntlProvider>,
+          </IntlProvider>
         </ThemeProvider>
       </ApolloProvider>
     );

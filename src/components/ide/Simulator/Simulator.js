@@ -90,7 +90,6 @@ class Simulator extends React.Component<PropTypes, StateTypes> {
         }
         case 'robot': {
           const {
-            type,
             name,
             position: { x, y },
             angle,

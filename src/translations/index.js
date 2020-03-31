@@ -1,13 +1,23 @@
+// @flow
+
+import { MessageFormatElement } from 'react-intl';
+
+// eslint-disable-next-line camelcase
 import messages_de from './locales/de';
 
-export const messages = {
+type Messages =
+  | { [key: string]: string }
+  | { [key: string]: MessageFormatElement[] };
+
+export const messages: { [key: string]: Messages } = {
   de: messages_de,
 };
 
-export function getTranslations(locale) {
+export function getTranslations(locale: string): Messages | void {
   // normalize things like 'de-AT' to 'de_at'
   const normalized = locale.toLowerCase().replace('-', '_');
-  if (Object.hasOwnProperty.call(messages, normalized)) return messages[normalized];
+  if (Object.hasOwnProperty.call(messages, normalized))
+    return messages[normalized];
 
   // language-only locale, e.g. 'de'
   const language = normalized.split('_')[0];
