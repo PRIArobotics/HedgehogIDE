@@ -2,6 +2,7 @@
 
 import * as React from 'react';
 import withStyles from 'isomorphic-style-loader/lib/withStyles';
+import { defineMessages, FormattedMessage } from 'react-intl';
 import { compose } from 'react-apollo';
 
 import Button from '@material-ui/core/Button';
@@ -55,6 +56,29 @@ import FileDownload from '../FileTree/FileDownload';
 import Executor, { type Task } from '../Executor';
 import RobotSDK from '../../../sdk/RobotSDK';
 import PluginManager from '../../../sdk/PluginManager';
+
+const messages = defineMessages({
+  simulatorTooltip: {
+    id: 'app.ide.toolbar.simulator_tooltip',
+    description: 'Tooltip for the Simulator toolbar button',
+    defaultMessage: 'Simulator',
+  },
+  consoleTooltip: {
+    id: 'app.ide.toolbar.console_tooltip',
+    description: 'Tooltip for the Console toolbar button',
+    defaultMessage: 'Console',
+  },
+  projectSettingsTooltip: {
+    id: 'app.ide.toolbar.project_settings_tooltip',
+    description: 'Tooltip for the project settings toolbar menu button',
+    defaultMessage: 'Project settings',
+  },
+  showHideMetadata: {
+    id: 'app.ide.toolbar.project_settings.show_hide_metadata',
+    description: 'Menu item text for showing/hiding the .metadata folder',
+    defaultMessage: '{action, select, show {Show} hide {Hide}} Metadata',
+  },
+});
 
 const sh = new fs.Shell();
 
@@ -810,7 +834,9 @@ class Ide extends React.Component<PropTypes, StateTypes> {
           }}
         >
           <div className={classes.navToolbar}>
-            <Tooltip title="Simulator">
+            <Tooltip
+              title={<FormattedMessage {...messages.simulatorTooltip} />}
+            >
               <IconButton
                 variant="contained"
                 color="primary"
@@ -820,7 +846,7 @@ class Ide extends React.Component<PropTypes, StateTypes> {
                 <SimulatorIcon />
               </IconButton>
             </Tooltip>
-            <Tooltip title="Console">
+            <Tooltip title={<FormattedMessage {...messages.consoleTooltip} />}>
               <IconButton
                 variant="contained"
                 color="primary"
@@ -833,7 +859,11 @@ class Ide extends React.Component<PropTypes, StateTypes> {
             <PopupState variant="popover" popupId="project-controls-menu">
               {popupState => (
                 <>
-                  <Tooltip title="Project settings">
+                  <Tooltip
+                    title={
+                      <FormattedMessage {...messages.projectSettingsTooltip} />
+                    }
+                  >
                     <IconButton
                       variant="contained"
                       color="primary"
@@ -858,7 +888,12 @@ class Ide extends React.Component<PropTypes, StateTypes> {
                         );
                       }}
                     >
-                      {showMetadataFolder ? 'Hide Metadata' : 'Show Metadata'}
+                      <FormattedMessage
+                        {...messages.showHideMetadata}
+                        values={{
+                          action: showMetadataFolder ? 'hide' : 'show',
+                        }}
+                      />
                     </Button>
                   </Menu>
                 </>
