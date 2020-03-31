@@ -1,6 +1,7 @@
 // @flow
 
 import * as React from 'react';
+import { defineMessages, useIntl, FormattedMessage } from 'react-intl';
 
 import Button from '@material-ui/core/Button';
 import Menu from '@material-ui/core/Menu';
@@ -18,6 +19,29 @@ import { SelectLanguageIcon } from '../../misc/palette';
 
 import logoUrl from './logo.svg';
 
+const messages = defineMessages({
+  homeLabel: {
+    id: 'app.header.home_label',
+    description: 'Home button label for screenreaders',
+    defaultMessage: 'Home',
+  },
+  homeLogoAlt: {
+    id: 'app.header.home_logo_alt',
+    description: "alt-text for the home button's icon",
+    defaultMessage: 'Hedgehog Logo',
+  },
+  title: {
+    id: 'app.header.title',
+    description: 'Main Hedgehog IDE title',
+    defaultMessage: 'Hedgehog IDE',
+  },
+  selectLanguageTooltip: {
+    id: 'app.header.select_language_tooltip',
+    description: 'Tooltip for the language selection menu button',
+    defaultMessage: 'Select Language',
+  },
+});
+
 const styled = withStyles(theme => ({
   gutters: {
     paddingLeft: theme.spacing(2),
@@ -33,6 +57,8 @@ type HeaderProps = {|
 |};
 
 function Header({ classes }: HeaderProps) {
+  const intl = useIntl();
+
   return (
     <Toolbar classes={{ gutters: classes.gutters }}>
       <IconButton
@@ -40,19 +66,21 @@ function Header({ classes }: HeaderProps) {
         color="inherit"
         component={Link}
         to="/"
-        aria-label="Hedgehog"
+        aria-label={intl.formatMessage(messages.homeLabel)}
       >
         <Icon>
-          <img src={logoUrl} alt="Hedgehog Logo" />
+          <img src={logoUrl} alt={intl.formatMessage(messages.homeLogoAlt)} />
         </Icon>
       </IconButton>
       <Typography className={classes.brandTxt} variant="h6" noWrap>
-        Hedgehog IDE
+        <FormattedMessage {...messages.title} />
       </Typography>
       <PopupState variant="popover" popupId="select-language-menu">
         {popupState => (
           <>
-            <Tooltip title="Select Language">
+            <Tooltip
+              title={<FormattedMessage {...messages.selectLanguageTooltip} />}
+            >
               <IconButton
                 edge="end"
                 color="inherit"

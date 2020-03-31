@@ -1,3 +1,14 @@
 {
-  "app.home.welcome": "Willkommen in der Hedgehog IDE"
+  "app.footer.home": "Home",
+  "app.header.home_label": "Home",
+  "app.header.home_logo_alt": "Hedgehog Logo",
+  "app.header.select_language_tooltip": "Select Language",
+  "app.header.title": "Hedgehog IDE",
+  "app.home.create": "Create your first project",
+  "app.home.description": "Learn coding using the Hedgehog IDE without signing up!",
+  "app.home.learn": "Or learn how to get started",
+  "app.home.welcome": "Willkommen in der Hedgehog IDE",
+  "app.sidebar.contest_tooltip": "Contest",
+  "app.sidebar.help_tooltip": "Help",
+  "app.sidebar.ide_tooltip": "IDE"
 }

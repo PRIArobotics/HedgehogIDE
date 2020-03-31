@@ -2,12 +2,11 @@
 
 import * as React from 'react';
 import withStyles from 'isomorphic-style-loader/lib/withStyles';
+import { defineMessages, FormattedMessage } from 'react-intl';
 
 import Button from '@material-ui/core/Button';
 import Container from '@material-ui/core/Container';
 import Typography from '@material-ui/core/Typography';
-
-import { defineMessages, FormattedMessage } from 'react-intl';
 
 import Link from '../../components/misc/Link';
 
@@ -18,6 +17,21 @@ const messages = defineMessages({
     id: 'app.home.welcome',
     description: 'Main header of the home page',
     defaultMessage: 'Welcome to Hedgehog IDE',
+  },
+  description: {
+    id: 'app.home.description',
+    description: 'sub header of the home page',
+    defaultMessage: 'Learn coding using the Hedgehog IDE without signing up!',
+  },
+  create: {
+    id: 'app.home.create',
+    description: 'button leading to the IDE main page',
+    defaultMessage: 'Create your first project',
+  },
+  learn: {
+    id: 'app.home.learn',
+    description: 'link to the help page',
+    defaultMessage: 'Or learn how to get started',
   },
 });
 
@@ -34,7 +48,7 @@ function Home() {
         <FormattedMessage {...messages.welcome} />
       </Typography>
       <Typography variant="h5" align="center" color="textSecondary" paragraph>
-        Learn coding using the Hedgehog IDE without signing up!
+        <FormattedMessage {...messages.description} />
       </Typography>
       <Typography variant="body1" align="center" paragraph>
         <Button
@@ -43,7 +57,7 @@ function Home() {
           component={Link}
           to="/projects"
         >
-          Create your first project
+          <FormattedMessage {...messages.create} />
         </Button>
       </Typography>
       <Typography
@@ -52,7 +66,7 @@ function Home() {
         color="textSecondary"
         paragraph
       >
-        <Link to="/help">Or learn how to get started</Link>
+        <FormattedMessage {...messages.learn} />
       </Typography>
     </Container>
   );
