@@ -23,7 +23,7 @@ def generate_ide_code(model, module, root):
 """)
     else:
       yield from lines(f"""\
-    '{command_for(module, function.name)}': (payload) => {function.name}(...payload),
+    '{command_for(module, function.name)}': (payload: any) => {function.name}(...payload),
 """)
 
   def handler_code():
@@ -38,10 +38,9 @@ def generate_ide_code(model, module, root):
 
   def function_code(function):
     yield from lines(f"""\
-  async function {function.name}({', '.join([arg.name for arg in function.args])}) {{
+  async function {function.name}({', '.join([f"{arg.name}: {arg.type}" for arg in function.args])}) {{
     // <default GSL customizable: {module.name}-body-{function.name}>
     // Your function code goes here
-    // DO NOT DELETE GSL TAGS
 
     // </GSL customizable: {module.name}-body-{function.name}>
   }}
@@ -56,13 +55,17 @@ def generate_ide_code(model, module, root):
     yield from lines(f"""\
 // @flow
 /* eslint-disable */
+// DO NOT DELETE GSL TAGS
 
 import {{ withReply }} from './SDKBase';
+// <default GSL customizable: {module.name}-imports>
+// Put your imports tags here
 
-export default async function init({', '.join([arg.name for arg in module.init.args])}) {{
+// </GSL customizable: {module.name}-imports>
+
+export default async function init({', '.join([f"{arg.name}: {arg.type}" for arg in module.init.args])}) {{
   // <default GSL customizable: {module.name}-init>
   // Your module initialization code
-  // DO NOT DELETE GSL TAGS
 
   // </GSL customizable: {module.name}-init>
 \n""")
@@ -78,7 +81,7 @@ def generate_executor_module_code(model, module, root):
 
   def function_code(function):
     yield from lines(f"""\
-export {'async ' if function.hasReply else ''}function {function.name}({', '.join([arg.name for arg in function.args])}) {{
+export {'async ' if function.hasReply else ''}function {function.name}({', '.join([f"{arg.name}: {arg.type}" for arg in function.args])}) {{
   connection.send('{command_for(module, function.name)}', {{ {', '.join([arg.name for arg in function.args])} }});
 """)
     if function.hasReply:
@@ -94,6 +97,12 @@ export {'async ' if function.hasReply else ''}function {function.name}({', '.joi
     yield from lines(f"""\
 // @flow
 /* eslint-disable */
+// DO NOT DELETE GSL TAGS
+
+// <default GSL customizable: {module.name}-executor-imports>
+// Put your imports tags here
+
+// </GSL customizable: {module.name}-executor-imports>
 \n""")
     for function in module.functions:
       yield from function_code(function)

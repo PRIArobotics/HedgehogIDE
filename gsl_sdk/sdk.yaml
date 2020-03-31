@@ -3,14 +3,23 @@ modules:
     init:
       args:
       - name: 'console'
+        type: 'Promise<Console>'
       - name: 'simulator'
+        type: 'Promise<Simulator>'
     functions:
-      getRobot:
+      commands:
         args:
-        - name: 'name'
+        - name: 'robot'
+          type: string
+        - name: 'cmds'
+          type: Command[]
       moveMotor:
         hasReply: true
         args:
+        - name: 'robot'
+          type: string
         - name: 'port'
+          type: number
         - name: 'power'
+          type: number
 
