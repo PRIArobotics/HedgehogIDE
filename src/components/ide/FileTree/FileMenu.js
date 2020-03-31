@@ -1,6 +1,7 @@
 // @flow
 
 import * as React from 'react';
+import { defineMessages, FormattedMessage } from 'react-intl';
 
 import Divider from '@material-ui/core/Divider';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
@@ -26,6 +27,54 @@ import type {
   DirReference,
   FileAction,
 } from '.';
+
+const messages = defineMessages({
+  createFolder: {
+    id: 'app.ide.file_menu.create_folder',
+    description: 'Menu item text for creating a folder',
+    defaultMessage: 'New Folder',
+  },
+  createJavascriptFile: {
+    id: 'app.ide.file_menu.create_js_file',
+    description: 'Menu item text for creating a Javascript file',
+    defaultMessage: 'New Javascript File',
+  },
+  createBlocklyFile: {
+    id: 'app.ide.file_menu.create_blockly_file',
+    description: 'Menu item text for creating a Blockly file',
+    defaultMessage: 'New Blockly File',
+  },
+  createSimulatorConfiguration: {
+    id: 'app.ide.file_menu.create_simulator_configuration',
+    description: 'Menu item text for creating a simulator configuration',
+    defaultMessage: 'Create Simulator Configuration',
+  },
+  createToolboxConfiguration: {
+    id: 'app.ide.file_menu.create_toolbox_configuration',
+    description: 'Menu item text for creating a Blockly toolbox configuration',
+    defaultMessage: 'Create Toolbox Configuration',
+  },
+  rename: {
+    id: 'app.ide.file_menu.rename',
+    description: 'Menu item text for renaming a file',
+    defaultMessage: 'Rename',
+  },
+  delete: {
+    id: 'app.ide.file_menu.delete',
+    description: 'Menu item text for deleting a file',
+    defaultMessage: 'Delete',
+  },
+  upload: {
+    id: 'app.ide.file_menu.upload',
+    description: 'Menu item text for creating a file via upload',
+    defaultMessage: 'Upload',
+  },
+  download: {
+    id: 'app.ide.file_menu.download',
+    description: 'Menu item text for downloading a file from the IDE',
+    defaultMessage: 'Download',
+  },
+});
 
 type Position = {|
   left: number,
@@ -118,14 +167,14 @@ class FileMenu extends React.Component<PropTypes, StateTypes> {
     const isMetadata = file.path === './.metadata' && !isLeaf;
 
     type FileMenuItemProps = {|
-      title: string,
+      titleMsg: Object,
       onClick: () => void | Promise<void>,
       disabled?: boolean,
       icon: Class<React.Component<any>>,
     |};
 
     function FileMenuItem({
-      title,
+      titleMsg,
       onClick,
       disabled = false,
       icon: TheIcon,
@@ -135,7 +184,7 @@ class FileMenu extends React.Component<PropTypes, StateTypes> {
           <ListItemIcon>
             <TheIcon fontSize="small" />
           </ListItemIcon>
-          {title}
+          <FormattedMessage {...titleMsg} />
         </MenuItem>
       );
     }
@@ -151,19 +200,19 @@ class FileMenu extends React.Component<PropTypes, StateTypes> {
         {isMetadata ? (
           <>
             <FileMenuItem
-              title="New Folder"
+              titleMsg={messages.createFolder}
               onClick={() => this.handleCreate({ type: 'DIRECTORY' })}
               icon={FolderIcon}
             />
             <FileMenuItem
-              title="Create Simulator Configuration"
+              titleMsg={messages.createSimulatorConfiguration}
               onClick={() =>
                 this.handleCreate({ type: 'METADATA', name: 'simulator' })
               }
               icon={MetadataSimulatorIcon}
             />
             <FileMenuItem
-              title="Create Toolbox Configuration"
+              titleMsg={messages.createToolboxConfiguration}
               onClick={() =>
                 this.handleCreate({ type: 'METADATA', name: 'toolbox' })
               }
@@ -174,19 +223,19 @@ class FileMenu extends React.Component<PropTypes, StateTypes> {
         ) : !isLeaf ? (
           <>
             <FileMenuItem
-              title="New Folder"
+              titleMsg={messages.createFolder}
               onClick={() => this.handleCreate({ type: 'DIRECTORY' })}
               icon={FolderIcon}
             />
             <FileMenuItem
-              title="New JavaScript File"
+              titleMsg={messages.createJavascriptFile}
               onClick={() =>
                 this.handleCreate({ type: 'FILE', extension: '.js' })
               }
               icon={LanguageJavascriptIcon}
             />
             <FileMenuItem
-              title="New Blockly File"
+              titleMsg={messages.createBlocklyFile}
               onClick={() =>
                 this.handleCreate({ type: 'FILE', extension: '.blockly' })
               }
@@ -196,13 +245,13 @@ class FileMenu extends React.Component<PropTypes, StateTypes> {
           </>
         ) : null}
         <FileMenuItem
-          title="Rename"
+          titleMsg={messages.rename}
           onClick={() => this.handleRename()}
           disabled={isRoot}
           icon={RenameIcon}
         />
         <FileMenuItem
-          title="Delete"
+          titleMsg={messages.delete}
           onClick={() => this.handleDelete()}
           disabled={isRoot}
           icon={DeleteIcon}
@@ -211,7 +260,7 @@ class FileMenu extends React.Component<PropTypes, StateTypes> {
           <>
             <Divider />
             <FileMenuItem
-              title="Upload"
+              titleMsg={messages.upload}
               onClick={() => this.handleUpload()}
               icon={UploadIcon}
             />
@@ -220,7 +269,7 @@ class FileMenu extends React.Component<PropTypes, StateTypes> {
           <>
             <Divider />
             <FileMenuItem
-              title="Download"
+              titleMsg={messages.download}
               onClick={() => this.handleDownload()}
               icon={DownloadIcon}
             />
