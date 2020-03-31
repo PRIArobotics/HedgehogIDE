@@ -1,12 +1,27 @@
 // @flow
 
 import * as React from 'react';
+import { defineMessages, FormattedMessage as M } from 'react-intl';
 
 import TextField from '@material-ui/core/TextField';
 
 import SimpleDialog from '../../misc/SimpleDialog';
 
 import type { FileReference } from '.';
+
+const messages = defineMessages({
+  title: {
+    id: 'app.ide.rename_file_dialog.title',
+    description: 'Title for the file rename dialog',
+    defaultMessage: 'Rename {type, select, FILE {file} DIRECTORY {folder}}',
+  },
+  description: {
+    id: 'app.ide.rename_file_dialog.description',
+    description: 'Text for the file rename dialog',
+    defaultMessage:
+      "Please enter the {type, select, FILE {file's} DIRECTORY {folder's}} new name.",
+  },
+});
 
 type PropTypes = {|
   onRename: (
@@ -92,7 +107,7 @@ class RenameFileDialog extends React.Component<PropTypes, StateTypes> {
       newFileName,
     } = this.state;
 
-    const label = file.file.isDirectory() ? 'folder' : 'file';
+    const type = file.file.isDirectory() ? 'DIRECTORY' : 'FILE';
     const placeholder =
       file.file.isDirectory() === 'FILE' ? 'folder' : 'file.js';
     const isValid = this.isValid();
@@ -102,8 +117,8 @@ class RenameFileDialog extends React.Component<PropTypes, StateTypes> {
         id="rename-dialog"
         open={visible}
         valid={isValid}
-        title={`Rename ${label}`}
-        description={`Please enter the ${label}'s new name.`}
+        title={<M {...messages.title} values={{ type }} />}
+        description={<M {...messages.description} values={{ type }} />}
         actions="OK_CANCEL"
         onCancel={() => this.cancel()}
         onConfirm={() => this.confirm()}
