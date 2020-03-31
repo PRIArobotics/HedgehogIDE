@@ -13,15 +13,23 @@ export const messages: { [key: string]: Messages } = {
   de: messages_de,
 };
 
-export function getTranslations(locale: string): Messages | void {
+export function getTranslations(locales: string[]): Messages | void {
   // normalize things like 'de-AT' to 'de_at'
-  const normalized = locale.toLowerCase().replace('-', '_');
-  if (Object.hasOwnProperty.call(messages, normalized))
-    return messages[normalized];
+  const normalized = locales.map(locale =>
+    locale.toLowerCase().replace('-', '_'),
+  );
 
-  // language-only locale, e.g. 'de'
-  const language = normalized.split('_')[0];
-  if (Object.hasOwnProperty.call(messages, language)) return messages[language];
+  // try to find a match for any of the exact locales
+  const exact = normalized.find(locale =>
+    Object.hasOwnProperty.call(messages, locale),
+  );
+  if (exact) return messages[exact];
+
+  // try to find a match for any of the exact language-only locales
+  const language = normalized
+    .map(locale => locale.split('_')[0])
+    .find(locale => Object.hasOwnProperty.call(messages, locale));
+  if (language) return messages[language];
 
   return undefined;
 }

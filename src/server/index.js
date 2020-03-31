@@ -228,8 +228,8 @@ app.get('*', async (req, res, next) => {
       query: req.query,
       // Apollo Client for use with react-apollo
       client: apolloClient,
-      // TODO locale
-      locale: 'en',
+      // TODO locales
+      locales: ['en'],
     };
 
     const route = await router.resolve(context);

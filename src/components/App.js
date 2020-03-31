@@ -28,7 +28,7 @@ type ContextType = {|
   pathname: string,
   query: Object,
   client: Object,
-  locale: string,
+  locales: string[],
 |};
 
 type Props = {|
@@ -46,7 +46,7 @@ const ContextRuntimeType = {
   // Apollo Client
   client: PropTypes.object.isRequired,
   // Locale
-  locale: PropTypes.string.isRequired,
+  locales: PropTypes.arrayOf(PropTypes.string).isRequired,
 };
 
 const PropTypesRuntimeType = {
@@ -87,13 +87,13 @@ class App extends React.PureComponent<Props> {
 
   render() {
     // Here, we are at universe level, sure? ;-)
-    const { client, locale } = this.props.context;
+    const { client, locales } = this.props.context;
     // NOTE: If you need to add or modify header, footer etc. of the app,
     // please do that inside the Layout component.
     return (
       <ApolloProvider client={client}>
         <ThemeProvider theme={theme}>
-          <IntlProvider locale={locale} messages={getTranslations(locale)}>
+          <IntlProvider locale={locales[0]} messages={getTranslations(locales)}>
             <CssBaseline />
             {this.props.children}
           </IntlProvider>
