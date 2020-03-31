@@ -2,7 +2,7 @@
 
 import * as React from 'react';
 import withStyles from 'isomorphic-style-loader/lib/withStyles';
-import { defineMessages, FormattedMessage } from 'react-intl';
+import { defineMessages, FormattedMessage as M } from 'react-intl';
 
 import Button from '@material-ui/core/Button';
 import Container from '@material-ui/core/Container';
@@ -45,10 +45,10 @@ function Home() {
         color="textPrimary"
         gutterBottom
       >
-        <FormattedMessage {...messages.welcome} />
+        <M {...messages.welcome} />
       </Typography>
       <Typography variant="h5" align="center" color="textSecondary" paragraph>
-        <FormattedMessage {...messages.description} />
+        <M {...messages.description} />
       </Typography>
       <Typography variant="body1" align="center" paragraph>
         <Button
@@ -57,7 +57,7 @@ function Home() {
           component={Link}
           to="/projects"
         >
-          <FormattedMessage {...messages.create} />
+          <M {...messages.create} />
         </Button>
       </Typography>
       <Typography
@@ -66,7 +66,7 @@ function Home() {
         color="textSecondary"
         paragraph
       >
-        <FormattedMessage {...messages.learn} />
+        <M {...messages.learn} />
       </Typography>
     </Container>
   );

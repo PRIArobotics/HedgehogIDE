@@ -2,7 +2,7 @@
 
 import * as React from 'react';
 import withStyles from 'isomorphic-style-loader/lib/withStyles';
-import { defineMessages, FormattedMessage } from 'react-intl';
+import { defineMessages, FormattedMessage as M } from 'react-intl';
 import { compose } from 'react-apollo';
 
 import Button from '@material-ui/core/Button';
@@ -834,9 +834,7 @@ class Ide extends React.Component<PropTypes, StateTypes> {
           }}
         >
           <div className={classes.navToolbar}>
-            <Tooltip
-              title={<FormattedMessage {...messages.simulatorTooltip} />}
-            >
+            <Tooltip title={<M {...messages.simulatorTooltip} />}>
               <IconButton
                 variant="contained"
                 color="primary"
@@ -846,7 +844,7 @@ class Ide extends React.Component<PropTypes, StateTypes> {
                 <SimulatorIcon />
               </IconButton>
             </Tooltip>
-            <Tooltip title={<FormattedMessage {...messages.consoleTooltip} />}>
+            <Tooltip title={<M {...messages.consoleTooltip} />}>
               <IconButton
                 variant="contained"
                 color="primary"
@@ -859,11 +857,7 @@ class Ide extends React.Component<PropTypes, StateTypes> {
             <PopupState variant="popover" popupId="project-controls-menu">
               {popupState => (
                 <>
-                  <Tooltip
-                    title={
-                      <FormattedMessage {...messages.projectSettingsTooltip} />
-                    }
-                  >
+                  <Tooltip title={<M {...messages.projectSettingsTooltip} />}>
                     <IconButton
                       variant="contained"
                       color="primary"
@@ -888,7 +882,7 @@ class Ide extends React.Component<PropTypes, StateTypes> {
                         );
                       }}
                     >
-                      <FormattedMessage
+                      <M
                         {...messages.showHideMetadata}
                         values={{
                           action: showMetadataFolder ? 'HIDE' : 'SHOW',

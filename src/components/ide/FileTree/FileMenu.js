@@ -1,7 +1,7 @@
 // @flow
 
 import * as React from 'react';
-import { defineMessages, FormattedMessage } from 'react-intl';
+import { defineMessages, FormattedMessage as M } from 'react-intl';
 
 import Divider from '@material-ui/core/Divider';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
@@ -184,7 +184,7 @@ class FileMenu extends React.Component<PropTypes, StateTypes> {
           <ListItemIcon>
             <TheIcon fontSize="small" />
           </ListItemIcon>
-          <FormattedMessage {...titleMsg} />
+          <M {...titleMsg} />
         </MenuItem>
       );
     }

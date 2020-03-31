@@ -1,7 +1,7 @@
 // @flow
 
 import * as React from 'react';
-import { defineMessages, FormattedMessage } from 'react-intl';
+import { defineMessages, FormattedMessage as M } from 'react-intl';
 
 import TextField from '@material-ui/core/TextField';
 
@@ -130,21 +130,9 @@ class CreateFileDialog extends React.Component<PropTypes, StateTypes> {
         id="create-file-dialog"
         open={visible}
         valid={isValid}
-        title={
-          <FormattedMessage
-            {...messages.title}
-            values={{
-              type: desc.type,
-            }}
-          />
-        }
+        title={<M {...messages.title} values={{ type: desc.type }} />}
         description={
-          <FormattedMessage
-            {...messages.description}
-            values={{
-              type: desc.type,
-            }}
-          />
+          <M {...messages.description} values={{ type: desc.type }} />
         }
         actions="OK_CANCEL"
         onCancel={() => this.cancel()}

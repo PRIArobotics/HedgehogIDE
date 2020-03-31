@@ -2,7 +2,7 @@
 
 import * as React from 'react';
 import withStyles from 'isomorphic-style-loader/lib/withStyles';
-import { defineMessages, FormattedMessage } from 'react-intl';
+import { defineMessages, FormattedMessage as M } from 'react-intl';
 
 import Link from '../../misc/Link';
 
@@ -23,7 +23,7 @@ function Footer() {
         <span className={s.text}>© PRIA</span>
         <span className={s.spacer}>·</span>
         <Link className={s.link} to="/">
-          <FormattedMessage {...messages.home} />
+          <M {...messages.home} />
         </Link>
         {__DEV__ ? (
           <>

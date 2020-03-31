@@ -1,7 +1,7 @@
 // @flow
 
 import * as React from 'react';
-import { defineMessages, useIntl, FormattedMessage } from 'react-intl';
+import { defineMessages, useIntl, FormattedMessage as M } from 'react-intl';
 
 import Button from '@material-ui/core/Button';
 import Menu from '@material-ui/core/Menu';
@@ -73,14 +73,12 @@ function Header({ classes }: HeaderProps) {
         </Icon>
       </IconButton>
       <Typography className={classes.brandTxt} variant="h6" noWrap>
-        <FormattedMessage {...messages.title} />
+        <M {...messages.title} />
       </Typography>
       <PopupState variant="popover" popupId="select-language-menu">
         {popupState => (
           <>
-            <Tooltip
-              title={<FormattedMessage {...messages.selectLanguageTooltip} />}
-            >
+            <Tooltip title={<M {...messages.selectLanguageTooltip} />}>
               <IconButton
                 edge="end"
                 color="inherit"

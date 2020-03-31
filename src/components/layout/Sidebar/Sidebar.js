@@ -1,7 +1,7 @@
 // @flow
 
 import * as React from 'react';
-import { defineMessages, FormattedMessage } from 'react-intl';
+import { defineMessages, FormattedMessage as M } from 'react-intl';
 
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
@@ -61,10 +61,7 @@ function Sidebar({ classes }: SidebarProps) {
 
   function NavItem({ title, titleMsg, target, icon: TheIcon }: NavItemProps) {
     return (
-      <Tooltip
-        title={titleMsg ? <FormattedMessage {...titleMsg} /> : title}
-        placement="right"
-      >
+      <Tooltip title={titleMsg ? <M {...titleMsg} /> : title} placement="right">
         <ListItem button component={Link} to={target}>
           <ListItemIcon className={classes.listItemIcon}>
             <TheIcon />
