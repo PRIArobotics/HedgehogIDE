@@ -1,0 +1,1 @@
+[{"id":"app.ide.create_file_dialog.title","description":"Title for the file creation dialog","defaultMessage":"Create new {type, select, FILE {file} DIRECTORY {folder}}"},{"id":"app.ide.create_file_dialog.description","description":"Text for the file creation dialog","defaultMessage":"Please enter the new {type, select, FILE {file's} DIRECTORY {folder's}} name."}]

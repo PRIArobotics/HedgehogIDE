@@ -1,12 +1,27 @@
 // @flow
 
 import * as React from 'react';
+import { defineMessages, FormattedMessage } from 'react-intl';
 
 import TextField from '@material-ui/core/TextField';
 
 import SimpleDialog from '../../misc/SimpleDialog';
 
 import type { DirReference, FileType, FileDesc } from '.';
+
+const messages = defineMessages({
+  title: {
+    id: 'app.ide.create_file_dialog.title',
+    description: 'Title for the file creation dialog',
+    defaultMessage: 'Create new {type, select, FILE {file} DIRECTORY {folder}}',
+  },
+  description: {
+    id: 'app.ide.create_file_dialog.description',
+    description: 'Text for the file creation dialog',
+    defaultMessage:
+      "Please enter the new {type, select, FILE {file's} DIRECTORY {folder's}} name.",
+  },
+});
 
 type PropTypes = {|
   onCreate: (
@@ -107,7 +122,6 @@ class CreateFileDialog extends React.Component<PropTypes, StateTypes> {
       isValid,
     } = this.state;
 
-    const label = desc.type === 'FILE' ? 'file' : 'folder';
     const placeholder =
       desc.type === 'FILE' ? `file${desc.extension}` : 'folder';
 
@@ -116,8 +130,22 @@ class CreateFileDialog extends React.Component<PropTypes, StateTypes> {
         id="create-file-dialog"
         open={visible}
         valid={isValid}
-        title={`Create new ${label}`}
-        description={`Please enter the new ${label}'s name.`}
+        title={
+          <FormattedMessage
+            {...messages.title}
+            values={{
+              type: desc.type,
+            }}
+          />
+        }
+        description={
+          <FormattedMessage
+            {...messages.description}
+            values={{
+              type: desc.type,
+            }}
+          />
+        }
         actions="OK_CANCEL"
         onCancel={() => this.cancel()}
         onConfirm={() => this.confirm()}

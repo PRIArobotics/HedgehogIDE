@@ -76,7 +76,7 @@ const messages = defineMessages({
   showHideMetadata: {
     id: 'app.ide.toolbar.project_settings.show_hide_metadata',
     description: 'Menu item text for showing/hiding the .metadata folder',
-    defaultMessage: '{action, select, show {Show} hide {Hide}} Metadata',
+    defaultMessage: '{action, select, SHOW {Show} HIDE {Hide}} Metadata',
   },
 });
 
@@ -891,7 +891,7 @@ class Ide extends React.Component<PropTypes, StateTypes> {
                       <FormattedMessage
                         {...messages.showHideMetadata}
                         values={{
-                          action: showMetadataFolder ? 'hide' : 'show',
+                          action: showMetadataFolder ? 'HIDE' : 'SHOW',
                         }}
                       />
                     </Button>
