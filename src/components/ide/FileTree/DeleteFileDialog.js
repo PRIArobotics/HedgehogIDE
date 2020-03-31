@@ -1,10 +1,25 @@
 // @flow
 
 import * as React from 'react';
+import { defineMessages, FormattedMessage as M } from 'react-intl';
 
 import SimpleDialog from '../../misc/SimpleDialog';
 
 import type { FileReference } from '.';
+
+const messages = defineMessages({
+  title: {
+    id: 'app.ide.delete_file_dialog.title',
+    description: 'Title for the file deletion dialog',
+    defaultMessage: 'Confirm deletion',
+  },
+  description: {
+    id: 'app.ide.delete_file_dialog.description',
+    description: 'Text for the file deletion dialog',
+    defaultMessage:
+      'Are you sure yo want to delete {type, select, FILE {file} DIRECTORY {folder}} "{name}"?',
+  },
+});
 
 type PropTypes = {|
   onDelete: (file: FileReference) => boolean | Promise<boolean>,
@@ -60,7 +75,7 @@ class DeleteFileDialog extends React.Component<PropTypes, StateTypes> {
       config: { file },
     } = this.state;
 
-    const label = file.file.isDirectory() ? 'folder' : 'file';
+    const type = file.file.isDirectory() ? 'DIRECTORY' : 'FILE';
     const { name } = file.file;
 
     return (
@@ -68,8 +83,8 @@ class DeleteFileDialog extends React.Component<PropTypes, StateTypes> {
         id="delete-file-dialog"
         open={visible}
         valid
-        title="Confirm deletion"
-        description={`Are you sure yo want to delete ${label} "${name}"?`}
+        title={<M {...messages.title} />}
+        description={<M {...messages.description} values={{ type, name }} />}
         actions="OK_autofocus_CANCEL"
         onCancel={() => this.cancel()}
         onConfirm={() => this.confirm()}
