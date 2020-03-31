@@ -3,72 +3,74 @@ import os.path
 from gsl import lines, generate
 
 
+def command_for(module, name, is_event=False):
+  return f'{module.name}{"_evt_" if is_event else "_"}{name}'
+
 def generate_code(model, root='.'):
-  for cls in model.classes:
-    generate_executor_class_code(model, cls, root)
-    generate_ide_code(model, cls, root)
+  for module in model.modules:
+    generate_executor_module_code(model, module, root)
+    generate_ide_code(model, module, root)
 
 
-def generate_ide_code(model, cls, root):
-  out_file = os.path.join(root, 'src/sdk', f'{cls.name}.js')
+def generate_ide_code(model, module, root):
+  out_file = os.path.join(root, 'src/sdk', f'{module.name}.js')
   os.makedirs(os.path.dirname(out_file), exist_ok=True)
 
-  def handler_static_method_code(method):
+  def handler_function_code(function):
     yield from lines(f"""\
-      '{cls.name}_{method.name}': () => {{}}
+     '{command_for(module, function.name)}': () => {{}},
 """)
 
   def handler_code():
     yield from lines(f"""\
-export default function {cls.name}Handler() {{
   return {{
 """)
-    for method in cls.methods:
-      if method.static:
-        yield from handler_static_method_code(method)
+    for function in module.functions:
+      yield from handler_function_code(function)
     yield from lines(f"""\
-  }};
-}}
+  }};\
 """)
 
-  def method_code(method):
+  def function_code(function):
     yield from lines(f"""\
-  {'static ' if method.static == True else ''}async {method.name}({', '.join([arg.name for arg in method.args])}) {{
-    // method code goes here
+  async function {function.name}({', '.join([arg.name for arg in function.args])}) {{
+    // function code goes here
   }}
 \n""")
 
-  def class_code():
-    yield from lines(f"""\
-export class {cls.name} {{
-  constructor({', '.join([arg.name for arg in cls.constructor.args])}) {{
-    // code goes here
-  }}
-\n""")
-    for method in cls.methods:
-      yield from method_code(method)
-    yield from lines(f"""\
-}}
-""")
+  def impl_code():
+    for function in module.functions:
+      yield from function_code(function)
 
   @generate(out_file)
   def code():
     yield from lines(f"""\
 // @flow
 /* eslint-disable */
-\n""")
-    yield from class_code()
-    yield from handler_code()
 
-def generate_executor_class_code(model, cls, root):
-  out_file = os.path.join(root, 'src/executor/sdk', f'{cls.name}.js')
+export default function init() {{
+\n""")
+    yield from impl_code()
+    yield from handler_code()
+    yield from lines(f"""\
+}};
+""")
+
+def generate_executor_module_code(model, module, root):
+  out_file = os.path.join(root, 'src/executor/sdk', f'{module.name}.js')
   os.makedirs(os.path.dirname(out_file), exist_ok=True)
 
-  def method_code(method):
+  def function_code(function):
     yield from lines(f"""\
-  {'static ' if method.static == True else ''}async {method.name}({', '.join([arg.name for arg in method.args])}) {{
-    // method code goes here
-  }}
+export {'async ' if function.hasReply else ''}function {function.name}({', '.join([arg.name for arg in function.args])}) {{
+  connection.send('{command_for(module, function.name)}', {{ {', '.join([arg.name for arg in function.args])} }});
+""")
+    if function.hasReply:
+      yield from lines(f"""\
+  return connection.recv();
+""")
+    yield from lines(f"""\
+}}
 \n""")
 
   @generate(out_file)
@@ -76,15 +78,7 @@ def generate_executor_class_code(model, cls, root):
     yield from lines(f"""\
 // @flow
 /* eslint-disable */
-
-export default class {cls.name} {{
-  constructor({', '.join([arg.name for arg in cls.constructor.args])}) {{
-    // code goes here
-  }}
 \n""")
-    for method in cls.methods:
-      yield from method_code(method)
-    yield from lines(f"""\
-}}
-""")
+    for function in module.functions:
+      yield from function_code(function)
 

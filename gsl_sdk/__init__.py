@@ -6,19 +6,19 @@ def get_model(model_file):
         yaml = YAML(typ='safe')
         model = yaml.load(f)
 
-    def augment_class(name, cls):
-        def augment_method(name, method):
-          method.name = name
-          if not 'static' in method:
-            method.static = False
-          return method
+    def augment_module(name, cls):
+        def augment_function(name, function):
+          function.name = name
+          if not 'hasReply' in function:
+            function.hasReply = False
+          return function
 
-        methods = [augment_method(*pair) for pair in cls.methods.items()]
-        cls.methods = methods
+        functions = [augment_function(*pair) for pair in cls.functions.items()]
+        cls.functions = functions
         cls.name = name
         return cls
 
-    model.classes = [augment_class(*pair) for pair in model.classes.items()]
+    model.modules = [augment_module(*pair) for pair in model.modules.items()]
 
     return model
 

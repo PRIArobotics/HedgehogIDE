@@ -1,14 +1,11 @@
-classes:
-  Hedgehog:
-    constructor:
-      args:
-      - name: 'name'
-    methods:
+modules:
+  hedgehog:
+    functions:
       getRobot:
-        static: true
         args:
         - name: 'name'
       moveMotor:
+        hasReply: true
         args:
         - name: 'port'
         - name: 'power'
