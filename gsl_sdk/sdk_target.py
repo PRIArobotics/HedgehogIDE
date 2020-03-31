@@ -17,8 +17,13 @@ def generate_ide_code(model, module, root):
   os.makedirs(os.path.dirname(out_file), exist_ok=True)
 
   def handler_function_code(function):
-    yield from lines(f"""\
-     '{command_for(module, function.name)}': () => {{}},
+    if function.hasReply:
+      yield from lines(f"""\
+    '{command_for(module, function.name)}': withReply({function.name}),
+""")
+    else:
+      yield from lines(f"""\
+    '{command_for(module, function.name)}': (payload) => {function.name}(...payload),
 """)
 
   def handler_code():
@@ -34,7 +39,11 @@ def generate_ide_code(model, module, root):
   def function_code(function):
     yield from lines(f"""\
   async function {function.name}({', '.join([arg.name for arg in function.args])}) {{
-    // function code goes here
+    // <default GSL customizable: {module.name}-body-{function.name}>
+    // Your function code goes here
+    // DO NOT DELETE GSL TAGS
+
+    // </GSL customizable: {module.name}-body-{function.name}>
   }}
 \n""")
 
@@ -48,7 +57,14 @@ def generate_ide_code(model, module, root):
 // @flow
 /* eslint-disable */
 
-export default function init() {{
+import {{ withReply }} from './SDKBase';
+
+export default async function init({', '.join([arg.name for arg in module.init.args])}) {{
+  // <default GSL customizable: {module.name}-init>
+  // Your module initialization code
+  // DO NOT DELETE GSL TAGS
+
+  // </GSL customizable: {module.name}-init>
 \n""")
     yield from impl_code()
     yield from handler_code()

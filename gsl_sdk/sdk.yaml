@@ -1,5 +1,9 @@
 modules:
   hedgehog:
+    init:
+      args:
+      - name: 'console'
+      - name: 'simulator'
     functions:
       getRobot:
         args:

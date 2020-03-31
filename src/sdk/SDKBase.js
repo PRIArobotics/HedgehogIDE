@@ -7,13 +7,13 @@ export type Handler<T = void> = (
   executorTask: ExecutorTask,
 ) => T | Promise<T>;
 
+export function withReply(handler: Handler<any>): Handler<> {
+  return async (args: any, executorTask: ExecutorTask) => {
+    await executorTask.withReply(handler.bind(null, args, executorTask));
+  };
+}
+
 class SDKBase {
   handlers: { [command: string]: Handler<> } = {};
-
-  static withReply(handler: Handler<any>): Handler<> {
-    return async (args: any, executorTask: ExecutorTask) => {
-      await executorTask.withReply(handler.bind(null, args, executorTask));
-    };
-  }
 }
 export default SDKBase;
