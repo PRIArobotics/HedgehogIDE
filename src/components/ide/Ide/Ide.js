@@ -306,7 +306,12 @@ class Ide extends React.Component<PropTypes, StateTypes> {
       editorStates,
     });
 
-    this.pluginManager = new PluginManager(this.executorRef.current);
+    this.pluginManager = new PluginManager(
+      this.executorRef.current,
+      this.getConsole.bind(this),
+      this.getSimulator.bind(this),
+    );
+    await this.pluginManager.initSdk();
     await this.pluginManager.loadFromProjectMetadata(project);
   }
 

@@ -5,6 +5,9 @@ import { fs } from 'filer';
 import type { Task } from '../components/ide/Executor';
 import Executor from '../components/ide/Executor';
 import { Project } from '../core/store/projects';
+import Simulator from '../components/ide/Simulator';
+import { default as initMiscSdk } from './misc';
+import { default as initHedgehogSdk } from './hedgehog';
 
 type Plugin = {
   name: string,
@@ -15,8 +18,21 @@ class PluginManager {
   executor: Executor;
   plugins: Plugin[] = [];
 
-  constructor(executor) {
+  getConsole: () => Promise<Console>;
+  getSimulator: () => Promise<Simulator>;
+  sdk;
+
+  constructor(executor, getConsole, getSimulator) {
     this.executor = executor;
+    this.getConsole = getConsole;
+    this.getSimulator = getSimulator;
+  }
+
+  async initSdk() {
+    this.sdk = {
+      misc: await initMiscSdk(this.getConsole, () => {}),
+      hedgehog: await initHedgehogSdk(this.getSimulator),
+    };
   }
 
   async loadFromProjectMetadata(project: Project) {
@@ -50,7 +66,8 @@ class PluginManager {
               task: this.executor.addTask({
                 code,
                 api: {
-                  exit: () => null,
+                  ...this.sdk.misc.handlers,
+                  ...this.sdk.hedgehog.handlers,
                 },
               }),
             };
