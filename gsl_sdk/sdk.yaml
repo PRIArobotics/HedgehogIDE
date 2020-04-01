@@ -23,6 +23,7 @@ modules:
         type: () => Promise<Simulator>
     functions:
       commands:
+        hasReply: true
         args:
         - name: robot
           type: string

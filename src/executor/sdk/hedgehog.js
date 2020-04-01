@@ -7,8 +7,9 @@
 
 // </GSL customizable: hedgehog-executor-imports>
 
-export function commands(robot: string, cmds: Command[]) {
+export async function commands(robot: string, cmds: Command[]) {
   connection.send('hedgehog_commands', { robot, cmds });
+  return connection.recv();
 }
 
 export async function moveMotor(robot: string, port: number, power: number) {

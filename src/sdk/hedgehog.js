@@ -63,7 +63,9 @@ export default async function init(getSimulator: () => Promise<Simulator>) {
   }
 
   return {
-    'hedgehog_commands': ({ robot, cmds }) => commands(robot, cmds),
+    'hedgehog_commands': async ({ robot, cmds }, executorTask: ExecutorTask) => {
+      return executorTask.withReply(commands.bind(null, robot, cmds));
+    },
     'hedgehog_moveMotor': async ({ robot, port, power }, executorTask: ExecutorTask) => {
       return executorTask.withReply(moveMotor.bind(null, robot, port, power));
     },
