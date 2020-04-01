@@ -15,6 +15,9 @@ modules:
         args:
         - name: error
           type: any
+    events:
+      testEvent:
+
   hedgehog:
     includeLookup: true
     init:

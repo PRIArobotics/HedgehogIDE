@@ -54,7 +54,7 @@ import DeleteFileDialog from '../FileTree/DeleteFileDialog';
 import FileUpload from '../FileTree/FileUpload';
 import FileDownload from '../FileTree/FileDownload';
 import Executor, { type Task } from '../Executor';
-import { default as initMiscSdk } from '../../../sdk/misc';
+import misc, { default as initMiscSdk } from '../../../sdk/misc';
 import { default as initHedgehogSdk } from '../../../sdk/hedgehog';
 import PluginManager from '../../../sdk/PluginManager';
 
@@ -459,14 +459,18 @@ class Ide extends React.Component<PropTypes, StateTypes> {
     if (this.executorRef.current === null) throw 'ref is null';
     const executorRefCurrent = this.executorRef.current;
 
+    const sdk = {
+      misc: await initMiscSdk(this.getConsole.bind(this), () =>
+        this.setState({ runningTask: null }),
+      ),
+      hedgehog: await initHedgehogSdk(this.getSimulator.bind(this)),
+    };
+
     const task = {
       code,
       api: {
-        ...(await initMiscSdk(
-          this.getConsole.bind(this),
-          () => this.setState({ runningTask: null })
-        )),
-        ...(await initHedgehogSdk(this.getSimulator.bind(this))),
+        ...sdk.misc.handlers,
+        ...sdk.hedgehog.handlers,
       },
     };
     this.setState({

@@ -3,6 +3,7 @@
 // DO NOT DELETE GSL TAGS
 
 import ExecutorTask from '../components/ide/Executor/ExecutorTask';
+import { emit as baseEmit, emitToAll as baseEmitToAll } from './base';
 // <default GSL customizable: misc-imports>
 // Put your imports tags here
 
@@ -13,6 +14,9 @@ export default async function init(getConsole: () => Promise<Console>, onExit: (
   // Your module initialization code
 
   // </GSL customizable: misc-init>
+
+  const emit = baseEmit.bind(null, 'misc');
+  const emitToAll = baseEmitToAll.bind(null, 'misc');
 
   async function print(text: string) {
     // <GSL customizable: misc-body-print>
@@ -31,7 +35,11 @@ export default async function init(getConsole: () => Promise<Console>, onExit: (
   }
 
   return {
-    'misc_print': ({ text }) => print(text),
-    'misc_exit': ({ error }) => exit(error),
+    emit,
+    emitToAll,
+    handlers: {
+      'misc_print': ({ text }) => print(text),
+      'misc_exit': ({ error }) => exit(error),
+    },
   };
 };

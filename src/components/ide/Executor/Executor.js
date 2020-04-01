@@ -1,6 +1,7 @@
 // @flow
 
 import * as React from 'react';
+import { RefObject } from 'react';
 import ExecutorTask from './ExecutorTask';
 
 export type Task = {
@@ -20,11 +21,17 @@ type StateTypes = {|
   tasks: Task[],
 |};
 class Executor extends React.Component<PropTypes, StateTypes> {
+  taskExecutorRefs: Map<Task, RefObject<typeof ExecutorTask>> = new Map();
   state = {
     tasks: [],
   };
 
+  get tasks() {
+    return this.state.tasks;
+  }
+
   addTask(task: Task) {
+    this.taskExecutorRefs.set(task, React.createRef());
     this.setState(state => ({
       tasks: [...state.tasks, task],
     }));
@@ -35,6 +42,11 @@ class Executor extends React.Component<PropTypes, StateTypes> {
     this.setState(state => ({
       tasks: state.tasks.filter(currentTask => currentTask !== task),
     }));
+    this.taskExecutorRefs.delete(task);
+  }
+
+  getTaskExecutorRef(task: Task): RefObject<typeof ExecutorTask> {
+    return this.taskExecutorRefs.get(task);
   }
 
   render() {
@@ -45,6 +57,7 @@ class Executor extends React.Component<PropTypes, StateTypes> {
         {tasks.map((task: Task, index) => (
           <ExecutorTask
             key={index}
+            ref={this.taskExecutorRefs.get(task)}
             code={`return (async () => {${task.code}\n})();`}
             handlers={task.api}
           />

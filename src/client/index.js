@@ -44,7 +44,7 @@ const context = {
   // For react-apollo
   client: apolloClient,
   // TODO selectable locale
-  locales:  navigator.languages ? navigator.languages : [navigator.language],
+  locales: navigator.languages ? navigator.languages : [navigator.language],
 };
 
 const container = document.getElementById('app');

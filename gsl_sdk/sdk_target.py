@@ -20,22 +20,26 @@ def generate_ide_code(model, module, root):
   def handler_function_code(function):
     if function.hasReply:
       yield from lines(f"""\
-    '{command_for(module, function.name)}': async ({{ {', '.join([arg.name for arg in function.args])} }}, executorTask: ExecutorTask) => {{
-      return executorTask.withReply({function.name}.bind(null, {', '.join([arg.name for arg in function.args])}));
-    }},
+      '{command_for(module, function.name)}': async ({{ {', '.join([arg.name for arg in function.args])} }}, executorTask: ExecutorTask) => {{
+        return executorTask.withReply({function.name}.bind(null, {', '.join([arg.name for arg in function.args])}));
+      }},
 """)
     else:
       yield from lines(f"""\
-    '{command_for(module, function.name)}': ({{ {', '.join([arg.name for arg in function.args])} }}) => {function.name}({', '.join([arg.name for arg in function.args])}),
+      '{command_for(module, function.name)}': ({{ {', '.join([arg.name for arg in function.args])} }}) => {function.name}({', '.join([arg.name for arg in function.args])}),
 """)
 
   def handler_code():
     yield from lines(f"""\
   return {{
+    emit,
+    emitToAll,
+    handlers: {{
 """)
     for function in module.functions:
       yield from handler_function_code(function)
     yield from lines(f"""\
+    }},
   }};\
 """)
 
@@ -71,6 +75,7 @@ def generate_ide_code(model, module, root):
 // DO NOT DELETE GSL TAGS
 
 import ExecutorTask from '../components/ide/Executor/ExecutorTask';
+import {{ emit as baseEmit, emitToAll as baseEmitToAll }} from './base';
 // <default GSL customizable: {module.name}-imports>
 // Put your imports tags here
 
@@ -81,6 +86,9 @@ export default async function init({', '.join([f"{arg.name}: {arg.type}" for arg
   // Your module initialization code
 
   // </GSL customizable: {module.name}-init>
+
+  const emit = baseEmit.bind(null, '{module.name}');
+  const emitToAll = baseEmitToAll.bind(null, '{module.name}');
 \n""")
     if module.includeLookup:
       yield from lookup_code()
@@ -115,6 +123,7 @@ export {'async ' if function.hasReply else ''}function {function.name}({', '.joi
 // DO NOT DELETE GSL TAGS
 
 import connection from '../connection';
+import eventHandler from '../event';
 // <default GSL customizable: {module.name}-executor-imports>
 // Put your imports tags here
 
@@ -122,6 +131,9 @@ import connection from '../connection';
 \n""")
     for function in module.functions:
       yield from function_code(function)
+    yield from lines(f"""\
+export const on = eventHandler.on.bind(eventHandler, '{module.name}');
+""")
 
 
 def generate_sdk_code(model, root):

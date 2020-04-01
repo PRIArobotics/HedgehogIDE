@@ -3,6 +3,7 @@
 // DO NOT DELETE GSL TAGS
 
 import connection from '../connection';
+import eventHandler from '../event';
 // <default GSL customizable: hedgehog-executor-imports>
 // Put your imports tags here
 
@@ -33,3 +34,4 @@ export async function getDigital(robot: number, port: number) {
   return connection.recv();
 }
 
+export const on = eventHandler.on.bind(eventHandler, 'hedgehog');

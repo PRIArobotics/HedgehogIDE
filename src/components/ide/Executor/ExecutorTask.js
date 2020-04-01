@@ -85,6 +85,10 @@ class ExecutorTask extends React.Component<PropTypes, StateTypes> {
     this.sendMessage('errorReply', error);
   }
 
+  sendEvent(event: string, payload: any) {
+    this.sendMessage('event', { event, payload });
+  }
+
   async withReply(cb: () => any | Promise<any>) {
     try {
       const value = await cb();

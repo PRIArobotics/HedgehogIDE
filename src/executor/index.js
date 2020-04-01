@@ -3,6 +3,7 @@
 import Hedgehog from './Hedgehog';
 import connection, { ORIGIN } from './connection';
 import sdk from './sdk';
+import eventHandler from './event';
 
 // message listener & handlers
 const handlers = {
@@ -14,6 +15,7 @@ const handlers = {
       const fn = new Function(code);
       try {
         await fn();
+        await eventHandler.waitForEvents();
         sdk.misc.exit();
       } catch (error) {
         console.error(error);
@@ -26,6 +28,9 @@ const handlers = {
   },
   errorReply(source, error: any) {
     connection.handleErrorReply(error);
+  },
+  event(source, { event, payload }: { event: string, data: any }) {
+    eventHandler.handleEvent(event, payload);
   },
 };
 

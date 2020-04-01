@@ -3,6 +3,7 @@
 // DO NOT DELETE GSL TAGS
 
 import ExecutorTask from '../components/ide/Executor/ExecutorTask';
+import { emit as baseEmit, emitToAll as baseEmitToAll } from './base';
 // <GSL customizable: hedgehog-imports>
 import Simulator from '../components/ide/Simulator';
 // </GSL customizable: hedgehog-imports>
@@ -13,6 +14,9 @@ export default async function init(getSimulator: () => Promise<Simulator>) {
     return (await getSimulator()).robots.get(name);
   }
   // </GSL customizable: hedgehog-init>
+
+  const emit = baseEmit.bind(null, 'hedgehog');
+  const emitToAll = baseEmitToAll.bind(null, 'hedgehog');
 
   const moduleFunctions = {
     'commands': ({ robot, cmds }) => commands(robot, cmds),
@@ -61,20 +65,24 @@ export default async function init(getSimulator: () => Promise<Simulator>) {
   }
 
   return {
-    'hedgehog_commands': async ({ robot, cmds }, executorTask: ExecutorTask) => {
-      return executorTask.withReply(commands.bind(null, robot, cmds));
-    },
-    'hedgehog_moveMotor': async ({ robot, port, power }, executorTask: ExecutorTask) => {
-      return executorTask.withReply(moveMotor.bind(null, robot, port, power));
-    },
-    'hedgehog_setServo': async ({ robot, port, position }, executorTask: ExecutorTask) => {
-      return executorTask.withReply(setServo.bind(null, robot, port, position));
-    },
-    'hedgehog_getAnalog': async ({ robot, port }, executorTask: ExecutorTask) => {
-      return executorTask.withReply(getAnalog.bind(null, robot, port));
-    },
-    'hedgehog_getDigital': async ({ robot, port }, executorTask: ExecutorTask) => {
-      return executorTask.withReply(getDigital.bind(null, robot, port));
+    emit,
+    emitToAll,
+    handlers: {
+      'hedgehog_commands': async ({ robot, cmds }, executorTask: ExecutorTask) => {
+        return executorTask.withReply(commands.bind(null, robot, cmds));
+      },
+      'hedgehog_moveMotor': async ({ robot, port, power }, executorTask: ExecutorTask) => {
+        return executorTask.withReply(moveMotor.bind(null, robot, port, power));
+      },
+      'hedgehog_setServo': async ({ robot, port, position }, executorTask: ExecutorTask) => {
+        return executorTask.withReply(setServo.bind(null, robot, port, position));
+      },
+      'hedgehog_getAnalog': async ({ robot, port }, executorTask: ExecutorTask) => {
+        return executorTask.withReply(getAnalog.bind(null, robot, port));
+      },
+      'hedgehog_getDigital': async ({ robot, port }, executorTask: ExecutorTask) => {
+        return executorTask.withReply(getDigital.bind(null, robot, port));
+      },
     },
   };
 };
