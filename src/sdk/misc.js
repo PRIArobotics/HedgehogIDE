@@ -9,14 +9,14 @@ import ExecutorTask from '../components/ide/Executor/ExecutorTask';
 // </GSL customizable: misc-imports>
 
 export default async function init(getConsole: () => Promise<Console>, onExit: () => void | Promise<void>) {
-  // <GSL customizable: misc-init>
+  // <default GSL customizable: misc-init>
   // Your module initialization code
-  const console = await getConsole();
+
   // </GSL customizable: misc-init>
 
   async function print(text: string) {
     // <GSL customizable: misc-body-print>
-    console.consoleOut(text, 'stdout');
+    (await getConsole()).consoleOut(text, 'stdout');
     // </GSL customizable: misc-body-print>
   }
 
@@ -24,7 +24,7 @@ export default async function init(getConsole: () => Promise<Console>, onExit: (
     // <GSL customizable: misc-body-exit>
     // Your function code goes here
     if (error) {
-      console.consoleOut(error, 'stderr');
+      (await getConsole()).consoleOut(error, 'stderr');
     }
     return onExit();
     // </GSL customizable: misc-body-exit>

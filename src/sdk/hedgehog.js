@@ -9,10 +9,8 @@ import Simulator from '../components/ide/Simulator';
 
 export default async function init(getSimulator: () => Promise<Simulator>) {
   // <GSL customizable: hedgehog-init>
-  const simulator = await getSimulator();
-
-  function getRobot(name: string) {
-    return simulator.robots.get(name);
+  async function getRobot(name: string) {
+    return (await getSimulator()).robots.get(name);
   }
   // </GSL customizable: hedgehog-init>
 
@@ -39,26 +37,26 @@ export default async function init(getSimulator: () => Promise<Simulator>) {
 
   async function moveMotor(robot: string, port: number, power: number) {
     // <GSL customizable: hedgehog-body-moveMotor>
-    getRobot(robot).moveMotor(port, power);
+    (await getRobot(robot)).moveMotor(port, power);
     // </GSL customizable: hedgehog-body-moveMotor>
   }
 
   async function setServo(robot: string, port: number, position: number) {
     // <GSL customizable: hedgehog-body-setServo>
     // Your function code goes here
-    getRobot(robot).setServo(port, position);
+    (await getRobot(robot)).setServo(port, position);
     // </GSL customizable: hedgehog-body-setServo>
   }
 
   async function getAnalog(robot: number, port: number) {
     // <GSL customizable: hedgehog-body-getAnalog>
-    return getRobot(robot).getAnalog(port);
+    return (await getRobot(robot)).getAnalog(port);
     // </GSL customizable: hedgehog-body-getAnalog>
   }
 
   async function getDigital(robot: number, port: number) {
     // <GSL customizable: hedgehog-body-getDigital>
-    return getRobot(robot).getDigital(port);
+    return (await getRobot(robot)).getDigital(port);
     // </GSL customizable: hedgehog-body-getDigital>
   }
 
