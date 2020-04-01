@@ -57,10 +57,10 @@ const handlers = {
       const fn = new Function(code);
       try {
         await fn();
-        sdk.misc.exit('exit');
+        sdk.misc.exit();
       } catch (error) {
         console.error(error);
-        sdk.misc.exit('exit', error.toString());
+        sdk.misc.exit(error.toString());
       }
     })();
   },
