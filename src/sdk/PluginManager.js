@@ -20,10 +20,22 @@ class PluginManager {
   }
 
   async loadFromProjectMetadata(project: Project) {
+    const pluginFolderPath = project.resolve('.metadata', 'plugins');
+    try {
+      const stat = await fs.promises.stat(pluginFolderPath);
+      if (!stat.isDirectory()) {
+        return;
+      }
+    } catch (e) {
+      if (e && e.code === 'ENOENT') {
+        return;
+      } else {
+        throw e;
+      }
+    }
+
     const sh = new fs.Shell();
-    const pluginFiles = await sh.promises.ls(
-      project.resolve('.metadata', 'plugins'),
-    );
+    const pluginFiles = await sh.promises.ls(pluginFolderPath);
     this.plugins.push(
       ...(await Promise.all(
         pluginFiles
