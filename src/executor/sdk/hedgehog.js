@@ -2,6 +2,7 @@
 /* eslint-disable */
 // DO NOT DELETE GSL TAGS
 
+import connection from '../connection';
 // <default GSL customizable: hedgehog-executor-imports>
 // Put your imports tags here
 

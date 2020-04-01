@@ -1,10 +1,5 @@
 // @flow
 
-export interface Connection {
-  send(command: string, payload: any): void;
-  recv(): Promise<any>;
-}
-
 type Command = [string, any];
 
 export default class Hedgehog {

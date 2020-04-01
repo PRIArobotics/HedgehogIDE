@@ -7,6 +7,7 @@ def command_for(module, name, is_event=False):
   return f'{module.name}{"_evt_" if is_event else "_"}{name}'
 
 def generate_code(model, root='.'):
+  generate_sdk_code(model, root)
   for module in model.modules:
     generate_executor_module_code(model, module, root)
     generate_ide_code(model, module, root)
@@ -113,6 +114,7 @@ export {'async ' if function.hasReply else ''}function {function.name}({', '.joi
 /* eslint-disable */
 // DO NOT DELETE GSL TAGS
 
+import connection from '../connection';
 // <default GSL customizable: {module.name}-executor-imports>
 // Put your imports tags here
 
@@ -120,4 +122,24 @@ export {'async ' if function.hasReply else ''}function {function.name}({', '.joi
 \n""")
     for function in module.functions:
       yield from function_code(function)
+
+
+def generate_sdk_code(model, root):
+  out_file = os.path.join(root, 'src/executor/sdk/index.js')
+  os.makedirs(os.path.dirname(out_file), exist_ok=True)
+
+  @generate(out_file)
+  def code():
+    for module in model.modules:
+      yield from lines(f"import * as {module.name} from './{module.name}';\n")
+    yield from lines("""\
+
+const sdk = {
+""")
+    for module in model.modules:
+      yield from lines(f"  {module.name},")
+    yield from lines("""\
+};
+export default sdk;
+""")
 
