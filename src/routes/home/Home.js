@@ -66,7 +66,9 @@ function Home() {
         color="textSecondary"
         paragraph
       >
-        <Link to="/help"><M {...messages.learn} /></Link>
+        <Link to="/help">
+          <M {...messages.learn} />
+        </Link>
       </Typography>
     </Container>
   );

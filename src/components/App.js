@@ -87,7 +87,11 @@ class App extends React.PureComponent<Props> {
   }
 
   render() {
-    const { context: {client, locales}, insertCss, children } = this.props;
+    const {
+      context: { client, locales },
+      insertCss,
+      children,
+    } = this.props;
 
     // NOTE: If you need to add or modify header, footer etc. of the app,
     // please do that inside the Layout component.
@@ -95,7 +99,10 @@ class App extends React.PureComponent<Props> {
       <StyleContext.Provider value={{ insertCss }}>
         <ApolloProvider client={client}>
           <ThemeProvider theme={theme}>
-            <IntlProvider locale={locales[0]} messages={getTranslations(locales)}>
+            <IntlProvider
+              locale={locales[0]}
+              messages={getTranslations(locales)}
+            >
               <CssBaseline />
               {children}
             </IntlProvider>

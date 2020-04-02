@@ -79,7 +79,9 @@ const history = setupHistory(async (history, location, isInitialRender) => {
 
     const renderReactApp = isHydrateSSR ? ReactDOM.hydrate : ReactDOM.render;
     appInstance = renderReactApp(
-      <App context={context} insertCss={insertCss}>{route.component}</App>,
+      <App context={context} insertCss={insertCss}>
+        {route.component}
+      </App>,
       container,
       () => {
         if (isInitialRender) {

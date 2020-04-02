@@ -231,7 +231,9 @@ app.get('*', async (req, res, next) => {
       locales: ['en'],
     };
 
-    const insertCss = isomorphicStyleLoader.insertCss.bind(isomorphicStyleLoader);
+    const insertCss = isomorphicStyleLoader.insertCss.bind(
+      isomorphicStyleLoader,
+    );
 
     const route = await router.resolve(context);
 
@@ -241,7 +243,9 @@ app.get('*', async (req, res, next) => {
     }
 
     const rootComponent = materialStyleLoader.wrap(
-      <App context={context} insertCss={insertCss}>{route.component}</App>,
+      <App context={context} insertCss={insertCss}>
+        {route.component}
+      </App>,
     );
     await getDataFromTree(rootComponent);
 
