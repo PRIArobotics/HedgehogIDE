@@ -8,6 +8,7 @@ import { Project } from '../core/store/projects';
 import Simulator from '../components/ide/Simulator';
 import initMiscSdk from './misc';
 import initHedgehogSdk from './hedgehog';
+import initBlocklySdk from './blockly';
 
 type Plugin = {
   name: string,
@@ -32,6 +33,7 @@ class PluginManager {
     this.sdk = {
       misc: await initMiscSdk(this.getConsole, () => {}),
       hedgehog: await initHedgehogSdk(this.getSimulator),
+      blockly: await initBlocklySdk(),
     };
   }
 
@@ -68,6 +70,7 @@ class PluginManager {
                 api: {
                   ...this.sdk.misc.handlers,
                   ...this.sdk.hedgehog.handlers,
+                  ...this.sdk.blockly.handlers,
                 },
               }),
             };

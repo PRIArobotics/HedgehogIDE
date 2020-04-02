@@ -88,6 +88,7 @@ type PropTypes = {|
 |};
 type StateTypes = {|
   code: string | null,
+  workspaceOptions: any,
 |};
 
 class VisualEditor extends React.Component<PropTypes, StateTypes> {
@@ -96,7 +97,96 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
     codeLanguage: 'JavaScript',
   };
 
-  static blocklyWorkspaceOptions = (() => {
+  static dynamicBlockLoaders: [() => Block[]] = [];
+
+  blocklyRef: RefObject<BlocklyComponent> = React.createRef();
+  codeRef: RefObject<'pre'> = React.createRef();
+
+  resizeAnim: AnimationFrameID | null;
+
+  state = {
+    code: null,
+    workspaceOptions: this.buildWorkspaceOptions(),
+  };
+
+  componentDidMount() {
+    // eslint-disable-next-line no-throw-literal
+    if (this.codeRef.current === null) throw 'ref is null in componentDidMount';
+    const codeRefCurrent = this.codeRef.current;
+
+    const { layoutNode } = this.props;
+    layoutNode.setEventListener('resize', () => {
+      if (this.blocklyRef.current)
+        this.blocklyRef.current.refreshSizeDeferred();
+    });
+    layoutNode.setEventListener('visibility', ({ visible }) => {
+      if (this.blocklyRef.current)
+        this.blocklyRef.current.updateVisibility(visible);
+    });
+    codeRefCurrent.addEventListener('transitionend', () => {
+      if (this.resizeAnim) {
+        cancelAnimationFrame(this.resizeAnim);
+        this.resizeAnim = null;
+      }
+
+      if (this.blocklyRef.current)
+        this.blocklyRef.current.refreshSizeDeferred();
+    });
+  }
+
+  componentDidUpdate(prevProps) {
+    const { codeLanguage: prevCodeLanguage } = prevProps;
+    const { codeLanguage } = this.props;
+
+    // refresh code when language is changed
+    if (prevCodeLanguage !== codeLanguage) this.refreshCode();
+  }
+
+  animateWorkspaceSize() {
+    this.resizeAnim = requestAnimationFrame(() => {
+      if (this.blocklyRef.current) this.blocklyRef.current.refreshSize();
+      this.animateWorkspaceSize();
+    });
+  }
+
+  refreshCode() {
+    // eslint-disable-next-line no-throw-literal
+    if (this.blocklyRef.current === null) throw 'ref is null';
+
+    const { workspace } = this.blocklyRef.current;
+
+    const language = Blockly[this.props.codeLanguage];
+    const code = language.workspaceToCode(workspace);
+    this.setState({ code });
+  }
+
+  handleBlocklyChange = workspace => {
+    this.refreshCode();
+
+    const workspaceXml = Blockly.Xml.domToText(
+      Blockly.Xml.workspaceToDom(workspace),
+    );
+    this.props.onContentChange(workspaceXml);
+  };
+
+  setCodeLanguage(codeLanguage: 'JavaScript' | 'Python') {
+    this.props.onUpdate({ codeLanguage });
+  }
+
+  handleToggleCodeCollapsed = () => {
+    this.props.onUpdate({ codeCollapsed: !this.props.codeCollapsed });
+    this.animateWorkspaceSize();
+  };
+
+  buildWorkspaceOptions() {
+    console.log(VisualEditor.dynamicBlockLoaders)
+    const dynamicBlocks = VisualEditor.dynamicBlockLoaders.length ? (
+      <category name="Custom" colour="120">
+        {VisualEditor.dynamicBlockLoaders.map(loader =>
+          loader().map(block => block.toolboxBlocks.default()),
+        )}
+      </category>
+    ) : null;
     const toolbox = ReactDOM.renderToStaticMarkup(
       <xml>
         <category name="Drive" colour="120">
@@ -122,6 +212,7 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
           {HEDGEHOG_READ_ANALOG.toolboxBlocks.default()}
           {HEDGEHOG_READ_ANALOG.toolboxBlocks.comparison()}
         </category>
+        {dynamicBlocks}
         <sep />
         <category name="Logic" colour="%{BKY_LOGIC_HUE}">
           <block type="controls_if" />
@@ -264,85 +355,7 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
       trashcan: false,
       scrollbars: true,
     };
-  })();
-
-  blocklyRef: RefObject<BlocklyComponent> = React.createRef();
-  codeRef: RefObject<'pre'> = React.createRef();
-
-  resizeAnim: AnimationFrameID | null;
-
-  state = {
-    code: null,
-  };
-
-  componentDidMount() {
-    // eslint-disable-next-line no-throw-literal
-    if (this.codeRef.current === null) throw 'ref is null in componentDidMount';
-    const codeRefCurrent = this.codeRef.current;
-
-    const { layoutNode } = this.props;
-    layoutNode.setEventListener('resize', () => {
-      if (this.blocklyRef.current)
-        this.blocklyRef.current.refreshSizeDeferred();
-    });
-    layoutNode.setEventListener('visibility', ({ visible }) => {
-      if (this.blocklyRef.current)
-        this.blocklyRef.current.updateVisibility(visible);
-    });
-    codeRefCurrent.addEventListener('transitionend', () => {
-      if (this.resizeAnim) {
-        cancelAnimationFrame(this.resizeAnim);
-        this.resizeAnim = null;
-      }
-
-      if (this.blocklyRef.current)
-        this.blocklyRef.current.refreshSizeDeferred();
-    });
   }
-
-  componentDidUpdate(prevProps) {
-    const { codeLanguage: prevCodeLanguage } = prevProps;
-    const { codeLanguage } = this.props;
-
-    // refresh code when language is changed
-    if (prevCodeLanguage !== codeLanguage) this.refreshCode();
-  }
-
-  animateWorkspaceSize() {
-    this.resizeAnim = requestAnimationFrame(() => {
-      if (this.blocklyRef.current) this.blocklyRef.current.refreshSize();
-      this.animateWorkspaceSize();
-    });
-  }
-
-  refreshCode() {
-    // eslint-disable-next-line no-throw-literal
-    if (this.blocklyRef.current === null) throw 'ref is null';
-
-    const { workspace } = this.blocklyRef.current;
-
-    const language = Blockly[this.props.codeLanguage];
-    const code = language.workspaceToCode(workspace);
-    this.setState({ code });
-  }
-
-  handleBlocklyChange = workspace => {
-    this.refreshCode();
-
-    const workspaceXml = Blockly.Xml.domToText(
-      Blockly.Xml.workspaceToDom(workspace),
-    );
-    this.props.onContentChange(workspaceXml);
-  };
-
-  setCodeLanguage(codeLanguage: 'JavaScript' | 'Python') {
-    this.props.onUpdate({ codeLanguage });
-  }
-
-  handleToggleCodeCollapsed = () => {
-    this.props.onUpdate({ codeCollapsed: !this.props.codeCollapsed });
-    this.animateWorkspaceSize();
-  };
 
   render() {
     const { content, codeCollapsed, codeLanguage } = this.props;
@@ -354,7 +367,7 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
           <BlocklyComponent
             forwardedRef={this.blocklyRef}
             initialWorkspaceXml={content}
-            workspaceOptions={VisualEditor.blocklyWorkspaceOptions}
+            workspaceOptions={this.state.workspaceOptions}
             onChange={this.handleBlocklyChange}
           />
         )}

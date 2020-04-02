@@ -17,7 +17,6 @@ modules:
           type: any
     events:
       testEvent:
-
   hedgehog:
     includeLookup: true
     init:
@@ -64,3 +63,13 @@ modules:
             type: number
           - name: port
             type: number
+  blockly:
+    init:
+      args: []
+    functions:
+      addBlock:
+        hasReply: true
+        args:
+        - name: block
+          type: any
+
