@@ -6,8 +6,8 @@ import type { Task } from '../components/ide/Executor';
 import Executor from '../components/ide/Executor';
 import { Project } from '../core/store/projects';
 import Simulator from '../components/ide/Simulator';
-import { default as initMiscSdk } from './misc';
-import { default as initHedgehogSdk } from './hedgehog';
+import initMiscSdk from './misc';
+import initHedgehogSdk from './hedgehog';
 
 type Plugin = {
   name: string,

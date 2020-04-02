@@ -29,7 +29,7 @@ const handlers = {
   errorReply(source, error: any) {
     connection.handleErrorReply(error);
   },
-  event(source, { event, payload }: { event: string, data: any }) {
+  event(source, { event, payload }: { event: string, payload: any }) {
     eventHandler.handleEvent(event, payload);
   },
 };
@@ -55,7 +55,7 @@ global.connection = connection;
 global.sdk = sdk;
 
 global.Hedgehog = Hedgehog;
-global.hedgehog = new Hedgehog('hedgehog', connection);
+global.hedgehog = new Hedgehog('hedgehog');
 
 global.print = (text: string) => {
   sdk.misc.print(text);

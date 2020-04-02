@@ -1,7 +1,6 @@
 // @flow
 
 import * as React from 'react';
-import { RefObject } from 'react';
 import ExecutorTask from './ExecutorTask';
 
 export type Task = {

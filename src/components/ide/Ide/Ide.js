@@ -54,8 +54,8 @@ import DeleteFileDialog from '../FileTree/DeleteFileDialog';
 import FileUpload from '../FileTree/FileUpload';
 import FileDownload from '../FileTree/FileDownload';
 import Executor, { type Task } from '../Executor';
-import misc, { default as initMiscSdk } from '../../../sdk/misc';
-import { default as initHedgehogSdk } from '../../../sdk/hedgehog';
+import initMiscSdk from '../../../sdk/misc';
+import initHedgehogSdk from '../../../sdk/hedgehog';
 import PluginManager from '../../../sdk/PluginManager';
 
 const messages = defineMessages({
