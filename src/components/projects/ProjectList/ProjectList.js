@@ -2,6 +2,12 @@
 
 import * as React from 'react';
 import withStyles from 'isomorphic-style-loader/withStyles';
+import {
+  defineMessages,
+  injectIntl,
+  IntlShape,
+  FormattedMessage as M,
+} from 'react-intl';
 
 import Avatar from '@material-ui/core/Avatar';
 import IconButton from '@material-ui/core/IconButton';
@@ -32,7 +38,36 @@ import CreateProjectDialog from './CreateProjectDialog';
 import DeleteProjectDialog from './DeleteProjectDialog';
 import RenameProjectDialog from './RenameProjectDialog';
 
-type PropTypes = {||};
+const messages = defineMessages({
+  createProjectTooltip: {
+    id: 'app.projects.create_project_tooltip',
+    description:
+      'Tooltip and screen reader label for the create project button',
+    defaultMessage: 'Create Project',
+  },
+  refreshProjectListTooltip: {
+    id: 'app.projects.refresh_project_list_tooltip',
+    description:
+      'Tooltip and screen reader label for the refresh projects button',
+    defaultMessage: 'Refresh Project List',
+  },
+  renameProjectTooltip: {
+    id: 'app.projects.rename_project_tooltip',
+    description:
+      'Tooltip and screen reader label for the rename project button',
+    defaultMessage: 'Rename Project "{name}"',
+  },
+  deleteProjectTooltip: {
+    id: 'app.projects.delete_project_tooltip',
+    description:
+      'Tooltip and screen reader label for the delete project button',
+    defaultMessage: 'Delete Project "{name}"',
+  },
+});
+
+type PropTypes = {|
+  intl: IntlShape,
+|};
 type StateTypes = {|
   projects: Project[],
 |};
@@ -118,6 +153,8 @@ class ProjectList extends React.Component<PropTypes, StateTypes> {
   }
 
   render() {
+    const { intl } = this.props;
+
     return (
       <div className={s.container}>
         <Paper className={s.root}>
@@ -125,18 +162,26 @@ class ProjectList extends React.Component<PropTypes, StateTypes> {
             <Typography className={s.title} variant="h5" noWrap>
               Your projects
             </Typography>
-            <Tooltip title="create project" placement="bottom">
+            <Tooltip
+              title={intl.formatMessage(messages.createProjectTooltip)}
+              placement="bottom"
+            >
               <IconButton
-                aria-label="create project"
+                aria-label={intl.formatMessage(messages.createProjectTooltip)}
                 onClick={() => this.beginCreateProject()}
               >
                 <CreateIcon />
               </IconButton>
             </Tooltip>
-            <Tooltip title="refresh project list" placement="bottom">
+            <Tooltip
+              title={intl.formatMessage(messages.refreshProjectListTooltip)}
+              placement="bottom"
+            >
               <IconButton
                 edge="end"
-                aria-label="refresh project list"
+                aria-label={intl.formatMessage(
+                  messages.refreshProjectListTooltip,
+                )}
                 onClick={() => this.refreshProjects()}
               >
                 <RefreshIcon />
@@ -159,23 +204,33 @@ class ProjectList extends React.Component<PropTypes, StateTypes> {
                 <ListItemText primary={project.name} />
                 <ListItemSecondaryAction>
                   <Tooltip
-                    title={`rename project "${project.name}"`}
+                    title={intl.formatMessage(messages.renameProjectTooltip, {
+                      name: project.name,
+                    })}
                     placement="bottom"
                   >
                     <IconButton
-                      aria-label={`rename project "${project.name}"`}
+                      aria-label={intl.formatMessage(
+                        messages.renameProjectTooltip,
+                        { name: project.name },
+                      )}
                       onClick={() => this.beginRenameProject(project)}
                     >
                       <RenameIcon />
                     </IconButton>
                   </Tooltip>
                   <Tooltip
-                    title={`delete project "${project.name}"`}
+                    title={intl.formatMessage(messages.deleteProjectTooltip, {
+                      name: project.name,
+                    })}
                     placement="bottom"
                   >
                     <IconButton
                       edge="end"
-                      aria-label={`delete project "${project.name}"`}
+                      aria-label={intl.formatMessage(
+                        messages.deleteProjectTooltip,
+                        { name: project.name },
+                      )}
                       onClick={() => this.beginDeleteProject(project)}
                     >
                       <DeleteIcon />
@@ -207,4 +262,4 @@ class ProjectList extends React.Component<PropTypes, StateTypes> {
   }
 }
 
-export default withStyles(s)(ProjectList);
+export default withStyles(s)(injectIntl(ProjectList));
