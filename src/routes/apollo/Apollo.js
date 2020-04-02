@@ -1,7 +1,7 @@
 // @flow
 
 import * as React from 'react';
-import withStyles from 'isomorphic-style-loader/lib/withStyles';
+import withStyles from 'isomorphic-style-loader/withStyles';
 
 import { graphql, compose } from 'react-apollo';
 import type { OperationComponent } from 'react-apollo';

@@ -15,6 +15,7 @@ import { ApolloProvider } from 'react-apollo';
 import { ThemeProvider } from '@material-ui/styles';
 import { IntlProvider } from 'react-intl';
 import CssBaseline from '@material-ui/core/CssBaseline';
+import StyleContext from 'isomorphic-style-loader/StyleContext';
 
 import theme from './theme';
 
@@ -24,7 +25,6 @@ import { getTranslations } from '../translations';
 // here we declare duplicate type information.
 
 type ContextType = {|
-  insertCss: Function,
   pathname: string,
   query: Object,
   client: Object,
@@ -33,13 +33,11 @@ type ContextType = {|
 
 type Props = {|
   context: ContextType,
+  insertCss: Function,
   children: React.Node,
 |};
 
 const ContextRuntimeType = {
-  // Enables critical path CSS rendering
-  // https://github.com/kriasoft/isomorphic-style-loader
-  insertCss: PropTypes.func.isRequired,
   // Universal HTTP client
   pathname: PropTypes.string.isRequired,
   query: PropTypes.object,
@@ -50,6 +48,9 @@ const ContextRuntimeType = {
 };
 
 const PropTypesRuntimeType = {
+  // Enables critical path CSS rendering
+  // https://github.com/kriasoft/isomorphic-style-loader
+  insertCss: PropTypes.func.isRequired,
   context: PropTypes.shape(ContextRuntimeType).isRequired,
   children: PropTypes.element.isRequired,
 };
@@ -86,19 +87,21 @@ class App extends React.PureComponent<Props> {
   }
 
   render() {
-    // Here, we are at universe level, sure? ;-)
-    const { client, locales } = this.props.context;
+    const { context: {client, locales}, insertCss, children } = this.props;
+
     // NOTE: If you need to add or modify header, footer etc. of the app,
     // please do that inside the Layout component.
     return (
-      <ApolloProvider client={client}>
-        <ThemeProvider theme={theme}>
-          <IntlProvider locale={locales[0]} messages={getTranslations(locales)}>
-            <CssBaseline />
-            {this.props.children}
-          </IntlProvider>
-        </ThemeProvider>
-      </ApolloProvider>
+      <StyleContext.Provider value={{ insertCss }}>
+        <ApolloProvider client={client}>
+          <ThemeProvider theme={theme}>
+            <IntlProvider locale={locales[0]} messages={getTranslations(locales)}>
+              <CssBaseline />
+              {children}
+            </IntlProvider>
+          </ThemeProvider>
+        </ApolloProvider>
+      </StyleContext.Provider>
     );
   }
 }

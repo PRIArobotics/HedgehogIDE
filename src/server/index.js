@@ -222,7 +222,6 @@ app.get('*', async (req, res, next) => {
     // Global (context) variables that can be easily accessed from any React component
     // https://facebook.github.io/react/docs/context.html
     const context = {
-      insertCss: isomorphicStyleLoader.insertCss.bind(isomorphicStyleLoader),
       // The twins below are wild, be careful!
       pathname: req.path,
       query: req.query,
@@ -232,6 +231,8 @@ app.get('*', async (req, res, next) => {
       locales: ['en'],
     };
 
+    const insertCss = isomorphicStyleLoader.insertCss.bind(isomorphicStyleLoader);
+
     const route = await router.resolve(context);
 
     if (route.redirect) {
@@ -240,7 +241,7 @@ app.get('*', async (req, res, next) => {
     }
 
     const rootComponent = materialStyleLoader.wrap(
-      <App context={context}>{route.component}</App>,
+      <App context={context} insertCss={insertCss}>{route.component}</App>,
     );
     await getDataFromTree(rootComponent);
 

@@ -1,7 +1,7 @@
 // @flow
 
 import * as React from 'react';
-import withStyles from 'isomorphic-style-loader/lib/withStyles';
+import withStyles from 'isomorphic-style-loader/withStyles';
 
 // eslint-disable-next-line css-modules/no-unused-class
 import s from './Console.scss';

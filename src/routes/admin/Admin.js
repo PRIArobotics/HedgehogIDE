@@ -10,7 +10,7 @@
 // @flow
 
 import * as React from 'react';
-import withStyles from 'isomorphic-style-loader/lib/withStyles';
+import withStyles from 'isomorphic-style-loader/withStyles';
 
 import s from './Admin.css';
 

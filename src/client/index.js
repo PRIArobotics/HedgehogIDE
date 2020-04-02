@@ -29,18 +29,19 @@ if ('serviceWorker' in navigator)
 
 const apolloClient = createApolloClient();
 
+// Enables critical path CSS rendering
+// https://github.com/kriasoft/isomorphic-style-loader
+const insertCss = (...styles) => {
+  // eslint-disable-next-line no-underscore-dangle
+  const removeCss = styles.map(x => x._insertCss());
+  return () => {
+    removeCss.forEach(f => f());
+  };
+};
+
 // Global (context) variables that can be easily accessed from any React component
 // https://facebook.github.io/react/docs/context.html
 const context = {
-  // Enables critical path CSS rendering
-  // https://github.com/kriasoft/isomorphic-style-loader
-  insertCss: (...styles) => {
-    // eslint-disable-next-line no-underscore-dangle
-    const removeCss = styles.map(x => x._insertCss());
-    return () => {
-      removeCss.forEach(f => f());
-    };
-  },
   // For react-apollo
   client: apolloClient,
   // TODO selectable locale
@@ -78,7 +79,7 @@ const history = setupHistory(async (history, location, isInitialRender) => {
 
     const renderReactApp = isHydrateSSR ? ReactDOM.hydrate : ReactDOM.render;
     appInstance = renderReactApp(
-      <App context={context}>{route.component}</App>,
+      <App context={context} insertCss={insertCss}>{route.component}</App>,
       container,
       () => {
         if (isInitialRender) {
