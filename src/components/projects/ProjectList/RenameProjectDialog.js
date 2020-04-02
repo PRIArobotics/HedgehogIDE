@@ -1,12 +1,31 @@
 // @flow
 
 import * as React from 'react';
+import { defineMessages, FormattedMessage as M } from 'react-intl';
 
 import TextField from '@material-ui/core/TextField';
 
 import SimpleDialog from '../../misc/SimpleDialog';
 
 import { Project } from '../../../core/store/projects';
+
+const messages = defineMessages({
+  title: {
+    id: 'app.projects.rename_project_dialog.title',
+    description: 'Title for the project rename dialog',
+    defaultMessage: 'Rename project',
+  },
+  description: {
+    id: 'app.projects.rename_project_dialog.description',
+    description: 'Text for the project rename dialog',
+    defaultMessage: "Please enter the project's new name.",
+  },
+  label: {
+    id: 'app.projects.rename_project_dialog.new_name_label',
+    description: "Label for the project creation dialog's text field",
+    defaultMessage: 'Project Name',
+  },
+});
 
 type PropTypes = {|
   onRename: (Project, string) => boolean | Promise<boolean>,
@@ -80,8 +99,8 @@ class RenameProjectDialog extends React.Component<PropTypes, StateTypes> {
         id="rename-dialog"
         open={visible}
         valid={isValid}
-        title="Rename project"
-        description="Please enter the project's new name."
+        title={<M {...messages.title} />}
+        description={<M {...messages.description} />}
         actions="OK_CANCEL"
         onCancel={() => this.cancel()}
         onConfirm={() => this.confirm()}
@@ -90,7 +109,7 @@ class RenameProjectDialog extends React.Component<PropTypes, StateTypes> {
           autoFocus
           margin="dense"
           id="name"
-          label="Project Name"
+          label={<M {...messages.label} />}
           type="text"
           value={newProjectName}
           onChange={event => this.setNewProjectName(event.target.value)}

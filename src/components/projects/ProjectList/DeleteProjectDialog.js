@@ -1,10 +1,24 @@
 // @flow
 
 import * as React from 'react';
+import { defineMessages, FormattedMessage as M } from 'react-intl';
 
 import SimpleDialog from '../../misc/SimpleDialog';
 
 import { Project } from '../../../core/store/projects';
+
+const messages = defineMessages({
+  title: {
+    id: 'app.projects.delete_project_dialog.title',
+    description: 'Title for the project deletion dialog',
+    defaultMessage: 'Confirm deletion',
+  },
+  description: {
+    id: 'app.projects.delete_project_dialog.description',
+    description: 'Text for the project deletion dialog',
+    defaultMessage: 'Are you sure yo want to delete project "{name}"?',
+  },
+});
 
 type PropTypes = {|
   onDelete: Project => boolean | Promise<boolean>,
@@ -67,8 +81,8 @@ class DeleteProjectDialog extends React.Component<PropTypes, StateTypes> {
         id="delete-dialog"
         open={visible}
         valid
-        title="Confirm deletion"
-        description={`Are you sure yo want to delete project "${name}"?`}
+        title={<M {...messages.title} />}
+        description={<M {...messages.description} values={{ name }} />}
         actions="OK_autofocus_CANCEL"
         onCancel={() => this.cancel()}
         onConfirm={() => this.confirm()}

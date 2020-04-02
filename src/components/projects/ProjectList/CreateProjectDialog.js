@@ -1,12 +1,31 @@
 // @flow
 
 import * as React from 'react';
+import { defineMessages, FormattedMessage as M } from 'react-intl';
 
 import TextField from '@material-ui/core/TextField';
 
 import SimpleDialog from '../../misc/SimpleDialog';
 
 import { Project } from '../../../core/store/projects';
+
+const messages = defineMessages({
+  title: {
+    id: 'app.projects.create_project_dialog.title',
+    description: 'Title for the project creation dialog',
+    defaultMessage: 'Create new project',
+  },
+  description: {
+    id: 'app.projects.create_project_dialog.description',
+    description: 'Text for the project creation dialog',
+    defaultMessage: "Please enter the new project's name.",
+  },
+  label: {
+    id: 'app.projects.create_project_dialog.new_name_label',
+    description: "Label for the project creation dialog's text field",
+    defaultMessage: 'Project Name',
+  },
+});
 
 type PropTypes = {|
   onCreate: string => boolean | Promise<boolean>,
@@ -66,8 +85,8 @@ class CreateProjectDialog extends React.Component<PropTypes, StateTypes> {
         id="create-dialog"
         open={visible}
         valid={isValid}
-        title="Create new project"
-        description="Please enter the new project's name."
+        title={<M {...messages.title} />}
+        description={<M {...messages.description} />}
         actions="OK_CANCEL"
         onCancel={() => this.cancel()}
         onConfirm={() => this.confirm()}
@@ -76,7 +95,7 @@ class CreateProjectDialog extends React.Component<PropTypes, StateTypes> {
           autoFocus
           margin="dense"
           id="name"
-          label="Project Name"
+          label={<M {...messages.label} />}
           type="text"
           value={newProjectName}
           onChange={event => this.setNewProjectName(event.target.value)}
