@@ -243,6 +243,7 @@ app.get('*', async (req, res, next) => {
     }
 
     const rootComponent = materialStyleLoader.wrap(
+      // eslint-disable-next-line react/jsx-no-bind
       <App context={context} insertCss={insertCss}>
         {route.component}
       </App>,
