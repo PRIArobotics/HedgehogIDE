@@ -51,7 +51,6 @@ window.addEventListener(
 
 // global APIs for the client function
 
-global.connection = connection;
 global.sdk = sdk;
 
 global.Hedgehog = Hedgehog;

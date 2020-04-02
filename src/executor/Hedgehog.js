@@ -1,5 +1,7 @@
 // @flow
 
+import sdk from './sdk';
+
 type Command = [string, any];
 
 export default class Hedgehog {
