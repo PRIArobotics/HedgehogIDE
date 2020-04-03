@@ -5,6 +5,7 @@ import { defineMessages, useIntl, FormattedMessage as M } from 'react-intl';
 
 import Button from '@material-ui/core/Button';
 import Menu from '@material-ui/core/Menu';
+import MenuItem from '@material-ui/core/MenuItem';
 import Toolbar from '@material-ui/core/Toolbar';
 import Tooltip from '@material-ui/core/Tooltip';
 import Typography from '@material-ui/core/Typography';
@@ -14,6 +15,7 @@ import { withStyles } from '@material-ui/styles';
 
 import PopupState, { bindTrigger, bindMenu } from 'material-ui-popup-state';
 
+import { LocaleContext } from '../../locale';
 import Link from '../../misc/Link';
 import { SelectLanguageIcon } from '../../misc/palette';
 
@@ -58,6 +60,9 @@ type HeaderProps = {|
 
 function Header({ classes }: HeaderProps) {
   const intl = useIntl();
+  const { preferredLocale, setPreferredLocale } = React.useContext(
+    LocaleContext,
+  );
 
   return (
     <Toolbar classes={{ gutters: classes.gutters }}>
@@ -93,14 +98,22 @@ function Header({ classes }: HeaderProps) {
               keepMounted
               {...bindMenu(popupState)}
             >
-              <Button
-                variant="contained"
-                color="primary"
-                size="small"
-                onClick={popupState.close}
+              <MenuItem
+                onClick={() => {
+                  setPreferredLocale('de');
+                  popupState.close();
+                }}
+              >
+                Deutsch
+              </MenuItem>
+              <MenuItem
+                onClick={() => {
+                  setPreferredLocale('en');
+                  popupState.close();
+                }}
               >
                 English
-              </Button>
+              </MenuItem>
             </Menu>
           </>
         )}
