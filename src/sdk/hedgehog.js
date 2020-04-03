@@ -52,13 +52,13 @@ export default async function init(getSimulator: () => Promise<Simulator>) {
     // </GSL customizable: hedgehog-body-setServo>
   }
 
-  async function getAnalog(robot: number, port: number) {
+  async function getAnalog(robot: string, port: number) {
     // <GSL customizable: hedgehog-body-getAnalog>
     return (await getRobot(robot)).getAnalog(port);
     // </GSL customizable: hedgehog-body-getAnalog>
   }
 
-  async function getDigital(robot: number, port: number) {
+  async function getDigital(robot: string, port: number) {
     // <GSL customizable: hedgehog-body-getDigital>
     return (await getRobot(robot)).getDigital(port);
     // </GSL customizable: hedgehog-body-getDigital>

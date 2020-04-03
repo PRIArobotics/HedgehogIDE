@@ -24,6 +24,9 @@ export function emitToAll(
   payload: any,
 ) {
   executor.tasks.forEach(task => {
-    emit(executor.getTaskExecutorRef(task).current, prefix, event, payload);
+    const { current } = executor.getTaskExecutorRef(task);
+    // eslint-disable-next-line no-throw-literal
+    if (current === null) throw 'ref is null';
+    emit(prefix, current, event, payload);
   });
 }
