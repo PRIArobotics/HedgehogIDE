@@ -80,12 +80,6 @@ const PropTypesRuntimeType = {
 class App extends React.PureComponent<Props> {
   static propTypes = PropTypesRuntimeType;
 
-  static childContextTypes = ContextRuntimeType;
-
-  getChildContext() {
-    return this.props.context;
-  }
-
   render() {
     const {
       context: { client, locales },
