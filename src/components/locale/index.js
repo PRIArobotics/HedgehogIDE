@@ -24,10 +24,12 @@ type PropTypes = {|
 |};
 
 export function LocaleProvider({ userAgentLocales, children }: PropTypes) {
-  const [preferredLocale, setPreferredLocale] = React.useState<string | null>(() => {
-    if (!process.env.BROWSER) return null;
-    return localStorage.getItem('preferred-locale') || null;
-  });
+  const [preferredLocale, setPreferredLocale] = React.useState<string | null>(
+    () => {
+      if (!process.env.BROWSER) return null;
+      return localStorage.getItem('preferred-locale') || null;
+    },
+  );
 
   React.useEffect(() => {
     if (!process.env.BROWSER) return;

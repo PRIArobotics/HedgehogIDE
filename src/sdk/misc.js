@@ -3,7 +3,7 @@
 // DO NOT DELETE GSL TAGS
 
 import ExecutorTask from '../components/ide/Executor/ExecutorTask';
-import { emit as baseEmit, emitToAll as baseEmitToAll } from './base';
+import baseEmit from './base';
 // <GSL customizable: misc-imports>
 import PluginManager from './PluginManager';
 
@@ -16,7 +16,6 @@ export default async function init(getConsole: () => Promise<Console>, onExit: (
   // </GSL customizable: misc-init>
 
   const emit = baseEmit.bind(null, 'misc');
-  const emitToAll = baseEmitToAll.bind(null, 'misc');
 
   async function print(text: string) {
     // <GSL customizable: misc-body-print>
@@ -43,7 +42,6 @@ export default async function init(getConsole: () => Promise<Console>, onExit: (
 
   return {
     emit,
-    emitToAll,
     handlers: {
       'misc_print': ({ text }) => print(text),
       'misc_exit': ({ error }) => exit(error),

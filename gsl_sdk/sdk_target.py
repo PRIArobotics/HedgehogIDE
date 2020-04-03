@@ -33,7 +33,6 @@ def generate_ide_code(model, module, root):
     yield from lines(f"""\
   return {{
     emit,
-    emitToAll,
     handlers: {{
 """)
     for function in module.functions:
@@ -75,7 +74,7 @@ def generate_ide_code(model, module, root):
 // DO NOT DELETE GSL TAGS
 
 import ExecutorTask from '../components/ide/Executor/ExecutorTask';
-import {{ emit as baseEmit, emitToAll as baseEmitToAll }} from './base';
+import baseEmit from './base';
 // <default GSL customizable: {module.name}-imports>
 // Put your imports tags here
 
@@ -88,7 +87,6 @@ export default async function init({', '.join([f"{arg.name}: {arg.type}" for arg
   // </GSL customizable: {module.name}-init>
 
   const emit = baseEmit.bind(null, '{module.name}');
-  const emitToAll = baseEmitToAll.bind(null, '{module.name}');
 \n""")
     if module.includeLookup:
       yield from lookup_code()

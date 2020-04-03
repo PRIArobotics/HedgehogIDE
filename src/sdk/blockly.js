@@ -3,7 +3,7 @@
 // DO NOT DELETE GSL TAGS
 
 import ExecutorTask from '../components/ide/Executor/ExecutorTask';
-import { emit as baseEmit, emitToAll as baseEmitToAll } from './base';
+import baseEmit from './base';
 // <GSL customizable: blockly-imports>
 import * as React from 'react';
 import Blockly from 'blockly';
@@ -51,7 +51,6 @@ export default async function init() {
   // </GSL customizable: blockly-init>
 
   const emit = baseEmit.bind(null, 'blockly');
-  const emitToAll = baseEmitToAll.bind(null, 'blockly');
 
   async function addBlock(blockDynamic: any) {
     // <GSL customizable: blockly-body-addBlock>
@@ -90,7 +89,6 @@ export default async function init() {
 
   return {
     emit,
-    emitToAll,
     handlers: {
       'blockly_addBlock': async ({ blockDynamic }, executorTask: ExecutorTask) => {
         return executorTask.withReply(addBlock.bind(null, blockDynamic));

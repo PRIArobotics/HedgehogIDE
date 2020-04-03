@@ -3,7 +3,7 @@
 // DO NOT DELETE GSL TAGS
 
 import ExecutorTask from '../components/ide/Executor/ExecutorTask';
-import { emit as baseEmit, emitToAll as baseEmitToAll } from './base';
+import baseEmit from './base';
 // <GSL customizable: hedgehog-imports>
 import Simulator from '../components/ide/Simulator';
 // </GSL customizable: hedgehog-imports>
@@ -16,7 +16,6 @@ export default async function init(getSimulator: () => Promise<Simulator>) {
   // </GSL customizable: hedgehog-init>
 
   const emit = baseEmit.bind(null, 'hedgehog');
-  const emitToAll = baseEmitToAll.bind(null, 'hedgehog');
 
   const moduleFunctions = {
     'commands': ({ robot, cmds }) => commands(robot, cmds),
@@ -66,7 +65,6 @@ export default async function init(getSimulator: () => Promise<Simulator>) {
 
   return {
     emit,
-    emitToAll,
     handlers: {
       'hedgehog_commands': async ({ robot, cmds }, executorTask: ExecutorTask) => {
         return executorTask.withReply(commands.bind(null, robot, cmds));

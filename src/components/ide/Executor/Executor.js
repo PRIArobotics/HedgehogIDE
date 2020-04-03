@@ -21,6 +21,8 @@ type StateTypes = {|
 |};
 class Executor extends React.Component<PropTypes, StateTypes> {
   taskExecutorRefs: Map<Task, RefObject<typeof ExecutorTask>> = new Map();
+  eventRegistry: Map<string, ExecutorTask[]> = new Map();
+
   state = {
     tasks: [],
   };
@@ -42,10 +44,31 @@ class Executor extends React.Component<PropTypes, StateTypes> {
       tasks: state.tasks.filter(currentTask => currentTask !== task),
     }));
     this.taskExecutorRefs.delete(task);
+    this.eventRegistry.forEach((tasks, event) => {
+      this.eventRegistry.set(event, tasks.filter(t => t !== this));
+    });
   }
 
   getTaskExecutorRef(task: Task): RefObject<typeof ExecutorTask> {
     return this.taskExecutorRefs.get(task);
+  }
+
+  registerForEvents(event, taskExecutor) {
+    if (!this.eventRegistry.has(event)) {
+      this.eventRegistry.set(event, [taskExecutor]);
+    } else {
+      const listeners = this.eventRegistry.get(event);
+      if (listeners.includes(this) === -1) {
+        listeners.push(this);
+      }
+    }
+  }
+
+  sendEvent(event: string, payload: any) {
+    const tasks = this.eventRegistry.get(event);
+    if (tasks) {
+      tasks.forEach(task => task.sendEvent(event, payload));
+    }
   }
 
   render() {
@@ -59,6 +82,7 @@ class Executor extends React.Component<PropTypes, StateTypes> {
             ref={this.taskExecutorRefs.get(task)}
             code={`return (async () => {${task.code}\n})();`}
             handlers={task.api}
+            executor={this}
           />
         ))}
       </>
