@@ -24,13 +24,19 @@ type PropTypes = {|
 |};
 
 export function LocaleProvider({ userAgentLocales, children }: PropTypes) {
-  const [preferredLocale, setPreferredLocale] = React.useState(() => {
-    // TODO load preferences
-    return null;
+  const [preferredLocale, setPreferredLocale] = React.useState<string | null>(() => {
+    if (!process.env.BROWSER) return null;
+    return localStorage.getItem('preferred-locale') || null;
   });
 
   React.useEffect(() => {
-    // TODO store preferences
+    if (!process.env.BROWSER) return;
+
+    if (preferredLocale !== null) {
+      localStorage.setItem('preferred-locale', preferredLocale);
+    } else {
+      localStorage.removeItem('preferred-locale');
+    }
   }, [preferredLocale]);
 
   const activeLocales =
