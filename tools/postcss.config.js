@@ -34,9 +34,14 @@ module.exports = () => ({
     // See what features in which stage in https://preset-env.cssdb.org/features
     // https://github.com/csstools/postcss-preset-env
     require('postcss-preset-env')({
-      stage: 3,
+      stage: 2,
       browsers: pkg.browserslist,
       autoprefixer: { flexbox: 'no-2009' },
+      features: {
+        'custom-media-queries': true,
+        'custom-selectors': true,
+        'nesting-rules': true,
+      },
     }),
   ],
 });
