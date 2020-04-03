@@ -4,10 +4,10 @@
 
 import ExecutorTask from '../components/ide/Executor/ExecutorTask';
 import { emit as baseEmit, emitToAll as baseEmitToAll } from './base';
-import VisualEditor from '../components/ide/VisualEditor';
 // <GSL customizable: blockly-imports>
 import * as React from 'react';
 import Blockly from 'blockly';
+import VisualEditor from '../components/ide/VisualEditor';
 
 export type DynamicBlock = {
   blockJson: Object,
@@ -53,7 +53,7 @@ export default async function init() {
   const emit = baseEmit.bind(null, 'blockly');
   const emitToAll = baseEmitToAll.bind(null, 'blockly');
 
-  async function addBlock(dynamicBlock: DynamicBlock) {
+  async function addBlock(blockDynamic: any) {
     // <GSL customizable: blockly-body-addBlock>
     // Your function code goes here
     const { type } = dynamicBlock.blockJson;
@@ -92,8 +92,8 @@ export default async function init() {
     emit,
     emitToAll,
     handlers: {
-      'blockly_addBlock': async ({ block }, executorTask: ExecutorTask) => {
-        return executorTask.withReply(addBlock.bind(null, block));
+      'blockly_addBlock': async ({ blockDynamic }, executorTask: ExecutorTask) => {
+        return executorTask.withReply(addBlock.bind(null, blockDynamic));
       },
     },
   };

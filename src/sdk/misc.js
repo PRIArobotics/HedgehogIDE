@@ -4,12 +4,12 @@
 
 import ExecutorTask from '../components/ide/Executor/ExecutorTask';
 import { emit as baseEmit, emitToAll as baseEmitToAll } from './base';
-// <default GSL customizable: misc-imports>
-// Put your imports tags here
+// <GSL customizable: misc-imports>
+import PluginManager from './PluginManager';
 
 // </GSL customizable: misc-imports>
 
-export default async function init(getConsole: () => Promise<Console>, onExit: () => void | Promise<void>) {
+export default async function init(getConsole: () => Promise<Console>, onExit: () => void | Promise<void>, pluginManager: PluginManager) {
   // <default GSL customizable: misc-init>
   // Your module initialization code
 
@@ -34,12 +34,20 @@ export default async function init(getConsole: () => Promise<Console>, onExit: (
     // </GSL customizable: misc-body-exit>
   }
 
+  async function pluginReady() {
+    // <GSL customizable: misc-body-pluginReady>
+    // Your function code goes here
+    pluginManager.onPluginReady();
+    // </GSL customizable: misc-body-pluginReady>
+  }
+
   return {
     emit,
     emitToAll,
     handlers: {
       'misc_print': ({ text }) => print(text),
       'misc_exit': ({ error }) => exit(error),
+      'misc_pluginReady': ({  }) => pluginReady(),
     },
   };
 };

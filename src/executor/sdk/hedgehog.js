@@ -24,12 +24,12 @@ export async function setServo(robot: string, port: number, position: number) {
   return connection.recv();
 }
 
-export async function getAnalog(robot: number, port: number) {
+export async function getAnalog(robot: string, port: number) {
   connection.send('hedgehog_getAnalog', { robot, port });
   return connection.recv();
 }
 
-export async function getDigital(robot: number, port: number) {
+export async function getDigital(robot: string, port: number) {
   connection.send('hedgehog_getDigital', { robot, port });
   return connection.recv();
 }

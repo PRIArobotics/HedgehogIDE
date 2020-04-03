@@ -17,4 +17,8 @@ export function exit(error: any) {
   connection.send('misc_exit', { error });
 }
 
+export function pluginReady() {
+  connection.send('misc_pluginReady', {  });
+}
+
 export const on = eventHandler.on.bind(eventHandler, 'misc');

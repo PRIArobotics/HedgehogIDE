@@ -6,6 +6,8 @@ modules:
         type: () => Promise<Console>
       - name: onExit
         type: () => void | Promise<void>
+      - name: pluginManager
+        type: PluginManager
     functions:
       print:
         args:
@@ -15,6 +17,8 @@ modules:
         args:
         - name: error
           type: any
+      pluginReady:
+        args: []
     events:
       testEvent:
   hedgehog:
@@ -53,14 +57,14 @@ modules:
         hasReply: true
         args:
         - name: robot
-          type: number
+          type: string
         - name: port
           type: number
       getDigital:
         hasReply: true
         args:
           - name: robot
-            type: number
+            type: string
           - name: port
             type: number
   blockly:
@@ -70,6 +74,6 @@ modules:
       addBlock:
         hasReply: true
         args:
-        - name: block
+        - name: blockDynamic
           type: any
 

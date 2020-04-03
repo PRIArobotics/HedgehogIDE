@@ -18,6 +18,7 @@ type Plugin = {
 class PluginManager {
   executor: Executor;
   plugins: Plugin[] = [];
+  pluginReadyResolvers: (() => void)[] = [];
 
   getConsole: () => Promise<Console>;
   getSimulator: () => Promise<Simulator>;
@@ -31,7 +32,7 @@ class PluginManager {
 
   async initSdk() {
     this.sdk = {
-      misc: await initMiscSdk(this.getConsole, () => {}),
+      misc: await initMiscSdk(this.getConsole, () => {}, this),
       hedgehog: await initHedgehogSdk(this.getSimulator),
       blockly: await initBlocklySdk(),
     };
@@ -63,20 +64,31 @@ class PluginManager {
               project.resolve('.metadata', 'plugins', pluginFile.name),
               'utf8',
             );
-            return {
-              name: pluginFile.name,
-              task: this.executor.addTask({
-                code,
-                api: {
-                  ...this.sdk.misc.handlers,
-                  ...this.sdk.hedgehog.handlers,
-                  ...this.sdk.blockly.handlers,
-                },
-              }),
-            };
+            return this.addPlugin(pluginFile.name, code);
           }),
       )),
     );
   }
+
+  async addPlugin(name: string, code: string) {
+    const readyPromise = new Promise(resolve => {
+      this.pluginReadyResolvers.push(resolve);
+    });
+    const plugin = {
+      name,
+      task: this.executor.addTask({
+        code,
+        api: {
+          ...this.sdk.misc.handlers,
+          ...this.sdk.hedgehog.handlers,
+          ...this.sdk.blockly.handlers,
+        },
+      }),
+    };
+    await readyPromise;
+    return plugin;
+  }
+
+  onPluginReady = () => this.pluginReadyResolvers.shift()();
 }
 export default PluginManager;

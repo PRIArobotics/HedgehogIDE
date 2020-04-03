@@ -127,6 +127,7 @@ type StateTypes = {|
   layoutState: FlexLayout.Model,
   editorStates: { [key: string]: EditorState },
   runningTask: Task | null,
+  pluginsLoaded: boolean,
 |};
 
 type OpenOrFocusTabOptions = {|
@@ -262,6 +263,7 @@ class Ide extends React.Component<PropTypes, StateTypes> {
     layoutState: FlexLayout.Model.fromJson(defaultLayout),
     editorStates: {},
     runningTask: null,
+    pluginsLoaded: false,
   };
 
   constructor(props: PropTypes) {
@@ -313,6 +315,7 @@ class Ide extends React.Component<PropTypes, StateTypes> {
     );
     await this.pluginManager.initSdk();
     await this.pluginManager.loadFromProjectMetadata(project);
+    this.setState({ pluginsLoaded: true });
   }
 
   save() {
@@ -465,8 +468,10 @@ class Ide extends React.Component<PropTypes, StateTypes> {
     const executorRefCurrent = this.executorRef.current;
 
     const sdk = {
-      misc: await initMiscSdk(this.getConsole.bind(this), () =>
-        this.setState({ runningTask: null }),
+      misc: await initMiscSdk(
+        this.getConsole.bind(this),
+        () => this.setState({ runningTask: null }),
+        this.pluginManager,
       ),
       hedgehog: await initHedgehogSdk(this.getSimulator.bind(this)),
     };
@@ -933,15 +938,21 @@ class Ide extends React.Component<PropTypes, StateTypes> {
           <FileUpload ref={this.fileUploadRef} />
           <FileDownload ref={this.fileDownloadRef} />
         </Grid>
-        <Grid item component={SquarePaper} className={classes.editorContainer}>
-          <FlexLayout.Layout
-            model={layoutState}
-            ref={this.flexRef}
-            factory={this.factory}
-            classNameMapper={className => FlexLayoutTheme[className]}
-            onModelChange={() => this.save()}
-          />
-        </Grid>
+        {this.state.pluginsLoaded ? (
+          <Grid
+            item
+            component={SquarePaper}
+            className={classes.editorContainer}
+          >
+            <FlexLayout.Layout
+              model={layoutState}
+              ref={this.flexRef}
+              factory={this.factory}
+              classNameMapper={className => FlexLayoutTheme[className]}
+              onModelChange={() => this.save()}
+            />
+          </Grid>
+        ) : null}
         <Executor ref={this.executorRef} />
       </Grid>
     );
