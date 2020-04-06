@@ -76,6 +76,7 @@
     "whatwg-fetch": "^3.0.0"
   },
   "devDependencies": {
+    "@babel/cli": "^7.8.4",
     "@babel/core": "^7.0.0",
     "@babel/node": "^7.0.0",
     "@babel/plugin-proposal-class-properties": "^7.0.0",
@@ -166,7 +167,7 @@
     "codegen:use-dev-server": "apollo client:codegen --target flow",
     "codegen:gsl-blockly": "python -m gsl_blockly",
     "codegen:gsl-sdk": "python -m gsl_sdk",
-    "codegen:i18n": "babel-node tools/run codegen_i18n",
+    "codegen:i18n": "babel ./src/ > /dev/null && babel-node tools/run codegen_i18n",
     "codegen": "babel-node tools/run codegen",
     "test": "jest",
     "test-watch": "yarn run test --watch --notify",

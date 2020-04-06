@@ -25,6 +25,7 @@ module.exports = {
   plugins: [
     '@babel/plugin-proposal-class-properties',
     '@babel/plugin-syntax-dynamic-import',
+    ['react-intl', { messagesDir: './src/translations/extractedMessages' }],
   ],
   ignore: ['node_modules', 'build'],
 };
