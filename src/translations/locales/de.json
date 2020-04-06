@@ -34,6 +34,7 @@
   "app.projects.delete_project_dialog.description": "Are you sure yo want to delete project \"{name}\"?",
   "app.projects.delete_project_dialog.title": "Confirm deletion",
   "app.projects.delete_project_tooltip": "Delete Project \"{name}\"",
+  "app.projects.list_title": "Your Projects",
   "app.projects.refresh_project_list_tooltip": "Refresh Project List",
   "app.projects.rename_project_dialog.description": "Please enter the project's new name.",
   "app.projects.rename_project_dialog.new_name_label": "Project Name",

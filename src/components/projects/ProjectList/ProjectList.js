@@ -39,6 +39,11 @@ import DeleteProjectDialog from './DeleteProjectDialog';
 import RenameProjectDialog from './RenameProjectDialog';
 
 const messages = defineMessages({
+  title: {
+    id: 'app.projects.list_title',
+    description: 'Title shown above the project list',
+    defaultMessage: 'Your Projects',
+  },
   createProjectTooltip: {
     id: 'app.projects.create_project_tooltip',
     description:
@@ -160,7 +165,7 @@ class ProjectList extends React.Component<PropTypes, StateTypes> {
         <Paper className={s.root}>
           <Toolbar className={s.toolbar}>
             <Typography className={s.title} variant="h5" noWrap>
-              Your projects
+              <M {...messages.title} />
             </Typography>
             <Tooltip
               title={intl.formatMessage(messages.createProjectTooltip)}
