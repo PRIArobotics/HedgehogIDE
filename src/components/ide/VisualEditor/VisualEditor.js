@@ -179,7 +179,6 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
   };
 
   buildWorkspaceOptions() {
-    console.log(VisualEditor.dynamicBlockLoaders);
     const dynamicBlocks = VisualEditor.dynamicBlockLoaders.length ? (
       <category name="Custom" colour="120">
         {VisualEditor.dynamicBlockLoaders.map(loader =>

@@ -185,19 +185,18 @@ class FileTree extends React.Component<PropTypes, StateTypes> {
 
   render() {
     const { expandedKeys, files, filter } = this.props;
-
-    const renderChildren = (
+    const effectiveFilter: (
       path: string,
-      children: FilerRecursiveStatInfo[],
-    ) => {
-      if (filter) {
-        children = children.filter(child => filter(path, child));
-      }
-      return children.map(child =>
-        // eslint-disable-next-line no-use-before-define
-        renderNode(`${path}/${child.name}`, child),
-      );
-    };
+      child: FilerRecursiveStatInfo,
+    ) => boolean = filter || (() => true);
+
+    const renderChildren = (path: string, children: FilerRecursiveStatInfo[]) =>
+      children
+        .filter(child => effectiveFilter(path, child))
+        .map(child =>
+          // eslint-disable-next-line no-use-before-define
+          renderNode(`${path}/${child.name}`, child),
+        );
 
     const renderNode = (path: string, file: FilerRecursiveStatInfo) => {
       const isLeaf = !file.isDirectory();
@@ -256,7 +255,10 @@ class FileTree extends React.Component<PropTypes, StateTypes> {
           selectable
           draggable
           expandedKeys={expandedKeys}
-          onExpand={expandedKeys => this.props.onUpdate({ expandedKeys })}
+          onExpand={
+            // eslint-disable-next-line no-shadow
+            expandedKeys => this.props.onUpdate({ expandedKeys })
+          }
           selectedKeys={this.state.selectedKeys}
           onDrop={event => this.handleFileDrop(event)}
         >

@@ -3,7 +3,6 @@
 import * as React from 'react';
 import { defineMessages, useIntl, FormattedMessage as M } from 'react-intl';
 
-import Button from '@material-ui/core/Button';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -60,9 +59,7 @@ type HeaderProps = {|
 
 function Header({ classes }: HeaderProps) {
   const intl = useIntl();
-  const { preferredLocale, setPreferredLocale } = React.useContext(
-    LocaleContext,
-  );
+  const { setPreferredLocale } = React.useContext(LocaleContext);
 
   return (
     <Toolbar classes={{ gutters: classes.gutters }}>

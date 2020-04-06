@@ -2,17 +2,19 @@
 
 import * as React from 'react';
 
-import Blockly from 'blockly';
-
 import * as SimulationSchema from './SimulationSchema';
 
 function forbidsAncestor(types, warning) {
-  return function onchange(event: Blockly.Events.Abstract) {
+  return function onchange() {
     // Don't change state at the start of a drag.
     if (this.workspace.isDragging()) return;
     let legal = true;
     // Is the block nested in a scope?
-    for (let block = this; (block = block.getSurroundParent()) !== null; ) {
+    for (
+      let block = this.getSurroundParent();
+      block !== null;
+      block = block.getSurroundParent()
+    ) {
       if (types.indexOf(block.type) !== -1) {
         legal = false;
         break;

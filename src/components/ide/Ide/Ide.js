@@ -224,11 +224,14 @@ class Ide extends React.Component<PropTypes, StateTypes> {
               <SimulatorEditor
                 layoutNode={node}
                 content={content}
-                onContentChange={(content, schema) => {
-                  onContentChange(content);
-                  if (this.simulatorRef.current && schema)
-                    this.simulatorRef.current.initSimulationJson(schema);
-                }}
+                onContentChange={
+                  // eslint-disable-next-line no-shadow
+                  (content, schema) => {
+                    onContentChange(content);
+                    if (this.simulatorRef.current && schema)
+                      this.simulatorRef.current.initSimulationJson(schema);
+                  }
+                }
                 {...getEditorState(id, 'simulator-editor')}
                 onUpdate={editorStateSetter(id, 'simulator-editor')}
               />
@@ -917,8 +920,10 @@ class Ide extends React.Component<PropTypes, StateTypes> {
             {...fileTreeState}
             filter={filter}
             onFileAction={action => this.handleFileAction(action)}
-            onUpdate={fileTreeState =>
-              this.setState({ fileTreeState }, () => this.save())
+            onUpdate={
+              // eslint-disable-next-line no-shadow
+              fileTreeState =>
+                this.setState({ fileTreeState }, () => this.save())
             }
           />
           <CreateFileDialog
