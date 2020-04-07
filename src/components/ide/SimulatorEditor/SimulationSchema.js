@@ -11,15 +11,17 @@ type Rotation = {|
 |};
 
 type Color = {|
-  color?: string,
+  render?: {
+    fillStyle?: string,
+  },
 |};
 
 type Static = {|
-  static?: boolean,
+  isStatic?: boolean,
 |};
 
 type Sensor = {|
-  sensor?: boolean,
+  isSensor?: boolean,
 |};
 
 type Density = {|
