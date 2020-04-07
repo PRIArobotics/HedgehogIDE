@@ -47,7 +47,11 @@ import {
 } from './blocks/hedgehog';
 import PrintBlock from './blocks/PrintBlock';
 
-Blockly.setLocale({ ...En, ...EnHedgehog });
+const locales = {
+  de: { ...De, ...DeHedgehog },
+  en: { ...En, ...EnHedgehog },
+};
+Blockly.setLocale(locales.en);
 
 const blocks = [
   HEDGEHOG_MOVE,
