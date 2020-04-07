@@ -79,6 +79,9 @@ class Simulator extends React.Component<PropTypes, StateTypes> {
           const body = Matter.Bodies.rectangle(0, 0, width, height, options);
 
           this.simulation.add([body]);
+          // TODO with this, being a sensor (non-colliding)
+          // and being a line (dark surface) re the same thing
+          if (options.isSensor) this.simulation.lines.push(body);
           break;
         }
         case 'circle': {
@@ -86,6 +89,9 @@ class Simulator extends React.Component<PropTypes, StateTypes> {
           const body = Matter.Bodies.circle(0, 0, radius, options);
 
           this.simulation.add([body]);
+          // TODO with this, being a sensor (non-colliding)
+          // and being a line (dark surface) re the same thing
+          if (options.isSensor) this.simulation.lines.push(body);
           break;
         }
         case 'robot': {
