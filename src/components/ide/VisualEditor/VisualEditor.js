@@ -4,8 +4,12 @@ import * as React from 'react';
 import ReactDOM from 'react-dom/server';
 import withStyles from 'isomorphic-style-loader/withStyles';
 
-import Blockly from 'blockly';
+import Blockly from 'blockly/core';
+import 'blockly/blocks';
+import 'blockly/javascript';
 import 'blockly/python';
+import * as De from 'blockly/msg/de';
+import * as En from 'blockly/msg/en';
 
 import {
   ExecuteIcon,
@@ -41,6 +45,8 @@ import {
   HEDGEHOG_SLEEP,
 } from './blocks/hedgehog';
 import PrintBlock from './blocks/PrintBlock';
+
+Blockly.setLocale(En);
 
 const blocks = [
   HEDGEHOG_MOVE,

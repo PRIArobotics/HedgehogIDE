@@ -4,7 +4,7 @@ import * as React from 'react';
 import ReactDOM from 'react-dom/server';
 import withStyles from 'isomorphic-style-loader/withStyles';
 
-import Blockly from 'blockly';
+import Blockly from 'blockly/core';
 
 import IconButton from '@material-ui/core/IconButton';
 

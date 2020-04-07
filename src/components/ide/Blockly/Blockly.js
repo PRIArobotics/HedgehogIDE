@@ -3,7 +3,7 @@
 import * as React from 'react';
 import withStyles from 'isomorphic-style-loader/withStyles';
 
-import Blockly from 'blockly';
+import Blockly from 'blockly/core';
 
 import s from './Blockly.scss';
 
