@@ -141,7 +141,8 @@ def generate_msg_module_code(model, mod, lang, root):
 // @flow
 /* eslint-disable */
 
-import Blockly from 'blockly';
+const Msg = {{}};
+export default Msg;
 """)
 
         def assigment_code(block, suffix, msg_key):
@@ -151,7 +152,7 @@ import Blockly from 'blockly';
                     key += f"_{suffix}"
 
                 yield from lines(f"""\
-Blockly.Msg['{key}'] = {repr(block[msg_key])};""")
+Msg['{key}'] = {repr(block[msg_key])};""")
 
         for block in lang.blocks:
             yield from lines(f"""\

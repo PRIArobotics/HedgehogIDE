@@ -8,8 +8,8 @@ import Blockly from 'blockly/core';
 import 'blockly/blocks';
 import 'blockly/javascript';
 import 'blockly/python';
-import * as De from 'blockly/msg/de';
-import * as En from 'blockly/msg/en';
+import De from 'blockly/msg/de';
+import En from 'blockly/msg/en';
 
 import {
   ExecuteIcon,
@@ -27,7 +27,8 @@ import ToolBarItem from '../ToolBar/ToolBarItem';
 
 import s from './VisualEditor.scss';
 
-import './blocks/hedgehog_msg_en';
+import DeHedgehog from './blocks/hedgehog_msg_de';
+import EnHedgehog from './blocks/hedgehog_msg_en';
 import './blocks/async_procedures_js';
 import {
   HEDGEHOG_MOVE,
@@ -46,7 +47,7 @@ import {
 } from './blocks/hedgehog';
 import PrintBlock from './blocks/PrintBlock';
 
-Blockly.setLocale(En);
+Blockly.setLocale({ ...En, ...EnHedgehog });
 
 const blocks = [
   HEDGEHOG_MOVE,
