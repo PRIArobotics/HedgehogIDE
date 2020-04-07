@@ -53,7 +53,12 @@ class BlocklyComponent extends React.Component<PropTypes, StateTypes> {
     this.refreshSize();
   }
 
-  // TODO remove blockly in componentWillUnmount
+  componentWillUnmount() {
+    if (this.workspace === null) return;
+
+    this.workspace.dispose();
+    this.workspace = null;
+  }
 
   refreshSize() {
     const container = this.containerRef.current;
