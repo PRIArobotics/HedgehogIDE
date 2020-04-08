@@ -29,18 +29,9 @@ class BlocklyComponent extends React.Component<PropTypes, StateTypes> {
     const { initialWorkspaceXml, workspaceOptions } = this.props;
 
     const workspace = Blockly.inject(this.blocklyRef.current, workspaceOptions);
+    this.workspace = workspace;
 
-    try {
-      if (initialWorkspaceXml !== '') {
-        Blockly.Xml.clearWorkspaceAndLoadFromXml(
-          Blockly.Xml.textToDom(initialWorkspaceXml),
-          workspace,
-        );
-        workspace.clearUndo();
-      }
-    } catch (ex) {
-      console.warn(ex);
-    }
+    this.loadWorkspaceDom(Blockly.Xml.textToDom(initialWorkspaceXml));
 
     workspace.addChangeListener(() => {
       // eslint-disable-next-line no-throw-literal
@@ -49,7 +40,6 @@ class BlocklyComponent extends React.Component<PropTypes, StateTypes> {
       this.props.onChange(this.workspace);
     });
 
-    this.workspace = workspace;
     this.refreshSize();
   }
 
@@ -58,6 +48,31 @@ class BlocklyComponent extends React.Component<PropTypes, StateTypes> {
 
     this.workspace.dispose();
     this.workspace = null;
+  }
+
+  loadWorkspaceDom(dom) {
+    // eslint-disable-next-line no-throw-literal
+    if (this.workspace === null) throw 'workspace is null';
+
+    const { initialWorkspaceXml } = this.props;
+
+    try {
+      // don't record this reloading of the workspace for undo
+      Blockly.Events.recordUndo = false;
+
+      Blockly.Xml.clearWorkspaceAndLoadFromXml(dom, this.workspace);
+
+      Blockly.Events.recordUndo = true;
+    } catch (ex) {
+      console.warn(ex);
+    }
+  }
+
+  reloadWorkspace() {
+    // eslint-disable-next-line no-throw-literal
+    if (this.workspace === null) throw 'workspace is null';
+
+    this.loadWorkspaceDom(Blockly.Xml.workspaceToDom(this.workspace));
   }
 
   refreshSize() {
