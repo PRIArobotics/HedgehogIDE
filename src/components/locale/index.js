@@ -18,12 +18,12 @@ export const LocaleContext = React.createContext<Locale>({
   },
 });
 
-type PropTypes = {|
+type LocaleProviderPropTypes = {|
   userAgentLocales: string[],
   children: React.Node,
 |};
 
-export function LocaleProvider({ userAgentLocales, children }: PropTypes) {
+export function LocaleProvider({ userAgentLocales, children }: LocaleProviderPropTypes) {
   const [preferredLocale, setPreferredLocale] = React.useState<string | null>(
     () => {
       if (!process.env.BROWSER) return null;
@@ -60,4 +60,14 @@ export function LocaleProvider({ userAgentLocales, children }: PropTypes) {
 
 export function useLocale(): Locale {
   return React.useContext(LocaleContext);
+}
+
+type LocaleConsumerPropTypes = {|
+  children: Locale => React.Node,
+|};
+
+export function LocaleConsumer({ children }: LocaleConsumerPropTypes) {
+  const locale = useLocale();
+
+  return children(locale);
 }
