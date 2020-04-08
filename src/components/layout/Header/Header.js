@@ -14,7 +14,7 @@ import { withStyles } from '@material-ui/styles';
 
 import PopupState, { bindTrigger, bindMenu } from 'material-ui-popup-state';
 
-import { LocaleContext } from '../../locale';
+import { useLocale } from '../../locale';
 import Link from '../../misc/Link';
 import { SelectLanguageIcon } from '../../misc/palette';
 
@@ -59,7 +59,7 @@ type HeaderProps = {|
 
 function Header({ classes }: HeaderProps) {
   const intl = useIntl();
-  const { setPreferredLocale } = React.useContext(LocaleContext);
+  const { setPreferredLocale } = useLocale();
 
   return (
     <Toolbar classes={{ gutters: classes.gutters }}>

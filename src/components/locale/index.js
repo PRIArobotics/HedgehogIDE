@@ -57,3 +57,7 @@ export function LocaleProvider({ userAgentLocales, children }: PropTypes) {
     </LocaleContext.Provider>
   );
 }
+
+export function useLocale(): Locale {
+  return React.useContext(LocaleContext);
+}
