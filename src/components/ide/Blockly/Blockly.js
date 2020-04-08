@@ -7,10 +7,16 @@ import Blockly from 'blockly/core';
 
 import s from './Blockly.scss';
 
+type Locale = {|
+  rtl: boolean,
+  msg: { [string]: string },
+|};
+
 type PropTypes = {|
   // eslint-disable-next-line no-use-before-define
   forwardedRef: RefObject<typeof BlocklyComponent>,
   initialWorkspaceXml: string,
+  locale: Locale,
   workspaceOptions?: Object,
   onChange: (workspace: Blockly.Workspace) => void | Promise<void>,
 |};
@@ -26,11 +32,13 @@ class BlocklyComponent extends React.Component<PropTypes, StateTypes> {
     if (this.blocklyRef.current === null) throw 'ref is null';
     this.props.forwardedRef.current = this;
 
-    const { initialWorkspaceXml, workspaceOptions } = this.props;
+    const { initialWorkspaceXml, locale, workspaceOptions } = this.props;
 
     const workspace = Blockly.inject(this.blocklyRef.current, workspaceOptions);
     this.workspace = workspace;
 
+    Blockly.setLocale(locale.msg);
+    workspace.RTL = locale.rtl;
     this.loadWorkspaceDom(Blockly.Xml.textToDom(initialWorkspaceXml));
 
     workspace.addChangeListener(() => {
@@ -50,6 +58,24 @@ class BlocklyComponent extends React.Component<PropTypes, StateTypes> {
     this.workspace = null;
   }
 
+  componentDidUpdate(prevProps) {
+    const {
+      locale: { rtl: prevRtl, msg: prevMsg },
+    } = prevProps;
+    const {
+      locale: { rtl, msg },
+    } = this.props;
+
+    // eslint-disable-next-line no-throw-literal
+    if (this.workspace === null) return;
+
+    if (rtl !== prevRtl || msg !== prevMsg) {
+      this.workspace.RTL = rtl;
+      Blockly.setLocale(msg);
+      this.loadWorkspaceDom(Blockly.Xml.workspaceToDom(this.workspace));
+    }
+  }
+
   loadWorkspaceDom(dom) {
     // eslint-disable-next-line no-throw-literal
     if (this.workspace === null) throw 'workspace is null';
@@ -66,13 +92,6 @@ class BlocklyComponent extends React.Component<PropTypes, StateTypes> {
     } catch (ex) {
       console.warn(ex);
     }
-  }
-
-  reloadWorkspace() {
-    // eslint-disable-next-line no-throw-literal
-    if (this.workspace === null) throw 'workspace is null';
-
-    this.loadWorkspaceDom(Blockly.Xml.workspaceToDom(this.workspace));
   }
 
   refreshSize() {

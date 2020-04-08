@@ -51,7 +51,6 @@ const locales = {
   de: { ...De, ...DeHedgehog },
   en: { ...En, ...EnHedgehog },
 };
-Blockly.setLocale(locales.en);
 
 const blocks = [
   HEDGEHOG_MOVE,
@@ -377,6 +376,7 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
           <BlocklyComponent
             forwardedRef={this.blocklyRef}
             initialWorkspaceXml={content}
+            locale={{ rtl: false, msg: locales.en }}
             workspaceOptions={this.state.workspaceOptions}
             onChange={this.handleBlocklyChange}
           />

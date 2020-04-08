@@ -33,6 +33,11 @@ import {
   SIMULATOR_GROUP,
 } from './blocks';
 
+// TODO translate simulator editor
+const locales = {
+  de: {},
+};
+
 const blocks = [
   SIMULATOR_ROOT,
   SIMULATOR_RECT,
@@ -210,6 +215,7 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
           <BlocklyComponent
             forwardedRef={this.blocklyRef}
             initialWorkspaceXml={content}
+            locale={{ rtl: false, msg: locales.en }}
             workspaceOptions={VisualEditor.blocklyWorkspaceOptions}
             onChange={this.handleBlocklyChange}
           />
