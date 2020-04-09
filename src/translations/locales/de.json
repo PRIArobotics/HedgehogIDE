@@ -24,7 +24,7 @@
   "app.ide.rename_file_dialog.description": "Please enter the {type, select, FILE {file's} DIRECTORY {folder's}} new name.",
   "app.ide.rename_file_dialog.title": "Rename {type, select, FILE {file} DIRECTORY {folder}}",
   "app.ide.toolbar.console_tooltip": "Console",
-  "app.ide.toolbar.project_settings.show_hide_metadata": "{action, select, show {Show} hide {Hide}} Metadata",
+  "app.ide.toolbar.project_settings.show_hide_metadata": "{action, select, SHOW {Show} HIDE {Hide}} Metadata",
   "app.ide.toolbar.project_settings_tooltip": "Project settings",
   "app.ide.toolbar.simulator_tooltip": "Simulator",
   "app.projects.create_project_dialog.description": "Please enter the new project's name.",
