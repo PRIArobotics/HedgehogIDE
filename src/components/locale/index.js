@@ -4,15 +4,20 @@ import * as React from 'react';
 
 import { IntlProvider } from 'react-intl';
 
-import { getTranslations } from '../../translations';
+import { MESSAGES, getTranslation } from '../../translations';
 
 type Locale = {|
+  // the preferred locale stored in the Hedgehog IDE
   preferredLocale: string | null,
+  // all preferred locales: the one explicitly set by the user if not null,
+  // followed by the ones from the environment, e.g. user agent information
+  preferredLocales: string[],
   setPreferredLocale: string => void | Promise<void>,
 |};
 
 export const LocaleContext = React.createContext<Locale>({
   preferredLocale: null,
+  preferredLocales: [],
   setPreferredLocale: () => {
     throw new Error('setPreferredLocale not specified');
   },
@@ -44,17 +49,19 @@ export function LocaleProvider({
     }
   }, [preferredLocale]);
 
-  const activeLocales =
-    preferredLocale === null
-      ? userAgentLocales
-      : [preferredLocale, ...userAgentLocales];
+  const preferredLocales = [
+    ...(preferredLocale === null ? [] : [preferredLocale]),
+    ...userAgentLocales,
+  ];
+
+  const locale = preferredLocales[0] || 'en';
+  const messages = getTranslation(preferredLocales, MESSAGES) || MESSAGES.en;
 
   return (
-    <LocaleContext.Provider value={{ preferredLocale, setPreferredLocale }}>
-      <IntlProvider
-        locale={activeLocales.length >= 1 ? activeLocales[0] : null}
-        messages={getTranslations(activeLocales)}
-      >
+    <LocaleContext.Provider
+      value={{ preferredLocale, preferredLocales, setPreferredLocale }}
+    >
+      <IntlProvider locale={locale} messages={messages}>
         {children}
       </IntlProvider>
     </LocaleContext.Provider>
