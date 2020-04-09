@@ -23,7 +23,10 @@ type LocaleProviderPropTypes = {|
   children: React.Node,
 |};
 
-export function LocaleProvider({ userAgentLocales, children }: LocaleProviderPropTypes) {
+export function LocaleProvider({
+  userAgentLocales,
+  children,
+}: LocaleProviderPropTypes) {
   const [preferredLocale, setPreferredLocale] = React.useState<string | null>(
     () => {
       if (!process.env.BROWSER) return null;

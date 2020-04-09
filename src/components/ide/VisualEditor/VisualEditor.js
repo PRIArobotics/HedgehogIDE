@@ -384,15 +384,17 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
     return (
       <div className={s.tabRoot}>
         {content === null ? null : (
-          <LocaleConsumer>{({ preferredLocale }) => (
-            <BlocklyComponent
-              forwardedRef={this.blocklyRef}
-              initialWorkspaceXml={content}
-              locale={{ rtl: false, msg: getMsg(preferredLocale) }}
-              workspaceOptions={this.state.workspaceOptions}
-              onChange={this.handleBlocklyChange}
-            />
-          )}</LocaleConsumer>
+          <LocaleConsumer>
+            {({ preferredLocale }) => (
+              <BlocklyComponent
+                forwardedRef={this.blocklyRef}
+                initialWorkspaceXml={content}
+                locale={{ rtl: false, msg: getMsg(preferredLocale) }}
+                workspaceOptions={this.state.workspaceOptions}
+                onChange={this.handleBlocklyChange}
+              />
+            )}
+          </LocaleConsumer>
         )}
         <ToolBar>
           <ToolBarItem>

@@ -34,7 +34,11 @@ class BlocklyComponent extends React.Component<PropTypes, StateTypes> {
 
     const { initialWorkspaceXml, locale, workspaceOptions } = this.props;
 
-    this.injectWorkspace(locale, workspaceOptions, Blockly.Xml.textToDom(initialWorkspaceXml));
+    this.injectWorkspace(
+      locale,
+      workspaceOptions,
+      Blockly.Xml.textToDom(initialWorkspaceXml),
+    );
 
     this.refreshSize();
   }
@@ -50,13 +54,11 @@ class BlocklyComponent extends React.Component<PropTypes, StateTypes> {
     const {
       locale: { rtl: prevRtl, msg: prevMsg },
     } = prevProps;
-    const {
-      locale, workspaceOptions,
-    } = this.props;
+    const { locale, workspaceOptions } = this.props;
 
     // eslint-disable-next-line no-throw-literal
     if (this.workspace === null) return;
-    const workspace = this.workspace;
+    const { workspace } = this;
 
     if (locale.rtl !== prevRtl || locale.msg !== prevMsg) {
       const dom = Blockly.Xml.workspaceToDom(workspace);
