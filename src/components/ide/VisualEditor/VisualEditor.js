@@ -201,25 +201,25 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
     ) : null;
     const toolbox = ReactDOM.renderToStaticMarkup(
       <xml>
-        <category name="Drive" colour="120">
+        <category name="%{BKY_HEDGEHOG_CAT_DRIVE}" colour="120">
           {HEDGEHOG_MOVE2_UNLIMITED.toolboxBlocks.default()}
           {HEDGEHOG_MOTOR_OFF2.toolboxBlocks.default()}
           {HEDGEHOG_BRAKE2.toolboxBlocks.default()}
           {HEDGEHOG_MOVE2.toolboxBlocks.default()}
           {HEDGEHOG_SLEEP.toolboxBlocks.default()}
         </category>
-        <category name="Motors" colour="120">
+        <category name="%{BKY_HEDGEHOG_CAT_MOTORS}" colour="120">
           {HEDGEHOG_MOVE_UNLIMITED.toolboxBlocks.default()}
           {HEDGEHOG_MOTOR_OFF.toolboxBlocks.default()}
           {HEDGEHOG_BRAKE.toolboxBlocks.default()}
           {HEDGEHOG_MOVE.toolboxBlocks.default()}
           {HEDGEHOG_SLEEP.toolboxBlocks.default()}
         </category>
-        <category name="Servos" colour="120">
+        <category name="%{BKY_HEDGEHOG_CAT_SERVOS}" colour="120">
           {HEDGEHOG_SERVO.toolboxBlocks.default()}
           {HEDGEHOG_SERVO_OFF.toolboxBlocks.default()}
         </category>
-        <category name="Sensors" colour="120">
+        <category name="%{BKY_HEDGEHOG_CAT_SENSORS}" colour="120">
           {HEDGEHOG_READ_DIGITAL.toolboxBlocks.default()}
           {HEDGEHOG_READ_ANALOG.toolboxBlocks.default()}
           {HEDGEHOG_READ_ANALOG.toolboxBlocks.comparison()}

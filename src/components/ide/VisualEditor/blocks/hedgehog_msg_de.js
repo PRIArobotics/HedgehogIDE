@@ -4,6 +4,14 @@
 const Msg = {};
 export default Msg;
 
+Msg['HEDGEHOG_CAT_DRIVE'] = 'Fahren';
+
+Msg['HEDGEHOG_CAT_MOTORS'] = 'Motoren';
+
+Msg['HEDGEHOG_CAT_SERVOS'] = 'Servos';
+
+Msg['HEDGEHOG_CAT_SENSORS'] = 'Sensoren';
+
 Msg['HEDGEHOG_SCOPE'] = 'Hedgehog scope %1 %2';
 Msg['HEDGEHOG_SCOPE_TOOLTIP'] = 'Alle Hedgehog Blöcke müssen sich innerhalb eines Hedgehog scope Blocks befinden';
 
