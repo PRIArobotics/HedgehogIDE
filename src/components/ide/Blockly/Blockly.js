@@ -34,19 +34,7 @@ class BlocklyComponent extends React.Component<PropTypes, StateTypes> {
 
     const { initialWorkspaceXml, locale, workspaceOptions } = this.props;
 
-    const workspace = Blockly.inject(this.blocklyRef.current, workspaceOptions);
-    this.workspace = workspace;
-
-    Blockly.setLocale(locale.msg);
-    workspace.RTL = locale.rtl;
-    this.loadWorkspaceDom(Blockly.Xml.textToDom(initialWorkspaceXml));
-
-    workspace.addChangeListener(() => {
-      // eslint-disable-next-line no-throw-literal
-      if (this.workspace === null) throw 'unreachable';
-
-      this.props.onChange(this.workspace);
-    });
+    this.injectWorkspace(locale, workspaceOptions, Blockly.Xml.textToDom(initialWorkspaceXml));
 
     this.refreshSize();
   }
@@ -63,35 +51,49 @@ class BlocklyComponent extends React.Component<PropTypes, StateTypes> {
       locale: { rtl: prevRtl, msg: prevMsg },
     } = prevProps;
     const {
-      locale: { rtl, msg },
+      locale, workspaceOptions,
     } = this.props;
 
     // eslint-disable-next-line no-throw-literal
     if (this.workspace === null) return;
+    const workspace = this.workspace;
 
-    if (rtl !== prevRtl || msg !== prevMsg) {
-      this.workspace.RTL = rtl;
-      Blockly.setLocale(msg);
-      this.loadWorkspaceDom(Blockly.Xml.workspaceToDom(this.workspace));
+    if (locale.rtl !== prevRtl || locale.msg !== prevMsg) {
+      const dom = Blockly.Xml.workspaceToDom(workspace);
+      workspace.dispose();
+      this.injectWorkspace(locale, workspaceOptions, dom);
     }
   }
 
-  loadWorkspaceDom(dom) {
+  injectWorkspace({ rtl, msg }: Locale, options: Object, dom) {
     // eslint-disable-next-line no-throw-literal
-    if (this.workspace === null) throw 'workspace is null';
+    if (this.blocklyRef.current === null) throw 'ref is null';
 
-    const { initialWorkspaceXml } = this.props;
+    Blockly.setLocale(msg);
+    const workspace = Blockly.inject(this.blocklyRef.current, {
+      ...options,
+      rtl,
+    });
 
     try {
       // don't record this reloading of the workspace for undo
       Blockly.Events.recordUndo = false;
 
-      Blockly.Xml.clearWorkspaceAndLoadFromXml(dom, this.workspace);
+      Blockly.Xml.clearWorkspaceAndLoadFromXml(dom, workspace);
 
       Blockly.Events.recordUndo = true;
     } catch (ex) {
       console.warn(ex);
     }
+
+    workspace.addChangeListener(() => {
+      // eslint-disable-next-line no-throw-literal
+      if (this.workspace === null) throw 'unreachable';
+
+      this.props.onChange(this.workspace);
+    });
+
+    this.workspace = workspace;
   }
 
   refreshSize() {
