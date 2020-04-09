@@ -7,7 +7,7 @@ import Blockly from 'blockly/core';
 
 import s from './Blockly.scss';
 
-type Locale = {|
+export type Locale = {|
   rtl: boolean,
   msg: { [string]: string },
 |};

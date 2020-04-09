@@ -8,9 +8,12 @@ import Blockly from 'blockly/core';
 
 import IconButton from '@material-ui/core/IconButton';
 
+import { LocaleConsumer } from '../../locale';
+import { type LocaleMap, getTranslation } from '../../../translations';
+
 import { SlideLeftIcon, SlideRightIcon } from '../../misc/palette';
 
-import BlocklyComponent from '../Blockly';
+import BlocklyComponent, { type Locale as BlocklyLocale } from '../Blockly';
 import ToolBar from '../ToolBar';
 import ToolBarItem from '../ToolBar/ToolBarItem';
 
@@ -34,8 +37,11 @@ import {
 } from './blocks';
 
 // TODO translate simulator editor
-const locales = {
-  de: {},
+const LOCALES: LocaleMap<BlocklyLocale> = {
+  en: {
+    rtl: false,
+    msg: {},
+  },
 };
 
 const blocks = [
@@ -212,13 +218,22 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
     return (
       <div className={s.tabRoot}>
         {content === null ? null : (
-          <BlocklyComponent
-            forwardedRef={this.blocklyRef}
-            initialWorkspaceXml={content}
-            locale={{ rtl: false, msg: locales.en }}
-            workspaceOptions={VisualEditor.blocklyWorkspaceOptions}
-            onChange={this.handleBlocklyChange}
-          />
+          <LocaleConsumer>
+            {({ preferredLocales }) => {
+              const locale =
+                getTranslation(preferredLocales, LOCALES) || LOCALES.en;
+
+              return (
+                <BlocklyComponent
+                  forwardedRef={this.blocklyRef}
+                  initialWorkspaceXml={content}
+                  locale={locale}
+                  workspaceOptions={VisualEditor.blocklyWorkspaceOptions}
+                  onChange={this.handleBlocklyChange}
+                />
+              );
+            }}
+          </LocaleConsumer>
         )}
         <ToolBar>
           <ToolBarItem>

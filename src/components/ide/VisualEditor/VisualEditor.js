@@ -12,7 +12,7 @@ import De from 'blockly/msg/de';
 import En from 'blockly/msg/en';
 
 import { LocaleConsumer } from '../../locale';
-import { getEffectiveLocale } from '../../../translations';
+import { type LocaleMap, getTranslation } from '../../../translations';
 
 import {
   ExecuteIcon,
@@ -24,7 +24,7 @@ import {
 } from '../../misc/palette';
 
 import ColoredIconButton from '../../misc/ColoredIconButton';
-import BlocklyComponent from '../Blockly';
+import BlocklyComponent, { type Locale as BlocklyLocale } from '../Blockly';
 import ToolBar from '../ToolBar';
 import ToolBarItem from '../ToolBar/ToolBarItem';
 
@@ -50,9 +50,15 @@ import {
 } from './blocks/hedgehog';
 import PrintBlock from './blocks/PrintBlock';
 
-const locales = {
-  de: { ...De, ...DeHedgehog },
-  en: { ...En, ...EnHedgehog },
+const LOCALES: LocaleMap<BlocklyLocale> = {
+  de: {
+    rtl: false,
+    msg: { ...De, ...DeHedgehog },
+  },
+  en: {
+    rtl: false,
+    msg: { ...En, ...EnHedgehog },
+  },
 };
 
 const blocks = [
@@ -373,27 +379,24 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
     const { content, codeCollapsed, codeLanguage } = this.props;
     const { code } = this.state;
 
-    function getMsg(preferred) {
-      const locale = getEffectiveLocale(
-        [preferred],
-        Object.hasOwnProperty.bind(locales),
-      );
-      return locale ? locales[locale] : locales.en;
-    }
-
     return (
       <div className={s.tabRoot}>
         {content === null ? null : (
           <LocaleConsumer>
-            {({ preferredLocale }) => (
-              <BlocklyComponent
-                forwardedRef={this.blocklyRef}
-                initialWorkspaceXml={content}
-                locale={{ rtl: false, msg: getMsg(preferredLocale) }}
-                workspaceOptions={this.state.workspaceOptions}
-                onChange={this.handleBlocklyChange}
-              />
-            )}
+            {({ preferredLocales }) => {
+              const locale =
+                getTranslation(preferredLocales, LOCALES) || LOCALES.en;
+
+              return (
+                <BlocklyComponent
+                  forwardedRef={this.blocklyRef}
+                  initialWorkspaceXml={content}
+                  locale={locale}
+                  workspaceOptions={this.state.workspaceOptions}
+                  onChange={this.handleBlocklyChange}
+                />
+              );
+            }}
           </LocaleConsumer>
         )}
         <ToolBar>
