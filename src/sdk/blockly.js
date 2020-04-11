@@ -52,7 +52,7 @@ export default async function init() {
 
   const emit = baseEmit.bind(null, 'blockly');
 
-  async function addBlock(blockDynamic: any) {
+  async function addBlock(dynamicBlock: any) {
     // <GSL customizable: blockly-body-addBlock>
     // Your function code goes here
     const { type } = dynamicBlock.blockJson;
@@ -63,17 +63,25 @@ export default async function init() {
 
     const block = {
       blockJson: dynamicBlock.blockJson,
-        generators: {
-      JavaScript: block => {
-        return 'print("block called!");\n';
-      },
+      generators: {
+        JavaScript: block => {
+          let code = `const payload = {};\n`;
+          dynamicBlock.blockJson.args0.forEach(arg => {
+            // Hope this actually works
+            let res = Blockly.JavaScript.valueToCode(block, arg.name, Blockly.JavaScript.ORDER_NONE)
+              || block.getFieldValue(arg.name);
+            code += `payload['${arg.name}'] = ${res};\n`
+          });
+          code += `await sdk.misc.emit('blockly', 'blk_${type}_called', payload);\n`;
+          return code;
+        },
         Python: block => {
-        return '';
-      }
-    },
+          return '';
+        }
+      },
       toolboxBlocks: {
-      default: () => buildToolboxBlock(dynamicBlock),
-      }
+        default: () => buildToolboxBlock(dynamicBlock),
+      },
     };
     dynamicBlocks.push(block);
 
@@ -90,8 +98,8 @@ export default async function init() {
   return {
     emit,
     handlers: {
-      'blockly_addBlock': async ({ blockDynamic }, executorTask: ExecutorTask) => {
-        return executorTask.withReply(addBlock.bind(null, blockDynamic));
+      'blockly_addBlock': async ({ dynamicBlock }, executorTask: ExecutorTask) => {
+        return executorTask.withReply(addBlock.bind(null, dynamicBlock));
       },
     },
   };

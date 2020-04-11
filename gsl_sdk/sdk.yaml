@@ -8,6 +8,8 @@ modules:
         type: () => void | Promise<void>
       - name: pluginManager
         type: PluginManager
+      - name: executor
+        type: Executor
     functions:
       print:
         args:
@@ -19,6 +21,16 @@ modules:
           type: any
       pluginReady:
         args: []
+      emit:
+        handlerName: handleEmit
+        hasReply: false
+        args:
+        - name: prefix
+          type: string
+        - name: event
+          type: string
+        - name: payload
+          type: any
     events:
       testEvent:
   hedgehog:
@@ -74,6 +86,6 @@ modules:
       addBlock:
         hasReply: true
         args:
-        - name: blockDynamic
+        - name: dynamicBlock
           type: any
 

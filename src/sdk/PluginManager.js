@@ -33,7 +33,7 @@ class PluginManager {
   async initSdk() {
     // TODO: add on exit handler
     this.sdk = {
-      misc: await initMiscSdk(this.getConsole, () => {}, this),
+      misc: await initMiscSdk(this.getConsole, () => {}, this, this.executor),
       hedgehog: await initHedgehogSdk(this.getSimulator),
       blockly: await initBlocklySdk(),
     };

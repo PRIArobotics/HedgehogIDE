@@ -11,6 +11,8 @@ def get_model(model_file):
           function.name = name
           if not 'hasReply' in function:
             function.hasReply = False
+          if not 'handlerName' in function:
+            function.handlerName = function.name
           return function
 
         if not 'includeLookup' in mod:

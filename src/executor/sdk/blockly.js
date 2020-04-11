@@ -9,8 +9,8 @@ import eventHandler from '../event';
 
 // </GSL customizable: blockly-executor-imports>
 
-export async function addBlock(blockDynamic: any) {
-  connection.send('blockly_addBlock', { blockDynamic });
+export async function addBlock(dynamicBlock: any) {
+  connection.send('blockly_addBlock', { dynamicBlock });
   return connection.recv();
 }
 

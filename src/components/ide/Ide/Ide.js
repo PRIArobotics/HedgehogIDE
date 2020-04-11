@@ -475,6 +475,7 @@ class Ide extends React.Component<PropTypes, StateTypes> {
         this.getConsole.bind(this),
         () => this.setState({ runningTask: null }),
         this.pluginManager,
+        executorRefCurrent,
       ),
       hedgehog: await initHedgehogSdk(this.getSimulator.bind(this)),
     };
