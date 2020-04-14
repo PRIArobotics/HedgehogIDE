@@ -82,14 +82,18 @@ export function LocaleConsumer({ children }: LocaleConsumerPropTypes) {
   return children(locale);
 }
 
-type LocaleSelectorPropTypes = {|
-  components: LocaleMap<React.ComponentType<{}>>,
+type LocaleSelectorPropTypes<T> = {|
+  components: LocaleMap<React.ComponentType<T>>,
+  ...T,
 |};
 
-export function LocaleSelector({ components }: LocaleSelectorPropTypes) {
+export function LocaleSelector<T>({
+  components,
+  ...props
+}: LocaleSelectorPropTypes<T>) {
   const { preferredLocales } = useLocale();
   const Component =
     getTranslation(preferredLocales, components) || components.en;
 
-  return <Component />;
+  return <Component {...props} />;
 }
