@@ -11,6 +11,7 @@
 
 import * as React from 'react';
 import En from './en/Help';
+import De from './de/Help';
 import Layout from '../../components/layout/Layout';
 
 import { useLocale } from '../../components/locale';
@@ -18,6 +19,7 @@ import { type LocaleMap, getTranslation } from '../../translations';
 
 const HELP_COMPONENTS: LocaleMap<React.ComponentType<{}>> = {
   en: En,
+  de: De,
 };
 
 function Help() {
