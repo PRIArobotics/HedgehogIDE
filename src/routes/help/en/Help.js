@@ -8,9 +8,9 @@ import Container from '@material-ui/core/Container';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 
-import Link from '../../components/misc/Link';
+import Link from '../../../components/misc/Link';
 
-import s from './Help.scss';
+import s from '../Help.scss';
 
 import help1img1 from './1_create_project/1_open_ide.png';
 import help1img2 from './1_create_project/2_click_plus.png';

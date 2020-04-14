@@ -10,7 +10,7 @@
 // @flow
 
 import * as React from 'react';
-import Help from './Help';
+import Help from './en/Help';
 import Layout from '../../components/layout/Layout';
 
 async function action() {
