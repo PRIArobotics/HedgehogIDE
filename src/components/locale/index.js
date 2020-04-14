@@ -4,7 +4,7 @@ import * as React from 'react';
 
 import { IntlProvider } from 'react-intl';
 
-import { MESSAGES, getTranslation } from '../../translations';
+import { type LocaleMap, MESSAGES, getTranslation } from '../../translations';
 
 type Locale = {|
   // the preferred locale stored in the Hedgehog IDE
@@ -80,4 +80,16 @@ export function LocaleConsumer({ children }: LocaleConsumerPropTypes) {
   const locale = useLocale();
 
   return children(locale);
+}
+
+type LocaleSelectorPropTypes = {|
+  components: LocaleMap<React.ComponentType<{}>>,
+|};
+
+export function LocaleSelector({ components }: LocaleSelectorPropTypes) {
+  const { preferredLocales } = useLocale();
+  const Component =
+    getTranslation(preferredLocales, components) || components.en;
+
+  return <Component />;
 }

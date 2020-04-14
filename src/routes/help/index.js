@@ -14,21 +14,13 @@ import En from './en/Help';
 import De from './de/Help';
 import Layout from '../../components/layout/Layout';
 
-import { useLocale } from '../../components/locale';
-import { type LocaleMap, getTranslation } from '../../translations';
+import { LocaleSelector } from '../../components/locale';
+import { type LocaleMap } from '../../translations';
 
 const HELP_COMPONENTS: LocaleMap<React.ComponentType<{}>> = {
   en: En,
   de: De,
 };
-
-function Help() {
-  const { preferredLocales } = useLocale();
-  const HelpComponent =
-    getTranslation(preferredLocales, HELP_COMPONENTS) || HELP_COMPONENTS.en;
-
-  return <HelpComponent />;
-}
 
 async function action() {
   return {
@@ -36,7 +28,7 @@ async function action() {
     chunks: ['help'],
     component: (
       <Layout>
-        <Help />
+        <LocaleSelector components={HELP_COMPONENTS} />
       </Layout>
     ),
   };
