@@ -10,8 +10,23 @@
 // @flow
 
 import * as React from 'react';
-import Help from './en/Help';
+import En from './en/Help';
 import Layout from '../../components/layout/Layout';
+
+import { useLocale } from '../../components/locale';
+import { type LocaleMap, getTranslation } from '../../translations';
+
+const HELP_COMPONENTS: LocaleMap<React.ComponentType<{}>> = {
+  en: En,
+};
+
+function Help() {
+  const { preferredLocales } = useLocale();
+  const HelpComponent =
+    getTranslation(preferredLocales, HELP_COMPONENTS) || HELP_COMPONENTS.en;
+
+  return <HelpComponent />;
+}
 
 async function action() {
   return {
