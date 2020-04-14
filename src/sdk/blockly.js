@@ -14,13 +14,15 @@ export type DynamicBlock = {
   toolboxBlocksData: {
     [inputName: string]: {
       valueType: string,
-      fields: [{
-        name: string,
-        value: any,
-      }]
-    }
-  }
-}
+      fields: [
+        {
+          name: string,
+          value: any,
+        },
+      ],
+    },
+  },
+};
 
 function buildToolboxBlock(block: DynamicBlock) {
   return (
@@ -35,7 +37,7 @@ function buildToolboxBlock(block: DynamicBlock) {
         </value>
       ))}
     </block>
-  )
+  );
 }
 
 // </GSL customizable: blockly-imports>
@@ -43,7 +45,7 @@ function buildToolboxBlock(block: DynamicBlock) {
 export default async function init() {
   // <GSL customizable: blockly-init>
   // Your module initialization code
-  let dynamicBlocks: Block[] = [];
+  const dynamicBlocks: Block[] = [];
   VisualEditor.dynamicBlockLoaders.push(() => {
     console.log('loader called!');
     return dynamicBlocks;
@@ -57,8 +59,8 @@ export default async function init() {
     // Your function code goes here
     const { type } = dynamicBlock.blockJson;
     console.log('adding block');
-    if(Blockly.Blocks[type]) {
-      throw 'block with given type already exists'
+    if (Blockly.Blocks[type]) {
+      throw 'block with given type already exists';
     }
 
     const block = {
@@ -68,9 +70,13 @@ export default async function init() {
           let code = `const payload = {};\n`;
           dynamicBlock.blockJson.args0.forEach(arg => {
             // Hope this actually works
-            let res = Blockly.JavaScript.valueToCode(block, arg.name, Blockly.JavaScript.ORDER_NONE)
-              || block.getFieldValue(arg.name);
-            code += `payload['${arg.name}'] = ${res};\n`
+            const res =
+              Blockly.JavaScript.valueToCode(
+                block,
+                arg.name,
+                Blockly.JavaScript.ORDER_NONE,
+              ) || block.getFieldValue(arg.name);
+            code += `payload['${arg.name}'] = ${res};\n`;
           });
           code += `await sdk.misc.emit('blockly', 'blk_${type}_called', payload);\n`;
           return code;
@@ -103,4 +109,4 @@ export default async function init() {
       },
     },
   };
-};
+}

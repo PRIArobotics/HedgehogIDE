@@ -27,14 +27,16 @@ export default async function init(getSimulator: () => Promise<Simulator>) {
 
   async function commands(robot: string, cmds: Command[]) {
     // <GSL customizable: hedgehog-body-commands>
-    return Promise.all(cmds.map(([command, payload]) => {
-      if (Object.prototype.hasOwnProperty.call(moduleFunctions, command)) {
-        // $FlowExpectError
-        return moduleFunctions[command]({ robot, ...payload });
-      } else {
-        return undefined;
-      }
-    }));
+    return Promise.all(
+      cmds.map(([command, payload]) => {
+        if (Object.prototype.hasOwnProperty.call(moduleFunctions, command)) {
+          // $FlowExpectError
+          return moduleFunctions[command]({ robot, ...payload });
+        } else {
+          return undefined;
+        }
+      }),
+    );
     // </GSL customizable: hedgehog-body-commands>
   }
 
@@ -83,4 +85,4 @@ export default async function init(getSimulator: () => Promise<Simulator>) {
       },
     },
   };
-};
+}

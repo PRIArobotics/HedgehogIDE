@@ -57,4 +57,4 @@ export default async function init(getConsole: () => Promise<Console>, onExit: (
       'misc_emit': ({ prefix, event, payload }) => handleEmit(prefix, event, payload),
     },
   };
-};
+}

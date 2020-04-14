@@ -93,7 +93,7 @@ export default async function init({', '.join([f"{arg.name}: {arg.type}" for arg
     yield from impl_code()
     yield from handler_code()
     yield from lines(f"""\
-}};
+}}
 """)
 
 def generate_executor_module_code(model, module, root):
