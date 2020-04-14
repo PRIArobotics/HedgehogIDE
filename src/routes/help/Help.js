@@ -32,11 +32,11 @@ function Help() {
         Getting Started
       </Typography>
       <Typography variant="body1" paragraph>
-        The Hedgehog IDE is allows you to create and run your own programs
-        easily, without installing extra software or creating accounts first. We
-        respect your privacy and your data, so we don&apos;t require any of your
-        data unless absolutely needed - that is, basically, the code you write
-        and nothing else.
+        The Hedgehog IDE allows you to create and run your own programs easily,
+        without installing extra software or creating accounts first. We respect
+        your privacy and your data, so we don&apos;t require any of your data
+        unless absolutely needed - that is, basically, the code you write and
+        nothing else.
       </Typography>
       <Typography variant="body1" component="div" paragraph>
         <Alert severity="info">
