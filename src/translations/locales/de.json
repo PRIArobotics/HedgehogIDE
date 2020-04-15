@@ -1,4 +1,6 @@
 {
+  "app.dialog.cancel": "Cancel",
+  "app.dialog.ok": "OK",
   "app.footer.home": "Home",
   "app.header.home_label": "Home",
   "app.header.home_logo_alt": "Hedgehog Logo",
