@@ -29,199 +29,210 @@ function Help() {
   return (
     <Container maxWidth="md" className={s.root}>
       <Typography component="h1" variant="h3" gutterBottom>
-        Getting Started
+        Erste Schritte
       </Typography>
       <Typography variant="body1" paragraph>
-        Die Hedgehog IDE allows you to create and run your own programs easily,
-        without installing extra software or creating accounts first. We respect
-        your privacy and your data, so we don&apos;t require any of your data
-        unless absolutely needed - that is, basically, the code you write and
-        nothing else.
+        Die hedgehog IDE ermöglicht es dir, einfach eigene Programme zu
+        schreiben und auszuführen, ohne vorher zusätzliche Software installieren
+        oder ein Konto erstellen zu müssen. Wir legen großen Wert auf
+        Privatsphäre und Datenschutz, deshalb fragen wir dich nach keinen Daten
+        die wir nicht unbedingt benötigen. Im Großen und Ganzen heißt das, außer
+        deinem Code musst du uns keine Daten geben.
       </Typography>
       <Typography variant="body1" component="div" paragraph>
         <Alert severity="info">
-          The Hedgehog IDE is still at the beginning. Things may be rough around
-          the edges, and not all features are there yet. Future features, such
-          as sharing code with others, will require you to share some more data
-          with us. Those features will be strictly optional and opt-in, though.
+          Die Hedgehog IDE befindet sich noch im Anfangsstadium. Manche
+          Funktionen sind vielleicht noch nicht ganz ausgereift oder fehlen
+          noch. Zukünftige Features, wie etwa eigenen Code mit anderen zu
+          teilen, können zusätzliche Daten von dir benötigen. Solche Features
+          werden jedenfalls opt-in sein, das heißt du entscheidest ob du diese
+          nutzt und uns die notwendigen Daten gibst.
         </Alert>
       </Typography>
       <Typography component="h2" variant="h4" gutterBottom>
-        Creating a project
+        Ein Projekt anlegen
       </Typography>
       <Typography variant="body1" paragraph>
-        A software project contains files that work together to create a
-        program. Creating one is the first thing you will have to do to get
-        started. In your <Link to="/projects">project list</Link>, click on the
-        &quot;+&quot; icon and choose a name. After you created the project,
-        click on it to open it.
+        Ein Softwareprojekt enthält Dateien, die zusammen ein Programm ergeben.
+        Ein Projekt anzulegen ist deshalb der erste Schritt. Klicke in deiner{' '}
+        <Link to="/projects">Projektübersicht</Link>, auf den
+        &quot;+&quot;-Button und such dir einen Namen aus. Klicke danach auf das
+        Projekt um es zu öffnen.
       </Typography>
       <Typography variant="body1" component="div" paragraph>
         <Grid container spacing={1}>
           <Grid item xs={6} md={3} className={`${s.gridImg} ${s.gridImgSm}`}>
-            <img src={help1img1} alt="open IDE" />
+            <img src={help1img1} alt="die IDE öffne" />
           </Grid>
           <Grid item xs={6} md={3} className={`${s.gridImg} ${s.gridImgSm}`}>
-            <img src={help1img2} alt='click "+" icon' />
+            <img src={help1img2} alt='auf den "+"-Button klicken' />
           </Grid>
           <Grid item xs={6} md={3} className={`${s.gridImg} ${s.gridImgSm}`}>
-            <img src={help1img3} alt="name and create project" />
+            <img src={help1img3} alt="Projekt benennen und anlegen" />
           </Grid>
           <Grid item xs={6} md={3} className={`${s.gridImg} ${s.gridImgSm}`}>
-            <img src={help1img4} alt="open project" />
+            <img src={help1img4} alt="Projekt öffnen" />
           </Grid>
         </Grid>
       </Typography>
       <Typography variant="body1" paragraph>
-        After opening the project, right click the project root to create a file
-        in it. In this example, let&apos;s choose &quot;New Blockly File&quot;
-        &ndash; Blockly allows the visual creation of programs. After naming the
-        file, make sure it&apos;s shown in the project tree, and open it by
-        double-clicking. You will see a Blockly workspace where you can create
-        your program.
+        Nachdem du das Projekt geöffnet hast, mach einen Rechtsklick auf den
+        Projektordner, um darin eine Datei anzulegen. In diesem Beispiel wählen
+        wir &quot;Neue Blockly Datei&quot; &ndash; mit Blockly kannst du dein
+        Programm grafisch erstellen. Nachdem du die Datei benannt hast, musst du
+        wahrscheinlich auf das kleine &quot;+&quot; beim Projektordner drücken
+        um die Datei anzuzeigen. Öffne dann die Datei mit einem Doppelklick,
+        dann solltest du einen leeren Blockly-Arbeitsbereich sehen.
       </Typography>
       <Typography variant="body1" component="div" paragraph>
         <Grid container spacing={1}>
           <Grid item xs={6} sm={4} className={`${s.gridImg} ${s.gridImgSm}`}>
-            <img src={help2img1} alt="context menu" />
+            <img src={help2img1} alt="Kontextmenu" />
           </Grid>
           <Grid item xs={6} sm={4} className={`${s.gridImg} ${s.gridImgSm}`}>
-            <img src={help2img2} alt="create file" />
+            <img src={help2img2} alt="Datei anlegen" />
           </Grid>
           <Grid item xs={6} sm={4} className={`${s.gridImg} ${s.gridImgSm}`}>
-            <img src={help2img3} alt="open file" />
+            <img src={help2img3} alt="Datei öffnen" />
           </Grid>
         </Grid>
       </Typography>
       <Typography component="h2" variant="h4" gutterBottom>
-        Controlling a simulated robot with Blockly
+        Einen simulierten Roboter mit Blockly steuern
       </Typography>
       <Typography variant="body1" paragraph>
-        Before you start adding blocks to your program, let&apos;s look at the
-        simulator. Click on the X,Y,Z axis icon above the project tree to open
-        it in a new tab, then drag that tab to the side to see Blockly and the
-        simulator at the same time.
+        Bevor du beginnst Blöcke zu deinem Programm hinzuzufügen, machen wir
+        schnell einen Blick auf den Simulator. Klicke über dem Projektordner auf
+        das Symbol mit den X,Y,Z Achsen um ihn zu öffnen, dann ziehe den neu
+        geöffneten Tab zur Seite, damit Blockly und der Simulator gleichzeitig
+        sichtbar sind.
       </Typography>
       <Typography variant="body1" component="div" paragraph>
         <Grid container spacing={1}>
           <Grid item sm={12} md={6} className={`${s.gridImg} ${s.gridImgLg}`}>
-            <img src={help3img1} alt="context menu" />
+            <img src={help3img1} alt="den Simulator verschieben" />
           </Grid>
           <Grid item sm={12} md={6} className={`${s.gridImg} ${s.gridImgLg}`}>
-            <img src={help3img2} alt="create file" />
+            <img src={help3img2} alt="Blockly und Simulator nebeneinander" />
           </Grid>
         </Grid>
       </Typography>
       <Typography variant="body1" paragraph>
-        The Simulator (and the console, which is opened with the second button
-        above the project tree) opens automatically when a program gives
-        commands to the robot (or outputs text, respectively) if it is not
-        already open.
+        Der Simulator (und übrigens auch die Konsole, die mit dem zweiten Button
+        über dem Projektordner geöffnet wird) öffnen sich automatisch, wenn ein
+        Befehl an den Roboter gegeben (oder eben Text ausgegeben) werden soll.
       </Typography>
       <Typography variant="body1" paragraph>
-        Blockly commands are organized by categories:
+        Die Blockly-Befehle sind in mehrere Kategorien eingeteilt:
       </Typography>
       <Typography variant="body1" component="div" paragraph>
         <ul>
           <li>
-            <strong>Drive</strong> lets you drive the robot by starting or
-            stopping two motors at the same time. Motors can use speeds between
-            -1000 and +1000. The simulated robot&apos;s left wheel is motor 0,
-            the right wheel motor 1.
+            Die Kategorie <strong>Fahren</strong> enthält Befehle, um immer zwei
+            Motoren gleichzeitig zu steuern. Dadurch können beide Räder des
+            Roboters zeitgleich gestartet oder angehalten werden. Die
+            Geschwindigkeit der Motoren wird als Zahl zwischen -1000 und +1000
+            angegeben. Der Simulierte Roboter hat sein linkes Rad an Motor 0,
+            sein rechtes an Motor 1.
           </li>
           <li>
-            <strong>Motors</strong> lets you control motors individually.
+            In der <strong>Motoren</strong>-Kategorie sind Befehle, um Motoren
+            einzeln anzusteuern.
           </li>
           <li>
-            <strong>Servos</strong> lets you control servos. Servo positions are
-            between 0 and 1000. The simulated robot does not yet have any
-            servos, though. Stay tuned!
+            <strong>Servos</strong> können auf Positionen eingestellt werden,
+            die zwischen 0 und 1000 angegeben werden. Der simulierte Roboter hat
+            momentan noch keine Servos.
           </li>
           <li>
-            <strong>Sensors</strong> lets you observe the simulated environment.
-            Sensor values are between 0 and 4095. The simulated robot has five
-            sensors at its front:
+            Mit <strong>Sensoren</strong> kann der Roboter seine Umgebung
+            wahrnehmen. Sensorwerte sind zwischen 0 und 4095. Vorne hat der
+            simulierte Roboter fünf Sensoren:
             <ul>
               <li>
-                Four line sensors that can detect the black lines on the ground;
-                these are sensors 0 to 3, from left to right. The sensor value
-                is high when a line is detected.
+                Vier Liniensensoren, die die schwarzen Linien auf dem Boden
+                erkennen können. Das sind von links nach rechts die Sensoren 0
+                bis 3. Wenn eine Linie erkannt wird, ist der Sensorwert hoch.
               </li>
               <li>
-                One bump sensor that is almost as wide as the robot front; this
-                is sensor 8. The sensor value is low when a collision is
-                detected.
+                Ein Stoßsensor, der fast so breit ist wie der Roboter selbst,
+                befindet sich vorne am Roboter. Dieser Sensor hat die Nummer 8.
+                Der Wert ist niedrig, wenn eine Kollision erkannt wird.
               </li>
             </ul>
           </li>
           <li>
-            The other categories contain general programming constructs, such as
-            conditionals and loops.
+            Die anderen Kategorien enthalten generelle Programmierwerkzeuge,
+            etwa Unterscheidungen und Schleifen.
           </li>
         </ul>
       </Typography>
       <Typography variant="body1" paragraph>
-        Now let&apos;s try out a simple program:
+        Probieren wir jetzt ein simples Programm:
       </Typography>
       <Typography variant="body1" component="div" paragraph>
         <Grid container spacing={1}>
           <Grid item xs={12} className={`${s.gridImg} ${s.gridImgLg}`}>
-            <img src={help4img1} alt="example program" />
+            <img src={help4img1} alt="Beispielprogramm" />
           </Grid>
         </Grid>
       </Typography>
       <Typography variant="body1" paragraph>
-        Create this program in your project, then click the green
-        &quot;Play&quot; button; you will see the robot driving to the other
-        side of the simulation and stopping at the wall. In detail, what
-        happened is the following:
+        Erstelle dieses Programm in deinem Projekt, dann klicke auf den grünen
+        Pfeil. Du wirst sehen, wie der Roboter bis zur nächsten Wand fährt und
+        dort nach der Kollision stehenbleibt. Schritt für Schritt ist folgendes
+        passiert:
       </Typography>
       <Typography variant="body1" component="div" paragraph>
         <ul>
-          <li>The first block let the robot move forward.</li>
+          <li>Der erste Block lässt den Roboter vorwärts losfahren.</li>
           <li>
-            The next block is a loop, running while the sensor on digital port 8
-            has a high value. In other words, the loop repeats until a collision
-            is detected.
+            Der nächste Block ist eine Schleife, die aufgeführt wird solange der
+            Sensor 8 einen hohen Digitalwert hat. Anders ausgedrückt, die
+            Schleife wird wiederholt, solange der Sensor keinen Zusammenstoß
+            erkennt.
           </li>
           <li>
-            Inside the loop, the program simply sleeps. That means that the
-            robot will continue moving as long as there was no collision.
+            In der Schleife wird das Programm kurz unterbrochen. Auch wenn das
+            Programm eine Pause macht bewegen sich die Motoren weiter, das heißt
+            der Roboter fährt bis der Sensor die Schleife zum Abbruch bringt.
           </li>
           <li>
-            After the loop, i.e. as soon as there was a collision, the robot is
-            stopped. This is the last command, so the program is finished.
+            Nach der Schleife, also nach einer Kollision, bleibt der Roboter
+            stehen. Da das der letzte Befehl ist endet die Schleife danach.
           </li>
         </ul>
       </Typography>
       <Typography component="h2" variant="h4" gutterBottom>
-        Exporting & importing files
+        Dateien exportieren & importieren
       </Typography>
       <Typography variant="body1" paragraph>
-        To download one of your files so that you can, for example, share it
-        with others, right click on that file and choose &quot;Download&quot;.
-        Likewise, to import a file into the Hedgehog IDE, right click on a
-        folder and choose &quot;Upload&quot;. Beware, currently the Hedgehog IDE
-        replaces existing files without warning!
+        Willst du eine deiner Dateien herunterzuladen, z.B. um diese mit anderen
+        zu teilen, Mach einen Rechtsklick auf diese Datei und wähle
+        &quot;Herunterladen&quot;. Ähnlich kannst du Dateien in die IDE
+        importieren, indem du auf einen Ordner rechtsklickst umd
+        &quot;Hochladen&quot; wählst. Achtung, momentan werden dadurch
+        bestehende Dateien ohne Warnung überschrieben!
       </Typography>
       <Typography variant="body1" paragraph>
-        Despite the name of these operations, your files are stored locally in
-        your browser, not on our servers. Future features may allow that, but
-        you will always be asked if you want to share data with us.
+        Trotz der Namen dieser Befehle werden deine Dateien nicht auf unseren
+        Servern gespeichert, sondern lokal in deinem Browser wo nur du Zugriff
+        darauf hast. In der Zukunft wird es auch die Möglichkeit geben, Projekte
+        auf unseren Servern zu speichern, du wirst aber immer gefragt werden, ob
+        du deine Daten mit uns teilen willst.
       </Typography>
       <Typography variant="body1" component="div" paragraph>
         <Alert severity="info">
-          Up- and downloading whole folders is not possible at the moment,
-          sorry!
+          Ganze Ordner hoch- oder herunterzuladen ist leider noch nicht möglich.
         </Alert>
       </Typography>
       <Typography variant="body1" component="div" paragraph>
         <Grid container spacing={1}>
           <Grid item sm={12} md={6} className={`${s.gridImg} ${s.gridImgSm}`}>
-            <img src={help5img1} alt="download a file" />
+            <img src={help5img1} alt="eine Datei herunterladen" />
           </Grid>
           <Grid item sm={12} md={6} className={`${s.gridImg} ${s.gridImgSm}`}>
-            <img src={help5img2} alt="upload a file" />
+            <img src={help5img2} alt="eine Datei hochladen" />
           </Grid>
         </Grid>
       </Typography>

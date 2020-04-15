@@ -105,10 +105,10 @@ function Help() {
       <Typography variant="body1" component="div" paragraph>
         <Grid container spacing={1}>
           <Grid item sm={12} md={6} className={`${s.gridImg} ${s.gridImgLg}`}>
-            <img src={help3img1} alt="context menu" />
+            <img src={help3img1} alt="moving the simulator" />
           </Grid>
           <Grid item sm={12} md={6} className={`${s.gridImg} ${s.gridImgLg}`}>
-            <img src={help3img2} alt="create file" />
+            <img src={help3img2} alt="Blockly and simulator side by side" />
           </Grid>
         </Grid>
       </Typography>
