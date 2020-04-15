@@ -55,14 +55,14 @@ modules:
         msg: schalte Lautsprecher aus
         tooltip: deaktiviert den Lautsprecher
       hedgehog_pullup:
-        msg: Port %1 pullup %2
-        tooltip: Setze einen Pullup Widerstand für einen bestimmten IO Port
+        msg: setze Pullup für Sensor %1 auf %2
+        tooltip: Setze einen Pullup Widerstand für einen bestimmten IO Sensor Port
       hedgehog_read_analog:
-        msg: analoger Port %1
-        tooltip: gibt den Wert eines analogen Ports zurück
+        msg: Wert von analogem Sensor %1
+        tooltip: gibt den Wert eines analogen Sensors zurück
       hedgehog_read_digital:
-        msg: digitaler Port %1
-        tooltip: gibt den Wert eines analogen Ports zurück
+        msg: Wert von digitalem Sensor %1
+        tooltip: gibt den Wert eines analogen Sensors zurück
       hedgehog_read_imu:
         msg: Achse %2 der %1 des Lagesensors
         tooltip: gibt einen oder alle Werte des Lagesensors zurück
@@ -74,7 +74,7 @@ modules:
         msg: Winkelgeschwindigkeit
       hedgehog_sleep:
         msg: pausiere für %1 Sekunden
-        tooltip: pausiert den Programmablauf für eine spezifische Zeit
+        tooltip: pausiert den Programmablauf für eine bestimmte Zeit
       hedgehog_create_scope:
         msg: iRobot Create scope %1 %2
         tooltip: Alle Create Blöcke müssen sich innerhalb eines Create oder Create2 scope Blocks befinden
@@ -162,14 +162,14 @@ modules:
         msg: turn speaker off
         tooltip: deaktivates the speaker
       hedgehog_pullup:
-        msg: port %1 pullup %2
-        tooltip: set the pullup state for a specified IO port
+        msg: set pullup for sensor %1 to %2
+        tooltip: set the pullup state for a specified IO sensor port
       hedgehog_read_analog:
-        msg: analog port %1
-        tooltip: get the value of an analog port
+        msg: value of analog sensor %1
+        tooltip: get the value of an analog sensor
       hedgehog_read_digital:
-        msg: digital port %1
-        tooltip: get the value of a digital port
+        msg: value of digital sensor %1
+        tooltip: get the value of a digital sensor
       hedgehog_read_imu:
         msg: "%2 axis of the pose sensor's %1"
         tooltip: get one or all axes of the pose sensor

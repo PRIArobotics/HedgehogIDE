@@ -57,14 +57,14 @@ Msg['HEDGEHOG_SPEAKER_TOOLTIP'] = 'turns speaker to a certain frequency';
 Msg['HEDGEHOG_SPEAKER_OFF'] = 'turn speaker off';
 Msg['HEDGEHOG_SPEAKER_OFF_TOOLTIP'] = 'deaktivates the speaker';
 
-Msg['HEDGEHOG_PULLUP'] = 'port %1 pullup %2';
-Msg['HEDGEHOG_PULLUP_TOOLTIP'] = 'set the pullup state for a specified IO port';
+Msg['HEDGEHOG_PULLUP'] = 'set pullup for sensor %1 to %2';
+Msg['HEDGEHOG_PULLUP_TOOLTIP'] = 'set the pullup state for a specified IO sensor port';
 
-Msg['HEDGEHOG_READ_ANALOG'] = 'analog port %1';
-Msg['HEDGEHOG_READ_ANALOG_TOOLTIP'] = 'get the value of an analog port';
+Msg['HEDGEHOG_READ_ANALOG'] = 'value of analog sensor %1';
+Msg['HEDGEHOG_READ_ANALOG_TOOLTIP'] = 'get the value of an analog sensor';
 
-Msg['HEDGEHOG_READ_DIGITAL'] = 'digital port %1';
-Msg['HEDGEHOG_READ_DIGITAL_TOOLTIP'] = 'get the value of a digital port';
+Msg['HEDGEHOG_READ_DIGITAL'] = 'value of digital sensor %1';
+Msg['HEDGEHOG_READ_DIGITAL_TOOLTIP'] = 'get the value of a digital sensor';
 
 Msg['HEDGEHOG_READ_IMU'] = "%2 axis of the pose sensor's %1";
 Msg['HEDGEHOG_READ_IMU_TOOLTIP'] = 'get one or all axes of the pose sensor';

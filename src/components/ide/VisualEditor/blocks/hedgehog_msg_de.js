@@ -57,14 +57,14 @@ Msg['HEDGEHOG_SPEAKER_TOOLTIP'] = 'schaltet den Lautsprecher auf eine bestimmte 
 Msg['HEDGEHOG_SPEAKER_OFF'] = 'schalte Lautsprecher aus';
 Msg['HEDGEHOG_SPEAKER_OFF_TOOLTIP'] = 'deaktiviert den Lautsprecher';
 
-Msg['HEDGEHOG_PULLUP'] = 'Port %1 pullup %2';
-Msg['HEDGEHOG_PULLUP_TOOLTIP'] = 'Setze einen Pullup Widerstand für einen bestimmten IO Port';
+Msg['HEDGEHOG_PULLUP'] = 'setze Pullup für Sensor %1 auf %2';
+Msg['HEDGEHOG_PULLUP_TOOLTIP'] = 'Setze einen Pullup Widerstand für einen bestimmten IO Sensor Port';
 
-Msg['HEDGEHOG_READ_ANALOG'] = 'analoger Port %1';
-Msg['HEDGEHOG_READ_ANALOG_TOOLTIP'] = 'gibt den Wert eines analogen Ports zurück';
+Msg['HEDGEHOG_READ_ANALOG'] = 'Wert von analogem Sensor %1';
+Msg['HEDGEHOG_READ_ANALOG_TOOLTIP'] = 'gibt den Wert eines analogen Sensors zurück';
 
-Msg['HEDGEHOG_READ_DIGITAL'] = 'digitaler Port %1';
-Msg['HEDGEHOG_READ_DIGITAL_TOOLTIP'] = 'gibt den Wert eines analogen Ports zurück';
+Msg['HEDGEHOG_READ_DIGITAL'] = 'Wert von digitalem Sensor %1';
+Msg['HEDGEHOG_READ_DIGITAL_TOOLTIP'] = 'gibt den Wert eines analogen Sensors zurück';
 
 Msg['HEDGEHOG_READ_IMU'] = 'Achse %2 der %1 des Lagesensors';
 Msg['HEDGEHOG_READ_IMU_TOOLTIP'] = 'gibt einen oder alle Werte des Lagesensors zurück';
@@ -76,7 +76,7 @@ Msg['HEDGEHOG_READ_IMU_ACCELERATION'] = 'Beschleunigung';
 Msg['HEDGEHOG_READ_IMU_RATE'] = 'Winkelgeschwindigkeit';
 
 Msg['HEDGEHOG_SLEEP'] = 'pausiere für %1 Sekunden';
-Msg['HEDGEHOG_SLEEP_TOOLTIP'] = 'pausiert den Programmablauf für eine spezifische Zeit';
+Msg['HEDGEHOG_SLEEP_TOOLTIP'] = 'pausiert den Programmablauf für eine bestimmte Zeit';
 
 Msg['HEDGEHOG_CREATE_SCOPE'] = 'iRobot Create scope %1 %2';
 Msg['HEDGEHOG_CREATE_SCOPE_TOOLTIP'] = 'Alle Create Blöcke müssen sich innerhalb eines Create oder Create2 scope Blocks befinden';
