@@ -32,7 +32,7 @@ function Help() {
         Erste Schritte
       </Typography>
       <Typography variant="body1" paragraph>
-        Die hedgehog IDE ermöglicht es dir, einfach eigene Programme zu
+        Die Hedgehog IDE ermöglicht es dir, einfach eigene Programme zu
         schreiben und auszuführen, ohne vorher zusätzliche Software installieren
         oder ein Konto erstellen zu müssen. Wir legen großen Wert auf
         Privatsphäre und Datenschutz, deshalb fragen wir dich nach keinen Daten
