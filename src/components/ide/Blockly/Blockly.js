@@ -34,11 +34,11 @@ class BlocklyComponent extends React.Component<PropTypes, StateTypes> {
 
     const { initialWorkspaceXml, locale, workspaceOptions } = this.props;
 
-    this.injectWorkspace(
-      locale,
-      workspaceOptions,
-      Blockly.Xml.textToDom(initialWorkspaceXml),
-    );
+    const dom =
+      initialWorkspaceXml !== ''
+        ? Blockly.Xml.textToDom(initialWorkspaceXml)
+        : null;
+    this.injectWorkspace(locale, workspaceOptions, dom);
 
     this.refreshSize();
   }
@@ -77,15 +77,17 @@ class BlocklyComponent extends React.Component<PropTypes, StateTypes> {
       rtl,
     });
 
-    try {
-      // don't record this reloading of the workspace for undo
-      Blockly.Events.recordUndo = false;
+    if (dom !== null) {
+      try {
+        // don't record this reloading of the workspace for undo
+        Blockly.Events.recordUndo = false;
 
-      Blockly.Xml.clearWorkspaceAndLoadFromXml(dom, workspace);
+        Blockly.Xml.clearWorkspaceAndLoadFromXml(dom, workspace);
 
-      Blockly.Events.recordUndo = true;
-    } catch (ex) {
-      console.warn(ex);
+        Blockly.Events.recordUndo = true;
+      } catch (ex) {
+        console.warn(ex);
+      }
     }
 
     workspace.addChangeListener(() => {
