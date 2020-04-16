@@ -14,6 +14,13 @@ The SDK is module based, every module enables interaction with a specific aspect
 The sdk modules are exposed as properties of the global variable `sdk`. For instance, to access the function `addBlock` of the `blockly` module, write `sdk.blockly.addBlock`.
 
 ### Core plugin functions
+#### `sdk.<MODULE>.on(event: string, cb: (payload: any) => void)`
+Register an event handler.
+
+Arguments:
+- `event`: Event name
+- `cb`: Handler function which will be called when the event occurs
+
 #### `sdk.misc.exit()`
 Terminates the plugin.
 
@@ -22,3 +29,5 @@ Some features and functions of the SDK require to be executed before the IDE and
 
 *IMPORTANT*: Every plugin MUST call this function after performing any of there early stage SDK calls, even those which do not perform any initialization-phase SDK calls at all.
 
+### SDK documentation
+Documentation on the SDK modules can be found in the sdk directory. 
