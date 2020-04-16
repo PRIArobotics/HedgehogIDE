@@ -5,9 +5,10 @@ export default async function codegen_i18n() {
   manageTranslations({
     messagesDirectory: 'src/translations/extractedMessages',
     translationsDirectory: 'src/translations/locales/',
-    // don't put default language of 'en' when checking
-    languages: ['de'],
-    // do put default language of 'en' when generating
-    // languages: ['en', 'de'],
+    languages: process.argv.includes('--check')
+      ? // don't put default language of 'en' when checking
+        ['de']
+      : // do put default language of 'en' when generating
+        ['en', 'de'],
   });
 }
