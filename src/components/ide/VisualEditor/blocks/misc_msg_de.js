@@ -1,0 +1,24 @@
+// @flow
+/* eslint-disable */
+
+const Msg = {};
+export default Msg;
+
+Msg['CAT_CUSTOM'] = 'Spezialblöcke';
+
+Msg['CAT_LOGIC'] = 'Logik';
+
+Msg['CAT_LOOPS'] = 'Schleifen';
+
+Msg['CAT_MATH'] = 'Mathe';
+
+Msg['CAT_LISTS'] = 'Listen';
+
+Msg['CAT_VARIABLES'] = 'Variablen';
+
+Msg['CAT_FUNCTIONS'] = 'Funktionen';
+
+Msg['CAT_TEXT'] = 'Text';
+
+Msg['PRINT'] = 'Gib Text %1 aus';
+Msg['PRINT_TOOLTIP'] = 'Gibt einen Text oder Wert auf dem Bildschirm aus';

@@ -32,6 +32,8 @@ import s from './VisualEditor.scss';
 
 import DeHedgehog from './blocks/hedgehog_msg_de';
 import EnHedgehog from './blocks/hedgehog_msg_en';
+import DeMisc from './blocks/misc_msg_de';
+import EnMisc from './blocks/misc_msg_en';
 import './blocks/async_procedures_js';
 import {
   HEDGEHOG_MOVE,
@@ -53,11 +55,11 @@ import PrintBlock from './blocks/PrintBlock';
 const LOCALES: LocaleMap<BlocklyLocale> = {
   de: {
     rtl: false,
-    msg: { ...De, ...DeHedgehog },
+    msg: { ...De, ...DeHedgehog, ...DeMisc },
   },
   en: {
     rtl: false,
-    msg: { ...En, ...EnHedgehog },
+    msg: { ...En, ...EnHedgehog, ...EnMisc },
   },
 };
 
@@ -199,7 +201,7 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
 
   buildWorkspaceOptions() {
     const dynamicBlocks = VisualEditor.dynamicBlockLoaders.length ? (
-      <category name="Custom" colour="120">
+      <category name="%{BKY_CAT_CUSTOM}" colour="120">
         {VisualEditor.dynamicBlockLoaders.map(loader =>
           loader().map(block => block.toolboxBlocks.default()),
         )}
@@ -232,7 +234,7 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
         </category>
         {dynamicBlocks}
         <sep />
-        <category name="Logic" colour="%{BKY_LOGIC_HUE}">
+        <category name="%{BKY_CAT_LOGIC}" colour="%{BKY_LOGIC_HUE}">
           <block type="controls_if" />
           <block type="controls_if">
             <mutation else="1" />
@@ -247,7 +249,7 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
           <block type="logic_null" />
           <block type="logic_ternary" />
         </category>
-        <category name="Loops" colour="%{BKY_LOOPS_HUE}">
+        <category name="%{BKY_CAT_LOOPS}" colour="%{BKY_LOOPS_HUE}">
           <block type="controls_repeat_ext">
             <value name="TIMES">
               <block type="math_number">
@@ -277,7 +279,7 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
           <block type="controls_forEach" />
           <block type="controls_flow_statements" />
         </category>
-        <category name="Math" colour="%{BKY_MATH_HUE}">
+        <category name="%{BKY_CAT_MATH}" colour="%{BKY_MATH_HUE}">
           <block type="math_number">
             <field name="NUM">0</field>
           </block>
@@ -316,7 +318,7 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
           <block type="math_random_float" />
           <block type="math_atan2" />
         </category>
-        <category name="Lists" colour="%{BKY_LISTS_HUE}">
+        <category name="%{BKY_CAT_LISTS}" colour="%{BKY_LISTS_HUE}">
           <block type="lists_create_empty" />
           <block type="lists_create_with" />
           <block type="lists_repeat">
@@ -334,16 +336,16 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
         </category>
         <sep />
         <category
-          name="Variables"
+          name="%{BKY_CAT_VARIABLES}"
           custom="VARIABLE"
           colour="%{BKY_VARIABLES_HUE}"
         />
         <category
-          name="Functions"
+          name="%{BKY_CAT_FUNCTIONS}"
           custom="PROCEDURE"
           colour="%{BKY_PROCEDURES_HUE}"
         />
-        <category name="Text" colour="70">
+        <category name="%{BKY_CAT_TEXT}" colour="70">
           {PrintBlock.toolboxBlocks.default()}
           <block type="text" />
         </category>

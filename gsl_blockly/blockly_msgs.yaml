@@ -1,4 +1,45 @@
 modules:
+  misc:
+    de:
+      cat_custom:
+        msg: Spezialblöcke
+      cat_logic:
+        msg: Logik
+      cat_loops:
+        msg: Schleifen
+      cat_math:
+        msg: Mathe
+      cat_lists:
+        msg: Listen
+      cat_variables:
+        msg: Variablen
+      cat_functions:
+        msg: Funktionen
+      cat_text:
+        msg: Text
+      print:
+        msg: Gib Text %1 aus
+        tooltip: Gibt einen Text oder Wert auf dem Bildschirm aus
+    en:
+      cat_custom:
+        msg: Custom
+      cat_logic:
+        msg: Logic
+      cat_loops:
+        msg: Loops
+      cat_math:
+        msg: Math
+      cat_lists:
+        msg: Lists
+      cat_variables:
+        msg: Variables
+      cat_functions:
+        msg: Functions
+      cat_text:
+        msg: Text
+      print:
+        msg: print text %1
+        tooltip: Prints a text or value to the screen
   hedgehog:
     de:
       hedgehog_cat_drive:

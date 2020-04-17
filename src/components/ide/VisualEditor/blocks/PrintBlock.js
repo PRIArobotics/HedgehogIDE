@@ -8,7 +8,7 @@ import { type Block } from '.';
 const PrintBlock: Block = {
   blockJson: {
     type: 'print_block',
-    message0: 'output %1',
+    message0: '%{BKY_PRINT}',
     args0: [
       {
         type: 'input_value',
@@ -20,7 +20,7 @@ const PrintBlock: Block = {
     previousStatement: null,
     nextStatement: null,
     colour: 70,
-    tooltip: 'This is a tooltip',
+    tooltip: '%{BKY_PRINT_TOOLTIP}',
     helpUrl: '',
   },
   generators: {

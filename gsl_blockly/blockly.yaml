@@ -1,4 +1,5 @@
 modules:
+  misc: {}
   hedgehog:
     # hedgehog_scope:
     #   scope: true
