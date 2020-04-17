@@ -598,3 +598,33 @@ export const SIMULATOR_SETTINGS_FRICTION_AIR = {
     default: () => <block type="simulator_settings_friction_air" />,
   },
 };
+
+export const SIMULATOR_SETTINGS_LABEL = {
+  blockJson: {
+    type: 'simulator_settings_label',
+    message0: 'label: %1',
+    args0: [
+      {
+        type: 'field_input',
+        name: 'LABEL',
+        value: '',
+      },
+    ],
+    inputsInline: false,
+    output: 'SimulatorObjectSettings',
+    colour: 180,
+    tooltip:
+      'sets a label for the body which can be used to identify the body and improve handling',
+    helpUrl: 'TODO',
+  },
+  blockExtras: {
+    getSettings() {
+      return {
+        label: this.getFieldValue('LABEL'),
+      };
+    },
+  },
+  toolboxBlocks: {
+    default: () => <block type="simulator_settings_label" />,
+  },
+};

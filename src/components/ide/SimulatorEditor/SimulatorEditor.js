@@ -34,6 +34,7 @@ import {
   SIMULATOR_SETTINGS_DENSITY,
   SIMULATOR_SETTINGS_FRICTION_AIR,
   SIMULATOR_GROUP,
+  SIMULATOR_SETTINGS_LABEL,
 } from './blocks';
 
 // TODO translate simulator editor
@@ -56,6 +57,7 @@ const blocks = [
   SIMULATOR_SETTINGS_SENSOR,
   SIMULATOR_SETTINGS_DENSITY,
   SIMULATOR_SETTINGS_FRICTION_AIR,
+  SIMULATOR_SETTINGS_LABEL,
   SIMULATOR_GROUP,
 ];
 blocks.forEach(block => {
@@ -107,6 +109,7 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
           {SIMULATOR_SETTINGS_SENSOR.toolboxBlocks.default()}
           {SIMULATOR_SETTINGS_DENSITY.toolboxBlocks.default()}
           {SIMULATOR_SETTINGS_FRICTION_AIR.toolboxBlocks.default()}
+          {SIMULATOR_SETTINGS_LABEL.toolboxBlocks.default()}
           {SIMULATOR_ROBOT.toolboxBlocks.default()}
         </category>
       </xml>,
