@@ -9,6 +9,7 @@ import Simulator from '../components/ide/Simulator';
 import initMiscSdk from './misc';
 import initHedgehogSdk from './hedgehog';
 import initBlocklySdk from './blockly';
+import initSimulationSdk from './simulation';
 
 type Plugin = {
   name: string,
@@ -36,6 +37,7 @@ class PluginManager {
       misc: await initMiscSdk(this.getConsole, () => {}, this, this.executor),
       hedgehog: await initHedgehogSdk(this.getSimulator),
       blockly: await initBlocklySdk(),
+      simulation: await initSimulationSdk(this.executor),
     };
   }
 
@@ -88,6 +90,10 @@ class PluginManager {
     };
     await readyPromise;
     return plugin;
+  }
+
+  simulatorAdded(simulator: Simulator) {
+    this.sdk.simulation.simulatorAdded(simulator);
   }
 
   onPluginReady = () => this.pluginReadyResolvers.shift()();

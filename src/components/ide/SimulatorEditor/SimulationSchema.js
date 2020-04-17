@@ -32,6 +32,10 @@ type FrictionAir = {|
   frictionAir?: number,
 |};
 
+type Label = {|
+  label?: string,
+|};
+
 type RobotProps = {|
   ...Translation,
   ...Rotation,
@@ -44,6 +48,7 @@ type AllProps = {|
   ...Sensor,
   ...Density,
   ...FrictionAir,
+  ...Label,
 |};
 
 export type Rectangle = {

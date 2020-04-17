@@ -49,6 +49,10 @@ export default async function init(getConsole: () => Promise<Console>, onExit: (
   }
 
   return {
+    // <default GSL customizable: misc-extra-return>
+    // Space for extra exports
+
+    // </GSL customizable: misc-extra-return>
     emit,
     handlers: {
       'misc_print': ({ text }) => print(text),

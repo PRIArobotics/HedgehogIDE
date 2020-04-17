@@ -412,6 +412,11 @@ export class Simulation {
     touchSensors: [],
   };
 
+  externalSensorHandlers: ((
+    sensor: Matter.Body | Matter.Composite,
+    other: Matter.Body | Matter.Composite,
+  ) => void | Promise<void>)[] = [];
+
   constructor() {
     this.world = Matter.World.create({
       gravity: { x: 0, y: 0 },
@@ -431,6 +436,8 @@ export class Simulation {
     const collisionHandler = ({ name, pairs }) => {
       pairs.forEach(pair => {
         const { bodyA, bodyB } = pair;
+
+        this.externalSensorHandlers.forEach(h => h(bodyA, bodyB));
 
         let collision = null;
         // go over all types of sensors in the cache,
@@ -506,6 +513,10 @@ export class Simulation {
 
   add(bodies: (Matter.Body | Matter.Composite)[]) {
     Matter.World.add(this.world, bodies);
+  }
+
+  addSensorHandler(handler) {
+    this.externalSensorHandlers.push(handler);
   }
 
   updateRobots() {

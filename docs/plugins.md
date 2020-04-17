@@ -30,4 +30,4 @@ Some features and functions of the SDK require to be executed before the IDE and
 *IMPORTANT*: Every plugin MUST call this function after performing any of there early stage SDK calls, even those which do not perform any initialization-phase SDK calls at all.
 
 ### SDK documentation
-Documentation on the SDK modules can be found in the sdk directory. 
+Documentation on the SDK modules can be found in the sdk directory.

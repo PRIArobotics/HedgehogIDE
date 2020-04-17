@@ -66,6 +66,10 @@ export default async function init(getSimulator: () => Promise<Simulator>) {
   }
 
   return {
+    // <default GSL customizable: hedgehog-extra-return>
+    // Space for extra exports
+
+    // </GSL customizable: hedgehog-extra-return>
     emit,
     handlers: {
       'hedgehog_commands': async ({ robot, cmds }, executorTask: ExecutorTask) => {

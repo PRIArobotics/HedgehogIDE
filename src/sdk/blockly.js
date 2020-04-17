@@ -47,7 +47,6 @@ export default async function init() {
   // Your module initialization code
   const dynamicBlocks: Block[] = [];
   VisualEditor.dynamicBlockLoaders.push(() => {
-    console.log('loader called!');
     return dynamicBlocks;
   });
   // </GSL customizable: blockly-init>
@@ -102,6 +101,10 @@ export default async function init() {
   }
 
   return {
+    // <default GSL customizable: blockly-extra-return>
+    // Space for extra exports
+
+    // </GSL customizable: blockly-extra-return>
     emit,
     handlers: {
       'blockly_addBlock': async ({ dynamicBlock }, executorTask: ExecutorTask) => {

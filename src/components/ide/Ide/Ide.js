@@ -417,13 +417,15 @@ class Ide extends React.Component<PropTypes, StateTypes> {
     }
   }
 
-  addSimulator = () =>
+  addSimulator = () => {
     this.openOrFocusTab({
       id: 'sim',
       type: 'tab',
       component: 'simulator',
       name: 'Simulator',
     });
+    this.waitForSimulator().then(s => this.pluginManager.simulatorAdded(s));
+  };
 
   addConsole = () =>
     this.openOrFocusTab(
@@ -452,10 +454,14 @@ class Ide extends React.Component<PropTypes, StateTypes> {
       tryIt();
     });
 
-  getSimulator = () =>
+  getSimulator = () => {
+    this.addSimulator();
+    return this.waitForSimulator();
+  };
+
+  waitForSimulator = () =>
     new Promise(resolve => {
       const tryIt = () => {
-        this.addSimulator();
         if (this.simulatorRef.current) {
           resolve(this.simulatorRef.current);
         } else {

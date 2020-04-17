@@ -88,4 +88,10 @@ modules:
         args:
         - name: dynamicBlock
           type: any
+  simulation:
+    init:
+      args:
+      - name: executor
+        type: Executor
+    functions: {}
 

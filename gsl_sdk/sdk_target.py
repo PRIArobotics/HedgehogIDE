@@ -32,6 +32,10 @@ def generate_ide_code(model, module, root):
   def handler_code():
     yield from lines(f"""\
   return {{
+    // <default GSL customizable: {module.name}-extra-return>
+    // Space for extra exports
+
+    // </GSL customizable: {module.name}-extra-return>
     emit,
     handlers: {{
 """)
