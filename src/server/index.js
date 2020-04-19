@@ -62,7 +62,7 @@ app.set('trust proxy', config.trustProxy);
 // keep a list of auth-relevant middlewares to decode cookies in the WS handler
 const authMiddlewares = [];
 
-function useAuth(mw) {
+function appUseAuth(mw) {
   authMiddlewares.push(mw);
   app.use(mw);
 }
@@ -71,14 +71,14 @@ function useAuth(mw) {
 // Register Node.js middleware
 // -----------------------------------------------------------------------------
 app.use(express.static(path.resolve(__dirname, 'public')));
-useAuth(cookieParser());
+appUseAuth(cookieParser());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
 //
 // Authentication
 // -----------------------------------------------------------------------------
-useAuth(
+appUseAuth(
   expressJwt({
     secret: config.auth.jwt.secret,
     credentialsRequired: false,

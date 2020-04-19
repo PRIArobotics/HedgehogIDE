@@ -21,7 +21,7 @@ module.exports = {
     'prettier/react',
   ],
 
-  plugins: ['flowtype', 'css-modules', 'prettier'],
+  plugins: ['flowtype', 'css-modules', 'prettier', 'react-hooks'],
 
   globals: {
     __DEV__: true,
@@ -42,6 +42,10 @@ module.exports = {
     'no-else-return': 'off',
     'no-nested-ternary': 'off',
     'react/no-unused-prop-types': 'warn',
+    // Checks rules of Hooks
+    'react-hooks/rules-of-hooks': 'error',
+    // Checks effect dependencies
+    'react-hooks/exhaustive-deps': 'warn',
 
     // Recommend not to leave any console.log in your code
     // Use console.error, console.warn and console.info instead
