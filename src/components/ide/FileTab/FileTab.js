@@ -23,9 +23,7 @@ class FileTab extends React.Component<PropTypes, StateTypes> {
     content: null,
   };
 
-  constructor(props: PropTypes) {
-    super(props);
-
+  componentDidMount() {
     this.refreshFile();
   }
 
