@@ -20,75 +20,67 @@ const messages = defineMessages({
   },
 });
 
-type PropTypes = {|
+type Props = {|
   onDelete: Project => boolean | Promise<boolean>,
 |};
-type StateTypes = {|
-  visible: boolean,
-  config: {|
-    project: Project,
-  |} | null,
+type Config = {|
+  project: Project,
+|};
+type Instance = {|
+  show: (project: Project) => void,
 |};
 
-class DeleteProjectDialog extends React.Component<PropTypes, StateTypes> {
-  state: StateTypes = {
-    visible: false,
-    config: null,
+function DeleteProjectDialog({ onDelete }: Props, ref: Ref<Instance>) {
+  const [visible, setVisible] = React.useState<boolean>(false);
+  const [config, setConfig] = React.useState<Config | null>(null);
+
+  const show = (project: Project) => {
+    setVisible(true);
+    setConfig({ project });
   };
-
-  show(project: Project) {
-    this.setState({ visible: true, config: { project } });
-  }
-
-  cancel() {
-    this.setState({ visible: false });
-  }
-
-  async confirm() {
+  const cancel = () => {
+    setVisible(false);
+  };
+  const confirm = async () => {
     // eslint-disable-next-line no-throw-literal
-    if (!this.state.visible) throw 'dialog is not shown';
+    if (!visible) throw 'dialog is not shown';
     // eslint-disable-next-line no-throw-literal
-    if (this.state.config === null) throw 'unreachable';
+    if (config === null) throw 'unreachable';
 
-    const {
-      config: { project },
-    } = this.state;
+    const { project } = config;
 
     // whether the deletion succeeded or not, we want to hide the dialog.
     // Thus, ignore the result of onDelete
-    await this.props.onDelete(project);
+    await onDelete(project);
 
     // we don't set the project to null because that results in a display glitch:
     // the hide animation will leave the project name visible for a split second
-    this.setState({ visible: false });
-  }
+    setVisible(false);
+  };
 
-  render() {
-    // this will only trigger before the first showing.
-    // after that, the old config is still present and will ensure that
-    // fade out animations won't glitch due to changing contents.
-    if (this.state.config === null) return null;
+  React.useImperativeHandle(ref, () => ({ show }));
 
-    const {
-      visible,
-      config: {
-        project: { name },
-      },
-    } = this.state;
+  // this will only trigger before the first showing.
+  // after that, the old config is still present and will ensure that
+  // fade out animations won't glitch due to changing contents.
+  if (config === null) return null;
 
-    return (
-      <SimpleDialog
-        id="delete-dialog"
-        open={visible}
-        valid
-        title={<M {...messages.title} />}
-        description={<M {...messages.description} values={{ name }} />}
-        actions="OK_autofocus_CANCEL"
-        onCancel={() => this.cancel()}
-        onConfirm={() => this.confirm()}
-      />
-    );
-  }
+  const {
+    project: { name },
+  } = config;
+
+  return (
+    <SimpleDialog
+      id="delete-dialog"
+      open={visible}
+      valid
+      title={<M {...messages.title} />}
+      description={<M {...messages.description} values={{ name }} />}
+      actions="OK_autofocus_CANCEL"
+      onCancel={cancel}
+      onConfirm={confirm}
+    />
+  );
 }
 
-export default DeleteProjectDialog;
+export default React.forwardRef<Props, Instance>(DeleteProjectDialog);

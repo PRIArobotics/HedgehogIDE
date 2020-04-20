@@ -27,84 +27,73 @@ const messages = defineMessages({
   },
 });
 
-type PropTypes = {|
+type Props = {|
   onCreate: string => boolean | Promise<boolean>,
   allProjects: Project[],
 |};
-type StateTypes = {|
-  visible: boolean,
-  newProjectName: string,
+type Instance = {|
+  show: () => void,
 |};
 
-class CreateProjectDialog extends React.Component<PropTypes, StateTypes> {
-  state: StateTypes = {
-    visible: false,
-    newProjectName: '',
+function CreateProjectDialog(
+  { onCreate, allProjects }: Props,
+  ref: Ref<Instance>,
+) {
+  const [visible, setVisible] = React.useState<boolean>(false);
+  const [newProjectName, setNewProjectName] = React.useState<string>('');
+
+  const show = () => {
+    setVisible(true);
+  };
+  const cancel = () => {
+    setVisible(false);
+  };
+  const onChange = event => {
+    const name = event.target.value;
+    const nameClean = name.replace(/[^-\w#$%().,:; ]/g, '');
+    setNewProjectName(nameClean);
+  };
+  const confirm = async () => {
+    // eslint-disable-next-line no-throw-literal
+    if (!visible) throw 'dialog is not shown';
+
+    const success = await onCreate(newProjectName);
+    if (success) {
+      setVisible(false);
+      setNewProjectName('');
+    }
   };
 
-  show() {
-    this.setState({ visible: true });
-  }
+  React.useImperativeHandle(ref, () => ({ show }));
 
-  cancel() {
-    this.setState({ visible: false });
-  }
+  const valid =
+    newProjectName !== '' &&
+    allProjects.every(project => project.name !== newProjectName);
 
-  setNewProjectName(name: string) {
-    this.setState({ newProjectName: name.replace(/[^-\w#$%().,:; ]/g, '') });
-  }
-
-  isValid() {
-    const { allProjects } = this.props;
-    const { newProjectName } = this.state;
-    return (
-      newProjectName !== '' &&
-      allProjects.every(project => project.name !== newProjectName)
-    );
-  }
-
-  async confirm() {
-    // eslint-disable-next-line no-throw-literal
-    if (!this.state.visible) throw 'dialog is not shown';
-
-    const { newProjectName } = this.state;
-
-    const success = await this.props.onCreate(newProjectName);
-    if (success) {
-      this.setState({ visible: false, newProjectName: '' });
-    }
-  }
-
-  render() {
-    const { visible, newProjectName } = this.state;
-
-    const isValid = this.isValid();
-
-    return (
-      <SimpleDialog
-        id="create-dialog"
-        open={visible}
-        valid={isValid}
-        title={<M {...messages.title} />}
-        description={<M {...messages.description} />}
-        actions="OK_CANCEL"
-        onCancel={() => this.cancel()}
-        onConfirm={() => this.confirm()}
-      >
-        <TextField
-          autoFocus
-          margin="dense"
-          id="name"
-          label={<M {...messages.label} />}
-          type="text"
-          value={newProjectName}
-          onChange={event => this.setNewProjectName(event.target.value)}
-          error={!isValid}
-          fullWidth
-        />
-      </SimpleDialog>
-    );
-  }
+  return (
+    <SimpleDialog
+      id="create-dialog"
+      open={visible}
+      valid={valid}
+      title={<M {...messages.title} />}
+      description={<M {...messages.description} />}
+      actions="OK_CANCEL"
+      onCancel={cancel}
+      onConfirm={confirm}
+    >
+      <TextField
+        autoFocus
+        margin="dense"
+        id="name"
+        label={<M {...messages.label} />}
+        type="text"
+        value={newProjectName}
+        onChange={onChange}
+        error={!valid}
+        fullWidth
+      />
+    </SimpleDialog>
+  );
 }
 
-export default CreateProjectDialog;
+export default React.forwardRef<Props, Instance>(CreateProjectDialog);

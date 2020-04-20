@@ -8,6 +8,10 @@ declare type RefObject<T> = {
   current: React.ElementRef<T> | null,
 };
 
+declare type Ref<Instance> =
+  | { current: Instance | null }
+  | (Instance | null) => mixed;
+
 declare module '@material-ui/core/AppBar' { declare module.exports: any; }
 declare module '@material-ui/core/Avatar' { declare module.exports: any; }
 declare module '@material-ui/core/Button' { declare module.exports: any; }

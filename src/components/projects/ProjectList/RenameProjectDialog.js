@@ -27,98 +27,82 @@ const messages = defineMessages({
   },
 });
 
-type PropTypes = {|
+type Props = {|
   onRename: (Project, string) => boolean | Promise<boolean>,
   allProjects: Project[],
 |};
-type StateTypes = {|
-  visible: boolean,
-  config: {|
-    project: Project,
-  |} | null,
-  newProjectName: string,
+type Config = {|
+  project: Project,
+|};
+type Instance = {|
+  show: (project: Project) => void,
 |};
 
-class RenameProjectDialog extends React.Component<PropTypes, StateTypes> {
-  state: StateTypes = {
-    visible: false,
-    config: null,
-    newProjectName: '',
+function RenameProjectDialog(
+  { onRename, allProjects }: Props,
+  ref: Ref<Instance>,
+) {
+  const [visible, setVisible] = React.useState<boolean>(false);
+  const [config, setConfig] = React.useState<Config | null>(null);
+  const [newProjectName, setNewProjectName] = React.useState<string>('');
+
+  const show = (project: Project) => {
+    setVisible(true);
+    setConfig({ project });
+    setNewProjectName(project.name);
+  };
+  const cancel = () => {
+    setVisible(false);
+  };
+  const onChange = event => {
+    const name = event.target.value;
+    const nameClean = name.replace(/[^-\w#$%().,:; ]/g, '');
+    setNewProjectName(nameClean);
+  };
+  const confirm = async () => {
+    // eslint-disable-next-line no-throw-literal
+    if (!visible) throw 'dialog is not shown';
+    // eslint-disable-next-line no-throw-literal
+    if (config === null) throw 'unreachable';
+
+    const { project } = config;
+
+    const success = await onRename(project, newProjectName);
+    if (success) {
+      setVisible(false);
+    }
   };
 
-  show(project: Project) {
-    this.setState({
-      visible: true,
-      config: { project },
-      newProjectName: project.name,
-    });
-  }
+  React.useImperativeHandle(ref, () => ({ show }));
 
-  cancel() {
-    this.setState({ visible: false });
-  }
+  const valid =
+    newProjectName !== '' &&
+    allProjects.every(project => project.name !== newProjectName);
 
-  setNewProjectName(name: string) {
-    this.setState({ newProjectName: name.replace(/[^-\w#$%().,:; ]/g, '') });
-  }
-
-  isValid() {
-    const { allProjects } = this.props;
-    const { newProjectName } = this.state;
-
-    return (
-      newProjectName !== '' &&
-      allProjects.every(project => project.name !== newProjectName)
-    );
-  }
-
-  async confirm() {
-    // eslint-disable-next-line no-throw-literal
-    if (!this.state.visible) throw 'confirming when dialog is not shown';
-    // eslint-disable-next-line no-throw-literal
-    if (this.state.config === null) throw 'unreachable';
-
-    const {
-      config: { project },
-      newProjectName,
-    } = this.state;
-
-    const success = await this.props.onRename(project, newProjectName);
-    if (success) {
-      this.setState({ visible: false, newProjectName: '' });
-    }
-  }
-
-  render() {
-    const { visible, newProjectName } = this.state;
-
-    const isValid = this.isValid();
-
-    return (
-      <SimpleDialog
-        id="rename-dialog"
-        open={visible}
-        valid={isValid}
-        title={<M {...messages.title} />}
-        description={<M {...messages.description} />}
-        actions="OK_CANCEL"
-        onCancel={() => this.cancel()}
-        onConfirm={() => this.confirm()}
-      >
-        <TextField
-          autoFocus
-          margin="dense"
-          id="name"
-          label={<M {...messages.label} />}
-          type="text"
-          value={newProjectName}
-          onChange={event => this.setNewProjectName(event.target.value)}
-          error={!isValid}
-          fullWidth
-        />
-      </SimpleDialog>
-    );
-  }
+  return (
+    <SimpleDialog
+      id="rename-dialog"
+      open={visible}
+      valid={valid}
+      title={<M {...messages.title} />}
+      description={<M {...messages.description} />}
+      actions="OK_CANCEL"
+      onCancel={cancel}
+      onConfirm={confirm}
+    >
+      <TextField
+        autoFocus
+        margin="dense"
+        id="name"
+        label={<M {...messages.label} />}
+        type="text"
+        value={newProjectName}
+        onChange={onChange}
+        error={!valid}
+        fullWidth
+      />
+    </SimpleDialog>
+  );
 }
 
-export default RenameProjectDialog;
+export default React.forwardRef<Props, Instance>(RenameProjectDialog);
