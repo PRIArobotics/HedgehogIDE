@@ -7,7 +7,6 @@
  * LICENSE.txt file in the root directory of this source tree.
  */
 
-import fs from 'fs';
 import path from 'path';
 import express from 'express';
 import cookieParser from 'cookie-parser';
@@ -19,7 +18,6 @@ import PrettyError from 'pretty-error';
 import { ApolloServer, makeExecutableSchema } from 'apollo-server-express';
 import { getDataFromTree } from 'react-apollo';
 import http from 'http';
-import https from 'https';
 import createApolloClient from '../core/createApolloClient';
 import App from '../components/App';
 import { ErrorPageWithoutStyle } from '../routes/error/ErrorPage';
@@ -318,39 +316,11 @@ const promise = models.sync().catch(err => console.error(err.stack));
 if (!module.hot) {
   promise.then(() => {
     // TODO no subscriptions when using `yarn start`
-    if (__DEV__) {
-      // set up the regular server
-      const ws = http.createServer(app);
-      server.installSubscriptionHandlers(ws);
-      ws.listen(config.port, () => {
-        console.info(
-          `The server is running at http://localhost:${config.port}/`,
-        );
-      });
-    } else {
-      // set up the regular server without websocket support
-      const ws = http.createServer(app);
-      ws.listen(config.port, () => {
-        console.info(
-          `The server is running at http://localhost:${config.port}/`,
-        );
-      });
-
-      // set up the https server with websocket support
-      const wss = https.createServer(
-        {
-          key: fs.readFileSync(config.keyFile),
-          cert: fs.readFileSync(config.certFile),
-        },
-        app,
-      );
-      server.installSubscriptionHandlers(wss);
-      wss.listen(config.securePort, () => {
-        console.info(
-          `The server is running at https://localhost:${config.securePort}/`,
-        );
-      });
-    }
+    const ws = http.createServer(app);
+    server.installSubscriptionHandlers(ws);
+    ws.listen(config.port, () => {
+      console.info(`The server is running at http://localhost:${config.port}/`);
+    });
   });
 }
 

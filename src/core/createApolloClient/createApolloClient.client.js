@@ -27,11 +27,10 @@ export default function createApolloClient() {
     credentials: 'include',
   });
 
-  // TODO hardcoded Uberspace port
   const wsLink = new WebSocketLink({
     uri: __DEV__
       ? `ws://${window.location.host}/subscriptions`
-      : `wss://${window.location.hostname}:63171/subscriptions`,
+      : `wss://${window.location.host}/subscriptions`,
     options: {
       reconnect: true,
     },
