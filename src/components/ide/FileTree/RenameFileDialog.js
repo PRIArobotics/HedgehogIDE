@@ -23,120 +23,89 @@ const messages = defineMessages({
   },
 });
 
-type PropTypes = {|
+type Props = {|
   onRename: (
     file: FileReference,
     newFileName: string,
   ) => boolean | Promise<boolean>,
 |};
-type StateTypes = {|
-  visible: boolean,
-  config: {|
-    file: FileReference,
-    siblingNames: string[],
-  |} | null,
-  newFileName: string,
+type Config = {|
+  file: FileReference,
+  siblingNames: string[],
+|};
+type Instance = {|
+  show: (file: FileReference, siblingNames: string[]) => void,
 |};
 
-class RenameFileDialog extends React.Component<PropTypes, StateTypes> {
-  state: StateTypes = {
-    visible: false,
-    config: null,
-    newFileName: '',
+function RenameFileDialog({ onRename }: Props, ref: Ref<Instance>) {
+  const [visible, setVisible] = React.useState<boolean>(false);
+  const [config, setConfig] = React.useState<Config | null>(null);
+  const [newFileName, setNewFileName] = React.useState<string>('');
+
+  const show = (file: FileReference, siblingNames: string[]) => {
+    setVisible(true);
+    setConfig({ file, siblingNames });
+    setNewFileName(file.file.name);
+  };
+  const cancel = () => {
+    setVisible(false);
+  };
+  const onChange = event => {
+    const name = event.target.value;
+    const nameClean = name.replace(/[^-\w#$%().,:; ]/g, '');
+    setNewFileName(nameClean);
+  };
+  const confirm = async () => {
+    // eslint-disable-next-line no-throw-literal
+    if (!visible) throw 'dialog is not shown';
+    // eslint-disable-next-line no-throw-literal
+    if (config === null) throw 'unreachable';
+
+    const { file } = config;
+
+    const success = await onRename(file, newFileName);
+    if (success) {
+      setVisible(false);
+    }
   };
 
-  show(file: FileReference, siblingNames: string[]) {
-    this.setState({
-      visible: true,
-      config: {
-        file,
-        siblingNames,
-      },
-      newFileName: file.file.name,
-    });
-  }
+  React.useImperativeHandle(ref, () => ({ show }));
 
-  cancel() {
-    this.setState({ visible: false });
-  }
+  // this will only trigger before the first showing.
+  // after that, the old config is still present and will ensure that
+  // fade out animations won't glitch due to changing contents.
+  if (config === null) return null;
 
-  setNewFileName(name: string) {
-    this.setState({ newFileName: name.replace(/[^-\w#$%().,:; ]/g, '') });
-  }
+  const { file, siblingNames } = config;
 
-  isValid() {
-    // eslint-disable-next-line no-throw-literal
-    if (this.state.config === null) throw 'unreachable';
+  const type = file.file.isDirectory() ? 'DIRECTORY' : 'FILE';
 
-    const {
-      config: { siblingNames },
-      newFileName,
-    } = this.state;
+  const valid =
+    newFileName !== '' && siblingNames.every(name => name !== newFileName);
 
-    return (
-      newFileName !== '' && siblingNames.every(name => name !== newFileName)
-    );
-  }
-
-  async confirm() {
-    // eslint-disable-next-line no-throw-literal
-    if (!this.state.visible) throw 'dialog is not shown';
-    // eslint-disable-next-line no-throw-literal
-    if (this.state.config === null) throw 'unreachable';
-
-    const {
-      config: { file },
-      newFileName,
-    } = this.state;
-
-    const success = await this.props.onRename(file, newFileName);
-    if (success) {
-      this.setState({ visible: false });
-    }
-  }
-
-  render() {
-    // this will only trigger before the first showing.
-    // after that, the old config is still present and will ensure that
-    // fade out animations won't glitch due to changing contents.
-    if (this.state.config === null) return null;
-
-    const {
-      visible,
-      config: { file },
-      newFileName,
-    } = this.state;
-
-    const type = file.file.isDirectory() ? 'DIRECTORY' : 'FILE';
-    const placeholder =
-      file.file.isDirectory() === 'FILE' ? 'folder' : 'file.js';
-    const isValid = this.isValid();
-
-    return (
-      <SimpleDialog
-        id="rename-dialog"
-        open={visible}
-        valid={isValid}
-        title={<M {...messages.title} values={{ type }} />}
-        description={<M {...messages.description} values={{ type }} />}
-        actions="OK_CANCEL"
-        onCancel={() => this.cancel()}
-        onConfirm={() => this.confirm()}
-      >
-        <TextField
-          autoFocus
-          margin="dense"
-          id="name"
-          label={placeholder}
-          type="text"
-          value={newFileName}
-          onChange={event => this.setNewFileName(event.target.value)}
-          error={!isValid}
-          fullWidth
-        />
-      </SimpleDialog>
-    );
-  }
+  return (
+    <SimpleDialog
+      id="rename-file-dialog"
+      open={visible}
+      valid={valid}
+      title={<M {...messages.title} values={{ type }} />}
+      description={<M {...messages.description} values={{ type }} />}
+      actions="OK_CANCEL"
+      onCancel={cancel}
+      onConfirm={confirm}
+    >
+      <TextField
+        autoFocus
+        margin="dense"
+        id="name"
+        type="text"
+        value={newFileName}
+        onChange={onChange}
+        error={!valid}
+        fullWidth
+      />
+    </SimpleDialog>
+  );
 }
 
-export default RenameFileDialog;
+export default React.forwardRef<Props, Instance>(RenameFileDialog);

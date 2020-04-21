@@ -21,76 +21,67 @@ const messages = defineMessages({
   },
 });
 
-type PropTypes = {|
+type Props = {|
   onDelete: (file: FileReference) => boolean | Promise<boolean>,
 |};
-type StateTypes = {|
-  visible: boolean,
-  config: {|
-    file: FileReference,
-  |} | null,
+type Config = {|
+  file: FileReference,
+|};
+type Instance = {|
+  show: (file: FileReference) => void,
 |};
 
-class DeleteFileDialog extends React.Component<PropTypes, StateTypes> {
-  state: StateTypes = {
-    visible: false,
-    config: null,
+function DeleteFileDialog({ onDelete }: Props, ref: Ref<Instance>) {
+  const [visible, setVisible] = React.useState<boolean>(false);
+  const [config, setConfig] = React.useState<Config | null>(null);
+
+  const show = (file: FileReference) => {
+    setVisible(true);
+    setConfig({ file });
   };
-
-  show(file: FileReference) {
-    this.setState({ visible: true, config: { file } });
-  }
-
-  cancel() {
-    this.setState({ visible: false });
-  }
-
-  async confirm() {
+  const cancel = () => {
+    setVisible(false);
+  };
+  const confirm = async () => {
     // eslint-disable-next-line no-throw-literal
-    if (!this.state.visible) throw 'dialog is not shown';
+    if (!visible) throw 'dialog is not shown';
     // eslint-disable-next-line no-throw-literal
-    if (this.state.config === null) throw 'unreachable';
+    if (config === null) throw 'unreachable';
 
-    const {
-      config: { file },
-    } = this.state;
+    const { file } = config;
 
     // whether the deletion succeeded or not, we want to hide the dialog.
     // Thus, ignore the result of onDelete
-    await this.props.onDelete(file);
+    await onDelete(file);
 
-    // we don't set the project to null because that results in a display glitch:
-    // the hide animation will leave the project name visible for a split second
-    this.setState({ visible: false });
-  }
+    // we don't set the file to null because that results in a display glitch:
+    // the hide animation will leave the file name visible for a split second
+    setVisible(false);
+  };
 
-  render() {
-    // this will only trigger before the first showing.
-    // after that, the old config is still present and will ensure that
-    // fade out animations won't glitch due to changing contents.
-    if (this.state.config === null) return null;
+  React.useImperativeHandle(ref, () => ({ show }));
 
-    const {
-      visible,
-      config: { file },
-    } = this.state;
+  // this will only trigger before the first showing.
+  // after that, the old config is still present and will ensure that
+  // fade out animations won't glitch due to changing contents.
+  if (config === null) return null;
 
-    const type = file.file.isDirectory() ? 'DIRECTORY' : 'FILE';
-    const { name } = file.file;
+  const { file } = config;
+  const { name } = file.file;
+  const type = file.file.isDirectory() ? 'DIRECTORY' : 'FILE';
 
-    return (
-      <SimpleDialog
-        id="delete-file-dialog"
-        open={visible}
-        valid
-        title={<M {...messages.title} />}
-        description={<M {...messages.description} values={{ type, name }} />}
-        actions="OK_autofocus_CANCEL"
-        onCancel={() => this.cancel()}
-        onConfirm={() => this.confirm()}
-      />
-    );
-  }
+  return (
+    <SimpleDialog
+      id="delete-file-dialog"
+      open={visible}
+      valid
+      title={<M {...messages.title} />}
+      description={<M {...messages.description} values={{ type, name }} />}
+      actions="OK_autofocus_CANCEL"
+      onCancel={cancel}
+      onConfirm={confirm}
+    />
+  );
 }
 
-export default DeleteFileDialog;
+export default React.forwardRef<Props, Instance>(DeleteFileDialog);

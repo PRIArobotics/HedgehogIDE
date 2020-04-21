@@ -23,135 +23,122 @@ const messages = defineMessages({
   },
 });
 
-type PropTypes = {|
+type Props = {|
   onCreate: (
     parentDir: DirReference,
     newFileName: string,
     type: FileType,
   ) => boolean | Promise<boolean>,
 |};
-type StateTypes = {|
-  visible: boolean,
-  config: {|
-    parentDir: DirReference,
-    desc: FileDesc,
-  |} | null,
-  newFileName: string,
-  actualNewFileName: string,
-  isValid: boolean,
+type Config = {|
+  parentDir: DirReference,
+  desc: FileDesc,
+|};
+type Instance = {|
+  show: (parentDir: DirReference, desc: FileDesc) => void,
 |};
 
-class CreateFileDialog extends React.Component<PropTypes, StateTypes> {
-  state: StateTypes = {
-    visible: false,
-    config: null,
+function CreateFileDialog({ onCreate }: Props, ref: Ref<Instance>) {
+  type FileNameState = {|
+    newFileName: string,
+    actualNewFileName: string,
+    valid: boolean,
+  |};
+
+  const [visible, setVisible] = React.useState<boolean>(false);
+  const [config, setConfig] = React.useState<Config | null>(null);
+  const [fileNameState, setFileNameState] = React.useState<FileNameState>({
     newFileName: '',
     actualNewFileName: '',
-    isValid: false,
+    valid: false,
+  });
+
+  const show = (parentDir: DirReference, desc: FileDesc) => {
+    setVisible(true);
+    setConfig({ parentDir, desc });
+    setFileNameState({
+      newFileName: '',
+      actualNewFileName: '',
+      valid: false,
+    });
+  };
+  const cancel = () => {
+    setVisible(false);
+  };
+  const onChange = event => {
+    // eslint-disable-next-line no-throw-literal
+    if (config === null) throw 'unreachable';
+
+    const { parentDir, desc } = config;
+
+    const name = event.target.value;
+    const newFileName = name.replace(/[^-\w#$%().,:; ]/g, '');
+    const actualNewFileName =
+      desc.type === 'DIRECTORY'
+        ? newFileName
+        : newFileName.endsWith(desc.extension)
+        ? newFileName
+        : `${newFileName}${desc.extension}`;
+    const valid =
+      newFileName !== '' &&
+      parentDir.file.contents.every(f => f.name !== actualNewFileName);
+    setFileNameState({
+      newFileName,
+      actualNewFileName,
+      valid,
+    });
+  };
+  const confirm = async () => {
+    // eslint-disable-next-line no-throw-literal
+    if (!visible) throw 'dialog is not shown';
+    // eslint-disable-next-line no-throw-literal
+    if (config === null) throw 'unreachable';
+
+    const { parentDir, desc } = config;
+    const { actualNewFileName } = fileNameState;
+
+    const success = await onCreate(parentDir, actualNewFileName, desc.type);
+    if (success) {
+      setVisible(false);
+    }
   };
 
-  show(parentDir: DirReference, desc: FileDesc) {
-    this.setState(
-      {
-        visible: true,
-        config: { parentDir, desc },
-      },
-      () => this.setNewFileName(''),
-    );
-  }
+  React.useImperativeHandle(ref, () => ({ show }));
 
-  cancel() {
-    this.setState({ visible: false });
-  }
+  // this will only trigger before the first showing.
+  // after that, the old config is still present and will ensure that
+  // fade out animations won't glitch due to changing contents.
+  if (config === null) return null;
 
-  setNewFileName(name: string) {
-    this.setState(state => {
-      // eslint-disable-next-line no-throw-literal
-      if (state.config === null) throw 'unreachable';
+  const { desc } = config;
+  const { newFileName, valid } = fileNameState;
 
-      const {
-        config: { parentDir, desc },
-      } = state;
+  const placeholder = desc.type === 'FILE' ? `file${desc.extension}` : 'folder';
 
-      const newFileName = name.replace(/[^-\w#$%().,:; ]/g, '');
-      const actualNewFileName =
-        desc.type === 'DIRECTORY'
-          ? newFileName
-          : newFileName.endsWith(desc.extension)
-          ? newFileName
-          : `${newFileName}${desc.extension}`;
-      const isValid =
-        newFileName !== '' &&
-        parentDir.file.contents.every(f => f.name !== actualNewFileName);
-
-      return { newFileName, actualNewFileName, isValid };
-    });
-  }
-
-  async confirm() {
-    // eslint-disable-next-line no-throw-literal
-    if (!this.state.visible) throw 'dialog is not shown';
-    // eslint-disable-next-line no-throw-literal
-    if (this.state.config === null) throw 'unreachable';
-
-    const {
-      config: { parentDir, desc },
-      actualNewFileName,
-    } = this.state;
-
-    const success = await this.props.onCreate(
-      parentDir,
-      actualNewFileName,
-      desc.type,
-    );
-    if (success) {
-      this.setState({ visible: false });
-    }
-  }
-
-  render() {
-    // this will only trigger before the first showing.
-    // after that, the old config is still present and will ensure that
-    // fade out animations won't glitch due to changing contents.
-    if (this.state.config === null) return null;
-
-    const {
-      visible,
-      config: { desc },
-      newFileName,
-      isValid,
-    } = this.state;
-
-    const placeholder =
-      desc.type === 'FILE' ? `file${desc.extension}` : 'folder';
-
-    return (
-      <SimpleDialog
-        id="create-file-dialog"
-        open={visible}
-        valid={isValid}
-        title={<M {...messages.title} values={{ type: desc.type }} />}
-        description={
-          <M {...messages.description} values={{ type: desc.type }} />
-        }
-        actions="OK_CANCEL"
-        onCancel={() => this.cancel()}
-        onConfirm={() => this.confirm()}
-      >
-        <TextField
-          autoFocus
-          margin="dense"
-          id="name"
-          label={placeholder}
-          type="text"
-          value={newFileName}
-          onChange={event => this.setNewFileName(event.target.value)}
-          error={!isValid}
-          fullWidth
-        />
-      </SimpleDialog>
-    );
-  }
+  return (
+    <SimpleDialog
+      id="create-file-dialog"
+      open={visible}
+      valid={valid}
+      title={<M {...messages.title} values={{ type: desc.type }} />}
+      description={<M {...messages.description} values={{ type: desc.type }} />}
+      actions="OK_CANCEL"
+      onCancel={cancel}
+      onConfirm={confirm}
+    >
+      <TextField
+        autoFocus
+        margin="dense"
+        id="name"
+        label={placeholder}
+        type="text"
+        value={newFileName}
+        onChange={onChange}
+        error={!valid}
+        fullWidth
+      />
+    </SimpleDialog>
+  );
 }
 
-export default CreateFileDialog;
+export default React.forwardRef<Props, Instance>(CreateFileDialog);
