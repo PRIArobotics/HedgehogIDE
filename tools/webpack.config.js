@@ -334,12 +334,14 @@ const clientConfig = {
       __DEV__: isDebug,
     }),
 
+    // don't copy into /assets/, but into /,
+    // so that /these files are served from the root URL
     new CopyPlugin([{ from: './public', to: '..' }]),
 
     // Emit a file with assets paths
     // https://github.com/webdeveric/webpack-assets-manifest#options
     new WebpackAssetsManifest({
-      output: `${BUILD_DIR}/asset-manifest.json`,
+      output: `${BUILD_DIR}/server/asset-manifest.json`,
       publicPath: true,
       writeToDisk: true,
       customize: ({ key, value }) => {
@@ -349,7 +351,7 @@ const clientConfig = {
       },
       done: (manifest, stats) => {
         // Write chunk-manifest.json.json
-        const chunkFileName = `${BUILD_DIR}/chunk-manifest.json`;
+        const chunkFileName = `${BUILD_DIR}/server/chunk-manifest.json`;
         try {
           const fileFilter = file => !file.endsWith('.map');
           const addPath = file => manifest.getPublicPath(file);
@@ -430,7 +432,7 @@ const serverConfig = {
 
   output: {
     ...config.output,
-    path: BUILD_DIR,
+    path: resolvePath(BUILD_DIR, 'server'),
     filename: '[name].js',
     chunkFilename: 'chunks/[name].js',
     libraryTarget: 'commonjs2',
