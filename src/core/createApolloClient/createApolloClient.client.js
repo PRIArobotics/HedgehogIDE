@@ -28,9 +28,7 @@ export default function createApolloClient() {
   });
 
   const wsLink = new WebSocketLink({
-    uri: __DEV__
-      ? `ws://${window.location.host}/subscriptions`
-      : `wss://${window.location.host}/subscriptions`,
+    uri: `${__DEV__ ? 'ws' : 'wss'}://${window.location.host}/subscriptions`,
     options: {
       reconnect: true,
     },
