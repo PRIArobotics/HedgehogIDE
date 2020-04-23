@@ -335,7 +335,7 @@ const clientConfig = {
     }),
 
     // don't copy into /assets/, but into /,
-    // so that /these files are served from the root URL
+    // so that these files are served from the root URL
     new CopyPlugin([{ from: './public', to: '..' }]),
 
     // Emit a file with assets paths
