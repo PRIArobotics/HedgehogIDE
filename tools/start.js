@@ -19,6 +19,7 @@ import run, { format } from './run';
 import clean from './clean';
 
 const isDebug = !process.argv.includes('--release');
+const serverModule = '../build/server/server';
 
 // https://webpack.js.org/configuration/watch/#watchoptions
 const watchOptions = {
@@ -177,9 +178,9 @@ async function start() {
       .catch(error => {
         if (['abort', 'fail'].includes(app.hot.status())) {
           console.warn(`${hmrPrefix}Cannot apply update.`);
-          delete require.cache[require.resolve('../build/server')];
+          delete require.cache[require.resolve(serverModule)];
           // eslint-disable-next-line global-require, import/no-unresolved
-          app = require('../build/server').default;
+          app = require(serverModule).default;
           console.warn(`${hmrPrefix}App has been reloaded.`);
         } else {
           console.warn(
@@ -207,7 +208,7 @@ async function start() {
 
   // Load compiled src/server.js as a middleware
   // eslint-disable-next-line global-require, import/no-unresolved
-  app = require('../build/server').default;
+  app = require(serverModule).default;
   appPromiseIsResolved = true;
   appPromiseResolve();
 
