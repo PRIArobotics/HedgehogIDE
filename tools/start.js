@@ -179,7 +179,7 @@ async function start() {
         if (['abort', 'fail'].includes(app.hot.status())) {
           console.warn(`${hmrPrefix}Cannot apply update.`);
           delete require.cache[require.resolve(serverModule)];
-          // eslint-disable-next-line global-require, import/no-unresolved
+          // eslint-disable-next-line global-require, import/no-unresolved, import/no-dynamic-require
           app = require(serverModule).default;
           console.warn(`${hmrPrefix}App has been reloaded.`);
         } else {
@@ -207,7 +207,7 @@ async function start() {
   console.info(`[${format(timeStart)}] Launching server...`);
 
   // Load compiled src/server.js as a middleware
-  // eslint-disable-next-line global-require, import/no-unresolved
+  // eslint-disable-next-line global-require, import/no-unresolved, import/no-dynamic-require
   app = require(serverModule).default;
   appPromiseIsResolved = true;
   appPromiseResolve();
