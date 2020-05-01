@@ -194,82 +194,97 @@ class FileMenu extends React.Component<PropTypes, StateTypes> {
         open={visible}
         onClose={() => this.hide()}
       >
-        {isMetadata
-          ? [
-              <FileMenuItem
-                titleMsg={messages.createFolder}
-                onClick={() => this.handleCreate({ type: 'DIRECTORY' })}
-                icon={FolderIcon}
-              />,
-              <FileMenuItem
-                titleMsg={messages.createSimulatorConfiguration}
-                onClick={() =>
-                  this.handleCreate({ type: 'METADATA', name: 'simulator' })
-                }
-                icon={MetadataSimulatorIcon}
-              />,
-              <FileMenuItem
-                titleMsg={messages.createToolboxConfiguration}
-                onClick={() =>
-                  this.handleCreate({ type: 'METADATA', name: 'toolbox' })
-                }
-                icon={MetadataToolboxIcon}
-              />,
-              <Divider />,
-            ]
-          : !isLeaf
-          ? [
-              <FileMenuItem
-                titleMsg={messages.createFolder}
-                onClick={() => this.handleCreate({ type: 'DIRECTORY' })}
-                icon={FolderIcon}
-              />,
-              <FileMenuItem
-                titleMsg={messages.createJavascriptFile}
-                onClick={() =>
-                  this.handleCreate({ type: 'FILE', extension: '.js' })
-                }
-                icon={LanguageJavascriptIcon}
-              />,
-              <FileMenuItem
-                titleMsg={messages.createBlocklyFile}
-                onClick={() =>
-                  this.handleCreate({ type: 'FILE', extension: '.blockly' })
-                }
-                icon={LanguageBlocklyIcon}
-              />,
-              <Divider />,
-            ]
-          : null}
-        <FileMenuItem
-          titleMsg={messages.rename}
-          onClick={() => this.handleRename()}
-          disabled={isRoot}
-          icon={RenameIcon}
-        />
-        <FileMenuItem
-          titleMsg={messages.delete}
-          onClick={() => this.handleDelete()}
-          disabled={isRoot}
-          icon={DeleteIcon}
-        />
-        {!isLeaf
-          ? [
-              <Divider />,
-              <FileMenuItem
-                titleMsg={messages.upload}
-                onClick={() => this.handleUpload()}
-                icon={UploadIcon}
-              />,
-            ]
-          : [
-              <Divider />,
-              <FileMenuItem
-                titleMsg={messages.download}
-                onClick={() => this.handleDownload()}
-                icon={DownloadIcon}
-              />,
-            ]}
+        {[
+          ...(!isLeaf
+            ? [
+                <FileMenuItem
+                  key="create_directory"
+                  titleMsg={messages.createFolder}
+                  onClick={() => this.handleCreate({ type: 'DIRECTORY' })}
+                  icon={FolderIcon}
+                />,
+                ...(isMetadata
+                  ? [
+                      <FileMenuItem
+                        key="create_simulator_config"
+                        titleMsg={messages.createSimulatorConfiguration}
+                        onClick={() =>
+                          this.handleCreate({
+                            type: 'METADATA',
+                            name: 'simulator',
+                          })
+                        }
+                        icon={MetadataSimulatorIcon}
+                      />,
+                      <FileMenuItem
+                        key="create_toolbox_config"
+                        titleMsg={messages.createToolboxConfiguration}
+                        onClick={() =>
+                          this.handleCreate({
+                            type: 'METADATA',
+                            name: 'toolbox',
+                          })
+                        }
+                        icon={MetadataToolboxIcon}
+                      />,
+                    ]
+                  : [
+                      <FileMenuItem
+                        key="create_js_file"
+                        titleMsg={messages.createJavascriptFile}
+                        onClick={() =>
+                          this.handleCreate({ type: 'FILE', extension: '.js' })
+                        }
+                        icon={LanguageJavascriptIcon}
+                      />,
+                      <FileMenuItem
+                        key="create_blockly_file"
+                        titleMsg={messages.createBlocklyFile}
+                        onClick={() =>
+                          this.handleCreate({
+                            type: 'FILE',
+                            extension: '.blockly',
+                          })
+                        }
+                        icon={LanguageBlocklyIcon}
+                      />,
+                    ]),
+                <Divider key="divider-directory" />,
+              ]
+            : []),
+          <FileMenuItem
+            key="rename"
+            titleMsg={messages.rename}
+            onClick={() => this.handleRename()}
+            disabled={isRoot}
+            icon={RenameIcon}
+          />,
+          <FileMenuItem
+            key="delete"
+            titleMsg={messages.delete}
+            onClick={() => this.handleDelete()}
+            disabled={isRoot}
+            icon={DeleteIcon}
+          />,
+          <Divider key="divider-upload-download" />,
+          ...(!isLeaf
+            ? [
+                <FileMenuItem
+                  key="upload"
+                  titleMsg={messages.upload}
+                  onClick={() => this.handleUpload()}
+                  icon={UploadIcon}
+                />,
+              ]
+            : [
+                <FileMenuItem
+                  key="download"
+                  titleMsg={messages.download}
+                  onClick={() => this.handleDownload()}
+                  icon={DownloadIcon}
+                />,
+              ]),
+        ]}
       </Menu>
     );
   }
