@@ -168,26 +168,23 @@ class FileMenu extends React.Component<PropTypes, StateTypes> {
 
     type FileMenuItemProps = {|
       titleMsg: Object,
-      onClick: () => void | Promise<void>,
-      disabled?: boolean,
       icon: Class<React.Component<any>>,
+      ...any,
     |};
 
-    function FileMenuItem({
-      titleMsg,
-      onClick,
-      disabled = false,
-      icon: TheIcon,
-    }: FileMenuItemProps) {
-      return (
-        <MenuItem onClick={onClick} disabled={disabled}>
+    const FileMenuItem = React.forwardRef(
+      (
+        { titleMsg, icon: TheIcon, ...props }: FileMenuItemProps,
+        ref: Ref<MenuItem>,
+      ) => (
+        <MenuItem ref={ref} {...props}>
           <ListItemIcon>
             <TheIcon fontSize="small" />
           </ListItemIcon>
           <M {...titleMsg} />
         </MenuItem>
-      );
-    }
+      ),
+    );
 
     return (
       <Menu
@@ -197,53 +194,53 @@ class FileMenu extends React.Component<PropTypes, StateTypes> {
         open={visible}
         onClose={() => this.hide()}
       >
-        {isMetadata ? (
-          <>
-            <FileMenuItem
-              titleMsg={messages.createFolder}
-              onClick={() => this.handleCreate({ type: 'DIRECTORY' })}
-              icon={FolderIcon}
-            />
-            <FileMenuItem
-              titleMsg={messages.createSimulatorConfiguration}
-              onClick={() =>
-                this.handleCreate({ type: 'METADATA', name: 'simulator' })
-              }
-              icon={MetadataSimulatorIcon}
-            />
-            <FileMenuItem
-              titleMsg={messages.createToolboxConfiguration}
-              onClick={() =>
-                this.handleCreate({ type: 'METADATA', name: 'toolbox' })
-              }
-              icon={MetadataToolboxIcon}
-            />
-            <Divider />
-          </>
-        ) : !isLeaf ? (
-          <>
-            <FileMenuItem
-              titleMsg={messages.createFolder}
-              onClick={() => this.handleCreate({ type: 'DIRECTORY' })}
-              icon={FolderIcon}
-            />
-            <FileMenuItem
-              titleMsg={messages.createJavascriptFile}
-              onClick={() =>
-                this.handleCreate({ type: 'FILE', extension: '.js' })
-              }
-              icon={LanguageJavascriptIcon}
-            />
-            <FileMenuItem
-              titleMsg={messages.createBlocklyFile}
-              onClick={() =>
-                this.handleCreate({ type: 'FILE', extension: '.blockly' })
-              }
-              icon={LanguageBlocklyIcon}
-            />
-            <Divider />
-          </>
-        ) : null}
+        {isMetadata
+          ? [
+              <FileMenuItem
+                titleMsg={messages.createFolder}
+                onClick={() => this.handleCreate({ type: 'DIRECTORY' })}
+                icon={FolderIcon}
+              />,
+              <FileMenuItem
+                titleMsg={messages.createSimulatorConfiguration}
+                onClick={() =>
+                  this.handleCreate({ type: 'METADATA', name: 'simulator' })
+                }
+                icon={MetadataSimulatorIcon}
+              />,
+              <FileMenuItem
+                titleMsg={messages.createToolboxConfiguration}
+                onClick={() =>
+                  this.handleCreate({ type: 'METADATA', name: 'toolbox' })
+                }
+                icon={MetadataToolboxIcon}
+              />,
+              <Divider />,
+            ]
+          : !isLeaf
+          ? [
+              <FileMenuItem
+                titleMsg={messages.createFolder}
+                onClick={() => this.handleCreate({ type: 'DIRECTORY' })}
+                icon={FolderIcon}
+              />,
+              <FileMenuItem
+                titleMsg={messages.createJavascriptFile}
+                onClick={() =>
+                  this.handleCreate({ type: 'FILE', extension: '.js' })
+                }
+                icon={LanguageJavascriptIcon}
+              />,
+              <FileMenuItem
+                titleMsg={messages.createBlocklyFile}
+                onClick={() =>
+                  this.handleCreate({ type: 'FILE', extension: '.blockly' })
+                }
+                icon={LanguageBlocklyIcon}
+              />,
+              <Divider />,
+            ]
+          : null}
         <FileMenuItem
           titleMsg={messages.rename}
           onClick={() => this.handleRename()}
@@ -256,25 +253,23 @@ class FileMenu extends React.Component<PropTypes, StateTypes> {
           disabled={isRoot}
           icon={DeleteIcon}
         />
-        {!isLeaf ? (
-          <>
-            <Divider />
-            <FileMenuItem
-              titleMsg={messages.upload}
-              onClick={() => this.handleUpload()}
-              icon={UploadIcon}
-            />
-          </>
-        ) : (
-          <>
-            <Divider />
-            <FileMenuItem
-              titleMsg={messages.download}
-              onClick={() => this.handleDownload()}
-              icon={DownloadIcon}
-            />
-          </>
-        )}
+        {!isLeaf
+          ? [
+              <Divider />,
+              <FileMenuItem
+                titleMsg={messages.upload}
+                onClick={() => this.handleUpload()}
+                icon={UploadIcon}
+              />,
+            ]
+          : [
+              <Divider />,
+              <FileMenuItem
+                titleMsg={messages.download}
+                onClick={() => this.handleDownload()}
+                icon={DownloadIcon}
+              />,
+            ]}
       </Menu>
     );
   }
