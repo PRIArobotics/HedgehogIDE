@@ -345,6 +345,34 @@ class Ide extends React.Component<PropTypes, StateTypes> {
     );
   }
 
+  getFile(path: string): FileReference {
+    // eslint-disable-next-line no-throw-literal
+    if (this.state.projectInfo === null) throw 'unreachable';
+
+    const {
+      projectInfo: { files },
+    } = this.state;
+    const [root, ...fragments] = path.split('/');
+
+    // The reducer function navigates to the child in a directory.
+    // Therefore the parameter must be a directory - if it isn't, there can't be a child.
+    // The end result, however, can be a regular file.
+    const reducer = (file: FilerRecursiveStatInfo, name: string) => {
+      if (!file.isDirectory())
+        throw new Error(`'${file.name}' is not a directory`);
+      // $FlowExpectError
+      const directory: FilerRecursiveDirectoryInfo = file;
+
+      // Find the child and make sure it exists
+      const child = directory.contents.find(f => f.name === name);
+      if (child === undefined) throw new Error(`'${name}' does not exist`);
+      return child;
+    };
+
+    const file = fragments.reduce(reducer, files);
+    return { path, file };
+  }
+
   getNodes() {
     const nodes = {};
 
@@ -634,8 +662,9 @@ class Ide extends React.Component<PropTypes, StateTypes> {
 
       // TODO select the file in the file tree
 
-      // TODO open the new file
-      // this.handleFileAction({ action: 'OPEN', file: null });
+      // open the new file
+      const file = this.getFile(`${parentDir.path}/${name}`);
+      if (file.file.isFile()) this.handleFileAction({ action: 'OPEN', file });
 
       return true;
     } catch (ex) {
