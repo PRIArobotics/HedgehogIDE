@@ -71,7 +71,7 @@ function SimpleDialog({
             <M {...messages.cancel} />
           </Button>
           <Button
-            onClick={onConfirm}
+            type="submit"
             color="primary"
             disabled={!valid}
             autoFocus={actions === 'OK_autofocus_CANCEL'}
@@ -85,20 +85,27 @@ function SimpleDialog({
       actionsNode = actions;
   }
 
+  const handleSubmit = event => {
+    if (onConfirm !== undefined) onConfirm();
+    event.preventDefault();
+  };
+
   return (
     <Dialog open={open} onClose={onCancel} {...conditionalProps}>
-      {title !== undefined ? (
-        <DialogTitle id={`${id}-title`}>{title}</DialogTitle>
-      ) : null}
-      <DialogContent>
-        {description !== undefined ? (
-          <DialogContentText id={`${id}-description`}>
-            {description}
-          </DialogContentText>
+      <form onSubmit={handleSubmit}>
+        {title !== undefined ? (
+          <DialogTitle id={`${id}-title`}>{title}</DialogTitle>
         ) : null}
-        {children}
-      </DialogContent>
-      <DialogActions>{actionsNode}</DialogActions>
+        <DialogContent>
+          {description !== undefined ? (
+            <DialogContentText id={`${id}-description`}>
+              {description}
+            </DialogContentText>
+          ) : null}
+          {children}
+        </DialogContent>
+        <DialogActions>{actionsNode}</DialogActions>
+      </form>
     </Dialog>
   );
 }
