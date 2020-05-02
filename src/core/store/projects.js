@@ -70,6 +70,7 @@ export class Project {
 
   static async getProjects(): Promise<Project[]> {
     const projectNames = await fs.promises.readdir('/');
+    projectNames.sort((a, b) => a.localeCompare(b));
     return projectNames.map(name => new Project(name));
   }
 
