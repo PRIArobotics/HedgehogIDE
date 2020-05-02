@@ -410,7 +410,7 @@ export const SIMULATOR_SETTINGS_ROTATE = {
   blockExtras: {
     getSettings() {
       return {
-        angle: (this.getFieldValue('ANGLE') / 180) * Math.PI,
+        angle: -(this.getFieldValue('ANGLE') / 180) * Math.PI,
       };
     },
   },
