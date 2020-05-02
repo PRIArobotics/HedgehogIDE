@@ -611,6 +611,32 @@ class Ide extends React.Component<PropTypes, StateTypes> {
       }
 
       await this.refreshProject();
+
+      // reveal the new file
+      this.setState(
+        oldState => {
+          const { fileTreeState: oldFileTreeState } = oldState;
+          const { expandedKeys: oldExpandedKeys } = oldFileTreeState;
+
+          // no need to update state if the parent directory is already expanded
+          if (oldExpandedKeys.includes(parentDir.path)) return {};
+
+          // add the parent directory to the expanded keys
+          return {
+            fileTreeState: {
+              ...oldFileTreeState,
+              expandedKeys: [...oldExpandedKeys, parentDir.path],
+            },
+          };
+        },
+        () => this.save(),
+      );
+
+      // TODO select the file in the file tree
+
+      // TODO open the new file
+      // this.handleFileAction({ action: 'OPEN', file: null });
+
       return true;
     } catch (ex) {
       if (ex instanceof filer.Errors.EEXIST) {
