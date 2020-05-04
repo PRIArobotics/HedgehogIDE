@@ -50,9 +50,6 @@ modules:
         msg: Servos
       hedgehog_cat_sensors:
         msg: Sensoren
-      hedgehog_scope:
-        msg: Hedgehog scope %1 %2
-        tooltip: Alle Hedgehog Blöcke müssen sich innerhalb eines Hedgehog scope Blocks befinden
       hedgehog_move:
         msg: bewege Motor %1 mit Geschwindigkeit %2 für %3 Sekunden
         tooltip: Bewegt einen Motor in eine bestimmte Richtung
@@ -157,9 +154,6 @@ modules:
         msg: Servos
       hedgehog_cat_sensors:
         msg: Sensors
-      hedgehog_scope:
-        msg: Hedgehog scope %1 %2
-        tooltip: All Hedgehog blocks have to be inside of this block
       hedgehog_move:
         msg: move motor %1 with speeds %2 for %3 seconds
         tooltip: move one motor for a certain duration

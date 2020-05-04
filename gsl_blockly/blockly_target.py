@@ -38,8 +38,7 @@ args0: {json.dumps(block.args, indent=2)},""", 4 * " "))
                 yield from lines(f"""\
     output: '{block.output}',""")
             else:
-                if not block.get('scope', False):
-                    yield from lines(f"""\
+                yield from lines(f"""\
     inputsInline: true,""")
                 yield from lines(f"""\
     previousStatement: null,

@@ -7,12 +7,6 @@ modules:
         name: TEXT
         check: [Number, String]
   hedgehog:
-    # hedgehog_scope:
-    #   scope: true
-    #   args:
-    #   - type: input_dummy
-    #   - type: input_statement
-    #     name: IN
     hedgehog_move:
       requiresScope: hedgehog
       args:
