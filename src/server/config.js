@@ -36,7 +36,7 @@ module.exports = {
   // Database
   databaseUrl: process.env.DATABASE_URL || 'sqlite:database.sqlite',
   mongodbUrl:
-    process.env.MONGODB_URL || 'mongodb://localhost:27017/hedgehog-ide',
+    process.env.MONGODB_URL || 'mongodb://localhost:27017/hedgehogIde',
 
   // Web analytics
   analytics: {
