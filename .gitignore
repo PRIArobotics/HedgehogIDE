@@ -34,3 +34,6 @@ __pycache__
 
 # Misc
 .DS_Store
+
+# MongoDb data
+mongo_data
