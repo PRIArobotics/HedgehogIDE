@@ -32,6 +32,8 @@ function run(fn, options) {
 }
 
 if (require.main === module && process.argv.length > 2) {
+  global.__DEV__ = process.env.__DEV__;
+
   // eslint-disable-next-line no-underscore-dangle
   delete require.cache[__filename];
 

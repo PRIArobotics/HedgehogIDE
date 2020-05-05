@@ -29,6 +29,7 @@
     "apollo-server": "^2.1.0",
     "apollo-server-express": "^2.1.0",
     "apollo-utilities": "^1.2.1",
+    "bcryptjs": "^2.4.3",
     "blockly": "^2.20190722.1",
     "body-parser": "^1.18.3",
     "brace": "^0.11.1",
@@ -184,6 +185,7 @@
     "render": "babel-node tools/run render",
     "mongod": "mongod --dbpath mongodb/data/ --bind_ip 127.0.0.1",
     "serve": "babel-node tools/run runServer",
-    "start": "babel-node tools/run start"
+    "start": "babel-node tools/run start",
+    "create-user": "babel-node tools/run createUser"
   }
 }
