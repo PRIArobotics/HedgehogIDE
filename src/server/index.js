@@ -36,8 +36,6 @@ import {
   loadScripts,
 } from './loaders';
 
-import { User } from './data/mongodb';
-
 process.on('unhandledRejection', (reason, p) => {
   console.error('Unhandled Rejection at:', p, 'reason:', reason);
   // send entire app down. Process manager will restart it
