@@ -2,8 +2,6 @@
 
 import { merge } from '../../../../core/graphql/graphqlDef';
 
-import GetAllUsers from './users/GetAllUsers';
-import GetLoggedInUser from './users/GetLoggedInUser';
-import CreateUser from './users/CreateUser';
+import User from './User';
 
-export default merge(GetAllUsers, GetLoggedInUser, CreateUser);
+export default merge(User);

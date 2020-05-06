@@ -46,6 +46,7 @@ module.exports = {
 
   // Authentication
   auth: {
+    tokenExpiresIn: process.env.TOKEN_EXPIRES_IN || '7d', // Default session duration: 7 days
     jwt: { secret: process.env.JWT_SECRET || 'React Starter Kit' },
 
     // https://developers.facebook.com/
