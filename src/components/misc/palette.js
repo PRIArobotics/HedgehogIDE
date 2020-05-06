@@ -1,5 +1,20 @@
 // @flow
-/* eslint-disable import/no-duplicates */
+/* eslint-disable import/no-duplicates, import/first */
+
+import * as React from 'react';
+import { withStyles as withStylesMaterial } from '@material-ui/styles';
+import Badge from '@material-ui/core/Badge';
+
+const IconBadge = withStylesMaterial(theme => ({
+  badge: {
+    bottom: '25%',
+    right: '25%',
+    background: '#e8e8e8',
+    minWidth: 'auto',
+    width: '15px',
+    height: '15px',
+  },
+}))(Badge);
 
 // files: general
 import FileIcon from 'mdi-material-ui/File';
@@ -43,12 +58,23 @@ import RefreshIcon from 'mdi-material-ui/Refresh';
 import DownloadIcon from 'mdi-material-ui/Download';
 import UploadIcon from 'mdi-material-ui/Upload';
 
-// program actions
+// execution & simulation actions
 import ExecuteIcon from 'mdi-material-ui/Play';
 import TerminateIcon from 'mdi-material-ui/Stop';
-
-// simulator actions
 import ResetIcon from 'mdi-material-ui/RotateLeft';
+
+const TerminateAndResetIcon = React.forwardRef<
+  React.ElementConfig<typeof TerminateIcon>,
+  TerminateIcon,
+>((props, ref) => (
+  <IconBadge
+    overlap="circle"
+    anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+    badgeContent={<ResetIcon style={{ fontSize: '15px' }} />}
+  >
+    <TerminateIcon ref={ref} {...props} />
+  </IconBadge>
+));
 
 // misc actions
 import SlideLeftIcon from 'mdi-material-ui/ChevronLeft';
@@ -84,6 +110,7 @@ export {
   ExecuteIcon,
   TerminateIcon,
   ResetIcon,
+  TerminateAndResetIcon,
   SlideLeftIcon,
   SlideRightIcon,
 };

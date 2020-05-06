@@ -17,6 +17,8 @@ import { type LocaleMap, getTranslation } from '../../../translations';
 import {
   ExecuteIcon,
   TerminateIcon,
+  ResetIcon,
+  TerminateAndResetIcon,
   SlideLeftIcon,
   SlideRightIcon,
   LanguageJavascriptIcon,
@@ -421,6 +423,17 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
                 disabled={code === null || codeLanguage !== 'JavaScript'}
               >
                 <ExecuteIcon />
+              </ColoredIconButton>
+            )}
+          </ToolBarItem>
+          <ToolBarItem>
+            {this.props.running ? (
+              <ColoredIconButton onClick={() => {}} disableRipple>
+                <TerminateAndResetIcon />
+              </ColoredIconButton>
+            ) : (
+              <ColoredIconButton onClick={() => {}} disableRipple>
+                <ResetIcon />
               </ColoredIconButton>
             )}
           </ToolBarItem>
