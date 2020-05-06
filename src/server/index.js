@@ -82,7 +82,7 @@ appUseAuth(
   expressJwt({
     secret: config.auth.jwt.secret,
     credentialsRequired: false,
-    getToken: req => req.cookies.id_token,
+    getToken: req => req.headers.authorization,
   }),
 );
 // Error handler for express-jwt
@@ -163,15 +163,9 @@ const server = new ApolloServer({
     subscriptionEndpoint: '/subscriptions',
   },
   debug: __DEV__,
-  context: ({ req, connection }) => {
-    if (req !== undefined) {
-      return { req };
-    } else if (connection !== undefined) {
-      return { connection };
-    } else {
-      return {};
-    }
-  },
+  context: ({ req }) => ({
+    user: req.user,
+  }),
 });
 server.applyMiddleware({ app });
 

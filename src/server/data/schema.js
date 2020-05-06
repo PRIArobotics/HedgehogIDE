@@ -6,6 +6,7 @@ import { type GraphqlDef, merge } from '../../core/graphql/graphqlDef';
 
 import Server from './graphql/schema';
 import Core from '../../core/graphql/schema';
+import AuthDirective from './AuthDirective';
 
 const def: GraphqlDef = merge(Server, Core);
 
@@ -62,6 +63,9 @@ const SchemaDefinition = [
 ];
 
 const schema = [
+  `
+  directive @auth on OBJECT | FIELD_DEFINITION
+  `,
   ...SchemaDefinition,
   ...RootQuery,
   ...Mutation,
@@ -73,5 +77,8 @@ const schema = [
 export default {
   typeDefs: schema,
   resolvers: def.resolvers(new PubSub()),
+  schemaDirectives: {
+    auth: AuthDirective,
+  },
   ...(__DEV__ ? { log: (e: Error) => console.error(e.stack) } : {}),
 };

@@ -11,19 +11,45 @@ import config from '../../../config';
 const def: GraphqlDefShape = {
   schema: [
     `
-    type User {
+    type UserLogin {
       id: ID!
       username: String!
       token: String
     }
+
+    type User {
+      id: ID!
+      username: String!
+    }
+    `,
+  ],
+  queries: [
+    `
+    user: User! @auth
     `,
   ],
   mutations: [
     `
-    login(username: String!, password: String!): User!
+    login(username: String!, password: String!): UserLogin!
     `,
   ],
   resolvers: () => ({
+    RootQuery: {
+      async user(parent, args, context) {
+        let user;
+        try {
+          user = await User.findById(context.user.userId);
+        } catch (e) {
+          console.error(e);
+          throw new ApolloError('Failed to fetch user.');
+        }
+
+        return {
+          id: user.id,
+          username: user.username,
+        };
+      },
+    },
     Mutation: {
       async login(_, { username, password }) {
         let user;
