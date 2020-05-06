@@ -4,6 +4,8 @@ import config from '../../config';
 mongoose
   .connect(config.mongodbUrl, {
     useNewUrlParser: true,
+    useFindAndModify: false,
+    useCreateIndex: true,
     useUnifiedTopology: true,
   })
   .catch(error => {
