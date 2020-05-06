@@ -6,12 +6,13 @@ import db, { User } from '../src/server/data/mongodb';
 // takes a function that takes a callback `(err, result) => ...`
 // as its last parameter and makes it into a function that
 // returns a promise instead
-const promisify = fn => (...args) => new Promise((resolve, reject) => {
-  fn(...args, (err, result) => {
-    if (err) reject(err);
-    else resolve(result);
+const promisify = fn => (...args) =>
+  new Promise((resolve, reject) => {
+    fn(...args, (err, result) => {
+      if (err) reject(err);
+      else resolve(result);
+    });
   });
-});
 
 export default async function() {
   const input = readline.createInterface({
@@ -19,9 +20,10 @@ export default async function() {
     output: process.stdout,
   });
 
-  const question = query => new Promise(resolve => {
-    input.question(query, resolve);
-  });
+  const question = query =>
+    new Promise(resolve => {
+      input.question(query, resolve);
+    });
 
   const username = await question('Username: ');
   let password = await question('Password: ');
@@ -35,6 +37,7 @@ export default async function() {
     password = hash;
     try {
       const user = await User.create({ username, password });
+      // eslint-disable-next-line no-console
       console.log(`Created user with id '${user._id}'`);
     } finally {
       await db.close();
@@ -43,4 +46,4 @@ export default async function() {
     console.error(`Error creating user: ${err}`);
     process.exit(1);
   }
-};
+}

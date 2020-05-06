@@ -62,7 +62,9 @@ module.exports = {
     'no-underscore-dangle': [
       'error',
       {
-        allow: ['__typename'],
+        // these exceptions are from Apollo, Mongoose, and this template,
+        // respectively
+        allow: ['__typename', '_id', '__DEV__'],
       },
     ],
 
