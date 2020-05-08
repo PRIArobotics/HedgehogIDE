@@ -405,37 +405,43 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
         )}
         <ToolBar>
           <ToolBarItem>
-            {this.props.running ? (
-              <ColoredIconButton
-                onClick={() => this.props.onTerminate()}
-                disableRipple
-                color="red"
-              >
-                <TerminateIcon />
-              </ColoredIconButton>
-            ) : (
-              <ColoredIconButton
-                onClick={() => {
-                  if (code !== null) this.props.onExecute(code);
-                }}
-                disableRipple
-                color="limegreen"
-                disabled={code === null || codeLanguage !== 'JavaScript'}
-              >
-                <ExecuteIcon />
-              </ColoredIconButton>
-            )}
+            <ColoredIconButton
+              onClick={() => {
+                if (code !== null) this.props.onExecute(code);
+              }}
+              color="limegreen"
+              disableRipple
+              disabled={
+                this.props.running ||
+                code === null ||
+                codeLanguage !== 'JavaScript'
+              }
+            >
+              <ExecuteIcon />
+            </ColoredIconButton>
           </ToolBarItem>
-          <ToolBarItem>
-            {this.props.running ? (
-              <ColoredIconButton onClick={() => {}} disableRipple>
+          {this.props.running ? (
+            <ToolBarItem key="terminate-and-reset">
+              <ColoredIconButton onClick={() => {}} color="red" disableRipple>
                 <TerminateAndResetIcon />
               </ColoredIconButton>
-            ) : (
+            </ToolBarItem>
+          ) : (
+            <ToolBarItem key="reset">
               <ColoredIconButton onClick={() => {}} disableRipple>
                 <ResetIcon />
               </ColoredIconButton>
-            )}
+            </ToolBarItem>
+          )}
+          <ToolBarItem>
+            <ColoredIconButton
+              onClick={() => this.props.onTerminate()}
+              color="red"
+              disableRipple
+              disabled={!this.props.running}
+            >
+              <TerminateIcon />
+            </ColoredIconButton>
           </ToolBarItem>
           <ToolBarItem>
             <ColoredIconButton
@@ -448,8 +454,8 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
           <ToolBarItem>
             <ColoredIconButton
               onClick={() => this.setCodeLanguage('JavaScript')}
-              disableRipple
               color={codeLanguage === 'JavaScript' ? 'black' : 'gray'}
+              disableRipple
             >
               <LanguageJavascriptIcon />
             </ColoredIconButton>
@@ -457,8 +463,8 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
           <ToolBarItem>
             <ColoredIconButton
               onClick={() => this.setCodeLanguage('Python')}
-              disableRipple
               color={codeLanguage === 'Python' ? 'black' : 'gray'}
+              disableRipple
             >
               <LanguagePythonIcon />
             </ColoredIconButton>
