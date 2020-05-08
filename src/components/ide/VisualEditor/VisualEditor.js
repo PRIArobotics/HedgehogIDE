@@ -446,6 +446,7 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
               disabled={!this.props.running}
             />
           </ToolBarItem>
+          <div style={{ flex: '1 0 auto' }} />
           <ToolBarItem>
             <ToolBarIconButton
               onClick={this.handleToggleCodeCollapsed}
