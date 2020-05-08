@@ -8,10 +8,15 @@ import 'brace/mode/javascript';
 import 'brace/ext/language_tools';
 import 'brace/theme/github';
 
-import { ExecuteIcon, TerminateIcon } from '../../misc/palette';
+import {
+  ExecuteIcon,
+  TerminateIcon,
+  ResetIcon,
+  TerminateAndResetIcon,
+} from '../../misc/palette';
 
-import ColoredIconButton from '../../misc/ColoredIconButton';
 import ToolBar from '../ToolBar';
+import ToolBarIconButton from '../ToolBar/ToolBarIconButton';
 import ToolBarItem from '../ToolBar/ToolBarItem';
 
 import s from './Editor.scss';
@@ -93,26 +98,42 @@ class Editor extends React.Component<PropTypes, StateTypes> {
         </div>
         <ToolBar>
           <ToolBarItem>
-            {running ? (
-              <ColoredIconButton
-                onClick={() => this.props.onTerminate()}
-                disableRipple
+            <ToolBarIconButton
+              icon={ExecuteIcon}
+              color="limegreen"
+              onClick={() => {
+                if (content !== null) this.props.onExecute(content);
+              }}
+              disableRipple
+              disabled={running || content === null}
+            />
+          </ToolBarItem>
+          {running ? (
+            <ToolBarItem key="terminate-and-reset">
+              <ToolBarIconButton
+                onClick={() => {}}
+                icon={TerminateAndResetIcon}
                 color="red"
-              >
-                <TerminateIcon />
-              </ColoredIconButton>
-            ) : (
-              <ColoredIconButton
-                onClick={() => {
-                  if (content !== null) this.props.onExecute(content);
-                }}
                 disableRipple
-                color="limegreen"
-                disabled={content === null}
-              >
-                <ExecuteIcon />
-              </ColoredIconButton>
-            )}
+              />
+            </ToolBarItem>
+          ) : (
+            <ToolBarItem key="reset">
+              <ToolBarIconButton
+                onClick={() => {}}
+                icon={ResetIcon}
+                disableRipple
+              />
+            </ToolBarItem>
+          )}
+          <ToolBarItem>
+            <ToolBarIconButton
+              onClick={() => this.props.onTerminate()}
+              icon={TerminateIcon}
+              color="red"
+              disableRipple
+              disabled={!running}
+            />
           </ToolBarItem>
         </ToolBar>
       </div>

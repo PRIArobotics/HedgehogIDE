@@ -25,9 +25,9 @@ import {
   LanguagePythonIcon,
 } from '../../misc/palette';
 
-import ColoredIconButton from '../../misc/ColoredIconButton';
 import BlocklyComponent, { type Locale as BlocklyLocale } from '../Blockly';
 import ToolBar from '../ToolBar';
+import ToolBarIconButton from '../ToolBar/ToolBarIconButton';
 import ToolBarItem from '../ToolBar/ToolBarItem';
 
 import s from './VisualEditor.scss';
@@ -405,10 +405,11 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
         )}
         <ToolBar>
           <ToolBarItem>
-            <ColoredIconButton
+            <ToolBarIconButton
               onClick={() => {
                 if (code !== null) this.props.onExecute(code);
               }}
+              icon={ExecuteIcon}
               color="limegreen"
               disableRipple
               disabled={
@@ -416,58 +417,57 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
                 code === null ||
                 codeLanguage !== 'JavaScript'
               }
-            >
-              <ExecuteIcon />
-            </ColoredIconButton>
+            />
           </ToolBarItem>
           {this.props.running ? (
             <ToolBarItem key="terminate-and-reset">
-              <ColoredIconButton onClick={() => {}} color="red" disableRipple>
-                <TerminateAndResetIcon />
-              </ColoredIconButton>
+              <ToolBarIconButton
+                onClick={() => {}}
+                icon={TerminateAndResetIcon}
+                color="red"
+                disableRipple
+              />
             </ToolBarItem>
           ) : (
             <ToolBarItem key="reset">
-              <ColoredIconButton onClick={() => {}} disableRipple>
-                <ResetIcon />
-              </ColoredIconButton>
+              <ToolBarIconButton
+                onClick={() => {}}
+                icon={ResetIcon}
+                disableRipple
+              />
             </ToolBarItem>
           )}
           <ToolBarItem>
-            <ColoredIconButton
+            <ToolBarIconButton
               onClick={() => this.props.onTerminate()}
+              icon={TerminateIcon}
               color="red"
               disableRipple
               disabled={!this.props.running}
-            >
-              <TerminateIcon />
-            </ColoredIconButton>
+            />
           </ToolBarItem>
           <ToolBarItem>
-            <ColoredIconButton
+            <ToolBarIconButton
               onClick={this.handleToggleCodeCollapsed}
+              icon={codeCollapsed ? SlideLeftIcon : SlideRightIcon}
               disableRipple
-            >
-              {codeCollapsed ? <SlideLeftIcon /> : <SlideRightIcon />}
-            </ColoredIconButton>
+            />
           </ToolBarItem>
           <ToolBarItem>
-            <ColoredIconButton
+            <ToolBarIconButton
               onClick={() => this.setCodeLanguage('JavaScript')}
+              icon={LanguageJavascriptIcon}
               color={codeLanguage === 'JavaScript' ? 'black' : 'gray'}
               disableRipple
-            >
-              <LanguageJavascriptIcon />
-            </ColoredIconButton>
+            />
           </ToolBarItem>
           <ToolBarItem>
-            <ColoredIconButton
+            <ToolBarIconButton
               onClick={() => this.setCodeLanguage('Python')}
+              icon={LanguagePythonIcon}
               color={codeLanguage === 'Python' ? 'black' : 'gray'}
               disableRipple
-            >
-              <LanguagePythonIcon />
-            </ColoredIconButton>
+            />
           </ToolBarItem>
         </ToolBar>
         <pre

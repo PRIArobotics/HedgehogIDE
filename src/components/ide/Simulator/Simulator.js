@@ -7,8 +7,8 @@ import Matter from 'matter-js';
 
 import { ResetIcon } from '../../misc/palette';
 
-import ColoredIconButton from '../../misc/ColoredIconButton';
 import ToolBar from '../ToolBar';
+import ToolBarIconButton from '../ToolBar/ToolBarIconButton';
 import ToolBarItem from '../ToolBar/ToolBarItem';
 
 import s from './Simulator.scss';
@@ -404,12 +404,11 @@ class Simulator extends React.Component<PropTypes, StateTypes> {
         </div>
         <ToolBar>
           <ToolBarItem>
-            <ColoredIconButton
+            <ToolBarIconButton
               onClick={() => this.simulation.reset()}
+              icon={ResetIcon}
               disableRipple
-            >
-              <ResetIcon />
-            </ColoredIconButton>
+            />
           </ToolBarItem>
         </ToolBar>
       </div>
