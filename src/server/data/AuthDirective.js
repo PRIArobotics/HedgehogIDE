@@ -1,5 +1,6 @@
 // @flow
 /* eslint-disable no-underscore-dangle */
+/* eslint-disable no-param-reassign */
 
 import { SchemaDirectiveVisitor } from 'graphql-tools';
 import { defaultFieldResolver } from 'graphql';
