@@ -107,6 +107,11 @@ const defaultLayout = {
   },
 };
 
+type ExecutionAction =
+  | {| action: 'EXECUTE', code: string |}
+  | {| action: 'TERMINATE', reset: boolean |}
+  | {| action: 'RESET' |};
+
 type EditorState = {|
   blockly?: VisualEditorState,
   'simulator-editor'?: SimulatorEditorState,
@@ -179,8 +184,7 @@ class Ide extends React.Component<PropTypes, StateTypes> {
                 layoutNode={node}
                 content={content}
                 onContentChange={onContentChange}
-                onExecute={code => this.handleExecute(code)}
-                onTerminate={() => this.handleTerminate()}
+                onExecutionAction={action => this.handleExecutionAction(action)}
                 running={!!this.state.runningTask}
               />
             )}
@@ -193,6 +197,8 @@ class Ide extends React.Component<PropTypes, StateTypes> {
             width={600}
             height={400}
             forwardedRef={this.simulatorRef}
+            onExecutionAction={action => this.handleExecutionAction(action)}
+            running={!!this.state.runningTask}
           />
         );
       }
@@ -209,8 +215,7 @@ class Ide extends React.Component<PropTypes, StateTypes> {
                 onContentChange={onContentChange}
                 {...getEditorState(id, 'blockly')}
                 onUpdate={editorStateSetter(id, 'blockly')}
-                onExecute={code => this.handleExecute(code)}
-                onTerminate={() => this.handleTerminate()}
+                onExecutionAction={action => this.handleExecutionAction(action)}
                 running={!!this.state.runningTask}
               />
             )}
@@ -499,6 +504,32 @@ class Ide extends React.Component<PropTypes, StateTypes> {
       tryIt();
     });
 
+  async handleExecutionAction(action: ExecutionAction) {
+    switch (action.action) {
+      case 'EXECUTE': {
+        const { code } = action;
+        await this.handleExecute(code);
+        break;
+      }
+      case 'TERMINATE': {
+        const { reset } = action;
+        await this.handleTerminate();
+        // TODO this is a workaround for the simulated robot
+        // (and probably other objects) still moving after terminating
+        await new Promise(resolve => setTimeout(resolve, 100));
+        if (reset) await this.handleReset();
+        break;
+      }
+      case 'RESET': {
+        await this.handleReset();
+        break;
+      }
+      default:
+        // eslint-disable-next-line no-throw-literal
+        throw 'unreachable';
+    }
+  }
+
   async handleExecute(code: string) {
     // eslint-disable-next-line no-throw-literal
     if (this.executorRef.current === null) throw 'ref is null';
@@ -526,17 +557,22 @@ class Ide extends React.Component<PropTypes, StateTypes> {
     });
   }
 
-  handleTerminate() {
+  async handleTerminate() {
     // eslint-disable-next-line no-throw-literal
     if (this.executorRef.current === null) throw 'ref is null';
 
     this.executorRef.current.removeTask(this.state.runningTask);
     this.setState({ runningTask: null });
-    (async () => {
-      (await this.getSimulator()).robots.forEach(robot => {
-        robot.setSpeed(0, 0);
-      });
-    })();
+    (await this.getSimulator()).robots.forEach(robot => {
+      robot.setSpeed(0, 0);
+    });
+  }
+
+  handleReset() {
+    // eslint-disable-next-line no-throw-literal
+    if (this.simulatorRef.current === null) throw 'ref is null';
+
+    this.simulatorRef.current.reset();
   }
 
   handleFileAction(action: FileAction) {

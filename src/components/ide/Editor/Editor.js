@@ -15,6 +15,7 @@ import {
   TerminateAndResetIcon,
 } from '../../misc/palette';
 
+import ExecutionAction from '../Ide';
 import ToolBar from '../ToolBar';
 import ToolBarIconButton from '../ToolBar/ToolBarIconButton';
 import ToolBarItem from '../ToolBar/ToolBarItem';
@@ -25,8 +26,7 @@ type PropTypes = {|
   layoutNode: any,
   content: string | null,
   onContentChange: (content: string) => void | Promise<void>,
-  onExecute: (code: string) => void | Promise<void>,
-  onTerminate: () => void | Promise<void>,
+  onExecutionAction: (action: ExecutionAction) => void | Promise<void>,
   running: boolean,
 |};
 type StateTypes = {|
@@ -102,7 +102,11 @@ class Editor extends React.Component<PropTypes, StateTypes> {
               icon={ExecuteIcon}
               color="limegreen"
               onClick={() => {
-                if (content !== null) this.props.onExecute(content);
+                if (content !== null)
+                  this.props.onExecutionAction({
+                    action: 'EXECUTE',
+                    code: content,
+                  });
               }}
               disableRipple
               disabled={running || content === null}
@@ -111,7 +115,12 @@ class Editor extends React.Component<PropTypes, StateTypes> {
           {running ? (
             <ToolBarItem key="terminate-and-reset">
               <ToolBarIconButton
-                onClick={() => {}}
+                onClick={() => {
+                  this.props.onExecutionAction({
+                    action: 'TERMINATE',
+                    reset: true,
+                  });
+                }}
                 icon={TerminateAndResetIcon}
                 color="red"
                 disableRipple
@@ -120,7 +129,11 @@ class Editor extends React.Component<PropTypes, StateTypes> {
           ) : (
             <ToolBarItem key="reset">
               <ToolBarIconButton
-                onClick={() => {}}
+                onClick={() => {
+                  this.props.onExecutionAction({
+                    action: 'RESET',
+                  });
+                }}
                 icon={ResetIcon}
                 disableRipple
               />
@@ -128,7 +141,12 @@ class Editor extends React.Component<PropTypes, StateTypes> {
           )}
           <ToolBarItem>
             <ToolBarIconButton
-              onClick={() => this.props.onTerminate()}
+              onClick={() => {
+                this.props.onExecutionAction({
+                  action: 'TERMINATE',
+                  reset: false,
+                });
+              }}
               icon={TerminateIcon}
               color="red"
               disableRipple

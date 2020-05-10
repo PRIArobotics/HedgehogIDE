@@ -25,6 +25,7 @@ import {
   LanguagePythonIcon,
 } from '../../misc/palette';
 
+import ExecutionAction from '../Ide';
 import BlocklyComponent, { type Locale as BlocklyLocale } from '../Blockly';
 import ToolBar from '../ToolBar';
 import ToolBarIconButton from '../ToolBar/ToolBarIconButton';
@@ -104,8 +105,7 @@ type PropTypes = {|
   codeCollapsed: boolean,
   codeLanguage: 'JavaScript' | 'Python',
   onUpdate: (state: ControlledState) => void | Promise<void>,
-  onExecute: (code: string) => void | Promise<void>,
-  onTerminate: () => void | Promise<void>,
+  onExecutionAction: (action: ExecutionAction) => void | Promise<void>,
   running: boolean,
   layoutNode: any,
 |};
@@ -407,7 +407,11 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
           <ToolBarItem>
             <ToolBarIconButton
               onClick={() => {
-                if (code !== null) this.props.onExecute(code);
+                if (code !== null)
+                  this.props.onExecutionAction({
+                    action: 'EXECUTE',
+                    code,
+                  });
               }}
               icon={ExecuteIcon}
               color="limegreen"
@@ -422,7 +426,12 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
           {this.props.running ? (
             <ToolBarItem key="terminate-and-reset">
               <ToolBarIconButton
-                onClick={() => {}}
+                onClick={() => {
+                  this.props.onExecutionAction({
+                    action: 'TERMINATE',
+                    reset: true,
+                  });
+                }}
                 icon={TerminateAndResetIcon}
                 color="red"
                 disableRipple
@@ -431,7 +440,11 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
           ) : (
             <ToolBarItem key="reset">
               <ToolBarIconButton
-                onClick={() => {}}
+                onClick={() => {
+                  this.props.onExecutionAction({
+                    action: 'RESET',
+                  });
+                }}
                 icon={ResetIcon}
                 disableRipple
               />
@@ -439,7 +452,12 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
           )}
           <ToolBarItem>
             <ToolBarIconButton
-              onClick={() => this.props.onTerminate()}
+              onClick={() => {
+                this.props.onExecutionAction({
+                  action: 'TERMINATE',
+                  reset: false,
+                });
+              }}
               icon={TerminateIcon}
               color="red"
               disableRipple

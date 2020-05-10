@@ -5,8 +5,13 @@ import withStyles from 'isomorphic-style-loader/withStyles';
 
 import Matter from 'matter-js';
 
-import { ResetIcon } from '../../misc/palette';
+import {
+  TerminateIcon,
+  ResetIcon,
+  TerminateAndResetIcon,
+} from '../../misc/palette';
 
+import ExecutionAction from '../Ide';
 import ToolBar from '../ToolBar';
 import ToolBarIconButton from '../ToolBar/ToolBarIconButton';
 import ToolBarItem from '../ToolBar/ToolBarItem';
@@ -21,6 +26,8 @@ type PropTypes = {|
   forwardedRef: RefObject<typeof Simulator>,
   width: number,
   height: number,
+  onExecutionAction: (action: ExecutionAction) => void | Promise<void>,
+  running: boolean,
 |};
 type StateTypes = {||};
 
@@ -396,18 +403,58 @@ class Simulator extends React.Component<PropTypes, StateTypes> {
     });
   }
 
+  reset() {
+    this.simulation.reset();
+  }
+
   render() {
+    const { running } = this.props;
+
     return (
       <div className={s.root}>
         <div className={s.container}>
           <div className={s.canvas} ref={this.renderTargetRef} />
         </div>
         <ToolBar>
+          {running ? (
+            <ToolBarItem key="terminate-and-reset">
+              <ToolBarIconButton
+                onClick={() => {
+                  this.props.onExecutionAction({
+                    action: 'TERMINATE',
+                    reset: true,
+                  });
+                }}
+                icon={TerminateAndResetIcon}
+                color="red"
+                disableRipple
+              />
+            </ToolBarItem>
+          ) : (
+            <ToolBarItem key="reset">
+              <ToolBarIconButton
+                onClick={() => {
+                  this.props.onExecutionAction({
+                    action: 'RESET',
+                  });
+                }}
+                icon={ResetIcon}
+                disableRipple
+              />
+            </ToolBarItem>
+          )}
           <ToolBarItem>
             <ToolBarIconButton
-              onClick={() => this.simulation.reset()}
-              icon={ResetIcon}
+              onClick={() => {
+                this.props.onExecutionAction({
+                  action: 'TERMINATE',
+                  reset: false,
+                });
+              }}
+              icon={TerminateIcon}
+              color="red"
               disableRipple
+              disabled={!running}
             />
           </ToolBarItem>
         </ToolBar>
