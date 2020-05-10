@@ -203,7 +203,7 @@ class Ide extends React.Component<PropTypes, StateTypes> {
         );
       }
       case 'console': {
-        return <Console forwardedRef={this.consoleRef} />;
+        return <Console ref={this.consoleRef} />;
       }
       case 'blockly': {
         return (

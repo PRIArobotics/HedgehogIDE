@@ -1,7 +1,7 @@
 // @flow
 
 import * as React from 'react';
-import withStyles from 'isomorphic-style-loader/withStyles';
+import useStyles from 'isomorphic-style-loader/useStyles';
 
 // eslint-disable-next-line css-modules/no-unused-class
 import s from './Console.scss';
@@ -11,89 +11,71 @@ type ConsoleItem = {|
   stream: string,
 |};
 
-type PropTypes = {|
-  // eslint-disable-next-line no-use-before-define
-  forwardedRef: RefObject<typeof Console>,
-|};
-type StateTypes = {|
-  consoleText: ConsoleItem[],
+type Props = {||};
+type Instance = {|
+  consoleOut: (text: string, stream: string) => void,
 |};
 
-class Console extends React.Component<PropTypes, StateTypes> {
-  inputRef: RefObject<'input'> = React.createRef();
-  bottomRef: RefObject<'div'> = React.createRef();
+function Console(props: Props, ref: Ref<Instance>) {
+  const [items, setItems] = React.useState<ConsoleItem[]>([]);
+  const inputRef = React.useRef<HTMLInputElement | null>(null);
+  const bottomRef = React.useRef<HTMLDivElement | null>(null);
 
-  state = {
-    consoleText: [],
+  React.useEffect(() => {
+    if (bottomRef.current !== null) bottomRef.current.scrollIntoView(false);
+  }, [items, bottomRef]);
+
+  const print = (text: string, stream: string) => {
+    setItems([...items.slice(-99), { text, stream }]);
   };
 
-  componentDidMount() {
-    this.props.forwardedRef.current = this;
-    if (this.bottomRef.current !== null)
-      this.bottomRef.current.scrollIntoView(false);
-  }
-
-  componentDidUpdate() {
-    if (this.bottomRef.current !== null)
-      this.bottomRef.current.scrollIntoView(false);
-  }
-
-  componentWillUnmount() {
-    this.props.forwardedRef.current = null;
-  }
-
-  consoleOut(text: string, stream: string) {
-    this.setState(oldState => ({
-      consoleText: [...oldState.consoleText.slice(-99), { text, stream }],
-    }));
-  }
-
-  handleSubmit = e => {
+  const handleSubmit = e => {
     e.preventDefault();
-    if (this.inputRef.current === null) return;
-    const input = this.inputRef.current.value;
-    this.inputRef.current.value = '';
+    if (inputRef.current === null) return;
+    const input = inputRef.current.value;
+    inputRef.current.value = '';
 
-    this.consoleOut(`${input}`, 'stdin');
+    print(`${input}`, 'stdin');
     if (input.startsWith('/')) {
       switch (input) {
         case '/help':
         case '/h':
-          this.consoleOut('1st Line\n2nd Line', 'stdout');
+          print('1st Line\n2nd Line', 'stdout');
           break;
 
         case '/clear':
         case '/c':
-          this.setState({
-            consoleText: [],
-          });
+          setItems([]);
           break;
 
         default:
-          this.consoleOut(`Command not found: ${input}`, 'stderr');
+          print(`Command not found: ${input}`, 'stderr');
           break;
       }
     }
   };
 
-  render() {
-    return (
-      <div style={{ overflowX: 'auto', height: '100%' }}>
-        <div className={s.root}>
-          <div className={s.outputPane}>
-            {this.state.consoleText.map(({ text, stream }) => (
-              <pre className={`${s.output} ${s[stream]}`}>{text}</pre>
-            ))}
-            <div ref={this.bottomRef} />
-          </div>
-          <form className={s.inputForm} onSubmit={this.handleSubmit}>
-            &gt;&gt;&gt;&nbsp;
-            <input type="text" ref={this.inputRef} />
-          </form>
+  React.useImperativeHandle(ref, () => ({
+    consoleOut: print,
+  }));
+
+  useStyles(s);
+  return (
+    <div style={{ overflowX: 'auto', height: '100%' }}>
+      <div className={s.root}>
+        <div className={s.outputPane}>
+          {items.map(({ text, stream }) => (
+            <pre className={`${s.output} ${s[stream]}`}>{text}</pre>
+          ))}
+          <div ref={bottomRef} />
         </div>
+        <form className={s.inputForm} onSubmit={handleSubmit}>
+          &gt;&gt;&gt;&nbsp;
+          <input type="text" ref={inputRef} />
+        </form>
       </div>
-    );
-  }
+    </div>
+  );
 }
 
-export default withStyles(s)(Console);
+export default React.forwardRef<Props, Instance>(Console);
