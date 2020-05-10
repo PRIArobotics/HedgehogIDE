@@ -1,7 +1,7 @@
 // @flow
 
 import * as React from 'react';
-import withStyles from 'isomorphic-style-loader/withStyles';
+import useStyles from 'isomorphic-style-loader/useStyles';
 
 import AceEditor from 'react-ace';
 import 'brace/mode/javascript';
@@ -22,141 +22,143 @@ import ToolBarItem from '../ToolBar/ToolBarItem';
 
 import s from './Editor.scss';
 
-type PropTypes = {|
+type Props = {|
   layoutNode: any,
   content: string | null,
   onContentChange: (content: string) => void | Promise<void>,
   onExecutionAction: (action: ExecutionAction) => void | Promise<void>,
   running: boolean,
 |};
-type StateTypes = {|
-  editorWidth: string,
-  editorHeight: string,
-|};
 
-class Editor extends React.Component<PropTypes, StateTypes> {
-  containerRef: RefObject<'div'> = React.createRef();
+function Editor({
+  layoutNode,
+  content,
+  onContentChange,
+  onExecutionAction,
+  running,
+}: Props) {
+  const [[width, height], setDimension] = React.useState<[string, string]>([
+    '0',
+    '0',
+  ]);
+  const containerRef = React.useRef<HTMLDivElement | null>(null);
 
-  state = {
-    editorWidth: '0',
-    editorHeight: '0',
-  };
+  // update editor size when the containing tab is resized or made visible
+  React.useEffect(() => {
+    const handleResize = () => {
+      setTimeout(() => {
+        if (containerRef.current === null) return;
+        setDimension([
+          `${containerRef.current.offsetWidth}px`,
+          `${containerRef.current.offsetHeight}px`,
+        ]);
+      }, 0);
+    };
 
-  componentDidMount() {
-    this.props.layoutNode.setEventListener('resize', this.handleResize);
-    this.props.layoutNode.setEventListener('visibility', this.handleResize);
-    this.handleResize();
-  }
+    layoutNode.setEventListener('resize', handleResize);
+    layoutNode.setEventListener('visibility', handleResize);
+    handleResize();
 
-  handleResize = () => {
-    setTimeout(() => {
-      if (this.containerRef.current !== null) {
-        this.setState({
-          editorWidth: `${this.containerRef.current.offsetWidth}px`,
-          editorHeight: `${this.containerRef.current.offsetHeight}px`,
-        });
-      }
-    }, 0);
-  };
+    return () => {
+      layoutNode.setEventListener('resize', null);
+      layoutNode.setEventListener('visibility', null);
+    };
+  }, [layoutNode]);
 
-  render() {
-    const { content, running } = this.props;
-    const { editorWidth, editorHeight } = this.state;
-
-    return (
-      <div className={s.root}>
-        <div className={s.container} ref={this.containerRef}>
-          {content === null ? null : (
-            <AceEditor
-              mode="javascript"
-              theme="github"
-              name="editor"
-              width={editorWidth}
-              height={editorHeight}
-              // onLoad={this.onLoad}
-              onChange={text => this.props.onContentChange(text)}
-              fontSize={16}
-              // onSelectionChange={this.onSelectionChange}
-              // onCursorChange={this.onCursorChange}
-              // onValidate={this.onValidate}
-              value={content}
-              showGutter
-              highlightActiveLine
-              autoScrollEditorIntoView
-              style={{
-                position: 'absolute',
-              }}
-              setOptions={{
-                enableBasicAutocompletion: true,
-                enableLiveAutocompletion: true,
-                // enableSnippets: this.state.enableSnippets,
-                showLineNumbers: true,
-                tabSize: 2,
-              }}
-            />
-          )}
-        </div>
-        <ToolBar>
-          <ToolBarItem>
-            <ToolBarIconButton
-              icon={ExecuteIcon}
-              color="limegreen"
-              onClick={() => {
-                if (content !== null)
-                  this.props.onExecutionAction({
-                    action: 'EXECUTE',
-                    code: content,
-                  });
-              }}
-              disableRipple
-              disabled={running || content === null}
-            />
-          </ToolBarItem>
-          {running ? (
-            <ToolBarItem key="terminate-and-reset">
-              <ToolBarIconButton
-                onClick={() => {
-                  this.props.onExecutionAction({
-                    action: 'TERMINATE',
-                    reset: true,
-                  });
-                }}
-                icon={TerminateAndResetIcon}
-                color="red"
-                disableRipple
-              />
-            </ToolBarItem>
-          ) : (
-            <ToolBarItem key="reset">
-              <ToolBarIconButton
-                onClick={() => {
-                  this.props.onExecutionAction({
-                    action: 'RESET',
-                  });
-                }}
-                icon={ResetIcon}
-                disableRipple
-              />
-            </ToolBarItem>
-          )}
-          <ToolBarItem>
+  useStyles(s);
+  return (
+    <div className={s.root}>
+      <div className={s.container} ref={containerRef}>
+        {content === null ? null : (
+          <AceEditor
+            mode="javascript"
+            theme="github"
+            name="editor"
+            width={width}
+            height={height}
+            // onLoad={onLoad}
+            onChange={text => onContentChange(text)}
+            fontSize={16}
+            // onSelectionChange={onSelectionChange}
+            // onCursorChange={onCursorChange}
+            // onValidate={onValidate}
+            value={content}
+            showGutter
+            highlightActiveLine
+            autoScrollEditorIntoView
+            style={{
+              position: 'absolute',
+            }}
+            setOptions={{
+              enableBasicAutocompletion: true,
+              enableLiveAutocompletion: true,
+              // enableSnippets: enableSnippets,
+              showLineNumbers: true,
+              tabSize: 2,
+            }}
+          />
+        )}
+      </div>
+      <ToolBar>
+        <ToolBarItem>
+          <ToolBarIconButton
+            icon={ExecuteIcon}
+            color="limegreen"
+            onClick={() => {
+              if (content !== null)
+                onExecutionAction({
+                  action: 'EXECUTE',
+                  code: content,
+                });
+            }}
+            disableRipple
+            disabled={running || content === null}
+          />
+        </ToolBarItem>
+        {running ? (
+          <ToolBarItem key="terminate-and-reset">
             <ToolBarIconButton
               onClick={() => {
-                this.props.onExecutionAction({
+                onExecutionAction({
                   action: 'TERMINATE',
-                  reset: false,
+                  reset: true,
                 });
               }}
-              icon={TerminateIcon}
+              icon={TerminateAndResetIcon}
               color="red"
               disableRipple
-              disabled={!running}
             />
           </ToolBarItem>
-        </ToolBar>
-      </div>
-    );
-  }
+        ) : (
+          <ToolBarItem key="reset">
+            <ToolBarIconButton
+              onClick={() => {
+                onExecutionAction({
+                  action: 'RESET',
+                });
+              }}
+              icon={ResetIcon}
+              disableRipple
+            />
+          </ToolBarItem>
+        )}
+        <ToolBarItem>
+          <ToolBarIconButton
+            onClick={() => {
+              onExecutionAction({
+                action: 'TERMINATE',
+                reset: false,
+              });
+            }}
+            icon={TerminateIcon}
+            color="red"
+            disableRipple
+            disabled={!running}
+          />
+        </ToolBarItem>
+      </ToolBar>
+    </div>
+  );
 }
 
-export default withStyles(s)(Editor);
+export default Editor;
