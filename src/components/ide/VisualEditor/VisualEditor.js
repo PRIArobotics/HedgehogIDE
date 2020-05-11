@@ -353,13 +353,21 @@ function VisualEditor({
   // handle blockly changes by saving the file and regenerating code
   const [code, setCode] = React.useState<string | null>(null);
 
-  const refreshCode = () => {
-    if (blocklyRef.current === null) return;
+  // eslint-disable-next-line no-shadow
+  const generateCode = (codeLanguage: 'JavaScript' | 'Python') => {
+    // eslint-disable-next-line no-throw-literal
+    if (blocklyRef.current === null) throw 'ref is null';
+    // eslint-disable-next-line no-throw-literal
+    if (blocklyRef.current.workspace === null) throw 'workspace is null';
 
     const language = Blockly[codeLanguage];
-    const newCode = language.workspaceToCode(blocklyRef.current.workspace);
-    setCode(newCode);
+    return language.workspaceToCode(blocklyRef.current.workspace);
   };
+  const refreshCode = React.useCallback(() => {
+    if (blocklyRef.current === null || blocklyRef.current.workspace === null)
+      return;
+    setCode(generateCode(codeLanguage));
+  }, [codeLanguage]);
 
   const handleBlocklyChange = workspace => {
     const workspaceXml = Blockly.Xml.domToText(
@@ -372,7 +380,7 @@ function VisualEditor({
   // handle language changes by regenerating code
   React.useEffect(() => {
     refreshCode();
-  }, [codeLanguage]);
+  }, [codeLanguage, refreshCode]);
 
   // eslint-disable-next-line no-shadow
   const setCodeLanguage = (codeLanguage: 'JavaScript' | 'Python') => {
@@ -397,16 +405,19 @@ function VisualEditor({
         <ToolBarItem>
           <ToolBarIconButton
             onClick={() => {
-              if (code !== null)
-                onExecutionAction({
-                  action: 'EXECUTE',
-                  code,
-                });
+              onExecutionAction({
+                action: 'EXECUTE',
+                code: generateCode('JavaScript'),
+              });
             }}
             icon={ExecuteIcon}
             color="limegreen"
             disableRipple
-            disabled={running || code === null || codeLanguage !== 'JavaScript'}
+            disabled={
+              running ||
+              blocklyRef.current === null ||
+              blocklyRef.current.workspace === null
+            }
           />
         </ToolBarItem>
         {running ? (
