@@ -41,5 +41,8 @@ Called whenever a program terminated. This can be either cause by a user action 
 Payload:
 - `error`: Optional error.
 
+#### `simulationReset`
+Called whenever the simulation is reset. No payload is passed for this event.
+
 ### SDK documentation
 Documentation on the SDK modules can be found in the sdk directory.

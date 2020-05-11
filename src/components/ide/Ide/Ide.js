@@ -582,6 +582,9 @@ class Ide extends React.Component<PropTypes, StateTypes> {
     if (this.simulatorRef.current === null) throw 'ref is null';
 
     this.simulatorRef.current.reset();
+    this.pluginManager
+      .getSdk()
+      .misc.emit(this.executorRef.current, 'simulationReset', null);
   }
 
   handleFileAction(action: FileAction) {
