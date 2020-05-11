@@ -54,6 +54,7 @@ import SimulatorIcon from 'mdi-material-ui/AxisArrow';
 
 // file/collection actions
 import CreateIcon from 'mdi-material-ui/Plus';
+import OpenIcon from 'mdi-material-ui/FolderOpen';
 import RenameIcon from 'mdi-material-ui/Pencil';
 import DeleteIcon from 'mdi-material-ui/Delete';
 import RefreshIcon from 'mdi-material-ui/Refresh';
@@ -105,6 +106,7 @@ export {
   ConsoleIcon,
   SimulatorIcon,
   CreateIcon,
+  OpenIcon,
   RenameIcon,
   DeleteIcon,
   DownloadIcon,

@@ -1,6 +1,13 @@
 {
   "app.dialog.cancel": "Cancel",
   "app.dialog.ok": "OK",
+  "app.exercises.clone_exercise_tooltip": "Create new project to work on exercise \"{name}\"",
+  "app.exercises.list_title": "Exercises",
+  "app.exercises.open_associated_project_menu_item": "Open project \"{name}\"",
+  "app.exercises.open_associated_project_menu_tooltip": "Open an existing project to work on exercise \"{exercise}\"",
+  "app.exercises.open_associated_project_tooltip": "Open project \"{name}\" to work on exercise \"{exercise}\"",
+  "app.exercises.refresh_exercise_list_tooltip": "Refresh Exercise List",
+  "app.exercises.secondary_text": "Difficulty: {level}",
   "app.footer.home": "Home",
   "app.header.home_label": "Home",
   "app.header.home_logo_alt": "Hedgehog Logo",

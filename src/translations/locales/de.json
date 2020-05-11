@@ -1,6 +1,13 @@
 {
   "app.dialog.cancel": "Abbrechen",
   "app.dialog.ok": "OK",
+  "app.exercises.clone_exercise_tooltip": "Neues Projekt anlegen um an Aufgabe \"{name}\" zu arbeiten",
+  "app.exercises.list_title": "Aufgaben",
+  "app.exercises.open_associated_project_menu_item": "Projekt \"{name}\" öffnen",
+  "app.exercises.open_associated_project_menu_tooltip": "Bestehendes Projekt öffnen um an Aufgabe \"{exercise}\" zu arbeiten",
+  "app.exercises.open_associated_project_tooltip": "Projekt \"{name}\" öffnen um an Aufgabe \"{exercise}\" zu arbeiten",
+  "app.exercises.refresh_exercise_list_tooltip": "Aufgabenliste aktualisieren",
+  "app.exercises.secondary_text": "Schwierigkeitsgrad: {level}",
   "app.footer.home": "Home",
   "app.header.home_label": "Home",
   "app.header.home_logo_alt": "Hedgehog Logo",
