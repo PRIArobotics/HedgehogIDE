@@ -2,7 +2,7 @@
 
 import * as React from 'react';
 import ReactDOM from 'react-dom/server';
-import withStyles from 'isomorphic-style-loader/withStyles';
+import useStyles from 'isomorphic-style-loader/useStyles';
 
 import Blockly from 'blockly/core';
 import 'blockly/blocks';
@@ -11,7 +11,7 @@ import 'blockly/python';
 import De from 'blockly/msg/de';
 import En from 'blockly/msg/en';
 
-import { LocaleConsumer } from '../../locale';
+import { useLocale } from '../../locale';
 import { type LocaleMap, getTranslation } from '../../../translations';
 
 import {
@@ -109,99 +109,21 @@ type PropTypes = {|
   running: boolean,
   layoutNode: any,
 |};
-type StateTypes = {|
-  code: string | null,
-  workspaceOptions: any,
-|};
 
-class VisualEditor extends React.Component<PropTypes, StateTypes> {
-  static defaultProps = {
-    codeCollapsed: true,
-    codeLanguage: 'JavaScript',
-  };
+function VisualEditor({
+  layoutNode,
+  content,
+  onContentChange,
+  codeCollapsed,
+  codeLanguage,
+  onUpdate,
+  onExecutionAction,
+  running,
+}: PropTypes) {
+  const blocklyRef = React.useRef<typeof BlocklyComponent | null>(null);
+  const codeRef = React.useRef<HTMLPreElement | null>(null);
 
-  static dynamicBlockLoaders: [() => Block[]] = [];
-
-  blocklyRef: RefObject<BlocklyComponent> = React.createRef();
-  codeRef: RefObject<'pre'> = React.createRef();
-
-  resizeAnim: AnimationFrameID | null;
-
-  state = {
-    code: null,
-    workspaceOptions: this.buildWorkspaceOptions(),
-  };
-
-  componentDidMount() {
-    // eslint-disable-next-line no-throw-literal
-    if (this.codeRef.current === null) throw 'ref is null in componentDidMount';
-    const codeRefCurrent = this.codeRef.current;
-
-    const { layoutNode } = this.props;
-    layoutNode.setEventListener('resize', () => {
-      if (this.blocklyRef.current)
-        this.blocklyRef.current.refreshSizeDeferred();
-    });
-    layoutNode.setEventListener('visibility', ({ visible }) => {
-      if (this.blocklyRef.current)
-        this.blocklyRef.current.updateVisibility(visible);
-    });
-    codeRefCurrent.addEventListener('transitionend', () => {
-      if (this.resizeAnim) {
-        cancelAnimationFrame(this.resizeAnim);
-        this.resizeAnim = null;
-      }
-
-      if (this.blocklyRef.current)
-        this.blocklyRef.current.refreshSizeDeferred();
-    });
-  }
-
-  componentDidUpdate(prevProps) {
-    const { codeLanguage: prevCodeLanguage } = prevProps;
-    const { codeLanguage } = this.props;
-
-    // refresh code when language is changed
-    if (prevCodeLanguage !== codeLanguage) this.refreshCode();
-  }
-
-  animateWorkspaceSize() {
-    this.resizeAnim = requestAnimationFrame(() => {
-      if (this.blocklyRef.current) this.blocklyRef.current.refreshSize();
-      this.animateWorkspaceSize();
-    });
-  }
-
-  refreshCode() {
-    // eslint-disable-next-line no-throw-literal
-    if (this.blocklyRef.current === null) throw 'ref is null';
-
-    const { workspace } = this.blocklyRef.current;
-
-    const language = Blockly[this.props.codeLanguage];
-    const code = language.workspaceToCode(workspace);
-    this.setState({ code });
-  }
-
-  handleBlocklyChange = workspace => {
-    this.refreshCode();
-
-    const workspaceXml = Blockly.Xml.domToText(
-      Blockly.Xml.workspaceToDom(workspace),
-    );
-    this.props.onContentChange(workspaceXml);
-  };
-
-  setCodeLanguage(codeLanguage: 'JavaScript' | 'Python') {
-    this.props.onUpdate({ codeLanguage });
-  }
-
-  handleToggleCodeCollapsed = () => {
-    this.props.onUpdate({ codeCollapsed: !this.props.codeCollapsed });
-    this.animateWorkspaceSize();
-  };
-
-  buildWorkspaceOptions() {
+  const workspaceOptions = React.useMemo(() => {
     const dynamicBlocks = VisualEditor.dynamicBlockLoaders.length ? (
       <category name="%{BKY_CAT_CUSTOM}" colour="120">
         {VisualEditor.dynamicBlockLoaders.map(loader =>
@@ -377,131 +299,198 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
       trashcan: false,
       scrollbars: true,
     };
-  }
+  }, []);
 
-  render() {
-    const { content, codeCollapsed, codeLanguage } = this.props;
-    const { code } = this.state;
+  // update workspace size when the containing tab is resized or made visible
+  React.useEffect(() => {
+    layoutNode.setEventListener('resize', () => {
+      if (blocklyRef.current) blocklyRef.current.refreshSizeDeferred();
+    });
+    layoutNode.setEventListener('visibility', ({ visible }) => {
+      if (blocklyRef.current) blocklyRef.current.updateVisibility(visible);
+    });
 
-    return (
-      <div className={s.tabRoot}>
-        {content === null ? null : (
-          <LocaleConsumer>
-            {({ preferredLocales }) => {
-              const locale =
-                getTranslation(preferredLocales, LOCALES) || LOCALES.en;
+    return () => {
+      layoutNode.setEventListener('resize', null);
+      layoutNode.setEventListener('visibility', null);
+    };
+  }, [layoutNode]);
 
-              return (
-                <BlocklyComponent
-                  forwardedRef={this.blocklyRef}
-                  initialWorkspaceXml={content}
-                  locale={locale}
-                  workspaceOptions={this.state.workspaceOptions}
-                  onChange={this.handleBlocklyChange}
-                />
-              );
+  // animate workspace size when the sidebar is expanding or collapsing
+  const resizeAnimRef = React.useRef<AnimationFrameID | null>(null);
+  React.useEffect(() => {
+    if (codeRef.current === null) return undefined;
+    const codeElem = codeRef.current;
+
+    const onTransitionEnd = () => {
+      if (resizeAnimRef.current !== null) {
+        cancelAnimationFrame(resizeAnimRef.current);
+        resizeAnimRef.current = null;
+      }
+
+      if (blocklyRef.current) blocklyRef.current.refreshSizeDeferred();
+    };
+
+    codeElem.addEventListener('transitionend', onTransitionEnd);
+
+    return () => {
+      codeElem.removeEventListener('transitionend', onTransitionEnd);
+    };
+  });
+
+  const animateWorkspaceSize = () => {
+    resizeAnimRef.current = requestAnimationFrame(() => {
+      if (blocklyRef.current) blocklyRef.current.refreshSize();
+      animateWorkspaceSize();
+    });
+  };
+
+  const handleToggleCodeCollapsed = () => {
+    onUpdate({ codeCollapsed: !codeCollapsed });
+    animateWorkspaceSize();
+  };
+
+  // handle blockly changes by saving the file and regenerating code
+  const [code, setCode] = React.useState<string | null>(null);
+
+  const refreshCode = () => {
+    if (blocklyRef.current === null) return;
+
+    const language = Blockly[codeLanguage];
+    const newCode = language.workspaceToCode(blocklyRef.current.workspace);
+    setCode(newCode);
+  };
+
+  const handleBlocklyChange = workspace => {
+    const workspaceXml = Blockly.Xml.domToText(
+      Blockly.Xml.workspaceToDom(workspace),
+    );
+    onContentChange(workspaceXml);
+    refreshCode();
+  };
+
+  // handle language changes by regenerating code
+  React.useEffect(() => {
+    refreshCode();
+  }, [codeLanguage]);
+
+  // eslint-disable-next-line no-shadow
+  const setCodeLanguage = (codeLanguage: 'JavaScript' | 'Python') => {
+    onUpdate({ codeLanguage });
+  };
+
+  useStyles(s);
+  const { preferredLocales } = useLocale();
+  const locale = getTranslation(preferredLocales, LOCALES) || LOCALES.en;
+  return (
+    <div className={s.tabRoot}>
+      {content === null ? null : (
+        <BlocklyComponent
+          forwardedRef={blocklyRef}
+          initialWorkspaceXml={content}
+          locale={locale}
+          workspaceOptions={workspaceOptions}
+          onChange={handleBlocklyChange}
+        />
+      )}
+      <ToolBar>
+        <ToolBarItem>
+          <ToolBarIconButton
+            onClick={() => {
+              if (code !== null)
+                onExecutionAction({
+                  action: 'EXECUTE',
+                  code,
+                });
             }}
-          </LocaleConsumer>
-        )}
-        <ToolBar>
-          <ToolBarItem>
+            icon={ExecuteIcon}
+            color="limegreen"
+            disableRipple
+            disabled={running || code === null || codeLanguage !== 'JavaScript'}
+          />
+        </ToolBarItem>
+        {running ? (
+          <ToolBarItem key="terminate-and-reset">
             <ToolBarIconButton
               onClick={() => {
-                if (code !== null)
-                  this.props.onExecutionAction({
-                    action: 'EXECUTE',
-                    code,
-                  });
-              }}
-              icon={ExecuteIcon}
-              color="limegreen"
-              disableRipple
-              disabled={
-                this.props.running ||
-                code === null ||
-                codeLanguage !== 'JavaScript'
-              }
-            />
-          </ToolBarItem>
-          {this.props.running ? (
-            <ToolBarItem key="terminate-and-reset">
-              <ToolBarIconButton
-                onClick={() => {
-                  this.props.onExecutionAction({
-                    action: 'TERMINATE',
-                    reset: true,
-                  });
-                }}
-                icon={TerminateAndResetIcon}
-                color="red"
-                disableRipple
-              />
-            </ToolBarItem>
-          ) : (
-            <ToolBarItem key="reset">
-              <ToolBarIconButton
-                onClick={() => {
-                  this.props.onExecutionAction({
-                    action: 'RESET',
-                  });
-                }}
-                icon={ResetIcon}
-                disableRipple
-              />
-            </ToolBarItem>
-          )}
-          <ToolBarItem>
-            <ToolBarIconButton
-              onClick={() => {
-                this.props.onExecutionAction({
+                onExecutionAction({
                   action: 'TERMINATE',
-                  reset: false,
+                  reset: true,
                 });
               }}
-              icon={TerminateIcon}
+              icon={TerminateAndResetIcon}
               color="red"
               disableRipple
-              disabled={!this.props.running}
             />
           </ToolBarItem>
-          <div style={{ flex: '1 0 auto' }} />
-          <ToolBarItem>
+        ) : (
+          <ToolBarItem key="reset">
             <ToolBarIconButton
-              onClick={this.handleToggleCodeCollapsed}
-              icon={codeCollapsed ? SlideLeftIcon : SlideRightIcon}
+              onClick={() => {
+                onExecutionAction({
+                  action: 'RESET',
+                });
+              }}
+              icon={ResetIcon}
               disableRipple
             />
           </ToolBarItem>
-          <ToolBarItem>
-            <ToolBarIconButton
-              onClick={() => this.setCodeLanguage('JavaScript')}
-              icon={LanguageJavascriptIcon}
-              color={codeLanguage === 'JavaScript' ? 'black' : 'gray'}
-              disableRipple
-            />
-          </ToolBarItem>
-          <ToolBarItem>
-            <ToolBarIconButton
-              onClick={() => this.setCodeLanguage('Python')}
-              icon={LanguagePythonIcon}
-              color={codeLanguage === 'Python' ? 'black' : 'gray'}
-              disableRipple
-            />
-          </ToolBarItem>
-        </ToolBar>
-        <pre
-          ref={this.codeRef}
-          className={
-            codeCollapsed
-              ? `${s.codeContainer} ${s.collapsed}`
-              : s.codeContainer
-          }
-        >
-          {code}
-        </pre>
-      </div>
-    );
-  }
+        )}
+        <ToolBarItem>
+          <ToolBarIconButton
+            onClick={() => {
+              onExecutionAction({
+                action: 'TERMINATE',
+                reset: false,
+              });
+            }}
+            icon={TerminateIcon}
+            color="red"
+            disableRipple
+            disabled={!running}
+          />
+        </ToolBarItem>
+        <div style={{ flex: '1 0 auto' }} />
+        <ToolBarItem>
+          <ToolBarIconButton
+            onClick={handleToggleCodeCollapsed}
+            icon={codeCollapsed ? SlideLeftIcon : SlideRightIcon}
+            disableRipple
+          />
+        </ToolBarItem>
+        <ToolBarItem>
+          <ToolBarIconButton
+            onClick={() => setCodeLanguage('JavaScript')}
+            icon={LanguageJavascriptIcon}
+            color={codeLanguage === 'JavaScript' ? 'black' : 'gray'}
+            disableRipple
+          />
+        </ToolBarItem>
+        <ToolBarItem>
+          <ToolBarIconButton
+            onClick={() => setCodeLanguage('Python')}
+            icon={LanguagePythonIcon}
+            color={codeLanguage === 'Python' ? 'black' : 'gray'}
+            disableRipple
+          />
+        </ToolBarItem>
+      </ToolBar>
+      <pre
+        ref={codeRef}
+        className={
+          codeCollapsed ? `${s.codeContainer} ${s.collapsed}` : s.codeContainer
+        }
+      >
+        {code}
+      </pre>
+    </div>
+  );
 }
+VisualEditor.defaultProps = {
+  codeCollapsed: true,
+  codeLanguage: 'JavaScript',
+};
+// type: [() => Block[]]
+VisualEditor.dynamicBlockLoaders = [];
 
-export default withStyles(s)(VisualEditor);
+export default VisualEditor;
