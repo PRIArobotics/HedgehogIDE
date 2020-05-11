@@ -16,6 +16,8 @@ const IconBadge = withStylesMaterial(theme => ({
   },
 }))(Badge);
 
+import MenuIcon from 'mdi-material-ui/DotsVertical';
+
 // files: general
 import FileIcon from 'mdi-material-ui/File';
 import FolderIcon from 'mdi-material-ui/Folder';
@@ -81,6 +83,7 @@ import SlideLeftIcon from 'mdi-material-ui/ChevronLeft';
 import SlideRightIcon from 'mdi-material-ui/ChevronRight';
 
 export {
+  MenuIcon,
   FileIcon,
   FolderIcon,
   FolderOpenIcon,
