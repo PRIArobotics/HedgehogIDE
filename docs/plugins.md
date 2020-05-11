@@ -29,5 +29,17 @@ Some features and functions of the SDK require to be executed before the IDE and
 
 *IMPORTANT*: Every plugin MUST call this function after performing any of there early stage SDK calls, even those which do not perform any initialization-phase SDK calls at all.
 
+### Core Plugin Events
+Core events are fired within the `misc` namespace (use `sdk.misc.on(EVENT, ...)` to register to them).
+
+#### `programExecute`
+Called whenever a user starts a program. No payload is passed for this event.
+
+#### `programTerminate`
+Called whenever a program terminated. This can be either cause by a user action (the user clicking on the stop program button) or when the program terminated by itself.
+
+Payload:
+- `error`: Optional error.
+
 ### SDK documentation
 Documentation on the SDK modules can be found in the sdk directory.

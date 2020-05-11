@@ -43,6 +43,7 @@ class Executor extends React.Component<PropTypes, StateTypes> {
     this.setState(state => ({
       tasks: state.tasks.filter(currentTask => currentTask !== task),
     }));
+    task.api.misc_exit({});
     this.taskExecutorRefs.delete(task);
     this.eventRegistry.forEach((tasks, event) => {
       this.eventRegistry.set(event, tasks.filter(t => t !== this));

@@ -538,7 +538,12 @@ class Ide extends React.Component<PropTypes, StateTypes> {
     const sdk = {
       misc: await initMiscSdk(
         this.getConsole.bind(this),
-        () => this.setState({ runningTask: null }),
+        error => {
+          this.setState({ runningTask: null });
+          this.pluginManager
+            .getSdk()
+            .misc.emit(this.executorRef.current, 'programTerminate', { error });
+        },
         this.pluginManager,
         executorRefCurrent,
       ),
@@ -555,6 +560,10 @@ class Ide extends React.Component<PropTypes, StateTypes> {
     this.setState({
       runningTask: executorRefCurrent.addTask(task),
     });
+
+    this.pluginManager
+      .getSdk()
+      .misc.emit(this.executorRef.current, 'programExecute', null);
   }
 
   async handleTerminate() {

@@ -97,5 +97,9 @@ class PluginManager {
   }
 
   onPluginReady = () => this.pluginReadyResolvers.shift()();
+
+  getSdk() {
+    return this.sdk;
+  }
 }
 export default PluginManager;

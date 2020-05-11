@@ -30,7 +30,7 @@ export default async function init(getConsole: () => Promise<Console>, onExit: (
     if (error) {
       (await getConsole()).consoleOut(error, 'stderr');
     }
-    return onExit();
+    return onExit(error);
     // </GSL customizable: misc-body-exit>
   }
 
