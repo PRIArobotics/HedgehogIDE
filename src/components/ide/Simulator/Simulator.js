@@ -1,7 +1,7 @@
 // @flow
 
 import * as React from 'react';
-import withStyles from 'isomorphic-style-loader/withStyles';
+import useStyles from 'isomorphic-style-loader/useStyles';
 
 import Matter from 'matter-js';
 
@@ -21,51 +21,40 @@ import s from './Simulator.scss';
 import { Robot, Simulation } from './Simulation';
 import * as SimulationSchema from '../SimulatorEditor/SimulationSchema';
 
-type PropTypes = {|
-  // eslint-disable-next-line no-use-before-define
-  forwardedRef: RefObject<typeof Simulator>,
+type Props = {|
   width: number,
   height: number,
   onExecutionAction: (action: ExecutionAction) => void | Promise<void>,
   running: boolean,
 |};
-type StateTypes = {||};
+type Instance = {|
+  simulation: Simulation,
+  robots: Map<string, Robot>,
+  reset: () => void,
+  initSimulationJson: (schema: SimulationSchema.SimulatorJson) => void,
+|};
 
-class Simulator extends React.Component<PropTypes, StateTypes> {
-  simulation: Simulation;
-  robots: Map<string, Robot> = new Map<string, Robot>();
+// similar to useMemo, but without dependencies, and guarantees that the same
+// instance is preserved. The initialization is eager, i.e. happens on the
+// first hook call.
+function useValue<T>(init: () => T): T {
+  const ref = React.useRef<T | null>(null);
+  if (ref.current === null) ref.current = init();
+  return ref.current;
+}
 
-  renderTargetRef: RefObject<'div'> = React.createRef();
+function Simulator(
+  { width, height, onExecutionAction, running }: Props,
+  ref: Ref<Instance>,
+) {
+  const [simulation, robots] = useValue(() => [
+    new Simulation(),
+    new Map<string, Robot>(),
+  ]);
 
-  constructor(props) {
-    super(props);
-    this.simulation = new Simulation();
-  }
-
-  componentDidMount() {
-    this.props.forwardedRef.current = this;
-
-    // eslint-disable-next-line no-throw-literal
-    if (this.renderTargetRef.current === null) throw 'ref is null';
-
-    const { width, height } = this.props;
-    this.simulation.mount(this.renderTargetRef.current, width, height);
-    this.initSimulation();
-
-    this.simulation.startMatter();
-    this.simulation.startRender();
-  }
-
-  componentWillUnmount() {
-    this.simulation.stopRender();
-    this.simulation.stopMatter();
-    this.simulation.unmount();
-    this.props.forwardedRef.current = null;
-  }
-
-  initSimulationJson(schema: SimulationSchema.SimulatorJson) {
-    this.robots.clear();
-    this.simulation.clear(false);
+  const initSimulationJson = (schema: SimulationSchema.SimulatorJson) => {
+    robots.clear();
+    simulation.clear(false);
 
     {
       const {
@@ -73,7 +62,7 @@ class Simulator extends React.Component<PropTypes, StateTypes> {
         width,
         height,
       } = schema.simulation;
-      this.simulation.lookAt({
+      simulation.lookAt({
         min: { x: x - width / 2, y: y - height / 2 },
         max: { x: x + width / 2, y: y + height / 2 },
       });
@@ -85,20 +74,20 @@ class Simulator extends React.Component<PropTypes, StateTypes> {
           const { type, width, height, ...options } = object;
           const body = Matter.Bodies.rectangle(0, 0, width, height, options);
 
-          this.simulation.add([body]);
+          simulation.add([body]);
           // TODO with this, being a sensor (non-colliding)
           // and being a line (dark surface) re the same thing
-          if (options.isSensor) this.simulation.lines.push(body);
+          if (options.isSensor) simulation.lines.push(body);
           break;
         }
         case 'circle': {
           const { type, radius, ...options } = object;
           const body = Matter.Bodies.circle(0, 0, radius, options);
 
-          this.simulation.add([body]);
+          simulation.add([body]);
           // TODO with this, being a sensor (non-colliding)
           // and being a line (dark surface) re the same thing
-          if (options.isSensor) this.simulation.lines.push(body);
+          if (options.isSensor) simulation.lines.push(body);
           break;
         }
         case 'robot': {
@@ -114,9 +103,9 @@ class Simulator extends React.Component<PropTypes, StateTypes> {
           robot.setInitialPose(pose);
           // TODO color
 
-          this.robots.set(name, robot);
-          this.simulation.add(robot.bodies);
-          this.simulation.robots.push(robot);
+          robots.set(name, robot);
+          simulation.add(robot.bodies);
+          simulation.robots.push(robot);
           break;
         }
         default:
@@ -124,11 +113,11 @@ class Simulator extends React.Component<PropTypes, StateTypes> {
       }
     });
 
-    this.simulation.updateRobots();
-  }
+    simulation.updateRobots();
+  };
 
-  initSimulation() {
-    this.initSimulationJson({
+  const initSimulation = () => {
+    initSimulationJson({
       simulation: {
         center: {
           x: 0,
@@ -401,66 +390,76 @@ class Simulator extends React.Component<PropTypes, StateTypes> {
         },
       ],
     });
-  }
+  };
 
-  reset() {
-    this.simulation.reset();
-  }
+  // mount simulator in the target and simulate continuously
+  const [renderTarget, setRenderTarget] = React.useState<HTMLDivElement | null>(
+    null,
+  );
+  React.useEffect(() => {
+    if (renderTarget === null) return undefined;
 
-  render() {
-    const { running } = this.props;
+    simulation.mount(renderTarget, width, height);
+    initSimulation();
+    simulation.startMatter();
+    simulation.startRender();
+    return () => {
+      simulation.stopRender();
+      simulation.stopMatter();
+      simulation.unmount();
+    };
+  }, [renderTarget]);
 
-    return (
-      <div className={s.root}>
-        <div className={s.container}>
-          <div className={s.canvas} ref={this.renderTargetRef} />
-        </div>
-        <ToolBar>
-          {running ? (
-            <ToolBarItem key="terminate-and-reset">
-              <ToolBarIconButton
-                onClick={() => {
-                  this.props.onExecutionAction({
-                    action: 'TERMINATE',
-                    reset: true,
-                  });
-                }}
-                icon={TerminateAndResetIcon}
-                color="red"
-                disableRipple
-              />
-            </ToolBarItem>
-          ) : (
-            <ToolBarItem key="reset">
-              <ToolBarIconButton
-                onClick={() => {
-                  this.props.onExecutionAction({
-                    action: 'RESET',
-                  });
-                }}
-                icon={ResetIcon}
-                disableRipple
-              />
-            </ToolBarItem>
-          )}
-          <ToolBarItem>
+  React.useImperativeHandle(ref, () => ({
+    simulation,
+    robots,
+    reset: () => simulation.reset(),
+    initSimulationJson,
+  }));
+
+  useStyles(s);
+  return (
+    <div className={s.root}>
+      <div className={s.container}>
+        <div className={s.canvas} ref={setRenderTarget} />
+      </div>
+      <ToolBar>
+        {running ? (
+          <ToolBarItem key="terminate-and-reset">
             <ToolBarIconButton
               onClick={() => {
-                this.props.onExecutionAction({
-                  action: 'TERMINATE',
-                  reset: false,
-                });
+                onExecutionAction({ action: 'TERMINATE', reset: true });
               }}
-              icon={TerminateIcon}
+              icon={TerminateAndResetIcon}
               color="red"
               disableRipple
-              disabled={!running}
             />
           </ToolBarItem>
-        </ToolBar>
-      </div>
-    );
-  }
+        ) : (
+          <ToolBarItem key="reset">
+            <ToolBarIconButton
+              onClick={() => {
+                onExecutionAction({ action: 'RESET' });
+              }}
+              icon={ResetIcon}
+              disableRipple
+            />
+          </ToolBarItem>
+        )}
+        <ToolBarItem>
+          <ToolBarIconButton
+            onClick={() => {
+              onExecutionAction({ action: 'TERMINATE', reset: false });
+            }}
+            icon={TerminateIcon}
+            color="red"
+            disableRipple
+            disabled={!running}
+          />
+        </ToolBarItem>
+      </ToolBar>
+    </div>
+  );
 }
 
-export default withStyles(s)(Simulator);
+export default React.forwardRef<Props, Instance>(Simulator);

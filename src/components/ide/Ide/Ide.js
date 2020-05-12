@@ -194,9 +194,9 @@ class Ide extends React.Component<PropTypes, StateTypes> {
       case 'simulator': {
         return (
           <Simulator
+            ref={this.simulatorRef}
             width={600}
             height={400}
-            forwardedRef={this.simulatorRef}
             onExecutionAction={action => this.handleExecutionAction(action)}
             running={!!this.state.runningTask}
           />
