@@ -24,6 +24,7 @@ import {
   LanguageJavascriptIcon,
   LanguagePythonIcon,
 } from '../../misc/palette';
+import * as hooks from '../../misc/hooks';
 
 import ExecutionAction from '../Ide';
 import BlocklyComponent, { type Locale as BlocklyLocale } from '../Blockly';
@@ -275,17 +276,15 @@ function VisualEditor({
   }, [layoutNode]);
 
   // animate workspace size when the sidebar is expanding or collapsing
-  const resizeAnimRef = React.useRef<AnimationFrameID | null>(null);
+  const [startAnimation, stopAnimation] = hooks.useAnimationFrame(() => {
+    if (blocklyRef.current) blocklyRef.current.refreshSize();
+  });
   React.useEffect(() => {
     if (codeRef.current === null) return undefined;
     const codeElem = codeRef.current;
 
     const onTransitionEnd = () => {
-      if (resizeAnimRef.current !== null) {
-        cancelAnimationFrame(resizeAnimRef.current);
-        resizeAnimRef.current = null;
-      }
-
+      stopAnimation();
       if (blocklyRef.current) blocklyRef.current.refreshSizeDeferred();
     };
 
@@ -296,16 +295,9 @@ function VisualEditor({
     };
   });
 
-  const animateWorkspaceSize = () => {
-    resizeAnimRef.current = requestAnimationFrame(() => {
-      if (blocklyRef.current) blocklyRef.current.refreshSize();
-      animateWorkspaceSize();
-    });
-  };
-
   const handleToggleCodeCollapsed = () => {
     onUpdate({ codeCollapsed: !codeCollapsed });
-    animateWorkspaceSize();
+    startAnimation();
   };
 
   // handle blockly changes by saving the file and regenerating code
