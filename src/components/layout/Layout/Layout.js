@@ -25,6 +25,7 @@ import Footer from '../Footer';
 
 type OpenDrawerProps = {
   drawerClasses?: Object,
+  ...React.ElementConfig<typeof Drawer>,
 };
 
 // eslint-disable-next-line react/prop-types

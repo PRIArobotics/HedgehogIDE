@@ -394,6 +394,15 @@ export class Robot {
   }
 }
 
+type SensorCache = {|
+  lineSensors: Matter.Body[],
+  touchSensors: Matter.Body[],
+|};
+type ExternalSensorHandler = (
+  sensor: Matter.Body | Matter.Composite,
+  other: Matter.Body | Matter.Composite,
+) => void | Promise<void>;
+
 export class Simulation {
   world: Matter.World;
   engine: Matter.Engine;
@@ -404,18 +413,12 @@ export class Simulation {
   // special bodies for simulation logic
   lines: (Matter.Body | Matter.Composite)[] = [];
   robots: Robot[] = [];
-  sensorsCache: {|
-    lineSensors: Matter.Body[],
-    touchSensors: Matter.Body[],
-  |} = {
+  sensorsCache: SensorCache = {
     lineSensors: [],
     touchSensors: [],
   };
 
-  externalSensorHandlers: ((
-    sensor: Matter.Body | Matter.Composite,
-    other: Matter.Body | Matter.Composite,
-  ) => void | Promise<void>)[] = [];
+  externalSensorHandlers: ExternalSensorHandler[] = [];
 
   constructor() {
     this.world = Matter.World.create({
@@ -515,7 +518,7 @@ export class Simulation {
     Matter.World.add(this.world, bodies);
   }
 
-  addSensorHandler(handler) {
+  addSensorHandler(handler: ExternalSensorHandler) {
     this.externalSensorHandlers.push(handler);
   }
 

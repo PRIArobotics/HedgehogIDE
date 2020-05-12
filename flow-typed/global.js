@@ -14,6 +14,7 @@ declare type Ref<Instance> =
 
 declare module '@material-ui/core/AppBar' { declare module.exports: any; }
 declare module '@material-ui/core/Avatar' { declare module.exports: any; }
+declare module '@material-ui/core/Badge' { declare module.exports: any; }
 declare module '@material-ui/core/Button' { declare module.exports: any; }
 declare module '@material-ui/core/Container' { declare module.exports: any; }
 declare module '@material-ui/core/CssBaseline' { declare module.exports: any; }
