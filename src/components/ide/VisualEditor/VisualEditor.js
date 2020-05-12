@@ -58,7 +58,7 @@ export type ControlledState = $Shape<{|
   codeLanguage: 'JavaScript' | 'Python',
 |}>;
 
-type PropTypes = {|
+type Props = {|
   content: string | null,
   onContentChange: (content: string) => void | Promise<void>,
   codeCollapsed: boolean,
@@ -78,7 +78,7 @@ function VisualEditor({
   onUpdate,
   onExecutionAction,
   running,
-}: PropTypes) {
+}: Props) {
   const blocklyRef = React.useRef<typeof BlocklyComponent | null>(null);
   const codeRef = React.useRef<HTMLPreElement | null>(null);
 
