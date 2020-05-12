@@ -63,7 +63,7 @@ function Simulator(
     schema.objects.forEach(object => {
       switch (object.type) {
         case 'rectangle': {
-          const { type, width, height, ...options } = object;
+          const { type: _type, width, height, ...options } = object;
           const body = Matter.Bodies.rectangle(0, 0, width, height, options);
 
           simulation.add([body]);
@@ -73,7 +73,7 @@ function Simulator(
           break;
         }
         case 'circle': {
-          const { type, radius, ...options } = object;
+          const { type: _type, radius, ...options } = object;
           const body = Matter.Bodies.circle(0, 0, radius, options);
 
           simulation.add([body]);

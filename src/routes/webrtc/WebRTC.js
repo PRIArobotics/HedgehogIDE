@@ -22,8 +22,8 @@ type ChatProps = {|
 
 const Chat = ({
   messages,
-  connection,
-  channel,
+  connection: _connection,
+  channel: _channel,
   onSend,
   sendText,
 }: ChatProps) => (

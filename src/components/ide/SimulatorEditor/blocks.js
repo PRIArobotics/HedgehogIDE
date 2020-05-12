@@ -327,9 +327,9 @@ export const SIMULATOR_ROBOT = {
     serialize(): SimulationSchema.Robot {
       const {
         static: _static,
-        sensor,
-        density,
-        frictionAir,
+        sensor: _sensor,
+        density: _density,
+        frictionAir: _frictionAir,
         ...settings
       } = collectSettings(this);
 

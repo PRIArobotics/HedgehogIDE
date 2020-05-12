@@ -5,7 +5,7 @@ import * as React from 'react';
 import { withStyles as withStylesMaterial } from '@material-ui/styles';
 import Badge from '@material-ui/core/Badge';
 
-const IconBadge = withStylesMaterial(theme => ({
+const IconBadge = withStylesMaterial(_theme => ({
   badge: {
     bottom: '25%',
     right: '25%',

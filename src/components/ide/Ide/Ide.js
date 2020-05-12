@@ -357,7 +357,7 @@ class Ide extends React.Component<PropTypes, StateTypes> {
     const {
       projectInfo: { files },
     } = this.state;
-    const [root, ...fragments] = path.split('/');
+    const [_root, ...fragments] = path.split('/');
 
     // The reducer function navigates to the child in a directory.
     // Therefore the parameter must be a directory - if it isn't, there can't be a child.

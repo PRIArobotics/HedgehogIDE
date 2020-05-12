@@ -68,7 +68,7 @@ async function deploy() {
       options,
     );
     isRemoteExists = true;
-  } catch (error) {
+  } catch (_error) {
     /* skip */
   }
   await spawn(
@@ -86,7 +86,7 @@ async function deploy() {
       options,
     );
     isRefExists = true;
-  } catch (error) {
+  } catch (_error) {
     await spawn('git', ['update-ref', '-d', 'HEAD'], options);
   }
   if (isRefExists) {
@@ -117,7 +117,7 @@ async function deploy() {
   await spawn('git', ['add', '.', '--all'], options);
   try {
     await spawn('git', ['diff', '--cached', '--exit-code', '--quiet'], options);
-  } catch (error) {
+  } catch (_error) {
     await spawn(
       'git',
       ['commit', '--message', `Update ${new Date().toISOString()}`],

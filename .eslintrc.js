@@ -36,7 +36,16 @@ module.exports = {
     // https://github.com/benmosher/eslint-plugin-import/blob/master/docs/rules/no-extraneous-dependencies.md
     'import/no-extraneous-dependencies': ['error', { packageDir: __dirname }],
 
-    'no-unused-vars': 'warn',
+    'no-unused-vars': [
+      'warn',
+      {
+        // effectively force unused vars to use an underscore
+        varsIgnorePattern: '^_',
+        argsIgnorePattern: '^_',
+        // disallow variables that are allowed by default
+        caughtErrors: 'all',
+      },
+    ],
     'class-methods-use-this': 'warn',
     'lines-between-class-members': 'off',
     'no-else-return': 'off',
