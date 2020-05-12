@@ -1,3 +1,5 @@
+// @flow
+
 import * as React from 'react';
 
 import { styled } from '@material-ui/styles';
@@ -7,8 +9,14 @@ const StyledIconButton = styled(IconButton)({
   padding: '4px',
 });
 
-const ToolBarIconButton = React.forwardRef(
-  ({ icon: Icon, color, ...props }, ref) => (
+type Props = {|
+  icon: typeof React.Component,
+  color: string,
+  ...React.ElementConfig<typeof StyledIconButton>,
+|};
+
+const ToolBarIconButton = React.forwardRef<Props, StyledIconButton>(
+  ({ icon: Icon, color, ...props }: Props, ref: Ref<StyledIconButton>) => (
     <StyledIconButton ref={ref} {...props}>
       <Icon
         style={{

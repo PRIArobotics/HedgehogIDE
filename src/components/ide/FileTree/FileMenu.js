@@ -1,4 +1,5 @@
 // @flow
+/* eslint-disable react/no-multi-comp */
 
 import * as React from 'react';
 import { defineMessages, FormattedMessage as M } from 'react-intl';
@@ -75,6 +76,26 @@ const messages = defineMessages({
     defaultMessage: 'Download',
   },
 });
+
+type FileMenuItemProps = {|
+  titleMsg: Object,
+  icon: typeof React.Component,
+  ...React.ElementConfig<typeof MenuItem>,
+|};
+
+const FileMenuItem = React.forwardRef<FileMenuItemProps, MenuItem>(
+  (
+    { titleMsg, icon: TheIcon, ...props }: FileMenuItemProps,
+    ref: Ref<MenuItem>,
+  ) => (
+    <MenuItem ref={ref} {...props}>
+      <ListItemIcon>
+        <TheIcon fontSize="small" />
+      </ListItemIcon>
+      <M {...titleMsg} />
+    </MenuItem>
+  ),
+);
 
 type Position = {|
   left: number,
@@ -165,26 +186,6 @@ class FileMenu extends React.Component<PropTypes, StateTypes> {
     const isRoot = file.path === '.';
     const isLeaf = !file.file.isDirectory();
     const isMetadata = file.path === './.metadata' && !isLeaf;
-
-    type FileMenuItemProps = {|
-      titleMsg: Object,
-      icon: Class<React.Component<any>>,
-      ...any,
-    |};
-
-    const FileMenuItem = React.forwardRef(
-      (
-        { titleMsg, icon: TheIcon, ...props }: FileMenuItemProps,
-        ref: Ref<MenuItem>,
-      ) => (
-        <MenuItem ref={ref} {...props}>
-          <ListItemIcon>
-            <TheIcon fontSize="small" />
-          </ListItemIcon>
-          <M {...titleMsg} />
-        </MenuItem>
-      ),
-    );
 
     return (
       <Menu

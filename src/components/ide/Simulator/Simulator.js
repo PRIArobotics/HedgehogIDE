@@ -51,7 +51,9 @@ function Simulator(
     {
       const {
         center: { x, y },
+        // eslint-disable-next-line no-shadow
         width,
+        // eslint-disable-next-line no-shadow
         height,
       } = schema.simulation;
       simulation.lookAt({
@@ -63,6 +65,7 @@ function Simulator(
     schema.objects.forEach(object => {
       switch (object.type) {
         case 'rectangle': {
+          // eslint-disable-next-line no-shadow
           const { type: _type, width, height, ...options } = object;
           const body = Matter.Bodies.rectangle(0, 0, width, height, options);
 
