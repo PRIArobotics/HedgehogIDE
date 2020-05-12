@@ -1,6 +1,7 @@
 // @flow
 
 import * as React from 'react';
+import Blockly from 'blockly/core';
 
 import * as SimulationSchema from './SimulationSchema';
 
@@ -628,3 +629,32 @@ export const SIMULATOR_SETTINGS_LABEL = {
     default: () => <block type="simulator_settings_label" />,
   },
 };
+
+const blocks = [
+  SIMULATOR_ROOT,
+  SIMULATOR_RECT,
+  SIMULATOR_CIRCLE,
+  SIMULATOR_ROBOT,
+  SIMULATOR_SETTINGS_TRANSLATE,
+  SIMULATOR_SETTINGS_ROTATE,
+  SIMULATOR_SETTINGS_COLOR,
+  SIMULATOR_SETTINGS_STATIC,
+  SIMULATOR_SETTINGS_SENSOR,
+  SIMULATOR_SETTINGS_DENSITY,
+  SIMULATOR_SETTINGS_FRICTION_AIR,
+  SIMULATOR_SETTINGS_LABEL,
+  SIMULATOR_GROUP,
+];
+
+blocks.forEach(block => {
+  const { type } = block.blockJson;
+
+  Blockly.Blocks[type] = {
+    init() {
+      this.jsonInit(block.blockJson);
+    },
+    ...block.blockExtras,
+  };
+});
+
+export default blocks;

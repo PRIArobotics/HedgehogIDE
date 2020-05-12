@@ -2,7 +2,7 @@
 /* eslint-disable */
 
 import * as React from 'react';
-import Blockly from 'blockly';
+import Blockly from 'blockly/core';
 
 import { type Block } from '.';
 
@@ -860,3 +860,33 @@ export const HEDGEHOG_SLEEP: Block = {
     // <default GSL customizable: hedgehog_sleep-extra-toolbox />
   },
 };
+
+const blocks = [
+  HEDGEHOG_MOVE,
+  HEDGEHOG_MOVE_UNLIMITED,
+  HEDGEHOG_MOTOR_OFF,
+  HEDGEHOG_BRAKE,
+  HEDGEHOG_MOVE2,
+  HEDGEHOG_MOVE2_UNLIMITED,
+  HEDGEHOG_MOTOR_OFF2,
+  HEDGEHOG_BRAKE2,
+  HEDGEHOG_SERVO,
+  HEDGEHOG_SERVO_OFF,
+  HEDGEHOG_READ_ANALOG,
+  HEDGEHOG_READ_DIGITAL,
+  HEDGEHOG_SLEEP,
+];
+
+blocks.forEach(block => {
+  const { type } = block.blockJson;
+
+  Blockly.Blocks[type] = {
+    init() {
+      this.jsonInit(block.blockJson);
+    },
+  };
+  Blockly.JavaScript[type] = block.generators.JavaScript;
+  Blockly.Python[type] = block.generators.Python;
+});
+
+export default blocks;

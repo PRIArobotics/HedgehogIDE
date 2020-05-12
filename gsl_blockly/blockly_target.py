@@ -124,12 +124,34 @@ args0: {json.dumps(block.args, indent=2)},""", 4 * " "))
 /* eslint-disable */
 
 import * as React from 'react';
-import Blockly from 'blockly';
+import Blockly from 'blockly/core';
 
 import {{ type Block }} from '.';""")
         for block in mod.blocks:
             yield from block_code(block)
+        yield from lines(f"""\
 
+const blocks = [""")
+        for block in mod.blocks:
+            yield from lines(f"""\
+  {block.name.upper()},""")
+        yield from lines(f"""\
+];
+
+blocks.forEach(block => {{
+  const {{ type }} = block.blockJson;
+
+  Blockly.Blocks[type] = {{
+    init() {{
+      this.jsonInit(block.blockJson);
+    }},
+  }};
+  Blockly.JavaScript[type] = block.generators.JavaScript;
+  Blockly.Python[type] = block.generators.Python;
+}});
+
+export default blocks;
+""")
 
 def generate_msg_module_code(model, mod, lang, root):
     out_file = os.path.join(root, 'src/components/ide/VisualEditor/blocks', f'{mod.name}_msg_{lang.key}.js')

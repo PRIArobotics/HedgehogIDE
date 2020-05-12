@@ -21,21 +21,7 @@ import s from './SimulatorEditor.scss';
 
 import * as SimulationSchema from './SimulationSchema';
 
-import {
-  SIMULATOR_ROOT,
-  SIMULATOR_RECT,
-  SIMULATOR_CIRCLE,
-  SIMULATOR_ROBOT,
-  SIMULATOR_SETTINGS_TRANSLATE,
-  SIMULATOR_SETTINGS_ROTATE,
-  SIMULATOR_SETTINGS_COLOR,
-  SIMULATOR_SETTINGS_STATIC,
-  SIMULATOR_SETTINGS_SENSOR,
-  SIMULATOR_SETTINGS_DENSITY,
-  SIMULATOR_SETTINGS_FRICTION_AIR,
-  SIMULATOR_GROUP,
-  SIMULATOR_SETTINGS_LABEL,
-} from './blocks';
+import * as blocks from './blocks';
 
 // TODO translate simulator editor
 const LOCALES: LocaleMap<BlocklyLocale> = {
@@ -44,32 +30,6 @@ const LOCALES: LocaleMap<BlocklyLocale> = {
     msg: {},
   },
 };
-
-const blocks = [
-  SIMULATOR_ROOT,
-  SIMULATOR_RECT,
-  SIMULATOR_CIRCLE,
-  SIMULATOR_ROBOT,
-  SIMULATOR_SETTINGS_TRANSLATE,
-  SIMULATOR_SETTINGS_ROTATE,
-  SIMULATOR_SETTINGS_COLOR,
-  SIMULATOR_SETTINGS_STATIC,
-  SIMULATOR_SETTINGS_SENSOR,
-  SIMULATOR_SETTINGS_DENSITY,
-  SIMULATOR_SETTINGS_FRICTION_AIR,
-  SIMULATOR_SETTINGS_LABEL,
-  SIMULATOR_GROUP,
-];
-blocks.forEach(block => {
-  const { type } = block.blockJson;
-
-  Blockly.Blocks[type] = {
-    init() {
-      this.jsonInit(block.blockJson);
-    },
-    ...block.blockExtras,
-  };
-});
 
 export type ControlledState = $Shape<{|
   jsonCollapsed: boolean,
@@ -98,19 +58,19 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
     const toolbox = ReactDOM.renderToStaticMarkup(
       <xml>
         <category name="Simulation" colour="120">
-          {SIMULATOR_ROOT.toolboxBlocks.default()}
-          {SIMULATOR_RECT.toolboxBlocks.default()}
-          {SIMULATOR_CIRCLE.toolboxBlocks.default()}
-          {SIMULATOR_GROUP.toolboxBlocks.default()}
-          {SIMULATOR_SETTINGS_TRANSLATE.toolboxBlocks.default()}
-          {SIMULATOR_SETTINGS_ROTATE.toolboxBlocks.default()}
-          {SIMULATOR_SETTINGS_COLOR.toolboxBlocks.default()}
-          {SIMULATOR_SETTINGS_STATIC.toolboxBlocks.default()}
-          {SIMULATOR_SETTINGS_SENSOR.toolboxBlocks.default()}
-          {SIMULATOR_SETTINGS_DENSITY.toolboxBlocks.default()}
-          {SIMULATOR_SETTINGS_FRICTION_AIR.toolboxBlocks.default()}
-          {SIMULATOR_SETTINGS_LABEL.toolboxBlocks.default()}
-          {SIMULATOR_ROBOT.toolboxBlocks.default()}
+          {blocks.SIMULATOR_ROOT.toolboxBlocks.default()}
+          {blocks.SIMULATOR_RECT.toolboxBlocks.default()}
+          {blocks.SIMULATOR_CIRCLE.toolboxBlocks.default()}
+          {blocks.SIMULATOR_GROUP.toolboxBlocks.default()}
+          {blocks.SIMULATOR_SETTINGS_TRANSLATE.toolboxBlocks.default()}
+          {blocks.SIMULATOR_SETTINGS_ROTATE.toolboxBlocks.default()}
+          {blocks.SIMULATOR_SETTINGS_COLOR.toolboxBlocks.default()}
+          {blocks.SIMULATOR_SETTINGS_STATIC.toolboxBlocks.default()}
+          {blocks.SIMULATOR_SETTINGS_SENSOR.toolboxBlocks.default()}
+          {blocks.SIMULATOR_SETTINGS_DENSITY.toolboxBlocks.default()}
+          {blocks.SIMULATOR_SETTINGS_FRICTION_AIR.toolboxBlocks.default()}
+          {blocks.SIMULATOR_SETTINGS_LABEL.toolboxBlocks.default()}
+          {blocks.SIMULATOR_ROBOT.toolboxBlocks.default()}
         </category>
       </xml>,
     );

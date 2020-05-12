@@ -2,7 +2,7 @@
 /* eslint-disable */
 
 import * as React from 'react';
-import Blockly from 'blockly';
+import Blockly from 'blockly/core';
 
 import { type Block } from '.';
 
@@ -56,3 +56,21 @@ export const PRINT_BLOCK: Block = {
     // <default GSL customizable: print_block-extra-toolbox />
   },
 };
+
+const blocks = [
+  PRINT_BLOCK,
+];
+
+blocks.forEach(block => {
+  const { type } = block.blockJson;
+
+  Blockly.Blocks[type] = {
+    init() {
+      this.jsonInit(block.blockJson);
+    },
+  };
+  Blockly.JavaScript[type] = block.generators.JavaScript;
+  Blockly.Python[type] = block.generators.Python;
+});
+
+export default blocks;

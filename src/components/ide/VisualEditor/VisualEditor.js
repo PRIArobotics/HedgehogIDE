@@ -33,27 +33,13 @@ import ToolBarItem from '../ToolBar/ToolBarItem';
 
 import s from './VisualEditor.scss';
 
+import './blocks/async_procedures_js';
 import DeHedgehog from './blocks/hedgehog_msg_de';
 import EnHedgehog from './blocks/hedgehog_msg_en';
 import DeMisc from './blocks/misc_msg_de';
 import EnMisc from './blocks/misc_msg_en';
-import './blocks/async_procedures_js';
-import {
-  HEDGEHOG_MOVE,
-  HEDGEHOG_MOVE_UNLIMITED,
-  HEDGEHOG_MOTOR_OFF,
-  HEDGEHOG_BRAKE,
-  HEDGEHOG_MOVE2,
-  HEDGEHOG_MOVE2_UNLIMITED,
-  HEDGEHOG_MOTOR_OFF2,
-  HEDGEHOG_BRAKE2,
-  HEDGEHOG_SERVO,
-  HEDGEHOG_SERVO_OFF,
-  HEDGEHOG_READ_ANALOG,
-  HEDGEHOG_READ_DIGITAL,
-  HEDGEHOG_SLEEP,
-} from './blocks/hedgehog';
-import { PRINT_BLOCK } from './blocks/misc';
+import * as hedgehogBlocks from './blocks/hedgehog';
+import * as miscBlocks from './blocks/misc';
 
 const LOCALES: LocaleMap<BlocklyLocale> = {
   de: {
@@ -65,34 +51,6 @@ const LOCALES: LocaleMap<BlocklyLocale> = {
     msg: { ...En, ...EnHedgehog, ...EnMisc },
   },
 };
-
-const blocks = [
-  HEDGEHOG_MOVE,
-  HEDGEHOG_MOVE_UNLIMITED,
-  HEDGEHOG_MOTOR_OFF,
-  HEDGEHOG_BRAKE,
-  HEDGEHOG_MOVE2,
-  HEDGEHOG_MOVE2_UNLIMITED,
-  HEDGEHOG_MOTOR_OFF2,
-  HEDGEHOG_BRAKE2,
-  HEDGEHOG_SERVO,
-  HEDGEHOG_SERVO_OFF,
-  HEDGEHOG_READ_ANALOG,
-  HEDGEHOG_READ_DIGITAL,
-  HEDGEHOG_SLEEP,
-  PRINT_BLOCK,
-];
-blocks.forEach(block => {
-  const { type } = block.blockJson;
-
-  Blockly.Blocks[type] = {
-    init() {
-      this.jsonInit(block.blockJson);
-    },
-  };
-  Blockly.JavaScript[type] = block.generators.JavaScript;
-  Blockly.Python[type] = block.generators.Python;
-});
 
 export type ControlledState = $Shape<{|
   codeCollapsed: boolean,
@@ -134,27 +92,27 @@ function VisualEditor({
     const toolbox = ReactDOM.renderToStaticMarkup(
       <xml>
         <category name="%{BKY_HEDGEHOG_CAT_DRIVE}" colour="120">
-          {HEDGEHOG_MOVE2_UNLIMITED.toolboxBlocks.default()}
-          {HEDGEHOG_MOTOR_OFF2.toolboxBlocks.default()}
-          {HEDGEHOG_BRAKE2.toolboxBlocks.default()}
-          {HEDGEHOG_MOVE2.toolboxBlocks.default()}
-          {HEDGEHOG_SLEEP.toolboxBlocks.default()}
+          {hedgehogBlocks.HEDGEHOG_MOVE2_UNLIMITED.toolboxBlocks.default()}
+          {hedgehogBlocks.HEDGEHOG_MOTOR_OFF2.toolboxBlocks.default()}
+          {hedgehogBlocks.HEDGEHOG_BRAKE2.toolboxBlocks.default()}
+          {hedgehogBlocks.HEDGEHOG_MOVE2.toolboxBlocks.default()}
+          {hedgehogBlocks.HEDGEHOG_SLEEP.toolboxBlocks.default()}
         </category>
         <category name="%{BKY_HEDGEHOG_CAT_MOTORS}" colour="120">
-          {HEDGEHOG_MOVE_UNLIMITED.toolboxBlocks.default()}
-          {HEDGEHOG_MOTOR_OFF.toolboxBlocks.default()}
-          {HEDGEHOG_BRAKE.toolboxBlocks.default()}
-          {HEDGEHOG_MOVE.toolboxBlocks.default()}
-          {HEDGEHOG_SLEEP.toolboxBlocks.default()}
+          {hedgehogBlocks.HEDGEHOG_MOVE_UNLIMITED.toolboxBlocks.default()}
+          {hedgehogBlocks.HEDGEHOG_MOTOR_OFF.toolboxBlocks.default()}
+          {hedgehogBlocks.HEDGEHOG_BRAKE.toolboxBlocks.default()}
+          {hedgehogBlocks.HEDGEHOG_MOVE.toolboxBlocks.default()}
+          {hedgehogBlocks.HEDGEHOG_SLEEP.toolboxBlocks.default()}
         </category>
         <category name="%{BKY_HEDGEHOG_CAT_SERVOS}" colour="120">
-          {HEDGEHOG_SERVO.toolboxBlocks.default()}
-          {HEDGEHOG_SERVO_OFF.toolboxBlocks.default()}
+          {hedgehogBlocks.HEDGEHOG_SERVO.toolboxBlocks.default()}
+          {hedgehogBlocks.HEDGEHOG_SERVO_OFF.toolboxBlocks.default()}
         </category>
         <category name="%{BKY_HEDGEHOG_CAT_SENSORS}" colour="120">
-          {HEDGEHOG_READ_DIGITAL.toolboxBlocks.default()}
-          {HEDGEHOG_READ_ANALOG.toolboxBlocks.default()}
-          {HEDGEHOG_READ_ANALOG.toolboxBlocks.comparison()}
+          {hedgehogBlocks.HEDGEHOG_READ_DIGITAL.toolboxBlocks.default()}
+          {hedgehogBlocks.HEDGEHOG_READ_ANALOG.toolboxBlocks.default()}
+          {hedgehogBlocks.HEDGEHOG_READ_ANALOG.toolboxBlocks.comparison()}
         </category>
         {dynamicBlocks}
         <sep />
@@ -270,7 +228,7 @@ function VisualEditor({
           colour="%{BKY_PROCEDURES_HUE}"
         />
         <category name="%{BKY_CAT_TEXT}" colour="70">
-          {PRINT_BLOCK.toolboxBlocks.default()}
+          {miscBlocks.PRINT_BLOCK.toolboxBlocks.default()}
           <block type="text" />
         </category>
       </xml>,
