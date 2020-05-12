@@ -53,7 +53,7 @@ import {
   HEDGEHOG_READ_DIGITAL,
   HEDGEHOG_SLEEP,
 } from './blocks/hedgehog';
-import PrintBlock from './blocks/PrintBlock';
+import { PRINT_BLOCK } from './blocks/misc';
 
 const LOCALES: LocaleMap<BlocklyLocale> = {
   de: {
@@ -80,7 +80,7 @@ const blocks = [
   HEDGEHOG_READ_ANALOG,
   HEDGEHOG_READ_DIGITAL,
   HEDGEHOG_SLEEP,
-  PrintBlock,
+  PRINT_BLOCK,
 ];
 blocks.forEach(block => {
   const { type } = block.blockJson;
@@ -270,7 +270,7 @@ function VisualEditor({
           colour="%{BKY_PROCEDURES_HUE}"
         />
         <category name="%{BKY_CAT_TEXT}" colour="70">
-          {PrintBlock.toolboxBlocks.default()}
+          {PRINT_BLOCK.toolboxBlocks.default()}
           <block type="text" />
         </category>
       </xml>,

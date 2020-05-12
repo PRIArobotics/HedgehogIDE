@@ -20,5 +20,5 @@ Msg['CAT_FUNCTIONS'] = 'Functions';
 
 Msg['CAT_TEXT'] = 'Text';
 
-Msg['PRINT'] = 'print text %1';
-Msg['PRINT_TOOLTIP'] = 'Prints a text or value to the screen';
+Msg['PRINT_BLOCK'] = 'print text %1';
+Msg['PRINT_BLOCK_TOOLTIP'] = 'Prints a text or value to the screen';

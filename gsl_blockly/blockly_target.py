@@ -45,7 +45,7 @@ args0: {json.dumps(block.args, indent=2)},""", 4 * " "))
     previousStatement: null,
     nextStatement: null,""")
             yield from lines(f"""\
-    colour: 120,
+    colour: {block.get('colour', 120)},
     tooltip: '%{{BKY_{block.name.upper()}_TOOLTIP}}',
     helpUrl: 'TODO',""")
             extensions = []

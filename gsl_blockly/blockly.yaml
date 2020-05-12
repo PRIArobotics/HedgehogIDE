@@ -1,5 +1,11 @@
 modules:
-  misc: {}
+  misc:
+    print_block:
+      colour: 70
+      args:
+      - type: input_value
+        name: TEXT
+        check: [Number, String]
   hedgehog:
     # hedgehog_scope:
     #   scope: true

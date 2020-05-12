@@ -17,7 +17,7 @@ modules:
         msg: Funktionen
       cat_text:
         msg: Text
-      print:
+      print_block:
         msg: Gib Text %1 aus
         tooltip: Gibt einen Text oder Wert auf dem Bildschirm aus
     en:
@@ -37,7 +37,7 @@ modules:
         msg: Functions
       cat_text:
         msg: Text
-      print:
+      print_block:
         msg: print text %1
         tooltip: Prints a text or value to the screen
   hedgehog:
