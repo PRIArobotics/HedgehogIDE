@@ -15,8 +15,11 @@ type Props = {|
   ...React.ElementConfig<typeof StyledIconButton>,
 |};
 
-const ToolBarIconButton = React.forwardRef<Props, StyledIconButton>(
-  ({ icon: Icon, color, ...props }: Props, ref: Ref<StyledIconButton>) => (
+function ToolBarIconButton(
+  { icon: Icon, color, ...props }: Props,
+  ref: Ref<StyledIconButton>,
+) {
+  return (
     <StyledIconButton ref={ref} {...props}>
       <Icon
         style={{
@@ -24,7 +27,7 @@ const ToolBarIconButton = React.forwardRef<Props, StyledIconButton>(
         }}
       />
     </StyledIconButton>
-  ),
-);
+  );
+}
 
-export default ToolBarIconButton;
+export default React.forwardRef<Props, StyledIconButton>(ToolBarIconButton);

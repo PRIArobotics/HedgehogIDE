@@ -13,7 +13,7 @@ type ConsoleItem = {|
 
 type Props = {||};
 type Instance = {|
-  consoleOut: (text: string, stream: string) => void,
+  consoleOut(text: string, stream: string): void,
 |};
 
 function Console(props: Props, ref: Ref<Instance>) {
@@ -23,13 +23,13 @@ function Console(props: Props, ref: Ref<Instance>) {
 
   React.useEffect(() => {
     if (bottomRef.current !== null) bottomRef.current.scrollIntoView(false);
-  }, [items, bottomRef]);
+  }, [items]);
 
-  const print = (text: string, stream: string) => {
-    setItems([...items.slice(-99), { text, stream }]);
-  };
+  function print(text: string, stream: string) {
+    setItems(oldItems => [...oldItems.slice(-99), { text, stream }]);
+  }
 
-  const handleSubmit = e => {
+  function handleSubmit(e) {
     e.preventDefault();
     if (inputRef.current === null) return;
     const input = inputRef.current.value;
@@ -53,7 +53,7 @@ function Console(props: Props, ref: Ref<Instance>) {
           break;
       }
     }
-  };
+  }
 
   React.useImperativeHandle(ref, () => ({
     consoleOut: print,

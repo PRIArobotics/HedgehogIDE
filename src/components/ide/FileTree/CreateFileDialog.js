@@ -35,7 +35,7 @@ type Config = {|
   desc: FileDesc,
 |};
 type Instance = {|
-  show: (parentDir: DirReference, desc: FileDesc) => void,
+  show(parentDir: DirReference, desc: FileDesc): void,
 |};
 
 function CreateFileDialog({ onCreate }: Props, ref: Ref<Instance>) {
@@ -53,7 +53,7 @@ function CreateFileDialog({ onCreate }: Props, ref: Ref<Instance>) {
     valid: false,
   });
 
-  const show = (parentDir: DirReference, desc: FileDesc) => {
+  function show(parentDir: DirReference, desc: FileDesc) {
     setVisible(true);
     setConfig({ parentDir, desc });
     setFileNameState({
@@ -61,11 +61,11 @@ function CreateFileDialog({ onCreate }: Props, ref: Ref<Instance>) {
       actualNewFileName: '',
       valid: false,
     });
-  };
-  const cancel = () => {
+  }
+  function cancel() {
     setVisible(false);
-  };
-  const onChange = event => {
+  }
+  function onChange(event) {
     // eslint-disable-next-line no-throw-literal
     if (config === null) throw 'unreachable';
 
@@ -87,8 +87,8 @@ function CreateFileDialog({ onCreate }: Props, ref: Ref<Instance>) {
       actualNewFileName,
       valid,
     });
-  };
-  const confirm = async () => {
+  }
+  async function confirm() {
     // eslint-disable-next-line no-throw-literal
     if (!visible) throw 'dialog is not shown';
     // eslint-disable-next-line no-throw-literal
@@ -101,7 +101,7 @@ function CreateFileDialog({ onCreate }: Props, ref: Ref<Instance>) {
     if (success) {
       setVisible(false);
     }
-  };
+  }
 
   React.useImperativeHandle(ref, () => ({ show }));
 

@@ -31,8 +31,8 @@ type Props = {|
 type Instance = {|
   simulation: Simulation,
   robots: Map<string, Robot>,
-  reset: () => void,
-  initSimulationJson: (schema: SimulationSchema.SimulatorJson) => void,
+  reset(): void,
+  initSimulationJson(schema: SimulationSchema.SimulatorJson): void,
 |};
 
 function Simulator(
@@ -44,7 +44,7 @@ function Simulator(
     new Map<string, Robot>(),
   ]);
 
-  const initSimulationJson = (schema: SimulationSchema.SimulatorJson) => {
+  function initSimulationJson(schema: SimulationSchema.SimulatorJson) {
     robots.clear();
     simulation.clear(false);
 
@@ -109,9 +109,9 @@ function Simulator(
     });
 
     simulation.updateRobots();
-  };
+  }
 
-  const initSimulation = () => {
+  function initSimulation() {
     initSimulationJson({
       simulation: {
         center: {
@@ -385,7 +385,7 @@ function Simulator(
         },
       ],
     });
-  };
+  }
 
   // mount simulator in the target and simulate continuously
   const [renderTarget, setRenderTarget] = React.useState<HTMLDivElement | null>(
@@ -408,7 +408,9 @@ function Simulator(
   React.useImperativeHandle(ref, () => ({
     simulation,
     robots,
-    reset: () => simulation.reset(),
+    reset() {
+      simulation.reset();
+    },
     initSimulationJson,
   }));
 

@@ -28,21 +28,21 @@ type Config = {|
   file: FileReference,
 |};
 type Instance = {|
-  show: (file: FileReference) => void,
+  show(file: FileReference): void,
 |};
 
 function DeleteFileDialog({ onDelete }: Props, ref: Ref<Instance>) {
   const [visible, setVisible] = React.useState<boolean>(false);
   const [config, setConfig] = React.useState<Config | null>(null);
 
-  const show = (file: FileReference) => {
+  function show(file: FileReference) {
     setVisible(true);
     setConfig({ file });
-  };
-  const cancel = () => {
+  }
+  function cancel() {
     setVisible(false);
-  };
-  const confirm = async () => {
+  }
+  async function confirm() {
     // eslint-disable-next-line no-throw-literal
     if (!visible) throw 'dialog is not shown';
     // eslint-disable-next-line no-throw-literal
@@ -57,7 +57,7 @@ function DeleteFileDialog({ onDelete }: Props, ref: Ref<Instance>) {
     // we don't set the file to null because that results in a display glitch:
     // the hide animation will leave the file name visible for a split second
     setVisible(false);
-  };
+  }
 
   React.useImperativeHandle(ref, () => ({ show }));
 

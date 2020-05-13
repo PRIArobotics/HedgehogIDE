@@ -48,11 +48,11 @@ function useFile(
     })();
   }, [project, path, content]);
 
-  const setContent = (newContent: Content) => {
+  function setContent(newContent: Content) {
     // only set content if the current content is not null,
     // i.e. the original file contents were loaded successfully
     if (content !== null) setContentImpl(newContent);
-  };
+  }
 
   return [content, setContent];
 }

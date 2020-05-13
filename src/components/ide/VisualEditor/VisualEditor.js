@@ -295,16 +295,16 @@ function VisualEditor({
     };
   });
 
-  const handleToggleCodeCollapsed = () => {
+  function handleToggleCodeCollapsed() {
     onUpdate({ codeCollapsed: !codeCollapsed });
     startAnimation();
-  };
+  }
 
   // handle blockly changes by saving the file and regenerating code
   const [code, setCode] = React.useState<string | null>(null);
 
   // eslint-disable-next-line no-shadow
-  const generateCode = (codeLanguage: 'JavaScript' | 'Python') => {
+  function generateCode(codeLanguage: 'JavaScript' | 'Python') {
     // eslint-disable-next-line no-throw-literal
     if (blocklyRef.current === null) throw 'ref is null';
     // eslint-disable-next-line no-throw-literal
@@ -312,30 +312,30 @@ function VisualEditor({
 
     const language = Blockly[codeLanguage];
     return language.workspaceToCode(blocklyRef.current.workspace);
-  };
-  const refreshCode = React.useCallback(() => {
+  }
+  function refreshCode() {
     if (blocklyRef.current === null || blocklyRef.current.workspace === null)
       return;
     setCode(generateCode(codeLanguage));
-  }, [codeLanguage]);
+  }
 
-  const handleBlocklyChange = workspace => {
+  function handleBlocklyChange(workspace: Blockly.Workspace) {
     const workspaceXml = Blockly.Xml.domToText(
       Blockly.Xml.workspaceToDom(workspace),
     );
     onContentChange(workspaceXml);
     refreshCode();
-  };
+  }
 
   // handle language changes by regenerating code
   React.useEffect(() => {
     refreshCode();
-  }, [codeLanguage, refreshCode]);
+  });
 
   // eslint-disable-next-line no-shadow
-  const setCodeLanguage = (codeLanguage: 'JavaScript' | 'Python') => {
+  function setCodeLanguage(codeLanguage: 'JavaScript' | 'Python') {
     onUpdate({ codeLanguage });
-  };
+  }
 
   useStyles(s);
   const { preferredLocales } = useLocale();

@@ -34,7 +34,7 @@ type Config = {|
   siblingNames: string[],
 |};
 type Instance = {|
-  show: (file: FileReference, siblingNames: string[]) => void,
+  show(file: FileReference, siblingNames: string[]): void,
 |};
 
 function RenameFileDialog({ onRename }: Props, ref: Ref<Instance>) {
@@ -42,20 +42,20 @@ function RenameFileDialog({ onRename }: Props, ref: Ref<Instance>) {
   const [config, setConfig] = React.useState<Config | null>(null);
   const [newFileName, setNewFileName] = React.useState<string>('');
 
-  const show = (file: FileReference, siblingNames: string[]) => {
+  function show(file: FileReference, siblingNames: string[]) {
     setVisible(true);
     setConfig({ file, siblingNames });
     setNewFileName(file.file.name);
-  };
-  const cancel = () => {
+  }
+  function cancel() {
     setVisible(false);
-  };
-  const onChange = event => {
+  }
+  function onChange(event) {
     const name = event.target.value;
     const nameClean = name.replace(/[^-\w#$%().,:; ]/g, '');
     setNewFileName(nameClean);
-  };
-  const confirm = async () => {
+  }
+  async function confirm() {
     // eslint-disable-next-line no-throw-literal
     if (!visible) throw 'dialog is not shown';
     // eslint-disable-next-line no-throw-literal
@@ -67,7 +67,7 @@ function RenameFileDialog({ onRename }: Props, ref: Ref<Instance>) {
     if (success) {
       setVisible(false);
     }
-  };
+  }
 
   React.useImperativeHandle(ref, () => ({ show }));
 

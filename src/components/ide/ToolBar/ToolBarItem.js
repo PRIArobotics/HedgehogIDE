@@ -1,12 +1,17 @@
+// @flow
+
 import * as React from 'react';
-import withStyles from 'isomorphic-style-loader/withStyles';
+import useStyles from 'isomorphic-style-loader/useStyles';
 
 import s from './ToolBarItem.scss';
 
-class ToolBarItem extends React.Component<PropTypes, StateTypes> {
-  render() {
-    return <div className={s.toolBarItem}>{this.props.children}</div>;
-  }
+type Props = {|
+  children: React.Node,
+|};
+
+function ToolBarItem({ children }: Props) {
+  useStyles(s);
+  return <div className={s.toolBarItem}>{children}</div>;
 }
 
-export default withStyles(s)(ToolBarItem);
+export default ToolBarItem;
