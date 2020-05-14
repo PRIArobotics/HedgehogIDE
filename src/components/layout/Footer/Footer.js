@@ -1,7 +1,7 @@
 // @flow
 
 import * as React from 'react';
-import withStyles from 'isomorphic-style-loader/withStyles';
+import useStyles from 'isomorphic-style-loader/useStyles';
 import { defineMessages, FormattedMessage as M } from 'react-intl';
 
 import Link from '../../misc/Link';
@@ -17,6 +17,7 @@ const messages = defineMessages({
 });
 
 function Footer() {
+  useStyles(s);
   return (
     <div className={s.root}>
       <div className={s.container}>
@@ -46,4 +47,4 @@ function Footer() {
   );
 }
 
-export default withStyles(s)(Footer);
+export default Footer;

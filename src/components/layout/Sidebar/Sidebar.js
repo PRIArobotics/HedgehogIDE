@@ -1,6 +1,7 @@
 // @flow
 
 import * as React from 'react';
+import { makeStyles } from '@material-ui/styles';
 import { defineMessages, FormattedMessage as M } from 'react-intl';
 
 import List from '@material-ui/core/List';
@@ -8,7 +9,6 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import Divider from '@material-ui/core/Divider';
 import Tooltip from '@material-ui/core/Tooltip';
-import { withStyles } from '@material-ui/styles';
 
 import {
   IdeIcon,
@@ -40,18 +40,14 @@ const messages = defineMessages({
   },
 });
 
-const styled = withStyles(theme => ({
+const useStyles = makeStyles(theme => ({
   listItemIcon: {
     minWidth: 'auto',
   },
   toolbar: theme.mixins.toolbar,
 }));
 
-type SidebarProps = {|
-  classes: Object,
-|};
-
-function Sidebar({ classes }: SidebarProps) {
+function Sidebar() {
   type NavItemProps = {|
     title?: string,
     titleMsg?: Object,
@@ -71,6 +67,7 @@ function Sidebar({ classes }: SidebarProps) {
     );
   }
 
+  const classes = useStyles();
   return (
     <List>
       <NavItem
@@ -101,4 +98,4 @@ function Sidebar({ classes }: SidebarProps) {
   );
 }
 
-export default styled(Sidebar);
+export default Sidebar;

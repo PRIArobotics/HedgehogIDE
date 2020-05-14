@@ -1,16 +1,7 @@
-/**
- * React Starter Kit (https://www.reactstarterkit.com/)
- *
- * Copyright © 2014-present Kriasoft, LLC. All rights reserved.
- *
- * This source code is licensed under the MIT license found in the
- * LICENSE.txt file in the root directory of this source tree.
- */
-
 // @flow
 
 import * as React from 'react';
-import { withStyles } from '@material-ui/styles';
+import { makeStyles } from '@material-ui/styles';
 
 import AppBar from '@material-ui/core/AppBar';
 import Drawer from '@material-ui/core/Drawer';
@@ -35,7 +26,7 @@ function OpenDrawer({ drawerClasses, ...props }: OpenDrawerProps) {
 
 // main component
 
-const styled = withStyles(theme => ({
+const useStyles = makeStyles(theme => ({
   appBar: {
     zIndex: theme.zIndex.drawer + 1,
   },
@@ -48,11 +39,11 @@ const styled = withStyles(theme => ({
 
 type LayoutProps = {|
   children: React.Node,
-  classes: Object,
   contentFill: boolean,
 |};
 
-function Layout({ children, classes, contentFill }: LayoutProps) {
+function Layout({ children, contentFill }: LayoutProps) {
+  const classes = useStyles();
   return (
     <Grid container direction="row" wrap="nowrap">
       <AppBar className={classes.appBar}>
@@ -117,4 +108,4 @@ function Layout({ children, classes, contentFill }: LayoutProps) {
   );
 }
 
-export default styled(Layout);
+export default Layout;

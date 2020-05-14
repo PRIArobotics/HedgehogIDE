@@ -1,6 +1,7 @@
 // @flow
 
 import * as React from 'react';
+import { makeStyles } from '@material-ui/styles';
 import { defineMessages, useIntl, FormattedMessage as M } from 'react-intl';
 
 import Menu from '@material-ui/core/Menu';
@@ -10,7 +11,6 @@ import Tooltip from '@material-ui/core/Tooltip';
 import Typography from '@material-ui/core/Typography';
 import Icon from '@material-ui/core/Icon';
 import IconButton from '@material-ui/core/IconButton';
-import { withStyles } from '@material-ui/styles';
 
 import PopupState, { bindTrigger, bindMenu } from 'material-ui-popup-state';
 
@@ -43,7 +43,7 @@ const messages = defineMessages({
   },
 });
 
-const styled = withStyles(theme => ({
+const useStyles = makeStyles(theme => ({
   gutters: {
     paddingLeft: theme.spacing(2),
   },
@@ -53,14 +53,10 @@ const styled = withStyles(theme => ({
   },
 }));
 
-type HeaderProps = {|
-  classes: Object,
-|};
-
-function Header({ classes }: HeaderProps) {
+function Header() {
+  const classes = useStyles();
   const intl = useIntl();
   const { setPreferredLocale } = useLocale();
-
   return (
     <Toolbar classes={{ gutters: classes.gutters }}>
       <IconButton
@@ -119,4 +115,4 @@ function Header({ classes }: HeaderProps) {
   );
 }
 
-export default styled(Header);
+export default Header;
