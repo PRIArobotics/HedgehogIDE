@@ -39,13 +39,9 @@ function Simulator(
   { width, height, onExecutionAction, running }: Props,
   ref: Ref<Instance>,
 ) {
-  const [simulation, robots] = hooks.useValue(() => [
-    new Simulation(),
-    new Map<string, Robot>(),
-  ]);
+  const simulation = hooks.useValue(() => new Simulation());
 
   function initSimulationJson(schema: SimulationSchema.SimulatorJson) {
-    robots.clear();
     simulation.clear(false);
 
     {
@@ -98,9 +94,7 @@ function Simulator(
           robot.setInitialPose(pose);
           // TODO color
 
-          robots.set(name, robot);
-          simulation.add(robot.bodies);
-          simulation.robots.push(robot);
+          simulation.addRobot(name, robot);
           break;
         }
         default:
@@ -108,7 +102,7 @@ function Simulator(
       }
     });
 
-    simulation.updateRobots();
+    simulation.updateSensorCache();
   }
 
   function initSimulation() {
@@ -407,7 +401,7 @@ function Simulator(
 
   React.useImperativeHandle(ref, () => ({
     simulation,
-    robots,
+    robots: simulation.robots,
     reset() {
       simulation.reset();
     },

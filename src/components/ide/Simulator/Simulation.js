@@ -411,8 +411,8 @@ export class Simulation {
   render: Matter.Render | null = null;
 
   // special bodies for simulation logic
+  robots: Map<string, Robot> = new Map<string, Robot>();
   lines: (Matter.Body | Matter.Composite)[] = [];
-  robots: Robot[] = [];
   sensorsCache: SensorCache = {
     lineSensors: [],
     touchSensors: [],
@@ -522,15 +522,26 @@ export class Simulation {
     this.externalSensorHandlers.push(handler);
   }
 
-  updateRobots() {
+  addRobot(name: string, robot: Robot) {
+    this.robots.set(name, robot);
+    this.add(robot.bodies);
+  }
+
+  // this method has to be called after adding one or more robots to the
+  // simulation, before using any new robot's sensors.
+  updateSensorCache() {
+    const robots = [...this.robots.values()];
     Object.keys(this.sensorsCache).forEach(key => {
       // $FlowExpectError
-      this.sensorsCache[key] = this.robots.flatMap(robot => robot[key]);
+      this.sensorsCache[key] = robots.flatMap(robot => robot[key]);
     });
   }
 
   clear(keepStatic: boolean) {
     Matter.Composite.clear(this.world, keepStatic);
+    this.robots.clear();
+    this.lines = [];
+    this.updateSensorCache();
   }
 
   reset() {
