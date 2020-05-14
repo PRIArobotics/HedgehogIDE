@@ -7,17 +7,55 @@ import useStyles from 'isomorphic-style-loader/useStyles';
 import s from './Console.scss';
 
 type ConsoleItem = {|
+  key: number,
   text: string,
   stream: string,
 |};
 
+type ConsoleState = {|
+  nextKey: number,
+  items: ConsoleItem[],
+|};
+
+export type ConsoleAction =
+  | {| type: 'PRINT', text: string, stream: string |}
+  | {| type: 'CLEAR' |};
+
+function consoleReducer(
+  state: ConsoleState,
+  action: ConsoleAction,
+): ConsoleState {
+  switch (action.type) {
+    case 'PRINT': {
+      const key = state.nextKey;
+      const { text, stream } = action;
+      const newItem = { key, text, stream };
+
+      const nextKey = state.nextKey + 1;
+      const items = [...state.items.slice(-99), newItem];
+
+      return { nextKey, items };
+    }
+    case 'CLEAR': {
+      return { nextKey: 0, items: [] };
+    }
+    default:
+      // eslint-disable-next-line no-throw-literal
+      throw 'unreachable';
+  }
+}
+
 type Props = {||};
 type Instance = {|
-  consoleOut(text: string, stream: string): void,
+  print(text: string, stream: string): void,
+  clear(): void,
 |};
 
 function Console(props: Props, ref: Ref<Instance>) {
-  const [items, setItems] = React.useState<ConsoleItem[]>([]);
+  const [{ items }, dispatch] = React.useReducer(consoleReducer, {
+    nextKey: 0,
+    items: [],
+  });
   const inputRef = React.useRef<HTMLInputElement | null>(null);
   const bottomRef = React.useRef<HTMLDivElement | null>(null);
 
@@ -26,7 +64,11 @@ function Console(props: Props, ref: Ref<Instance>) {
   }, [items]);
 
   function print(text: string, stream: string) {
-    setItems(oldItems => [...oldItems.slice(-99), { text, stream }]);
+    dispatch({ type: 'PRINT', text, stream });
+  }
+
+  function clear() {
+    dispatch({ type: 'CLEAR' });
   }
 
   function handleSubmit(e) {
@@ -45,27 +87,26 @@ function Console(props: Props, ref: Ref<Instance>) {
 
         case '/clear':
         case '/c':
-          setItems([]);
+          clear();
           break;
 
         default:
           print(`Command not found: ${input}`, 'stderr');
-          break;
       }
     }
   }
 
-  React.useImperativeHandle(ref, () => ({
-    consoleOut: print,
-  }));
+  React.useImperativeHandle(ref, () => ({ print, clear }));
 
   useStyles(s);
   return (
     <div style={{ overflowX: 'auto', height: '100%' }}>
       <div className={s.root}>
         <div className={s.outputPane}>
-          {items.map(({ text, stream }) => (
-            <pre className={`${s.output} ${s[stream]}`}>{text}</pre>
+          {items.map(({ key, text, stream }) => (
+            <pre key={key} className={`${s.output} ${s[stream]}`}>
+              {text}
+            </pre>
           ))}
           <div ref={bottomRef} />
         </div>

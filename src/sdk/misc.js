@@ -20,7 +20,7 @@ export default async function init(getConsole: () => Promise<Console>, onExit: (
 
   async function print(text: string) {
     // <GSL customizable: misc-body-print>
-    (await getConsole()).consoleOut(text, 'stdout');
+    (await getConsole()).print(text, 'stdout');
     // </GSL customizable: misc-body-print>
   }
 
@@ -28,7 +28,7 @@ export default async function init(getConsole: () => Promise<Console>, onExit: (
     // <GSL customizable: misc-body-exit>
     // Your function code goes here
     if (error) {
-      (await getConsole()).consoleOut(error, 'stderr');
+      (await getConsole()).print(error, 'stderr');
     }
     return onExit(error);
     // </GSL customizable: misc-body-exit>
