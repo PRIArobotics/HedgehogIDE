@@ -1,4 +1,5 @@
 // @flow
+/* eslint-disable react/no-multi-comp */
 
 import * as React from 'react';
 import { makeStyles } from '@material-ui/styles';
@@ -14,15 +15,24 @@ import Footer from '../Footer';
 
 // OpenDrawer component
 
-type OpenDrawerProps = {
+type OpenDrawerProps = {|
   drawerClasses?: Object,
   ...React.ElementConfig<typeof Drawer>,
-};
+|};
 
 // eslint-disable-next-line react/prop-types
-function OpenDrawer({ drawerClasses, ...props }: OpenDrawerProps) {
-  return <Drawer variant="permanent" open classes={drawerClasses} {...props} />;
-}
+const OpenDrawer = React.forwardRef<
+  OpenDrawerProps,
+  React.Element<typeof Drawer>,
+>(({ drawerClasses, ...props }: OpenDrawerProps, ref: Ref<typeof Drawer>) => (
+  <Drawer
+    ref={ref}
+    variant="permanent"
+    open
+    classes={drawerClasses}
+    {...props}
+  />
+));
 
 // main component
 
@@ -37,12 +47,12 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-type LayoutProps = {|
+type Props = {|
   children: React.Node,
   contentFill: boolean,
 |};
 
-function Layout({ children, contentFill }: LayoutProps) {
+function Layout({ children, contentFill }: Props) {
   const classes = useStyles();
   return (
     <Grid container direction="row" wrap="nowrap">
@@ -107,5 +117,8 @@ function Layout({ children, contentFill }: LayoutProps) {
     </Grid>
   );
 }
+Layout.defaultProps = {
+  contentFill: false,
+};
 
 export default Layout;
