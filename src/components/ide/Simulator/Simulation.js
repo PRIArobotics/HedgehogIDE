@@ -2,6 +2,8 @@
 
 import Matter from 'matter-js';
 
+import * as SimulationSchema from '../SimulatorEditor/SimulationSchema';
+
 export type Point = {|
   x: number,
   y: number,
@@ -477,6 +479,70 @@ export class Simulation {
 
     Matter.Events.on(this.engine, 'collisionStart', collisionHandler);
     Matter.Events.on(this.engine, 'collisionEnd', collisionHandler);
+  }
+
+  jsonInit(schema: SimulationSchema.SimulatorJson) {
+    this.clear(false);
+
+    {
+      const {
+        center: { x, y },
+        // eslint-disable-next-line no-shadow
+        width,
+        // eslint-disable-next-line no-shadow
+        height,
+      } = schema.simulation;
+      this.lookAt({
+        min: { x: x - width / 2, y: y - height / 2 },
+        max: { x: x + width / 2, y: y + height / 2 },
+      });
+    }
+
+    schema.objects.forEach(object => {
+      switch (object.type) {
+        case 'rectangle': {
+          // eslint-disable-next-line no-shadow
+          const { type: _type, width, height, ...options } = object;
+          const body = Matter.Bodies.rectangle(0, 0, width, height, options);
+
+          this.add([body]);
+          // TODO with this, being a sensor (non-colliding)
+          // and being a line (dark surface) re the same thing
+          if (options.isSensor) this.lines.push(body);
+          break;
+        }
+        case 'circle': {
+          const { type: _type, radius, ...options } = object;
+          const body = Matter.Bodies.circle(0, 0, radius, options);
+
+          this.add([body]);
+          // TODO with this, being a sensor (non-colliding)
+          // and being a line (dark surface) re the same thing
+          if (options.isSensor) this.lines.push(body);
+          break;
+        }
+        case 'robot': {
+          const {
+            name,
+            position: { x, y },
+            angle,
+            // color,
+          } = object;
+          const robot = new Robot();
+          const pose = { x, y, angle };
+          robot.setPose(pose);
+          robot.setInitialPose(pose);
+          // TODO color
+
+          this.addRobot(name, robot);
+          break;
+        }
+        default:
+          console.warn('unknown simulation object:', object);
+      }
+    });
+
+    this.updateSensorCache();
   }
 
   mount(element: Element, width: number, height: number) {

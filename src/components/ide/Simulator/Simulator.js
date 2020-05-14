@@ -3,8 +3,6 @@
 import * as React from 'react';
 import useStyles from 'isomorphic-style-loader/useStyles';
 
-import Matter from 'matter-js';
-
 import {
   TerminateIcon,
   ResetIcon,
@@ -41,72 +39,8 @@ function Simulator(
 ) {
   const simulation = hooks.useValue(() => new Simulation());
 
-  function initSimulationJson(schema: SimulationSchema.SimulatorJson) {
-    simulation.clear(false);
-
-    {
-      const {
-        center: { x, y },
-        // eslint-disable-next-line no-shadow
-        width,
-        // eslint-disable-next-line no-shadow
-        height,
-      } = schema.simulation;
-      simulation.lookAt({
-        min: { x: x - width / 2, y: y - height / 2 },
-        max: { x: x + width / 2, y: y + height / 2 },
-      });
-    }
-
-    schema.objects.forEach(object => {
-      switch (object.type) {
-        case 'rectangle': {
-          // eslint-disable-next-line no-shadow
-          const { type: _type, width, height, ...options } = object;
-          const body = Matter.Bodies.rectangle(0, 0, width, height, options);
-
-          simulation.add([body]);
-          // TODO with this, being a sensor (non-colliding)
-          // and being a line (dark surface) re the same thing
-          if (options.isSensor) simulation.lines.push(body);
-          break;
-        }
-        case 'circle': {
-          const { type: _type, radius, ...options } = object;
-          const body = Matter.Bodies.circle(0, 0, radius, options);
-
-          simulation.add([body]);
-          // TODO with this, being a sensor (non-colliding)
-          // and being a line (dark surface) re the same thing
-          if (options.isSensor) simulation.lines.push(body);
-          break;
-        }
-        case 'robot': {
-          const {
-            name,
-            position: { x, y },
-            angle,
-            // color,
-          } = object;
-          const robot = new Robot();
-          const pose = { x, y, angle };
-          robot.setPose(pose);
-          robot.setInitialPose(pose);
-          // TODO color
-
-          simulation.addRobot(name, robot);
-          break;
-        }
-        default:
-          console.warn('unknown simulation object:', object);
-      }
-    });
-
-    simulation.updateSensorCache();
-  }
-
   function initSimulation() {
-    initSimulationJson({
+    simulation.jsonInit({
       simulation: {
         center: {
           x: 0,
@@ -405,7 +339,9 @@ function Simulator(
     reset() {
       simulation.reset();
     },
-    initSimulationJson,
+    initSimulationJson(schema: SimulationSchema.SimulatorJson) {
+      simulation.jsonInit(schema);
+    },
   }));
 
   useStyles(s);
