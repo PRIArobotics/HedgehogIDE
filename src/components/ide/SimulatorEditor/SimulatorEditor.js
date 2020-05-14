@@ -2,14 +2,15 @@
 
 import * as React from 'react';
 import ReactDOM from 'react-dom/server';
-import withStyles from 'isomorphic-style-loader/withStyles';
+import useStyles from 'isomorphic-style-loader/useStyles';
 
 import Blockly from 'blockly/core';
 
-import { LocaleConsumer } from '../../locale';
+import { useLocale } from '../../locale';
 import { type LocaleMap, getTranslation } from '../../../translations';
 
 import { SlideLeftIcon, SlideRightIcon } from '../../misc/palette';
+import * as hooks from '../../misc/hooks';
 
 import BlocklyComponent, { type Locale as BlocklyLocale } from '../Blockly';
 import ToolBar from '../ToolBar';
@@ -34,7 +35,7 @@ export type ControlledState = $Shape<{|
   jsonCollapsed: boolean,
 |}>;
 
-type PropTypes = {|
+type Props = {|
   content: string | null,
   onContentChange: (
     content: string,
@@ -44,16 +45,18 @@ type PropTypes = {|
   onUpdate: (state: ControlledState) => void | Promise<void>,
   layoutNode: any,
 |};
-type StateTypes = {|
-  json: string | null,
-|};
 
-class VisualEditor extends React.Component<PropTypes, StateTypes> {
-  static defaultProps = {
-    jsonCollapsed: true,
-  };
+function SimulatorEditor({
+  layoutNode,
+  content,
+  onContentChange,
+  jsonCollapsed,
+  onUpdate,
+}: Props) {
+  const blocklyRef = React.useRef<typeof BlocklyComponent | null>(null);
+  const jsonRef = React.useRef<HTMLPreElement | null>(null);
 
-  static blocklyWorkspaceOptions = (() => {
+  const workspaceOptions = React.useMemo(() => {
     const toolbox = ReactDOM.renderToStaticMarkup(
       <xml>
         <category name="Simulation" colour="120">
@@ -97,128 +100,111 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
       trashcan: false,
       scrollbars: true,
     };
-  })();
+  }, []);
 
-  blocklyRef: RefObject<BlocklyComponent> = React.createRef();
-  jsonRef: RefObject<'pre'> = React.createRef();
-
-  resizeAnim: AnimationFrameID | null;
-
-  state = {
-    json: null,
-  };
-
-  componentDidMount() {
-    // eslint-disable-next-line no-throw-literal
-    if (this.jsonRef.current === null) throw 'ref is null in componentDidMount';
-    const jsonRefCurrent = this.jsonRef.current;
-
-    const { layoutNode } = this.props;
+  // update workspace size when the containing tab is resized or made visible
+  React.useEffect(() => {
     layoutNode.setEventListener('resize', () => {
-      if (this.blocklyRef.current)
-        this.blocklyRef.current.refreshSizeDeferred();
+      if (blocklyRef.current) blocklyRef.current.refreshSizeDeferred();
     });
     layoutNode.setEventListener('visibility', ({ visible }) => {
-      if (this.blocklyRef.current)
-        this.blocklyRef.current.updateVisibility(visible);
+      if (blocklyRef.current) blocklyRef.current.updateVisibility(visible);
     });
-    jsonRefCurrent.addEventListener('transitionend', () => {
-      if (this.resizeAnim) {
-        cancelAnimationFrame(this.resizeAnim);
-        this.resizeAnim = null;
-      }
 
-      if (this.blocklyRef.current)
-        this.blocklyRef.current.refreshSizeDeferred();
-    });
+    return () => {
+      layoutNode.setEventListener('resize', null);
+      layoutNode.setEventListener('visibility', null);
+    };
+  }, [layoutNode]);
+
+  // animate workspace size when the sidebar is expanding or collapsing
+  const [startAnimation, stopAnimation] = hooks.useAnimationFrame(() => {
+    if (blocklyRef.current) blocklyRef.current.refreshSize();
+  });
+  React.useEffect(() => {
+    if (jsonRef.current === null) return undefined;
+    const jsonElem = jsonRef.current;
+
+    const onTransitionEnd = () => {
+      stopAnimation();
+      if (blocklyRef.current) blocklyRef.current.refreshSizeDeferred();
+    };
+
+    jsonElem.addEventListener('transitionend', onTransitionEnd);
+
+    return () => {
+      jsonElem.removeEventListener('transitionend', onTransitionEnd);
+    };
+  });
+
+  function handleToggleJsonCollapsed() {
+    onUpdate({ jsonCollapsed: !jsonCollapsed });
+    startAnimation();
   }
 
-  animateWorkspaceSize() {
-    this.resizeAnim = requestAnimationFrame(() => {
-      if (this.blocklyRef.current) this.blocklyRef.current.refreshSize();
-      this.animateWorkspaceSize();
-    });
-  }
+  // handle blockly changes by saving the file and regenerating code
+  const [json, setJson] = React.useState<string | null>(null);
 
-  getSchema(): SimulationSchema.SimulatorJson | null {
-    // eslint-disable-next-line no-throw-literal
-    if (this.blocklyRef.current === null) throw 'ref is null';
-
-    const { workspace } = this.blocklyRef.current;
-
+  // eslint-disable-next-line no-shadow
+  function generateSchema(workspace: Blockly.Workspace): SimulationSchema.SimulatorJson | null {
     const roots = workspace.getBlocksByType('simulator_root');
     if (roots.length !== 1) return null;
 
     const [simulation] = roots;
     return simulation.serialize();
   }
-
-  refreshJson(schema: SimulationSchema.SimulatorJson | null) {
-    const json = schema === null ? '' : JSON.stringify(schema, undefined, 2);
-    this.setState({ json });
+  function refreshJson(schema: SimulationSchema.SimulatorJson | null) {
+    setJson(schema === null ? '' : JSON.stringify(schema, undefined, 2));
   }
 
-  handleBlocklyChange = workspace => {
-    const schema = this.getSchema();
-    this.refreshJson(schema);
+  function handleBlocklyChange(workspace: Blockly.Workspace) {
+    const schema = generateSchema(workspace);
+    refreshJson(schema);
 
     const workspaceXml = Blockly.Xml.domToText(
       Blockly.Xml.workspaceToDom(workspace),
     );
-    this.props.onContentChange(workspaceXml, schema);
-  };
-
-  handleToggleJsonCollapsed = () => {
-    this.props.onUpdate({ jsonCollapsed: !this.props.jsonCollapsed });
-    this.animateWorkspaceSize();
-  };
-
-  render() {
-    const { content, jsonCollapsed } = this.props;
-    const { json } = this.state;
-
-    return (
-      <div className={s.tabRoot}>
-        {content === null ? null : (
-          <LocaleConsumer>
-            {({ preferredLocales }) => {
-              const locale =
-                getTranslation(preferredLocales, LOCALES) || LOCALES.en;
-
-              return (
-                <BlocklyComponent
-                  forwardedRef={this.blocklyRef}
-                  initialWorkspaceXml={content}
-                  locale={locale}
-                  workspaceOptions={VisualEditor.blocklyWorkspaceOptions}
-                  onChange={this.handleBlocklyChange}
-                />
-              );
-            }}
-          </LocaleConsumer>
-        )}
-        <ToolBar>
-          <ToolBarItem>
-            <ToolBarIconButton
-              onClick={this.handleToggleJsonCollapsed}
-              icon={jsonCollapsed ? SlideLeftIcon : SlideRightIcon}
-              disableRipple
-            />
-          </ToolBarItem>
-        </ToolBar>
-        <pre
-          ref={this.jsonRef}
-          className={
-            jsonCollapsed
-              ? `${s.jsonContainer} ${s.collapsed}`
-              : s.jsonContainer
-          }
-        >
-          {json}
-        </pre>
-      </div>
-    );
+    onContentChange(workspaceXml, schema);
   }
-}
 
-export default withStyles(s)(VisualEditor);
+  useStyles(s);
+  const { preferredLocales } = useLocale();
+  const locale = getTranslation(preferredLocales, LOCALES) || LOCALES.en;
+  return (
+    <div className={s.tabRoot}>
+      {content === null ? null : (
+        <BlocklyComponent
+          forwardedRef={blocklyRef}
+          initialWorkspaceXml={content}
+          locale={locale}
+          workspaceOptions={workspaceOptions}
+          onChange={handleBlocklyChange}
+        />
+      )}
+      <ToolBar>
+        <ToolBarItem>
+          <ToolBarIconButton
+            onClick={handleToggleJsonCollapsed}
+            icon={jsonCollapsed ? SlideLeftIcon : SlideRightIcon}
+            disableRipple
+          />
+        </ToolBarItem>
+      </ToolBar>
+      <pre
+        ref={jsonRef}
+        className={
+          jsonCollapsed
+            ? `${s.jsonContainer} ${s.collapsed}`
+            : s.jsonContainer
+        }
+      >
+        {json}
+      </pre>
+    </div>
+  );
+}
+SimulatorEditor.defaultProps = {
+  jsonCollapsed: true,
+};
+
+export default SimulatorEditor;
