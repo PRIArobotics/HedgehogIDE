@@ -443,7 +443,32 @@ export class Simulation {
       pairs.forEach(pair => {
         const { bodyA, bodyB } = pair;
 
-        this.externalSensorHandlers.forEach(h => h(bodyA, bodyB));
+        this.externalSensorHandlers.forEach(h =>
+          h(
+            {
+              id: bodyA.id,
+              label: bodyA.label,
+              position: bodyA.position,
+              speed: bodyA.speed,
+              velocity: bodyA.velocity,
+              angle: bodyA.angle,
+              angularSpeed: bodyA.angularSpeed,
+              angularVelocity: bodyA.angularVelocity,
+              bounds: bodyA.bounds,
+            },
+            {
+              id: bodyB.id,
+              label: bodyB.label,
+              position: bodyB.position,
+              speed: bodyB.speed,
+              velocity: bodyB.velocity,
+              angle: bodyB.angle,
+              angularSpeed: bodyB.angularSpeed,
+              angularVelocity: bodyB.angularVelocity,
+              bounds: bodyB.bounds,
+            },
+          ),
+        );
 
         let collision = null;
         // go over all types of sensors in the cache,
