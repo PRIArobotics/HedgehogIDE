@@ -2,10 +2,10 @@
 /* eslint-disable import/no-duplicates, import/first */
 
 import * as React from 'react';
-import { withStyles as withStylesMaterial } from '@material-ui/styles';
+import { withStyles } from '@material-ui/styles';
 import Badge from '@material-ui/core/Badge';
 
-const IconBadge = withStylesMaterial(_theme => ({
+const IconBadge = withStyles({
   badge: {
     bottom: '25%',
     right: '25%',
@@ -14,7 +14,7 @@ const IconBadge = withStylesMaterial(_theme => ({
     width: '15px',
     height: '15px',
   },
-}))(Badge);
+})(Badge);
 
 import MenuIcon from 'mdi-material-ui/DotsVertical';
 
