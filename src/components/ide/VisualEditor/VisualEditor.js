@@ -34,6 +34,8 @@ import ToolBarItem from '../ToolBar/ToolBarItem';
 
 import s from './VisualEditor.scss';
 
+import useFile, { Project } from '../useFile';
+
 import './blocks/async_procedures_js';
 import DeHedgehog from './blocks/hedgehog_msg_de';
 import EnHedgehog from './blocks/hedgehog_msg_en';
@@ -59,8 +61,8 @@ export type ControlledState = $Shape<{|
 |}>;
 
 type Props = {|
-  content: string | null,
-  onContentChange: (content: string) => void | Promise<void>,
+  project: Project,
+  path: string,
   codeCollapsed: boolean,
   codeLanguage: 'JavaScript' | 'Python',
   onUpdate: (state: ControlledState) => void | Promise<void>,
@@ -71,8 +73,8 @@ type Props = {|
 
 function VisualEditor({
   layoutNode,
-  content,
-  onContentChange,
+  project,
+  path,
   codeCollapsed,
   codeLanguage,
   onUpdate,
@@ -81,6 +83,8 @@ function VisualEditor({
 }: Props) {
   const blocklyRef = React.useRef<typeof BlocklyComponent | null>(null);
   const codeRef = React.useRef<HTMLPreElement | null>(null);
+
+  const [content, setContent] = useFile(project, path);
 
   const workspaceOptions = React.useMemo(() => {
     const dynamicBlocks = VisualEditor.dynamicBlockLoaders.length ? (
@@ -323,7 +327,7 @@ function VisualEditor({
     const workspaceXml = Blockly.Xml.domToText(
       Blockly.Xml.workspaceToDom(workspace),
     );
-    onContentChange(workspaceXml);
+    setContent(workspaceXml);
     refreshCode();
   }
 

@@ -22,18 +22,20 @@ import ToolBarItem from '../ToolBar/ToolBarItem';
 
 import s from './Editor.scss';
 
+import useFile, { Project } from '../useFile';
+
 type Props = {|
   layoutNode: any,
-  content: string | null,
-  onContentChange: (content: string) => void | Promise<void>,
+  project: Project,
+  path: string,
   onExecutionAction: (action: ExecutionAction) => void | Promise<void>,
   running: boolean,
 |};
 
 function Editor({
   layoutNode,
-  content,
-  onContentChange,
+  project,
+  path,
   onExecutionAction,
   running,
 }: Props) {
@@ -42,6 +44,8 @@ function Editor({
     '0',
   ]);
   const containerRef = React.useRef<HTMLDivElement | null>(null);
+
+  const [content, setContent] = useFile(project, path);
 
   // update editor size when the containing tab is resized or made visible
   React.useEffect(() => {
@@ -77,7 +81,7 @@ function Editor({
             width={width}
             height={height}
             // onLoad={onLoad}
-            onChange={text => onContentChange(text)}
+            onChange={setContent}
             fontSize={16}
             // onSelectionChange={onSelectionChange}
             // onCursorChange={onCursorChange}

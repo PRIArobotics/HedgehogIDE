@@ -25,7 +25,6 @@ import { SettingsIcon, ConsoleIcon, SimulatorIcon } from '../../misc/palette';
 
 import Console from '../Console';
 import Editor from '../Editor';
-import FileTab from '../FileTab';
 import FileTree, {
   type DirReference,
   type FileReference,
@@ -178,17 +177,13 @@ class Ide extends React.Component<PropTypes, StateTypes> {
     switch (node.getComponent()) {
       case 'editor': {
         return (
-          <FileTab project={project} path={id}>
-            {(content, onContentChange) => (
-              <Editor
-                layoutNode={node}
-                content={content}
-                onContentChange={onContentChange}
-                onExecutionAction={action => this.handleExecutionAction(action)}
-                running={!!this.state.runningTask}
-              />
-            )}
-          </FileTab>
+          <Editor
+            layoutNode={node}
+            project={project}
+            path={id}
+            onExecutionAction={action => this.handleExecutionAction(action)}
+            running={!!this.state.runningTask}
+          />
         );
       }
       case 'simulator': {
@@ -207,41 +202,30 @@ class Ide extends React.Component<PropTypes, StateTypes> {
       }
       case 'blockly': {
         return (
-          <FileTab project={project} path={id}>
-            {(content, onContentChange) => (
-              <VisualEditor
-                layoutNode={node}
-                content={content}
-                onContentChange={onContentChange}
-                {...getEditorState(id, 'blockly')}
-                onUpdate={editorStateSetter(id, 'blockly')}
-                onExecutionAction={action => this.handleExecutionAction(action)}
-                running={!!this.state.runningTask}
-              />
-            )}
-          </FileTab>
+          <VisualEditor
+            layoutNode={node}
+            project={project}
+            path={id}
+            {...getEditorState(id, 'blockly')}
+            onUpdate={editorStateSetter(id, 'blockly')}
+            onExecutionAction={action => this.handleExecutionAction(action)}
+            running={!!this.state.runningTask}
+          />
         );
       }
       case 'simulator-editor': {
         return (
-          <FileTab project={project} path={id}>
-            {(content, onContentChange) => (
-              <SimulatorEditor
-                layoutNode={node}
-                content={content}
-                onContentChange={
-                  // eslint-disable-next-line no-shadow
-                  (content, schema) => {
-                    onContentChange(content);
-                    if (this.simulatorRef.current && schema)
-                      this.simulatorRef.current.initSimulationJson(schema);
-                  }
-                }
-                {...getEditorState(id, 'simulator-editor')}
-                onUpdate={editorStateSetter(id, 'simulator-editor')}
-              />
-            )}
-          </FileTab>
+          <SimulatorEditor
+            layoutNode={node}
+            project={project}
+            path={id}
+            onSchemaChange={schema => {
+              if (this.simulatorRef.current && schema)
+                this.simulatorRef.current.initSimulationJson(schema);
+            }}
+            {...getEditorState(id, 'simulator-editor')}
+            onUpdate={editorStateSetter(id, 'simulator-editor')}
+          />
         );
       }
       default:

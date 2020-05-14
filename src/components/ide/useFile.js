@@ -4,7 +4,9 @@ import * as React from 'react';
 
 import { fs } from 'filer';
 
-import { Project } from '../../../core/store/projects';
+import { Project } from '../../core/store/projects';
+
+export { Project };
 
 type Content = string;
 type MaybeContent = Content | null;
@@ -57,19 +59,4 @@ function useFile(
   return [content, setContent];
 }
 
-type Props = {|
-  project: Project,
-  path: string,
-  children: (
-    content: MaybeContent,
-    onContentChange: ContentSetter,
-  ) => React.Node,
-|};
-
-function FileTab({ project, path, children }: Props) {
-  const [content, setContent] = useFile(project, path);
-
-  return children(content, setContent);
-}
-
-export default FileTab;
+export default useFile;

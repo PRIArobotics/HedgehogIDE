@@ -19,6 +19,8 @@ import ToolBarItem from '../ToolBar/ToolBarItem';
 
 import s from './SimulatorEditor.scss';
 
+import useFile, { Project } from '../useFile';
+
 import * as SimulationSchema from './SimulationSchema';
 
 import * as blocks from './blocks';
@@ -36,9 +38,9 @@ export type ControlledState = $Shape<{|
 |}>;
 
 type Props = {|
-  content: string | null,
-  onContentChange: (
-    content: string,
+  project: Project,
+  path: string,
+  onSchemaChange: (
     schema: SimulationSchema.SimulatorJson | null,
   ) => void | Promise<void>,
   jsonCollapsed: boolean,
@@ -48,13 +50,16 @@ type Props = {|
 
 function SimulatorEditor({
   layoutNode,
-  content,
-  onContentChange,
+  project,
+  path,
+  onSchemaChange,
   jsonCollapsed,
   onUpdate,
 }: Props) {
   const blocklyRef = React.useRef<typeof BlocklyComponent | null>(null);
   const jsonRef = React.useRef<HTMLPreElement | null>(null);
+
+  const [content, setContent] = useFile(project, path);
 
   const workspaceOptions = React.useMemo(() => {
     const toolbox = ReactDOM.renderToStaticMarkup(
@@ -160,11 +165,12 @@ function SimulatorEditor({
   function handleBlocklyChange(workspace: Blockly.Workspace) {
     const schema = generateSchema(workspace);
     refreshJson(schema);
+    onSchemaChange(schema);
 
     const workspaceXml = Blockly.Xml.domToText(
       Blockly.Xml.workspaceToDom(workspace),
     );
-    onContentChange(workspaceXml, schema);
+    setContent(workspaceXml);
   }
 
   useStyles(s);
