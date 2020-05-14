@@ -2,6 +2,7 @@
 
 import * as React from 'react';
 import withStyles from 'isomorphic-style-loader/withStyles';
+import { withStyles as withStylesMaterial } from '@material-ui/styles';
 import { defineMessages, FormattedMessage as M } from 'react-intl';
 import { compose } from 'react-apollo';
 
@@ -9,7 +10,6 @@ import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
 import Menu from '@material-ui/core/Menu';
 import Paper from '@material-ui/core/Paper';
-import { withStyles as withStylesMaterial } from '@material-ui/styles';
 import IconButton from '@material-ui/core/IconButton';
 import Tooltip from '@material-ui/core/Tooltip';
 
