@@ -1,4 +1,5 @@
 // @flow
+/* eslint-disable react/no-multi-comp */
 
 import * as React from 'react';
 import withStyles from 'isomorphic-style-loader/withStyles';
@@ -82,6 +83,16 @@ const messages = defineMessages({
 
 const sh = new fs.Shell();
 
+type OpenOrFocusTabOptions = {|
+  location?: FlexLayout.DockLocation,
+  alwaysNewTabset?: boolean,
+|};
+
+const SquarePaper = React.forwardRef<
+  React.ElementConfig<typeof Paper>,
+  React.Element<typeof Paper>,
+>((props, ref) => <Paper ref={ref} square {...props} />);
+
 const styled = withStylesMaterial(theme => ({
   root: {
     boxSizing: 'border-box',
@@ -133,13 +144,6 @@ type StateTypes = {|
   runningTask: Task | null,
   pluginsLoaded: boolean,
 |};
-
-type OpenOrFocusTabOptions = {|
-  location?: FlexLayout.DockLocation,
-  alwaysNewTabset?: boolean,
-|};
-
-const SquarePaper = props => <Paper square {...props} />;
 
 class Ide extends React.Component<PropTypes, StateTypes> {
   factory = (node: any) => {
