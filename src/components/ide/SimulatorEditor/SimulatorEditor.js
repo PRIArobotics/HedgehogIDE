@@ -6,8 +6,6 @@ import withStyles from 'isomorphic-style-loader/withStyles';
 
 import Blockly from 'blockly/core';
 
-import IconButton from '@material-ui/core/IconButton';
-
 import { LocaleConsumer } from '../../locale';
 import { type LocaleMap, getTranslation } from '../../../translations';
 
@@ -15,6 +13,7 @@ import { SlideLeftIcon, SlideRightIcon } from '../../misc/palette';
 
 import BlocklyComponent, { type Locale as BlocklyLocale } from '../Blockly';
 import ToolBar from '../ToolBar';
+import ToolBarIconButton from '../ToolBar/ToolBarIconButton';
 import ToolBarItem from '../ToolBar/ToolBarItem';
 
 import s from './SimulatorEditor.scss';
@@ -200,9 +199,11 @@ class VisualEditor extends React.Component<PropTypes, StateTypes> {
         )}
         <ToolBar>
           <ToolBarItem>
-            <IconButton onClick={this.handleToggleJsonCollapsed} disableRipple>
-              {jsonCollapsed ? <SlideLeftIcon /> : <SlideRightIcon />}
-            </IconButton>
+            <ToolBarIconButton
+              onClick={this.handleToggleJsonCollapsed}
+              icon={jsonCollapsed ? SlideLeftIcon : SlideRightIcon}
+              disableRipple
+            />
           </ToolBarItem>
         </ToolBar>
         <pre
