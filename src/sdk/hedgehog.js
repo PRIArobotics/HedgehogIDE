@@ -11,7 +11,7 @@ import Simulator from '../components/ide/Simulator';
 export default async function init(getSimulator: () => Promise<Simulator>) {
   // <GSL customizable: hedgehog-init>
   async function getRobot(name: string) {
-    return (await getSimulator()).robots.get(name);
+    return (await getSimulator()).simulation.robots.get(name);
   }
   // </GSL customizable: hedgehog-init>
 

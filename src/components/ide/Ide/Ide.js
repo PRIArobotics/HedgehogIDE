@@ -224,7 +224,7 @@ class Ide extends React.Component<PropTypes, StateTypes> {
             path={id}
             onSchemaChange={schema => {
               if (this.simulatorRef.current && schema)
-                this.simulatorRef.current.initSimulationJson(schema);
+                this.simulatorRef.current.simulation.jsonInit(schema);
             }}
             {...getEditorState(id, 'simulator-editor')}
             onUpdate={editorStateSetter(id, 'simulator-editor')}
@@ -559,7 +559,7 @@ class Ide extends React.Component<PropTypes, StateTypes> {
     this.executorRef.current.removeTask(this.state.runningTask);
     this.setState({ runningTask: null });
     if (this.simulatorRef.current !== null) {
-      this.simulatorRef.current.robots.forEach(robot => {
+      this.simulatorRef.current.simulation.robots.forEach(robot => {
         robot.setSpeed(0, 0);
       });
     }
@@ -569,7 +569,7 @@ class Ide extends React.Component<PropTypes, StateTypes> {
     // eslint-disable-next-line no-throw-literal
     if (this.simulatorRef.current === null) throw 'ref is null';
 
-    this.simulatorRef.current.reset();
+    this.simulatorRef.current.simulation.reset();
     this.pluginManager
       .getSdk()
       .misc.emit(this.executorRef.current, 'simulationReset', null);

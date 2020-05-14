@@ -28,9 +28,6 @@ type Props = {|
 |};
 type Instance = {|
   simulation: Simulation,
-  robots: Map<string, Robot>,
-  reset(): void,
-  initSimulationJson(schema: SimulationSchema.SimulatorJson): void,
 |};
 
 function Simulator(
@@ -333,16 +330,7 @@ function Simulator(
     };
   }, [renderTarget]);
 
-  React.useImperativeHandle(ref, () => ({
-    simulation,
-    robots: simulation.robots,
-    reset() {
-      simulation.reset();
-    },
-    initSimulationJson(schema: SimulationSchema.SimulatorJson) {
-      simulation.jsonInit(schema);
-    },
-  }));
+  React.useImperativeHandle(ref, () => ({ simulation }));
 
   useStyles(s);
   return (
