@@ -1,5 +1,4 @@
 // @flow
-/* eslint-disable react/no-multi-comp */
 
 import * as React from 'react';
 import withStyles from 'isomorphic-style-loader/withStyles';

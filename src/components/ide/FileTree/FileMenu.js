@@ -1,5 +1,4 @@
 // @flow
-/* eslint-disable react/no-multi-comp */
 
 import * as React from 'react';
 import { defineMessages, FormattedMessage as M } from 'react-intl';

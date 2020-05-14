@@ -51,6 +51,7 @@ module.exports = {
     'no-else-return': 'off',
     'no-nested-ternary': 'off',
     'react/no-unused-prop-types': 'warn',
+    'react/no-multi-comp': 'off',
     // Checks rules of Hooks
     'react-hooks/rules-of-hooks': 'error',
     // Checks effect dependencies
