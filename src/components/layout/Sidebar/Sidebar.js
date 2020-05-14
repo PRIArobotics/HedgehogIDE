@@ -40,34 +40,33 @@ const messages = defineMessages({
   },
 });
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles({
   listItemIcon: {
     minWidth: 'auto',
   },
-  toolbar: theme.mixins.toolbar,
-}));
+});
+
+type NavItemProps = {|
+  title?: string,
+  titleMsg?: Object,
+  target: string,
+  icon: Class<React.Component<any>>,
+|};
+
+function NavItem({ title, titleMsg, target, icon: TheIcon }: NavItemProps) {
+  const classes = useStyles();
+  return (
+    <Tooltip title={titleMsg ? <M {...titleMsg} /> : title} placement="right">
+      <ListItem button component={Link} to={target}>
+        <ListItemIcon className={classes.listItemIcon}>
+          <TheIcon />
+        </ListItemIcon>
+      </ListItem>
+    </Tooltip>
+  );
+}
 
 function Sidebar() {
-  type NavItemProps = {|
-    title?: string,
-    titleMsg?: Object,
-    target: string,
-    icon: Class<React.Component<any>>,
-  |};
-
-  function NavItem({ title, titleMsg, target, icon: TheIcon }: NavItemProps) {
-    return (
-      <Tooltip title={titleMsg ? <M {...titleMsg} /> : title} placement="right">
-        <ListItem button component={Link} to={target}>
-          <ListItemIcon className={classes.listItemIcon}>
-            <TheIcon />
-          </ListItemIcon>
-        </ListItem>
-      </Tooltip>
-    );
-  }
-
-  const classes = useStyles();
   return (
     <List>
       <NavItem
