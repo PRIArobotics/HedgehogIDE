@@ -498,14 +498,16 @@ class Ide extends React.Component<PropTypes, StateTypes> {
       case 'TERMINATE': {
         const { reset } = action;
         await this.handleTerminate();
-        // TODO this is a workaround for the simulated robot
-        // (and probably other objects) still moving after terminating
-        await new Promise(resolve => setTimeout(resolve, 100));
-        if (reset) await this.handleReset();
+        if (reset && this.simulatorRef.current !== null) {
+          // TODO this is a workaround for the simulated robot
+          // (and probably other objects) still moving after terminating
+          await new Promise(resolve => setTimeout(resolve, 100));
+          await this.handleReset();
+        }
         break;
       }
       case 'RESET': {
-        await this.handleReset();
+        if (this.simulatorRef.current !== null) await this.handleReset();
         break;
       }
       default:
@@ -556,9 +558,11 @@ class Ide extends React.Component<PropTypes, StateTypes> {
 
     this.executorRef.current.removeTask(this.state.runningTask);
     this.setState({ runningTask: null });
-    (await this.getSimulator()).robots.forEach(robot => {
-      robot.setSpeed(0, 0);
-    });
+    if (this.simulatorRef.current !== null) {
+      this.simulatorRef.current.robots.forEach(robot => {
+        robot.setSpeed(0, 0);
+      });
+    }
   }
 
   handleReset() {
