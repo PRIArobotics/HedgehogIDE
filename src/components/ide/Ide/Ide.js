@@ -233,7 +233,6 @@ class Ide extends React.Component<PropTypes, StateTypes> {
     }
   };
 
-  flexRef: RefObject<typeof FlexLayout.Layout> = React.createRef();
   consoleRef: RefObject<typeof Console> = React.createRef();
   simulatorRef: RefObject<typeof Simulator> = React.createRef();
   executorRef: RefObject<typeof Executor> = React.createRef();
@@ -243,8 +242,6 @@ class Ide extends React.Component<PropTypes, StateTypes> {
   deleteFileRef: RefObject<typeof DeleteFileDialog> = React.createRef();
   fileUploadRef: RefObject<typeof FileUpload> = React.createRef();
   fileDownloadRef: RefObject<typeof FileDownload> = React.createRef();
-
-  blocklyTabIds = new Set();
 
   pluginManager: PluginManager | null = null;
 
@@ -1045,7 +1042,6 @@ class Ide extends React.Component<PropTypes, StateTypes> {
           >
             <FlexLayout.Layout
               model={layoutState}
-              ref={this.flexRef}
               factory={this.factory}
               classNameMapper={className => FlexLayoutTheme[className]}
               onModelChange={() => this.save()}
