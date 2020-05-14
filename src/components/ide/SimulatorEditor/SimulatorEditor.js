@@ -151,7 +151,9 @@ function SimulatorEditor({
   const [json, setJson] = React.useState<string | null>(null);
 
   // eslint-disable-next-line no-shadow
-  function generateSchema(workspace: Blockly.Workspace): SimulationSchema.SimulatorJson | null {
+  function generateSchema(
+    workspace: Blockly.Workspace,
+  ): SimulationSchema.SimulatorJson | null {
     const roots = workspace.getBlocksByType('simulator_root');
     if (roots.length !== 1) return null;
 
@@ -199,9 +201,7 @@ function SimulatorEditor({
       <pre
         ref={jsonRef}
         className={
-          jsonCollapsed
-            ? `${s.jsonContainer} ${s.collapsed}`
-            : s.jsonContainer
+          jsonCollapsed ? `${s.jsonContainer} ${s.collapsed}` : s.jsonContainer
         }
       >
         {json}
