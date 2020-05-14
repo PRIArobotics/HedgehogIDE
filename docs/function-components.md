@@ -109,6 +109,20 @@ and `React.useImperativeHandle` provides an object whose properties define the c
 
 - Declare `Instance` as an exact object type directly after `Props`, prefer method syntax to declare the API types.
 - Put `React.forwardRef` on the export line.
+  The exception to this are components that are used within the file itself,
+  such as recursive components.
+  In those cases, the "intermediate" component should not be given a name as a standalone function, and the following is preferred:
+  ```TS
+  const Component = React.forwardRef<Props, Instance>((
+    { prop }: Props,
+    ref: Ref<Instance>,
+  ) => {
+    // recursive uses of <Component /> ...
+    return null;
+  });
+
+  export default Component;
+  ```
 - Put `React.useImperativeHandle` as the last thing in the component logic. These are "exports" from the component, and so may reference anything that has come before.
   - if the exported method is not needed in the component's logic, it may be declared withing the hook call.
 
