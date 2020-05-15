@@ -196,7 +196,7 @@ function ideState(state: StateTypes, action: IdeAction): StateTypes {
         fileTreeState: {
           ...state.fileTreeState,
           expandedKeys: [...expandedKeys, path],
-        }
+        },
       };
     }
     case 'TOGGLE_METADATA_FOLDER': {
@@ -214,7 +214,7 @@ function ideState(state: StateTypes, action: IdeAction): StateTypes {
     }
     case 'LAYOUT': {
       const { layoutAction } = action;
-      state.layoutState.doAction(layoutAction)
+      state.layoutState.doAction(layoutAction);
       return state;
     }
     default:
@@ -234,9 +234,9 @@ class Ide extends React.Component<PropTypes, StateTypes> {
     };
 
     const editorStateSetter = (path: string, editorType: string) => state => {
-      this.dispatch(
-        { type: 'SET_EDITOR_STATE', path, editorState: { [editorType]: state }},
-        () => this.save(),
+      const editorState = { [editorType]: state };
+      this.dispatch({ type: 'SET_EDITOR_STATE', path, editorState }, () =>
+        this.save(),
       );
     };
 
@@ -370,7 +370,9 @@ class Ide extends React.Component<PropTypes, StateTypes> {
       this.getSimulator.bind(this),
     );
     await this.pluginManager.initSdk();
-    await this.pluginManager.loadFromProjectMetadata(newState.projectInfo.project);
+    await this.pluginManager.loadFromProjectMetadata(
+      newState.projectInfo.project,
+    );
     this.dispatch({ type: 'MARK_PLUGINS_LOADED' });
   }
 
@@ -446,7 +448,10 @@ class Ide extends React.Component<PropTypes, StateTypes> {
       if (nodes[id].getType() !== 'tab') throw `'${id}' is not a tab`;
 
       // the tab exists, select it
-      this.dispatch({ type: 'LAYOUT', layoutAction: FlexLayout.Actions.selectTab(id) });
+      this.dispatch({
+        type: 'LAYOUT',
+        layoutAction: FlexLayout.Actions.selectTab(id),
+      });
     } else {
       // create the tab.
       const { location, alwaysNewTabset } = {
@@ -744,9 +749,8 @@ class Ide extends React.Component<PropTypes, StateTypes> {
       await this.refreshProject();
 
       // reveal the new file
-      this.dispatch(
-        { type: 'EXPAND_DIRECTORY', path: parentDir.path },
-        () => this.save(),
+      this.dispatch({ type: 'EXPAND_DIRECTORY', path: parentDir.path }, () =>
+        this.save(),
       );
 
       // TODO select the file in the file tree
@@ -958,7 +962,6 @@ class Ide extends React.Component<PropTypes, StateTypes> {
 
   closeTabsForFile(root: FileReference) {
     const nodes = this.getNodes();
-    const { layoutState } = this.state;
 
     const close = (file: FileReference) => {
       if (file.file.isDirectory()) {
@@ -1048,9 +1051,8 @@ class Ide extends React.Component<PropTypes, StateTypes> {
                       size="small"
                       onClick={() => {
                         popupState.close();
-                        this.dispatch(
-                          { type: 'TOGGLE_METADATA_FOLDER' },
-                          () => this.save(),
+                        this.dispatch({ type: 'TOGGLE_METADATA_FOLDER' }, () =>
+                          this.save(),
                         );
                       }}
                     >
@@ -1074,10 +1076,10 @@ class Ide extends React.Component<PropTypes, StateTypes> {
             onFileAction={action => this.handleFileAction(action)}
             onUpdate={
               // eslint-disable-next-line no-shadow
-              fileTreeState => this.dispatch(
-                { type: 'UPDATE_FILE_TREE', fileTreeState },
-                () => this.save(),
-              )
+              fileTreeState =>
+                this.dispatch({ type: 'UPDATE_FILE_TREE', fileTreeState }, () =>
+                  this.save(),
+                )
             }
           />
           <CreateFileDialog
