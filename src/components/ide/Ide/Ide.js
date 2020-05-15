@@ -146,10 +146,28 @@ type StateTypes = {|
   pluginsLoaded: boolean,
 |};
 
-type IdeAction = void;
+type IdeAction =
+  | {| type: 'SET_EDITOR_STATE', path: string, editorState: EditorState |};
 
 function ideState(state: StateTypes, action: IdeAction): StateTypes {
-  return state;
+  switch (action.type) {
+    case 'SET_EDITOR_STATE': {
+      const { path, editorState } = action;
+
+      return {
+        ...state,
+        editorStates: {
+          ...state.editorStates,
+          [path]: {
+            ...state.editorStates[path],
+            ...editorState,
+          },
+        },
+      };
+    }
+    default:
+      return state;
+  }
 }
 
 class Ide extends React.Component<PropTypes, StateTypes> {
@@ -164,22 +182,8 @@ class Ide extends React.Component<PropTypes, StateTypes> {
     };
 
     const editorStateSetter = (id: string, editorType: string) => state => {
-      this.setState(
-        oldState => {
-          const oldEditorState = oldState.editorStates[id];
-          return {
-            editorStates: {
-              ...oldState.editorStates,
-              [id]: {
-                ...oldEditorState,
-                [editorType]: {
-                  ...(oldEditorState ? oldEditorState[editorType] : null),
-                  ...state,
-                },
-              },
-            },
-          };
-        },
+      this.dispatch(
+        { type: 'SET_EDITOR_STATE', path: id, editorState: { [editorType]: state }},
         () => this.save(),
       );
     };
