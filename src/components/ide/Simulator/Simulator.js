@@ -33,18 +33,9 @@ function Simulator(
   { width, height, onExecutionAction, running }: Props,
   ref: Ref<Instance>,
 ) {
-  const simulation = hooks.useValue(() => new Simulation());
-
-  // mount simulator in the target and simulate continuously
-  const [renderTarget, setRenderTarget] = React.useState<HTMLDivElement | null>(
-    null,
-  );
-  React.useEffect(() => {
-    if (renderTarget === null) return undefined;
-
-    simulation.mount(renderTarget, width, height);
-
-    simulation.jsonInit({
+  const simulation = hooks.useValue(() => {
+    const sim = new Simulation();
+    sim.jsonInit({
       simulation: {
         center: {
           x: 0,
@@ -317,7 +308,17 @@ function Simulator(
         },
       ],
     });
+    return sim;
+  });
 
+  // mount simulator in the target and simulate continuously
+  const [renderTarget, setRenderTarget] = React.useState<HTMLDivElement | null>(
+    null,
+  );
+  React.useEffect(() => {
+    if (renderTarget === null) return undefined;
+
+    simulation.mount(renderTarget, width, height);
     simulation.startMatter();
     simulation.startRender();
     return () => {
