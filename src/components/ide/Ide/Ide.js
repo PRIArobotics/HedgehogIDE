@@ -148,7 +148,8 @@ type StateTypes = {|
 
 type IdeAction =
   | {| type: 'SET_EDITOR_STATE', path: string, editorState: EditorState |}
-  | {| type: 'MARK_PLUGINS_LOADED' |};
+  | {| type: 'MARK_PLUGINS_LOADED' |}
+  | {| type: 'SET_RUNNING_TASK', runningTask: Task | null |};
 
 function ideState(state: StateTypes, action: IdeAction): StateTypes {
   switch (action.type) {
@@ -170,6 +171,13 @@ function ideState(state: StateTypes, action: IdeAction): StateTypes {
       return {
         ...state,
         pluginsLoaded: true,
+      };
+    }
+    case 'SET_RUNNING_TASK': {
+      const { runningTask } = action;
+      return {
+        ...state,
+        runningTask,
       };
     }
     default:
@@ -544,7 +552,7 @@ class Ide extends React.Component<PropTypes, StateTypes> {
       misc: await initMiscSdk(
         this.getConsole.bind(this),
         error => {
-          this.setState({ runningTask: null });
+          this.dispatch({ type: 'SET_RUNNING_TASK', runningTask: null });
           this.pluginManager
             .getSdk()
             .misc.emit(this.executorRef.current, 'programTerminate', { error });
@@ -562,7 +570,8 @@ class Ide extends React.Component<PropTypes, StateTypes> {
         ...sdk.hedgehog.handlers,
       },
     };
-    this.setState({
+    this.dispatch({
+      type: 'SET_RUNNING_TASK',
       runningTask: executorRefCurrent.addTask(task),
     });
 
@@ -576,7 +585,7 @@ class Ide extends React.Component<PropTypes, StateTypes> {
     if (this.executorRef.current === null) throw 'ref is null';
 
     this.executorRef.current.removeTask(this.state.runningTask);
-    this.setState({ runningTask: null });
+    this.dispatch({ type: 'SET_RUNNING_TASK', runningTask: null });
     if (this.simulatorRef.current !== null) {
       this.simulatorRef.current.simulation.robots.forEach(robot => {
         robot.setSpeed(0, 0);
