@@ -176,14 +176,14 @@ class Ide extends React.Component<PropTypes, StateTypes> {
     if (this.state.projectInfo === null) throw 'unreachable';
     const { project } = this.state.projectInfo;
 
-    const getEditorState = (id: string, editorType: string) => {
-      const editorState = this.state.editorStates[id];
+    const getEditorState = (path: string, editorType: string) => {
+      const editorState = this.state.editorStates[path];
       return editorState ? editorState[editorType] : null;
     };
 
-    const editorStateSetter = (id: string, editorType: string) => state => {
+    const editorStateSetter = (path: string, editorType: string) => state => {
       this.dispatch(
-        { type: 'SET_EDITOR_STATE', path: id, editorState: { [editorType]: state }},
+        { type: 'SET_EDITOR_STATE', path, editorState: { [editorType]: state }},
         () => this.save(),
       );
     };
