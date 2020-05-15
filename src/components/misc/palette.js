@@ -82,6 +82,8 @@ const TerminateAndResetIcon = React.forwardRef<
 // misc actions
 import SlideLeftIcon from 'mdi-material-ui/ChevronLeft';
 import SlideRightIcon from 'mdi-material-ui/ChevronRight';
+import AccountCircleIcon from '@material-ui/icons/AccountCircle';
+import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 
 export {
   MenuIcon,
@@ -118,4 +120,6 @@ export {
   TerminateAndResetIcon,
   SlideLeftIcon,
   SlideRightIcon,
+  AccountCircleIcon,
+  ExitToAppIcon,
 };

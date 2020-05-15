@@ -11,7 +11,7 @@
 
 import * as React from 'react';
 import PropTypes from 'prop-types';
-import { ApolloProvider } from 'react-apollo';
+import { ApolloProvider } from '@apollo/react-hooks';
 import { ThemeProvider } from '@material-ui/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import StyleContext from 'isomorphic-style-loader/StyleContext';
@@ -19,6 +19,7 @@ import StyleContext from 'isomorphic-style-loader/StyleContext';
 import theme from './theme';
 
 import { LocaleProvider } from './locale';
+import { AuthProvider } from './users/AuthProvider';
 
 // Since the current React Starter Kit uses older React Context API that cannot be typed,
 // here we declare duplicate type information.
@@ -93,8 +94,10 @@ class App extends React.PureComponent<Props> {
         <ApolloProvider client={client}>
           <ThemeProvider theme={theme}>
             <LocaleProvider userAgentLocales={locales}>
-              <CssBaseline />
-              {children}
+              <AuthProvider>
+                <CssBaseline />
+                {children}
+              </AuthProvider>
             </LocaleProvider>
           </ThemeProvider>
         </ApolloProvider>

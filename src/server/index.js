@@ -16,7 +16,7 @@ import jwt from 'jsonwebtoken';
 import * as React from 'react';
 import PrettyError from 'pretty-error';
 import { ApolloServer, makeExecutableSchema } from 'apollo-server-express';
-import { getDataFromTree } from 'react-apollo';
+import { getDataFromTree } from '@apollo/react-ssr';
 import http from 'http';
 import createApolloClient from '../core/createApolloClient';
 import App from '../components/App';

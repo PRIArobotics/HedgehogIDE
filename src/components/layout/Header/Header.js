@@ -16,9 +16,15 @@ import PopupState, { bindTrigger, bindMenu } from 'material-ui-popup-state';
 
 import { useLocale } from '../../locale';
 import Link from '../../misc/Link';
-import { SelectLanguageIcon } from '../../misc/palette';
+import {
+  SelectLanguageIcon,
+  AccountCircleIcon,
+  ExitToAppIcon,
+} from '../../misc/palette';
 
 import logoUrl from './logo.svg';
+import Login from '../../users/Login';
+import { useAuth } from '../../users/AuthProvider';
 
 const messages = defineMessages({
   homeLabel: {
@@ -55,8 +61,14 @@ const useStyles = makeStyles(theme => ({
 
 function Header() {
   const classes = useStyles();
+  const auth = useAuth();
   const intl = useIntl();
   const { setPreferredLocale } = useLocale();
+
+  const [loginOpen, setLoginOpen] = React.useState(false);
+
+  React.useEffect(() => auth.recoverSession(), []);
+
   return (
     <Toolbar classes={{ gutters: classes.gutters }}>
       <IconButton
@@ -77,11 +89,7 @@ function Header() {
         {popupState => (
           <>
             <Tooltip title={<M {...messages.selectLanguageTooltip} />}>
-              <IconButton
-                edge="end"
-                color="inherit"
-                {...bindTrigger(popupState)}
-              >
+              <IconButton color="inherit" {...bindTrigger(popupState)}>
                 <SelectLanguageIcon />
               </IconButton>
             </Tooltip>
@@ -111,6 +119,45 @@ function Header() {
           </>
         )}
       </PopupState>
+      {auth.authData && auth.authData.username ? (
+        <PopupState variant="popover" popupId="select-language-menu">
+          {popupState => (
+            <>
+              <IconButton
+                aria-label="My Account"
+                color="inherit"
+                {...bindTrigger(popupState)}
+              >
+                <AccountCircleIcon />
+              </IconButton>
+              <Menu
+                anchorOrigin={{ horizontal: 'right', vertical: 'top' }}
+                transformOrigin={{ horizontal: 'right', vertical: 'top' }}
+                keepMounted
+                {...bindMenu(popupState)}
+              >
+                <MenuItem onClick={auth.logout}>Log Out</MenuItem>
+              </Menu>
+            </>
+          )}
+        </PopupState>
+      ) : (
+        <IconButton
+          aria-label="Login"
+          aria-controls="menu-appbar"
+          aria-haspopup="true"
+          color="inherit"
+          onClick={() => setLoginOpen(true)}
+        >
+          <ExitToAppIcon />
+        </IconButton>
+      )}
+
+      <Login
+        open={loginOpen}
+        onSuccess={() => setLoginOpen(false)}
+        onError={() => setLoginOpen(false)}
+      />
     </Toolbar>
   );
 }

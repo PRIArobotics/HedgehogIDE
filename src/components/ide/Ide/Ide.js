@@ -4,7 +4,6 @@ import * as React from 'react';
 import withStyles from 'isomorphic-style-loader/withStyles';
 import { withStyles as withStylesMaterial } from '@material-ui/styles';
 import { defineMessages, FormattedMessage as M } from 'react-intl';
-import { compose } from 'react-apollo';
 
 import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
@@ -19,6 +18,7 @@ import filer, { fs } from 'filer';
 
 import FlexLayout from 'flexlayout-react';
 // eslint-disable-next-line css-modules/no-unused-class
+import { compose } from '@material-ui/system';
 import FlexLayoutTheme from './flex_layout_ide.css';
 
 import { SettingsIcon, ConsoleIcon, SimulatorIcon } from '../../misc/palette';

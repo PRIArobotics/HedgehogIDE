@@ -1,5 +1,0 @@
-mutation ApolloMutation {
-  apolloMutation {
-    data
-  }
-}

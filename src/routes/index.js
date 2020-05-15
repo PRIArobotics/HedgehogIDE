@@ -33,10 +33,6 @@ const routes = {
       ],
     },
     {
-      path: '/apollo',
-      load: () => import(/* webpackChunkName: 'apollo' */ './apollo'),
-    },
-    {
       path: '/contact',
       load: () => import(/* webpackChunkName: 'contact' */ './contact'),
     },
