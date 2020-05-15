@@ -121,6 +121,12 @@ type ExecutionAction =
   | {| action: 'TERMINATE', reset: boolean |}
   | {| action: 'RESET' |};
 
+type ProjectInfo = {|
+  project: Project,
+  files: FilerRecursiveStatInfo,
+  projectUid: string,
+|};
+
 type EditorState = {|
   blockly?: VisualEditorState,
   'simulator-editor'?: SimulatorEditorState,
@@ -131,11 +137,7 @@ type PropTypes = {|
   projectName: string,
 |};
 type StateTypes = {|
-  projectInfo: {|
-    project: Project,
-    files: FilerRecursiveStatInfo,
-    projectUid: string,
-  |} | null,
+  projectInfo: ProjectInfo | null,
   fileTreeState: FileTreeState,
   showMetadataFolder: boolean,
   layoutState: FlexLayout.Model,
