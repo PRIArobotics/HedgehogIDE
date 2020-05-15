@@ -140,7 +140,7 @@ type StateTypes = {|
   projectInfo: ProjectInfo | null,
   fileTreeState: FileTreeState,
   showMetadataFolder: boolean,
-  layoutState: FlexLayout.Model,
+  layoutState: FlexLayout.Model | null,
   editorStates: { [key: string]: EditorState },
   runningTask: Task | null,
   pluginsLoaded: boolean,
@@ -316,7 +316,7 @@ class Ide extends React.Component<PropTypes, StateTypes> {
     projectInfo: null,
     fileTreeState: {},
     showMetadataFolder: false,
-    layoutState: FlexLayout.Model.fromJson(defaultLayout),
+    layoutState: null,
     editorStates: {},
     runningTask: null,
     pluginsLoaded: false,
@@ -387,6 +387,9 @@ class Ide extends React.Component<PropTypes, StateTypes> {
       layoutState: layoutStateModel,
       editorStates,
     } = this.state;
+
+    // eslint-disable-next-line no-throw-literal
+    if (layoutStateModel === null) throw 'layoutState is null';
     const layoutState = layoutStateModel.toJson();
 
     localStorage.setItem(
@@ -1099,7 +1102,7 @@ class Ide extends React.Component<PropTypes, StateTypes> {
           <FileUpload ref={this.fileUploadRef} />
           <FileDownload ref={this.fileDownloadRef} />
         </Grid>
-        {this.state.pluginsLoaded ? (
+        {this.state.pluginsLoaded && this.state.layoutState !== null ? (
           <Grid
             item
             component={SquarePaper}
