@@ -17,8 +17,7 @@ import ToolBarItem from '../ToolBar/ToolBarItem';
 
 import s from './Simulator.scss';
 
-import { Robot, Simulation } from './Simulation';
-import * as SimulationSchema from '../SimulatorEditor/SimulationSchema';
+import { Simulation } from './Simulation';
 
 type Props = {|
   width: number,
@@ -36,7 +35,15 @@ function Simulator(
 ) {
   const simulation = hooks.useValue(() => new Simulation());
 
-  function initSimulation() {
+  // mount simulator in the target and simulate continuously
+  const [renderTarget, setRenderTarget] = React.useState<HTMLDivElement | null>(
+    null,
+  );
+  React.useEffect(() => {
+    if (renderTarget === null) return undefined;
+
+    simulation.mount(renderTarget, width, height);
+
     simulation.jsonInit({
       simulation: {
         center: {
@@ -310,17 +317,7 @@ function Simulator(
         },
       ],
     });
-  }
 
-  // mount simulator in the target and simulate continuously
-  const [renderTarget, setRenderTarget] = React.useState<HTMLDivElement | null>(
-    null,
-  );
-  React.useEffect(() => {
-    if (renderTarget === null) return undefined;
-
-    simulation.mount(renderTarget, width, height);
-    initSimulation();
     simulation.startMatter();
     simulation.startRender();
     return () => {
@@ -328,7 +325,7 @@ function Simulator(
       simulation.stopMatter();
       simulation.unmount();
     };
-  }, [renderTarget]);
+  }, [renderTarget, simulation, width, height]);
 
   React.useImperativeHandle(ref, () => ({ simulation }));
 

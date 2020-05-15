@@ -411,6 +411,7 @@ export class Simulation {
   runner: Matter.Runner;
 
   render: Matter.Render | null = null;
+  bounds: { min: Point, max: Point } | null = null;
 
   // special bodies for simulation logic
   robots: Map<string, Robot> = new Map<string, Robot>();
@@ -553,6 +554,7 @@ export class Simulation {
       engine: this.engine,
       options: { width, height, wireframes: false, background: '#eeeeee' },
     });
+    if (this.bounds !== null) Matter.Render.lookAt(this.render, this.bounds);
   }
 
   unmount() {
@@ -577,7 +579,8 @@ export class Simulation {
   }
 
   lookAt(bounds: { min: Point, max: Point }) {
-    Matter.Render.lookAt(this.render, bounds);
+    this.bounds = bounds;
+    if (this.render !== null) Matter.Render.lookAt(this.render, bounds);
   }
 
   add(bodies: (Matter.Body | Matter.Composite)[]) {
