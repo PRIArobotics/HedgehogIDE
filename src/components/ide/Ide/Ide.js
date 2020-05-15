@@ -265,40 +265,36 @@ class Ide extends React.Component<PropTypes, StateTypes> {
   }
 
   async refreshProject() {
-    const project = await Project.getProject(this.props.projectName);
-    const files = await project.getFiles();
-    const projectUid = await project.getUid();
+    async function loadProject(projectName: string) {
+      // load project from the file system
+      const project = await Project.getProject(projectName);
+      const files = await project.getFiles();
+      const projectUid = await project.getUid();
 
-    let persistentState = {
-      fileTreeState: { expandedKeys: [] },
-      showMetadataFolder: false,
-      layoutState: defaultLayout,
-      editorStates: {},
-    };
+      const projectInfo = { project, files, projectUid };
 
-    const json = localStorage.getItem(`IDE-State-${projectUid}`);
-    if (json) {
-      persistentState = {
-        ...persistentState,
-        ...JSON.parse(json),
+      // load persisted state from localStorage
+      const json = localStorage.getItem(`IDE-State-${projectUid}`);
+
+      const persistentState = {
+        // default state
+        fileTreeState: { expandedKeys: [] },
+        showMetadataFolder: false,
+        layoutState: defaultLayout,
+        editorStates: {},
+        // persisted state
+        ...(json ? JSON.parse(json) : {}),
       };
-    }
-    const {
-      fileTreeState,
-      showMetadataFolder,
-      layoutState: layoutStateJson,
-      editorStates,
-    } = persistentState;
-    const layoutState = FlexLayout.Model.fromJson(layoutStateJson);
 
-    const projectInfo = { project, files, projectUid };
-    this.setState({
-      projectInfo,
-      fileTreeState,
-      showMetadataFolder,
-      layoutState,
-      editorStates,
-    });
+      // hydrate FlexLayout model
+      const { layoutState: layoutStateJson, ...rest } = persistentState;
+      const layoutState = FlexLayout.Model.fromJson(layoutStateJson);
+
+      return { projectInfo, layoutState, ...rest };
+    }
+
+    const newState = await loadProject(this.props.projectName);
+    this.setState(newState);
 
     this.pluginManager = new PluginManager(
       this.executorRef.current,
@@ -306,7 +302,7 @@ class Ide extends React.Component<PropTypes, StateTypes> {
       this.getSimulator.bind(this),
     );
     await this.pluginManager.initSdk();
-    await this.pluginManager.loadFromProjectMetadata(project);
+    await this.pluginManager.loadFromProjectMetadata(newState.projectInfo.project);
     this.setState({ pluginsLoaded: true });
   }
 
