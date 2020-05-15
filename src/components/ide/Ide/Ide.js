@@ -248,7 +248,7 @@ class Ide extends React.Component<PropTypes, StateTypes> {
             layoutNode={node}
             project={project}
             path={id}
-            onExecutionAction={action => this.handleExecutionAction(action)}
+            onExecutionAction={this.handleExecutionAction}
             running={!!this.state.runningTask}
           />
         );
@@ -259,7 +259,7 @@ class Ide extends React.Component<PropTypes, StateTypes> {
             ref={this.simulatorRef}
             width={600}
             height={400}
-            onExecutionAction={action => this.handleExecutionAction(action)}
+            onExecutionAction={this.handleExecutionAction}
             running={!!this.state.runningTask}
           />
         );
@@ -275,7 +275,7 @@ class Ide extends React.Component<PropTypes, StateTypes> {
             path={id}
             {...getEditorState(id, 'blockly')}
             onUpdate={editorStateSetter(id, 'blockly')}
-            onExecutionAction={action => this.handleExecutionAction(action)}
+            onExecutionAction={this.handleExecutionAction}
             running={!!this.state.runningTask}
           />
         );
@@ -559,7 +559,7 @@ class Ide extends React.Component<PropTypes, StateTypes> {
       tryIt();
     });
 
-  async handleExecutionAction(action: ExecutionAction) {
+  handleExecutionAction = async (action: ExecutionAction) => {
     switch (action.action) {
       case 'EXECUTE': {
         const { code } = action;
@@ -585,7 +585,7 @@ class Ide extends React.Component<PropTypes, StateTypes> {
         // eslint-disable-next-line no-throw-literal
         throw 'unreachable';
     }
-  }
+  };
 
   async handleExecute(code: string) {
     // eslint-disable-next-line no-throw-literal
