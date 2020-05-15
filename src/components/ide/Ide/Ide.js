@@ -147,7 +147,8 @@ type StateTypes = {|
 |};
 
 type IdeAction =
-  | {| type: 'SET_EDITOR_STATE', path: string, editorState: EditorState |};
+  | {| type: 'SET_EDITOR_STATE', path: string, editorState: EditorState |}
+  | {| type: 'MARK_PLUGINS_LOADED' |};
 
 function ideState(state: StateTypes, action: IdeAction): StateTypes {
   switch (action.type) {
@@ -163,6 +164,12 @@ function ideState(state: StateTypes, action: IdeAction): StateTypes {
             ...editorState,
           },
         },
+      };
+    }
+    case 'MARK_PLUGINS_LOADED': {
+      return {
+        ...state,
+        pluginsLoaded: true,
       };
     }
     default:
@@ -319,7 +326,7 @@ class Ide extends React.Component<PropTypes, StateTypes> {
     );
     await this.pluginManager.initSdk();
     await this.pluginManager.loadFromProjectMetadata(newState.projectInfo.project);
-    this.setState({ pluginsLoaded: true });
+    this.dispatch({ type: 'MARK_PLUGINS_LOADED' });
   }
 
   save() {
