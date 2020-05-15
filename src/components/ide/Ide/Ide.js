@@ -149,7 +149,8 @@ type StateTypes = {|
 type IdeAction =
   | {| type: 'SET_EDITOR_STATE', path: string, editorState: EditorState |}
   | {| type: 'MARK_PLUGINS_LOADED' |}
-  | {| type: 'SET_RUNNING_TASK', runningTask: Task | null |};
+  | {| type: 'SET_RUNNING_TASK', runningTask: Task | null |}
+  | {| type: 'EXPAND_DIRECTORY', path: string |};
 
 function ideState(state: StateTypes, action: IdeAction): StateTypes {
   switch (action.type) {
@@ -178,6 +179,21 @@ function ideState(state: StateTypes, action: IdeAction): StateTypes {
       return {
         ...state,
         runningTask,
+      };
+    }
+    case 'EXPAND_DIRECTORY': {
+      const { path } = action;
+      const { expandedKeys } = state.fileTreeState;
+
+      // no need to update state if the parent directory is already expanded
+      if (expandedKeys.includes(path)) return state;
+
+      return {
+        ...state,
+        fileTreeState: {
+          ...state.fileTreeState,
+          expandedKeys: [...expandedKeys, path],
+        }
       };
     }
     default:
@@ -705,22 +721,8 @@ class Ide extends React.Component<PropTypes, StateTypes> {
       await this.refreshProject();
 
       // reveal the new file
-      this.setState(
-        oldState => {
-          const { fileTreeState: oldFileTreeState } = oldState;
-          const { expandedKeys: oldExpandedKeys } = oldFileTreeState;
-
-          // no need to update state if the parent directory is already expanded
-          if (oldExpandedKeys.includes(parentDir.path)) return {};
-
-          // add the parent directory to the expanded keys
-          return {
-            fileTreeState: {
-              ...oldFileTreeState,
-              expandedKeys: [...oldExpandedKeys, parentDir.path],
-            },
-          };
-        },
+      this.dispatch(
+        { type: 'EXPAND_DIRECTORY', path: parentDir.path },
         () => this.save(),
       );
 
