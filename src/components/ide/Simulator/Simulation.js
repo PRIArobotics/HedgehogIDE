@@ -549,6 +549,9 @@ export class Simulation {
   mount(element: Element, width: number, height: number) {
     this.unmount();
 
+    // TODO creating a Render instance with a running Engine will error,
+    // as the Engine's internal state is recursive.
+    // mount() can therefore not be called after initially starting the simulation
     this.render = Matter.Render.create({
       element,
       engine: this.engine,
