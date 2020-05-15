@@ -77,6 +77,7 @@ const def: GraphqlDefShape = {
             expiresIn: config.auth.tokenExpiresIn,
           });
 
+          // TODO: add expiry date
           return {
             id: user.id,
             username,
