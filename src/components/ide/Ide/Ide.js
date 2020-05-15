@@ -150,7 +150,9 @@ type IdeAction =
   | {| type: 'SET_EDITOR_STATE', path: string, editorState: EditorState |}
   | {| type: 'MARK_PLUGINS_LOADED' |}
   | {| type: 'SET_RUNNING_TASK', runningTask: Task | null |}
-  | {| type: 'EXPAND_DIRECTORY', path: string |};
+  | {| type: 'EXPAND_DIRECTORY', path: string |}
+  | {| type: 'TOGGLE_METADATA_FOLDER' |}
+  | {| type: 'UPDATE_FILE_TREE', fileTreeState: FileTreeState |};
 
 function ideState(state: StateTypes, action: IdeAction): StateTypes {
   switch (action.type) {
@@ -194,6 +196,19 @@ function ideState(state: StateTypes, action: IdeAction): StateTypes {
           ...state.fileTreeState,
           expandedKeys: [...expandedKeys, path],
         }
+      };
+    }
+    case 'TOGGLE_METADATA_FOLDER': {
+      return {
+        ...state,
+        showMetadataFolder: !state.showMetadataFolder,
+      };
+    }
+    case 'UPDATE_FILE_TREE': {
+      const { fileTreeState } = action;
+      return {
+        ...state,
+        fileTreeState,
       };
     }
     default:
@@ -1022,10 +1037,8 @@ class Ide extends React.Component<PropTypes, StateTypes> {
                       size="small"
                       onClick={() => {
                         popupState.close();
-                        this.setState(
-                          oldState => ({
-                            showMetadataFolder: !oldState.showMetadataFolder,
-                          }),
+                        this.dispatch(
+                          { type: 'TOGGLE_METADATA_FOLDER' },
                           () => this.save(),
                         );
                       }}
@@ -1050,8 +1063,10 @@ class Ide extends React.Component<PropTypes, StateTypes> {
             onFileAction={action => this.handleFileAction(action)}
             onUpdate={
               // eslint-disable-next-line no-shadow
-              fileTreeState =>
-                this.setState({ fileTreeState }, () => this.save())
+              fileTreeState => this.dispatch(
+                { type: 'UPDATE_FILE_TREE', fileTreeState },
+                () => this.save(),
+              )
             }
           />
           <CreateFileDialog
