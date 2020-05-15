@@ -152,7 +152,8 @@ type IdeAction =
   | {| type: 'SET_RUNNING_TASK', runningTask: Task | null |}
   | {| type: 'EXPAND_DIRECTORY', path: string |}
   | {| type: 'TOGGLE_METADATA_FOLDER' |}
-  | {| type: 'UPDATE_FILE_TREE', fileTreeState: FileTreeState |};
+  | {| type: 'UPDATE_FILE_TREE', fileTreeState: FileTreeState |}
+  | {| type: 'LAYOUT', layoutAction: FlexLayout.Action |};
 
 function ideState(state: StateTypes, action: IdeAction): StateTypes {
   switch (action.type) {
@@ -210,6 +211,11 @@ function ideState(state: StateTypes, action: IdeAction): StateTypes {
         ...state,
         fileTreeState,
       };
+    }
+    case 'LAYOUT': {
+      const { layoutAction } = action;
+      state.layoutState.doAction(layoutAction)
+      return state;
     }
     default:
       return state;
@@ -440,7 +446,7 @@ class Ide extends React.Component<PropTypes, StateTypes> {
       if (nodes[id].getType() !== 'tab') throw `'${id}' is not a tab`;
 
       // the tab exists, select it
-      layoutState.doAction(FlexLayout.Actions.selectTab(id));
+      this.dispatch({ type: 'LAYOUT', layoutAction: FlexLayout.Actions.selectTab(id) });
     } else {
       // create the tab.
       const { location, alwaysNewTabset } = {
@@ -470,24 +476,26 @@ class Ide extends React.Component<PropTypes, StateTypes> {
 
       if (targetTabset !== null) {
         // there's a target tabset; put the new tab there
-        layoutState.doAction(
-          FlexLayout.Actions.addNode(
+        this.dispatch({
+          type: 'LAYOUT',
+          layoutAction: FlexLayout.Actions.addNode(
             nodeJson,
             targetTabset.getId(),
             FlexLayout.DockLocation.CENTER,
             -1,
           ),
-        );
+        });
       } else {
         // put the new tab into the root tabset, at the preferred location.
-        layoutState.doAction(
-          FlexLayout.Actions.addNode(
+        this.dispatch({
+          type: 'LAYOUT',
+          layoutAction: FlexLayout.Actions.addNode(
             nodeJson,
             layoutState.getRoot().getId(),
             location,
             -1,
           ),
-        );
+        });
       }
     }
   }
@@ -960,7 +968,10 @@ class Ide extends React.Component<PropTypes, StateTypes> {
           close({ path: `${dir.path}/${child.name}`, file: child }),
         );
       } else if (file.path in nodes) {
-        layoutState.doAction(FlexLayout.Actions.deleteTab(file.path));
+        this.dispatch({
+          type: 'LAYOUT',
+          layoutAction: FlexLayout.Actions.deleteTab(file.path),
+        });
       }
     };
 
