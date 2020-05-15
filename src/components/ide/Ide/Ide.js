@@ -146,6 +146,12 @@ type StateTypes = {|
   pluginsLoaded: boolean,
 |};
 
+type IdeAction = void;
+
+function ideState(state: StateTypes, action: IdeAction): StateTypes {
+  return state;
+}
+
 class Ide extends React.Component<PropTypes, StateTypes> {
   factory = (node: any) => {
     // eslint-disable-next-line no-throw-literal
@@ -264,6 +270,10 @@ class Ide extends React.Component<PropTypes, StateTypes> {
     super(props);
 
     this.refreshProject();
+  }
+
+  dispatch(action: IdeAction, cb?: () => mixed) {
+    this.setState(state => ideState(state, action), cb);
   }
 
   async refreshProject() {
