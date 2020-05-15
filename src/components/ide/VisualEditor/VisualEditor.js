@@ -86,6 +86,8 @@ function VisualEditor({
 
   const [content, setContent] = useFile(project, path);
 
+  // TODO this has a timing issue, as it depends on `VisualEditor.dynamicBlockLoaders`
+  // being fully initialized before the VisualEditor component is created
   const workspaceOptions = React.useMemo(() => {
     const dynamicBlocks = VisualEditor.dynamicBlockLoaders.length ? (
       <category name="%{BKY_CAT_CUSTOM}" colour="120">
