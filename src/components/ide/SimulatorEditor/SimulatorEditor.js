@@ -33,6 +33,49 @@ const LOCALES: LocaleMap<BlocklyLocale> = {
   },
 };
 
+const workspaceOptions = {
+  toolbox: ReactDOM.renderToStaticMarkup(
+    <xml>
+      <category name="Simulation" colour="120">
+        {blocks.SIMULATOR_ROOT.toolboxBlocks.default()}
+        {blocks.SIMULATOR_RECT.toolboxBlocks.default()}
+        {blocks.SIMULATOR_CIRCLE.toolboxBlocks.default()}
+        {blocks.SIMULATOR_GROUP.toolboxBlocks.default()}
+        {blocks.SIMULATOR_SETTINGS_TRANSLATE.toolboxBlocks.default()}
+        {blocks.SIMULATOR_SETTINGS_ROTATE.toolboxBlocks.default()}
+        {blocks.SIMULATOR_SETTINGS_COLOR.toolboxBlocks.default()}
+        {blocks.SIMULATOR_SETTINGS_STATIC.toolboxBlocks.default()}
+        {blocks.SIMULATOR_SETTINGS_SENSOR.toolboxBlocks.default()}
+        {blocks.SIMULATOR_SETTINGS_DENSITY.toolboxBlocks.default()}
+        {blocks.SIMULATOR_SETTINGS_FRICTION_AIR.toolboxBlocks.default()}
+        {blocks.SIMULATOR_SETTINGS_LABEL.toolboxBlocks.default()}
+        {blocks.SIMULATOR_ROBOT.toolboxBlocks.default()}
+      </category>
+    </xml>,
+  ),
+  move: {
+    scrollbars: true,
+    drag: true,
+    wheel: false,
+  },
+  zoom: {
+    controls: false,
+    wheel: true,
+    startScale: 1.0,
+    maxScale: 1.5,
+    minScale: 0.4,
+    scaleSpeed: 1.02,
+  },
+  grid: {
+    spacing: 20,
+    length: 3,
+    colour: '#ccc',
+    snap: true,
+  },
+  trashcan: false,
+  scrollbars: true,
+};
+
 export type ControlledState = $Shape<{|
   jsonCollapsed: boolean,
 |}>;
@@ -60,52 +103,6 @@ function SimulatorEditor({
   const jsonRef = React.useRef<HTMLPreElement | null>(null);
 
   const [content, setContent] = useFile(project, path);
-
-  const workspaceOptions = React.useMemo(() => {
-    const toolbox = ReactDOM.renderToStaticMarkup(
-      <xml>
-        <category name="Simulation" colour="120">
-          {blocks.SIMULATOR_ROOT.toolboxBlocks.default()}
-          {blocks.SIMULATOR_RECT.toolboxBlocks.default()}
-          {blocks.SIMULATOR_CIRCLE.toolboxBlocks.default()}
-          {blocks.SIMULATOR_GROUP.toolboxBlocks.default()}
-          {blocks.SIMULATOR_SETTINGS_TRANSLATE.toolboxBlocks.default()}
-          {blocks.SIMULATOR_SETTINGS_ROTATE.toolboxBlocks.default()}
-          {blocks.SIMULATOR_SETTINGS_COLOR.toolboxBlocks.default()}
-          {blocks.SIMULATOR_SETTINGS_STATIC.toolboxBlocks.default()}
-          {blocks.SIMULATOR_SETTINGS_SENSOR.toolboxBlocks.default()}
-          {blocks.SIMULATOR_SETTINGS_DENSITY.toolboxBlocks.default()}
-          {blocks.SIMULATOR_SETTINGS_FRICTION_AIR.toolboxBlocks.default()}
-          {blocks.SIMULATOR_SETTINGS_LABEL.toolboxBlocks.default()}
-          {blocks.SIMULATOR_ROBOT.toolboxBlocks.default()}
-        </category>
-      </xml>,
-    );
-    return {
-      toolbox,
-      move: {
-        scrollbars: true,
-        drag: true,
-        wheel: false,
-      },
-      zoom: {
-        controls: false,
-        wheel: true,
-        startScale: 1.0,
-        maxScale: 1.5,
-        minScale: 0.4,
-        scaleSpeed: 1.02,
-      },
-      grid: {
-        spacing: 20,
-        length: 3,
-        colour: '#ccc',
-        snap: true,
-      },
-      trashcan: false,
-      scrollbars: true,
-    };
-  }, []);
 
   // update workspace size when the containing tab is resized or made visible
   React.useEffect(() => {
