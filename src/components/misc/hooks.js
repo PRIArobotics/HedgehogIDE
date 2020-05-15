@@ -28,18 +28,24 @@ export function useAnimationFrame(
 ): [() => void, () => void] {
   const id = React.useRef<AnimationFrameID | null>(null);
 
-  const start = () => {
+  function run() {
     id.current = requestAnimationFrame(() => {
-      if (cb() !== true) start();
+      const done = cb();
+      if (done !== true) run();
     });
-  };
+  }
 
-  const stop = () => {
+  function stop() {
     if (id.current !== null) {
       cancelAnimationFrame(id.current);
       id.current = null;
     }
-  };
+  }
+
+  function start() {
+    stop();
+    run();
+  }
 
   return [start, stop];
 }
