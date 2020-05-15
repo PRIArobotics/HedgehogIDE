@@ -24,7 +24,7 @@ const LOGIN = gql`
 
 function AuthProvider(props) {
   const [performLogin, loginResponse] = useMutation(LOGIN);
-  const [authData, setAuthData] = React.useState({});
+  const [authData, setAuthData] = React.useState<AuthData>({});
 
   const login = async (username: string, password: string) => {
     const data = (await performLogin({ variables: { username, password } }))
