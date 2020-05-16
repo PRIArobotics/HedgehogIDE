@@ -963,25 +963,32 @@ class Ide extends React.Component<PropTypes, StateTypes> {
     }
   }
 
-  closeTabsForFile(root: FileReference) {
-    const nodes = this.getNodes();
-
-    const close = (file: FileReference) => {
-      if (file.file.isDirectory()) {
+  closeTabsForFile(file: FileReference) {
+    // list all file paths below the given file/directory
+    const pathsToClose = [];
+    function listPaths(current: FileReference) {
+      if (current.file.isDirectory()) {
         // $FlowExpectError
-        const dir: DirReference = file;
+        const dir: DirReference = current;
         dir.file.contents.forEach(child =>
-          close({ path: `${dir.path}/${child.name}`, file: child }),
+          listPaths({ path: `${dir.path}/${child.name}`, file: child }),
         );
-      } else if (file.path in nodes) {
+      } else {
+        pathsToClose.push(current.path);
+      }
+    }
+    listPaths(file);
+
+    // close those paths that are open
+    const nodes = this.getNodes();
+    pathsToClose.forEach(path => {
+      if (path in nodes) {
         this.dispatch({
           type: 'LAYOUT',
-          layoutAction: FlexLayout.Actions.deleteTab(file.path),
+          layoutAction: FlexLayout.Actions.deleteTab(path),
         });
       }
-    };
-
-    close(root);
+    });
   }
 
   render() {
