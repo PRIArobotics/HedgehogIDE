@@ -1,8 +1,8 @@
 // @flow
 
 import * as React from 'react';
-import withStyles from 'isomorphic-style-loader/withStyles';
-import { withStyles as withStylesMaterial } from '@material-ui/styles';
+import useStyles from 'isomorphic-style-loader/useStyles';
+import { makeStyles } from '@material-ui/styles';
 import { defineMessages, FormattedMessage as M } from 'react-intl';
 
 import Button from '@material-ui/core/Button';
@@ -18,7 +18,6 @@ import filer, { fs } from 'filer';
 
 import FlexLayout from 'flexlayout-react';
 // eslint-disable-next-line css-modules/no-unused-class
-import { compose } from '@material-ui/system';
 import FlexLayoutTheme from './flex_layout_ide.css';
 
 import { SettingsIcon, ConsoleIcon, SimulatorIcon } from '../../misc/palette';
@@ -92,7 +91,7 @@ const SquarePaper = React.forwardRef<
   React.Element<typeof Paper>,
 >((props, ref) => <Paper ref={ref} square {...props} />);
 
-const styled = withStylesMaterial(theme => ({
+const useStylesMaterial = makeStyles(theme => ({
   root: {
     boxSizing: 'border-box',
     height: '100%',
@@ -132,10 +131,6 @@ type EditorState = {|
   'simulator-editor'?: SimulatorEditorState,
 |};
 
-type PropTypes = {|
-  classes: Object,
-  projectName: string,
-|};
 type StateTypes = {|
   projectInfo: ProjectInfo | null,
   fileTreeState: FileTreeState,
@@ -146,7 +141,19 @@ type StateTypes = {|
   pluginsLoaded: boolean,
 |};
 
+const initialState: StateTypes = {
+  projectInfo: null,
+  fileTreeState: { expandedKeys: [] },
+  showMetadataFolder: false,
+  layoutState: null,
+  editorStates: {},
+  runningTask: null,
+  pluginsLoaded: false,
+};
+
 type IdeAction =
+  | {| type: 'REFRESH_PROJECT', projectInfo: ProjectInfo |}
+  | {| type: 'LOAD', persistentState: $Shape<StateTypes> |}
   | {| type: 'SET_EDITOR_STATE', path: string, editorState: EditorState |}
   | {| type: 'MARK_PLUGINS_LOADED' |}
   | {| type: 'SET_RUNNING_TASK', runningTask: Task | null |}
@@ -157,6 +164,22 @@ type IdeAction =
 
 function ideState(state: StateTypes, action: IdeAction): StateTypes {
   switch (action.type) {
+    case 'REFRESH_PROJECT': {
+      const { projectInfo } = action;
+
+      return {
+        ...state,
+        projectInfo,
+      };
+    }
+    case 'LOAD': {
+      const { persistentState } = action;
+
+      return {
+        ...state,
+        ...persistentState,
+      };
+    }
     case 'SET_EDITOR_STATE': {
       const { path, editorState } = action;
 
@@ -213,6 +236,9 @@ function ideState(state: StateTypes, action: IdeAction): StateTypes {
       };
     }
     case 'LAYOUT': {
+      // eslint-disable-next-line no-throw-literal
+      if (state.layoutState === null) throw 'layoutState is null';
+
       const { layoutAction } = action;
       state.layoutState.doAction(layoutAction);
       return state;
@@ -222,124 +248,65 @@ function ideState(state: StateTypes, action: IdeAction): StateTypes {
   }
 }
 
-class Ide extends React.Component<PropTypes, StateTypes> {
-  factory = (node: any) => {
-    // eslint-disable-next-line no-throw-literal
-    if (this.state.projectInfo === null) throw 'unreachable';
-    const { project } = this.state.projectInfo;
+type Props = {|
+  projectName: string,
+|};
 
-    const getEditorState = (path: string, editorType: string) => {
-      const editorState = this.state.editorStates[path];
-      return editorState ? editorState[editorType] : null;
-    };
+function Ide({ projectName }: Props) {
+  const [state, dispatch] = React.useReducer<StateTypes, IdeAction>(
+    ideState,
+    initialState,
+  );
+  const consoleRef = React.useRef<React.ElementRef<typeof Console> | null>(
+    null,
+  );
+  const simulatorRef = React.useRef<React.ElementRef<typeof Simulator> | null>(
+    null,
+  );
+  const executorRef = React.useRef<React.ElementRef<typeof Executor> | null>(
+    null,
+  );
 
-    const editorStateSetter = (path: string, editorType: string) => state => {
-      const editorState = { [editorType]: state };
-      this.dispatch({ type: 'SET_EDITOR_STATE', path, editorState }, () =>
-        this.save(),
-      );
-    };
+  const createFileRef = React.useRef<React.ElementRef<
+    typeof CreateFileDialog,
+  > | null>(null);
+  const renameFileRef = React.useRef<React.ElementRef<
+    typeof RenameFileDialog,
+  > | null>(null);
+  const deleteFileRef = React.useRef<React.ElementRef<
+    typeof DeleteFileDialog,
+  > | null>(null);
+  const fileUploadRef = React.useRef<React.ElementRef<
+    typeof FileUpload,
+  > | null>(null);
+  const fileDownloadRef = React.useRef<React.ElementRef<
+    typeof FileDownload,
+  > | null>(null);
 
-    const id = node.getId();
-    switch (node.getComponent()) {
-      case 'editor': {
-        return (
-          <Editor
-            layoutNode={node}
-            project={project}
-            path={id}
-            onExecutionAction={this.handleExecutionAction}
-            running={!!this.state.runningTask}
-          />
-        );
-      }
-      case 'simulator': {
-        return (
-          <Simulator
-            ref={this.simulatorRef}
-            width={600}
-            height={400}
-            onExecutionAction={this.handleExecutionAction}
-            running={!!this.state.runningTask}
-          />
-        );
-      }
-      case 'console': {
-        return <Console ref={this.consoleRef} />;
-      }
-      case 'blockly': {
-        return (
-          <VisualEditor
-            layoutNode={node}
-            project={project}
-            path={id}
-            {...getEditorState(id, 'blockly')}
-            onUpdate={editorStateSetter(id, 'blockly')}
-            onExecutionAction={this.handleExecutionAction}
-            running={!!this.state.runningTask}
-          />
-        );
-      }
-      case 'simulator-editor': {
-        return (
-          <SimulatorEditor
-            layoutNode={node}
-            project={project}
-            path={id}
-            onSchemaChange={schema => {
-              if (this.simulatorRef.current && schema)
-                this.simulatorRef.current.simulation.jsonInit(schema);
-            }}
-            {...getEditorState(id, 'simulator-editor')}
-            onUpdate={editorStateSetter(id, 'simulator-editor')}
-          />
-        );
-      }
-      default:
-        return null;
-    }
-  };
+  const pluginManagerRef = React.useRef<PluginManager | null>(null);
 
-  consoleRef: RefObject<typeof Console> = React.createRef();
-  simulatorRef: RefObject<typeof Simulator> = React.createRef();
-  executorRef: RefObject<typeof Executor> = React.createRef();
+  async function refreshProject() {
+    // load project from the file system
+    const project = await Project.getProject(projectName);
+    const files = await project.getFiles();
+    const projectUid = await project.getUid();
 
-  createFileRef: RefObject<typeof CreateFileDialog> = React.createRef();
-  renameFileRef: RefObject<typeof RenameFileDialog> = React.createRef();
-  deleteFileRef: RefObject<typeof DeleteFileDialog> = React.createRef();
-  fileUploadRef: RefObject<typeof FileUpload> = React.createRef();
-  fileDownloadRef: RefObject<typeof FileDownload> = React.createRef();
+    const projectInfo = { project, files, projectUid };
 
-  pluginManager: PluginManager | null = null;
-
-  state = {
-    projectInfo: null,
-    fileTreeState: {},
-    showMetadataFolder: false,
-    layoutState: null,
-    editorStates: {},
-    runningTask: null,
-    pluginsLoaded: false,
-  };
-
-  constructor(props: PropTypes) {
-    super(props);
-
-    this.refreshProject();
+    dispatch({ type: 'REFRESH_PROJECT', projectInfo });
   }
 
-  dispatch(action: IdeAction, cb?: () => mixed) {
-    this.setState(state => ideState(state, action), cb);
-  }
+  // refresh project when projectName changes
+  React.useEffect(() => {
+    refreshProject();
+  }, [projectName]);
 
-  async refreshProject() {
-    async function loadProject(projectName: string) {
-      // load project from the file system
-      const project = await Project.getProject(projectName);
-      const files = await project.getFiles();
-      const projectUid = await project.getUid();
+  // reload persistent state & create new plugin manager when the project was refreshed
+  React.useEffect(() => {
+    (async () => {
+      if (state.projectInfo === null) return;
 
-      const projectInfo = { project, files, projectUid };
+      const { project, projectUid } = state.projectInfo;
 
       // load persisted state from localStorage
       const json = localStorage.getItem(`IDE-State-${projectUid}`);
@@ -358,27 +325,24 @@ class Ide extends React.Component<PropTypes, StateTypes> {
       const { layoutState: layoutStateJson, ...rest } = persistentState;
       const layoutState = FlexLayout.Model.fromJson(layoutStateJson);
 
-      return { projectInfo, layoutState, ...rest };
-    }
+      // set state
+      dispatch({ type: 'LOAD', persistentState: { layoutState, ...rest } });
 
-    const newState = await loadProject(this.props.projectName);
-    this.setState(newState);
+      pluginManagerRef.current = new PluginManager(
+        executorRef.current,
+        getConsole,
+        getSimulator,
+      );
+      await pluginManagerRef.current.initSdk();
+      await pluginManagerRef.current.loadFromProjectMetadata(project);
+      dispatch({ type: 'MARK_PLUGINS_LOADED' });
+    })();
+  }, [state.projectInfo]);
 
-    this.pluginManager = new PluginManager(
-      this.executorRef.current,
-      this.getConsole.bind(this),
-      this.getSimulator.bind(this),
-    );
-    await this.pluginManager.initSdk();
-    await this.pluginManager.loadFromProjectMetadata(
-      newState.projectInfo.project,
-    );
-    this.dispatch({ type: 'MARK_PLUGINS_LOADED' });
-  }
+  function save() {
+    if (state.projectInfo === null) return;
+    if (state.layoutState === null) return;
 
-  save() {
-    // eslint-disable-next-line no-throw-literal
-    if (this.state.projectInfo === null) throw 'projectInfo is null';
     // eslint-disable-next-line no-shadow
     const {
       projectInfo: { projectUid },
@@ -386,10 +350,8 @@ class Ide extends React.Component<PropTypes, StateTypes> {
       showMetadataFolder,
       layoutState: layoutStateModel,
       editorStates,
-    } = this.state;
+    } = state;
 
-    // eslint-disable-next-line no-throw-literal
-    if (layoutStateModel === null) throw 'layoutState is null';
     const layoutState = layoutStateModel.toJson();
 
     localStorage.setItem(
@@ -403,13 +365,25 @@ class Ide extends React.Component<PropTypes, StateTypes> {
     );
   }
 
-  getFile(path: string): FileReference {
+  // save when any of the persistent state changes
+  // TODO make sure the projectUid and the persistent state are not out of sync somewhere
+  React.useEffect(() => {
+    save();
+  }, [
+    state.projectInfo,
+    state.fileTreeState,
+    state.showMetadataFolder,
+    state.layoutState,
+    state.editorStates,
+  ]);
+
+  function getFile(path: string): FileReference {
     // eslint-disable-next-line no-throw-literal
-    if (this.state.projectInfo === null) throw 'unreachable';
+    if (state.projectInfo === null) throw 'unreachable';
 
     const {
       projectInfo: { files },
-    } = this.state;
+    } = state;
     const [_root, ...fragments] = path.split('/');
 
     // The reducer function navigates to the child in a directory.
@@ -431,27 +405,33 @@ class Ide extends React.Component<PropTypes, StateTypes> {
     return { path, file };
   }
 
-  getNodes() {
+  function getNodes() {
+    // eslint-disable-next-line no-throw-literal
+    if (state.layoutState === null) throw 'layoutState is null';
+
     const nodes = {};
 
-    this.state.layoutState.visitNodes(node => {
+    state.layoutState.visitNodes(node => {
       nodes[node.getId()] = node;
     });
 
     return nodes;
   }
 
-  openOrFocusTab(nodeJson, options?: OpenOrFocusTabOptions) {
-    const { id } = nodeJson;
-    const { layoutState } = this.state;
+  function openOrFocusTab(nodeJson, options?: OpenOrFocusTabOptions) {
+    // eslint-disable-next-line no-throw-literal
+    if (state.layoutState === null) throw 'layoutState is null';
 
-    const nodes = this.getNodes();
+    const { id } = nodeJson;
+    const { layoutState } = state;
+
+    const nodes = getNodes();
     if (id in nodes) {
       // eslint-disable-next-line no-throw-literal
       if (nodes[id].getType() !== 'tab') throw `'${id}' is not a tab`;
 
       // the tab exists, select it
-      this.dispatch({
+      dispatch({
         type: 'LAYOUT',
         layoutAction: FlexLayout.Actions.selectTab(id),
       });
@@ -484,7 +464,7 @@ class Ide extends React.Component<PropTypes, StateTypes> {
 
       if (targetTabset !== null) {
         // there's a target tabset; put the new tab there
-        this.dispatch({
+        dispatch({
           type: 'LAYOUT',
           layoutAction: FlexLayout.Actions.addNode(
             nodeJson,
@@ -495,7 +475,7 @@ class Ide extends React.Component<PropTypes, StateTypes> {
         });
       } else {
         // put the new tab into the root tabset, at the preferred location.
-        this.dispatch({
+        dispatch({
           type: 'LAYOUT',
           layoutAction: FlexLayout.Actions.addNode(
             nodeJson,
@@ -508,18 +488,68 @@ class Ide extends React.Component<PropTypes, StateTypes> {
     }
   }
 
-  addSimulator = () => {
-    this.openOrFocusTab({
+  function closeTabsForFile(file: FileReference) {
+    // list all file paths below the given file/directory
+    const pathsToClose = [];
+    function listPaths(current: FileReference) {
+      if (current.file.isDirectory()) {
+        // $FlowExpectError
+        const dir: DirReference = current;
+        dir.file.contents.forEach(child =>
+          listPaths({ path: `${dir.path}/${child.name}`, file: child }),
+        );
+      } else {
+        pathsToClose.push(current.path);
+      }
+    }
+    listPaths(file);
+
+    // close those paths that are open
+    const nodes = getNodes();
+    pathsToClose.forEach(path => {
+      if (path in nodes) {
+        dispatch({
+          type: 'LAYOUT',
+          layoutAction: FlexLayout.Actions.deleteTab(path),
+        });
+      }
+    });
+  }
+
+  async function waitForSimulator(): Promise<
+    React.ElementRef<typeof Simulator>,
+  > {
+    return /* await */ new Promise(resolve => {
+      function tryIt() {
+        if (simulatorRef.current) {
+          resolve(simulatorRef.current);
+        } else {
+          setTimeout(tryIt, 0);
+        }
+      }
+      tryIt();
+    });
+  }
+
+  function addSimulator() {
+    openOrFocusTab({
       id: 'sim',
       type: 'tab',
       component: 'simulator',
       name: 'Simulator',
     });
-    this.waitForSimulator().then(s => this.pluginManager.simulatorAdded(s));
-  };
+    waitForSimulator().then(s => {
+      pluginManagerRef.current.simulatorAdded(s);
+    });
+  }
 
-  addConsole = () =>
-    this.openOrFocusTab(
+  async function getSimulator(): Promise<React.ElementRef<typeof Simulator>> {
+    addSimulator();
+    return /* await */ waitForSimulator();
+  }
+
+  function addConsole() {
+    openOrFocusTab(
       {
         id: 'console',
         type: 'tab',
@@ -531,83 +561,40 @@ class Ide extends React.Component<PropTypes, StateTypes> {
         alwaysNewTabset: true,
       },
     );
+  }
 
-  getConsole = () =>
-    new Promise(resolve => {
-      const tryIt = () => {
-        this.addConsole();
-        if (this.consoleRef.current) {
-          resolve(this.consoleRef.current);
+  async function getConsole(): Promise<React.ElementRef<typeof Console>> {
+    addConsole();
+    return /* await */ new Promise(resolve => {
+      function tryIt() {
+        if (consoleRef.current) {
+          resolve(consoleRef.current);
         } else {
           setTimeout(tryIt, 0);
         }
-      };
+      }
       tryIt();
     });
+  }
 
-  getSimulator = () => {
-    this.addSimulator();
-    return this.waitForSimulator();
-  };
-
-  waitForSimulator = () =>
-    new Promise(resolve => {
-      const tryIt = () => {
-        if (this.simulatorRef.current) {
-          resolve(this.simulatorRef.current);
-        } else {
-          setTimeout(tryIt, 0);
-        }
-      };
-      tryIt();
-    });
-
-  handleExecutionAction = async (action: ExecutionAction) => {
-    switch (action.action) {
-      case 'EXECUTE': {
-        const { code } = action;
-        await this.handleExecute(code);
-        break;
-      }
-      case 'TERMINATE': {
-        const { reset } = action;
-        await this.handleTerminate();
-        if (reset && this.simulatorRef.current !== null) {
-          // TODO this is a workaround for the simulated robot
-          // (and probably other objects) still moving after terminating
-          await new Promise(resolve => setTimeout(resolve, 100));
-          await this.handleReset();
-        }
-        break;
-      }
-      case 'RESET': {
-        if (this.simulatorRef.current !== null) await this.handleReset();
-        break;
-      }
-      default:
-        // eslint-disable-next-line no-throw-literal
-        throw 'unreachable';
-    }
-  };
-
-  async handleExecute(code: string) {
+  async function handleExecute(code: string) {
     // eslint-disable-next-line no-throw-literal
-    if (this.executorRef.current === null) throw 'ref is null';
-    const executorRefCurrent = this.executorRef.current;
+    if (executorRef.current === null) throw 'ref is null';
+    const executorRefCurrent = executorRef.current;
 
     const sdk = {
       misc: await initMiscSdk(
-        this.getConsole.bind(this),
+        getConsole,
         error => {
-          this.dispatch({ type: 'SET_RUNNING_TASK', runningTask: null });
-          this.pluginManager
+          dispatch({ type: 'SET_RUNNING_TASK', runningTask: null });
+          pluginManagerRef.current
             .getSdk()
-            .misc.emit(this.executorRef.current, 'programTerminate', { error });
+            .misc.emit(executorRefCurrent, 'programTerminate', { error });
         },
-        this.pluginManager,
+        pluginManagerRef.current,
         executorRefCurrent,
       ),
-      hedgehog: await initHedgehogSdk(this.getSimulator.bind(this)),
+      hedgehog: await initHedgehogSdk(getSimulator),
     };
 
     const task = {
@@ -617,94 +604,59 @@ class Ide extends React.Component<PropTypes, StateTypes> {
         ...sdk.hedgehog.handlers,
       },
     };
-    this.dispatch({
+    dispatch({
       type: 'SET_RUNNING_TASK',
       runningTask: executorRefCurrent.addTask(task),
     });
 
-    this.pluginManager
+    pluginManagerRef.current
       .getSdk()
-      .misc.emit(this.executorRef.current, 'programExecute', null);
+      .misc.emit(executorRefCurrent, 'programExecute', null);
   }
 
-  async handleTerminate() {
+  async function handleTerminate() {
     // eslint-disable-next-line no-throw-literal
-    if (this.executorRef.current === null) throw 'ref is null';
+    if (executorRef.current === null) throw 'ref is null';
 
-    this.executorRef.current.removeTask(this.state.runningTask);
-    this.dispatch({ type: 'SET_RUNNING_TASK', runningTask: null });
-    if (this.simulatorRef.current !== null) {
-      this.simulatorRef.current.simulation.robots.forEach(robot => {
+    executorRef.current.removeTask(state.runningTask);
+    dispatch({ type: 'SET_RUNNING_TASK', runningTask: null });
+    if (simulatorRef.current !== null) {
+      simulatorRef.current.simulation.robots.forEach(robot => {
         robot.setSpeed(0, 0);
       });
     }
   }
 
-  handleReset() {
+  function handleReset() {
     // eslint-disable-next-line no-throw-literal
-    if (this.simulatorRef.current === null) throw 'ref is null';
+    if (simulatorRef.current === null) throw 'ref is null';
 
-    this.simulatorRef.current.simulation.reset();
-    this.pluginManager
+    simulatorRef.current.simulation.reset();
+    pluginManagerRef.current
       .getSdk()
-      .misc.emit(this.executorRef.current, 'simulationReset', null);
+      .misc.emit(executorRef.current, 'simulationReset', null);
   }
 
-  handleFileAction(action: FileAction) {
+  async function handleExecutionAction(action: ExecutionAction) {
     switch (action.action) {
-      case 'CREATE': {
-        const { parentDir, desc } = action;
-        if (desc.type === 'METADATA') {
-          this.confirmCreateFile(parentDir, desc.name, 'FILE');
-        } else {
-          this.beginCreateFile(parentDir, desc);
+      case 'EXECUTE': {
+        const { code } = action;
+        await handleExecute(code);
+        break;
+      }
+      case 'TERMINATE': {
+        const { reset } = action;
+        await handleTerminate();
+        if (reset && simulatorRef.current !== null) {
+          // TODO this is a workaround for the simulated robot
+          // (and probably other objects) still moving after terminating
+          await new Promise(resolve => setTimeout(resolve, 100));
+          await handleReset();
         }
         break;
       }
-      case 'RENAME': {
-        const { file } = action;
-        this.beginRenameFile(file);
-        break;
-      }
-      case 'DELETE': {
-        const { file } = action;
-        this.beginDeleteFile(file);
-        break;
-      }
-      case 'MOVE': {
-        const { file, destDirPath } = action;
-        this.moveFile(file, destDirPath);
-        break;
-      }
-      case 'OPEN': {
-        const {
-          file: { path, file },
-        } = action;
-
-        const component = (() => {
-          if (path === './.metadata/simulator') return 'simulator-editor';
-          // if (path === './.metadata/toolbox') return 'toolbox-editor';
-          if (file.name.endsWith('.blockly')) return 'blockly';
-          if (file.name.endsWith('.js')) return 'editor';
-          return 'editor';
-        })();
-
-        this.openOrFocusTab({
-          id: path,
-          type: 'tab',
-          component,
-          name: file.name,
-        });
-        break;
-      }
-      case 'DOWNLOAD': {
-        const { file } = action;
-        this.downloadFile(file);
-        break;
-      }
-      case 'UPLOAD': {
-        const { parentDir } = action;
-        this.uploadFiles(parentDir);
+      case 'RESET': {
+        if (simulatorRef.current !== null) await handleReset();
         break;
       }
       default:
@@ -713,24 +665,24 @@ class Ide extends React.Component<PropTypes, StateTypes> {
     }
   }
 
-  beginCreateFile(parentDir: DirReference, desc: FileDesc) {
+  function beginCreateFile(parentDir: DirReference, desc: FileDesc) {
     // eslint-disable-next-line no-throw-literal
-    if (this.createFileRef.current === null) throw 'ref is null';
+    if (createFileRef.current === null) throw 'ref is null';
 
-    this.createFileRef.current.show(parentDir, desc);
+    createFileRef.current.show(parentDir, desc);
   }
 
-  async confirmCreateFile(
+  async function confirmCreateFile(
     parentDir: DirReference,
     name: string,
     type: FileType,
   ): Promise<boolean> {
     // eslint-disable-next-line no-throw-literal
-    if (this.state.projectInfo === null) throw 'unreachable';
+    if (state.projectInfo === null) throw 'unreachable';
 
     const {
       projectInfo: { project },
-    } = this.state;
+    } = state;
 
     try {
       const path = project.resolve(parentDir.path, name);
@@ -749,23 +701,23 @@ class Ide extends React.Component<PropTypes, StateTypes> {
         await fs.promises.mkdir(path);
       }
 
-      await this.refreshProject();
+      await refreshProject();
+      // TODO after this has finished, the project's files have not yet been refreshed
+      // and opening the new file will fail!
 
       // reveal the new file
-      this.dispatch({ type: 'EXPAND_DIRECTORY', path: parentDir.path }, () =>
-        this.save(),
-      );
+      dispatch({ type: 'EXPAND_DIRECTORY', path: parentDir.path });
 
       // TODO select the file in the file tree
 
-      // open the new file
-      const file = this.getFile(`${parentDir.path}/${name}`);
-      if (file.file.isFile()) this.handleFileAction({ action: 'OPEN', file });
+      // // open the new file
+      // const file = getFile(`${parentDir.path}/${name}`);
+      // if (file.file.isFile()) handleFileAction({ action: 'OPEN', file });
 
       return true;
     } catch (ex) {
       if (ex instanceof filer.Errors.EEXIST) {
-        await this.refreshProject();
+        await refreshProject();
         return false;
       }
       console.error(ex);
@@ -773,14 +725,14 @@ class Ide extends React.Component<PropTypes, StateTypes> {
     }
   }
 
-  beginRenameFile(file: FileReference) {
+  function beginRenameFile(file: FileReference) {
     // split off the './' at the start and the file name at the end
     const path = file.path.split('/').slice(1, -1);
 
     // eslint-disable-next-line no-throw-literal
-    if (this.state.projectInfo === null) throw 'unreachable';
+    if (state.projectInfo === null) throw 'unreachable';
 
-    const root = this.state.projectInfo.files;
+    const root = state.projectInfo.files;
 
     // the project root is always a directory. assert and cast
     // eslint-disable-next-line no-throw-literal
@@ -801,37 +753,37 @@ class Ide extends React.Component<PropTypes, StateTypes> {
     });
 
     // eslint-disable-next-line no-throw-literal
-    if (this.renameFileRef.current === null) throw 'ref is null';
-    this.renameFileRef.current.show(file, dir.contents.map(f => f.name));
+    if (renameFileRef.current === null) throw 'ref is null';
+    renameFileRef.current.show(file, dir.contents.map(f => f.name));
   }
 
-  async confirmRenameFile(
+  async function confirmRenameFile(
     file: FileReference,
     newName: string,
   ): Promise<boolean> {
     // eslint-disable-next-line no-throw-literal
-    if (this.state.projectInfo === null) throw 'unreachable';
+    if (state.projectInfo === null) throw 'unreachable';
 
     const {
       projectInfo: { project },
-    } = this.state;
+    } = state;
 
     try {
       const path = project.resolve(file.path);
       const newPath = project.resolve(file.path, '..', newName);
 
-      this.closeTabsForFile(file);
+      closeTabsForFile(file);
       await fs.promises.rename(path, newPath);
 
-      await this.refreshProject();
+      await refreshProject();
       return true;
     } catch (ex) {
       if (ex instanceof filer.Errors.EEXIST) {
-        await this.refreshProject();
+        await refreshProject();
         return false;
       }
       if (ex instanceof filer.Errors.ENOENT) {
-        await this.refreshProject();
+        await refreshProject();
         // close the dialog, the file is gone
         return true;
       }
@@ -840,36 +792,36 @@ class Ide extends React.Component<PropTypes, StateTypes> {
     }
   }
 
-  beginDeleteFile(file: FileReference) {
+  function beginDeleteFile(file: FileReference) {
     // eslint-disable-next-line no-throw-literal
-    if (this.deleteFileRef.current === null) throw 'ref is null';
+    if (deleteFileRef.current === null) throw 'ref is null';
 
-    this.deleteFileRef.current.show(file);
+    deleteFileRef.current.show(file);
   }
 
-  async confirmDeleteFile(file: FileReference): Promise<boolean> {
+  async function confirmDeleteFile(file: FileReference): Promise<boolean> {
     // eslint-disable-next-line no-throw-literal
-    if (this.state.projectInfo === null) throw 'unreachable';
+    if (state.projectInfo === null) throw 'unreachable';
 
     const {
       projectInfo: { project },
-    } = this.state;
+    } = state;
 
     try {
       const path = project.resolve(file.path);
 
-      this.closeTabsForFile(file);
+      closeTabsForFile(file);
       await sh.promises.rm(path, { recursive: true });
 
-      await this.refreshProject();
+      await refreshProject();
       return true;
     } catch (ex) {
       if (ex instanceof filer.Errors.EEXIST) {
-        await this.refreshProject();
+        await refreshProject();
         return false;
       }
       if (ex instanceof filer.Errors.ENOENT) {
-        await this.refreshProject();
+        await refreshProject();
         // close the dialog, the file is gone
         return true;
       }
@@ -878,30 +830,33 @@ class Ide extends React.Component<PropTypes, StateTypes> {
     }
   }
 
-  async moveFile(file: FileReference, destDirPath: string): Promise<boolean> {
+  async function moveFile(
+    file: FileReference,
+    destDirPath: string,
+  ): Promise<boolean> {
     // eslint-disable-next-line no-throw-literal
-    if (this.state.projectInfo === null) throw 'unreachable';
+    if (state.projectInfo === null) throw 'unreachable';
 
     const {
       projectInfo: { project },
-    } = this.state;
+    } = state;
 
     try {
       const path = project.resolve(file.path);
       const newPath = project.resolve(destDirPath, file.file.name);
 
-      this.closeTabsForFile(file);
+      closeTabsForFile(file);
       await fs.promises.rename(path, newPath);
 
-      await this.refreshProject();
+      await refreshProject();
       return true;
     } catch (ex) {
       if (ex instanceof filer.Errors.EEXIST) {
-        await this.refreshProject();
+        await refreshProject();
         return false;
       }
       if (ex instanceof filer.Errors.ENOENT) {
-        await this.refreshProject();
+        await refreshProject();
         // close the dialog, the file is gone
         return true;
       }
@@ -910,16 +865,16 @@ class Ide extends React.Component<PropTypes, StateTypes> {
     }
   }
 
-  async downloadFile(file: FileReference): Promise<void> {
+  async function downloadFile(file: FileReference): Promise<void> {
     // eslint-disable-next-line no-throw-literal
-    if (this.fileDownloadRef.current === null) throw 'ref is null';
+    if (fileDownloadRef.current === null) throw 'ref is null';
     // eslint-disable-next-line no-throw-literal
-    if (this.state.projectInfo === null) throw 'unreachable';
+    if (state.projectInfo === null) throw 'unreachable';
 
-    const fileDownload = this.fileDownloadRef.current;
+    const fileDownload = fileDownloadRef.current;
     const {
       projectInfo: { project },
-    } = this.state;
+    } = state;
 
     const path = project.resolve(file.path);
     const content = await fs.promises.readFile(path, 'utf8');
@@ -927,19 +882,19 @@ class Ide extends React.Component<PropTypes, StateTypes> {
     fileDownload.show(file.file.name, content);
   }
 
-  async uploadFiles(parentDir: DirReference): Promise<void> {
+  async function uploadFiles(parentDir: DirReference): Promise<void> {
     // eslint-disable-next-line no-throw-literal
-    if (this.fileUploadRef.current === null) throw 'ref is null';
+    if (fileUploadRef.current === null) throw 'ref is null';
 
-    const files = await this.fileUploadRef.current.show();
+    const files = await fileUploadRef.current.show();
     if (files.length === 0) return;
 
     // eslint-disable-next-line no-throw-literal
-    if (this.state.projectInfo === null) throw 'unreachable';
+    if (state.projectInfo === null) throw 'unreachable';
 
     const {
       projectInfo: { project },
-    } = this.state;
+    } = state;
 
     // TODO assumes there's exactly one file
     const file = files[0];
@@ -952,10 +907,10 @@ class Ide extends React.Component<PropTypes, StateTypes> {
       // TODO this overwrites files without warning
       await fs.promises.writeFile(path, buffer);
 
-      await this.refreshProject();
+      await refreshProject();
     } catch (ex) {
       if (ex instanceof filer.Errors.EEXIST) {
-        await this.refreshProject();
+        await refreshProject();
         return;
       }
       console.error(ex);
@@ -963,173 +918,262 @@ class Ide extends React.Component<PropTypes, StateTypes> {
     }
   }
 
-  closeTabsForFile(file: FileReference) {
-    // list all file paths below the given file/directory
-    const pathsToClose = [];
-    function listPaths(current: FileReference) {
-      if (current.file.isDirectory()) {
-        // $FlowExpectError
-        const dir: DirReference = current;
-        dir.file.contents.forEach(child =>
-          listPaths({ path: `${dir.path}/${child.name}`, file: child }),
-        );
-      } else {
-        pathsToClose.push(current.path);
+  function handleFileAction(action: FileAction) {
+    switch (action.action) {
+      case 'CREATE': {
+        const { parentDir, desc } = action;
+        if (desc.type === 'METADATA') {
+          confirmCreateFile(parentDir, desc.name, 'FILE');
+        } else {
+          beginCreateFile(parentDir, desc);
+        }
+        break;
       }
-    }
-    listPaths(file);
+      case 'RENAME': {
+        const { file } = action;
+        beginRenameFile(file);
+        break;
+      }
+      case 'DELETE': {
+        const { file } = action;
+        beginDeleteFile(file);
+        break;
+      }
+      case 'MOVE': {
+        const { file, destDirPath } = action;
+        moveFile(file, destDirPath);
+        break;
+      }
+      case 'OPEN': {
+        const {
+          file: { path, file },
+        } = action;
 
-    // close those paths that are open
-    const nodes = this.getNodes();
-    pathsToClose.forEach(path => {
-      if (path in nodes) {
-        this.dispatch({
-          type: 'LAYOUT',
-          layoutAction: FlexLayout.Actions.deleteTab(path),
+        const component = (() => {
+          if (path === './.metadata/simulator') return 'simulator-editor';
+          // if (path === './.metadata/toolbox') return 'toolbox-editor';
+          if (file.name.endsWith('.blockly')) return 'blockly';
+          if (file.name.endsWith('.js')) return 'editor';
+          return 'editor';
+        })();
+
+        openOrFocusTab({
+          id: path,
+          type: 'tab',
+          component,
+          name: file.name,
         });
+        break;
       }
-    });
+      case 'DOWNLOAD': {
+        const { file } = action;
+        downloadFile(file);
+        break;
+      }
+      case 'UPLOAD': {
+        const { parentDir } = action;
+        uploadFiles(parentDir);
+        break;
+      }
+      default:
+        // eslint-disable-next-line no-throw-literal
+        throw 'unreachable';
+    }
   }
 
-  render() {
-    const { classes } = this.props;
-    const {
-      projectInfo,
-      fileTreeState,
-      layoutState,
-      showMetadataFolder,
-    } = this.state;
+  function factory(node: any): React.Node {
+    // eslint-disable-next-line no-throw-literal
+    if (state.projectInfo === null) throw 'unreachable';
+    const { project } = state.projectInfo;
 
-    if (projectInfo === null) return null;
-
-    const filter = (path: string, child: FilerRecursiveStatInfo) => {
-      if (path === '.' && child.name === '.metadata' && !showMetadataFolder)
-        return false;
-      return true;
+    const getEditorState = (path: string, editorType: string) => {
+      const editorState = state.editorStates[path];
+      return editorState ? editorState[editorType] : null;
     };
 
-    return (
-      <Grid className={classes.root} container direction="row" wrap="nowrap">
-        <Grid
-          item
-          component={SquarePaper}
-          style={{
-            flex: '0 auto',
-            minWidth: '150px',
-            marginRight: '8px',
-            overflow: 'auto',
-          }}
-        >
-          <div className={classes.navToolbar}>
-            <Tooltip title={<M {...messages.simulatorTooltip} />}>
-              <IconButton
-                variant="contained"
-                color="primary"
-                size="small"
-                onClick={this.addSimulator}
-              >
-                <SimulatorIcon />
-              </IconButton>
-            </Tooltip>
-            <Tooltip title={<M {...messages.consoleTooltip} />}>
-              <IconButton
-                variant="contained"
-                color="primary"
-                size="small"
-                onClick={this.addConsole}
-              >
-                <ConsoleIcon />
-              </IconButton>
-            </Tooltip>
-            <PopupState variant="popover" popupId="project-controls-menu">
-              {popupState => (
-                <>
-                  <Tooltip title={<M {...messages.projectSettingsTooltip} />}>
-                    <IconButton
-                      variant="contained"
-                      color="primary"
-                      size="small"
-                      {...bindTrigger(popupState)}
-                    >
-                      <SettingsIcon />
-                    </IconButton>
-                  </Tooltip>
-                  <Menu keepMounted {...bindMenu(popupState)}>
-                    <Button
-                      variant="contained"
-                      color="primary"
-                      size="small"
-                      onClick={() => {
-                        popupState.close();
-                        this.dispatch({ type: 'TOGGLE_METADATA_FOLDER' }, () =>
-                          this.save(),
-                        );
-                      }}
-                    >
-                      <M
-                        {...messages.showHideMetadata}
-                        values={{
-                          action: showMetadataFolder ? 'HIDE' : 'SHOW',
-                        }}
-                      />
-                    </Button>
-                  </Menu>
-                </>
-              )}
-            </PopupState>
-            <hr />
-          </div>
-          <FileTree
-            files={projectInfo.files}
-            {...fileTreeState}
-            filter={filter}
-            onFileAction={action => this.handleFileAction(action)}
-            onUpdate={
-              // eslint-disable-next-line no-shadow
-              fileTreeState =>
-                this.dispatch({ type: 'UPDATE_FILE_TREE', fileTreeState }, () =>
-                  this.save(),
-                )
-            }
+    const editorStateSetter = (path: string, editorType: string) => state => {
+      const editorState = { [editorType]: state };
+      dispatch({ type: 'SET_EDITOR_STATE', path, editorState });
+    };
+
+    const id = node.getId();
+    switch (node.getComponent()) {
+      case 'editor': {
+        return (
+          <Editor
+            layoutNode={node}
+            project={project}
+            path={id}
+            onExecutionAction={handleExecutionAction}
+            running={!!state.runningTask}
           />
-          <CreateFileDialog
-            ref={this.createFileRef}
-            onCreate={(parentNode, name, type) =>
-              this.confirmCreateFile(parentNode, name, type)
-            }
+        );
+      }
+      case 'simulator': {
+        return (
+          <Simulator
+            ref={simulatorRef}
+            width={600}
+            height={400}
+            onExecutionAction={handleExecutionAction}
+            running={!!state.runningTask}
           />
-          <RenameFileDialog
-            ref={this.renameFileRef}
-            onRename={(file, name) => this.confirmRenameFile(file, name)}
+        );
+      }
+      case 'console': {
+        return <Console ref={consoleRef} />;
+      }
+      case 'blockly': {
+        return (
+          <VisualEditor
+            layoutNode={node}
+            project={project}
+            path={id}
+            {...getEditorState(id, 'blockly')}
+            onUpdate={editorStateSetter(id, 'blockly')}
+            onExecutionAction={handleExecutionAction}
+            running={!!state.runningTask}
           />
-          <DeleteFileDialog
-            ref={this.deleteFileRef}
-            onDelete={file => this.confirmDeleteFile(file)}
+        );
+      }
+      case 'simulator-editor': {
+        return (
+          <SimulatorEditor
+            layoutNode={node}
+            project={project}
+            path={id}
+            onSchemaChange={schema => {
+              if (simulatorRef.current && schema)
+                simulatorRef.current.simulation.jsonInit(schema);
+            }}
+            {...getEditorState(id, 'simulator-editor')}
+            onUpdate={editorStateSetter(id, 'simulator-editor')}
           />
-          <FileUpload ref={this.fileUploadRef} />
-          <FileDownload ref={this.fileDownloadRef} />
-        </Grid>
-        {this.state.pluginsLoaded && this.state.layoutState !== null ? (
-          <Grid
-            item
-            component={SquarePaper}
-            className={classes.editorContainer}
-          >
-            <FlexLayout.Layout
-              model={layoutState}
-              factory={this.factory}
-              classNameMapper={className => FlexLayoutTheme[className]}
-              onModelChange={() => this.save()}
-            />
-          </Grid>
-        ) : null}
-        <Executor ref={this.executorRef} />
-      </Grid>
-    );
+        );
+      }
+      default:
+        return null;
+    }
   }
+
+  useStyles(FlexLayoutTheme);
+  const classes = useStylesMaterial();
+
+  if (state.projectInfo === null) return null;
+
+  function filter(path: string, child: FilerRecursiveStatInfo): boolean {
+    if (path === '.' && child.name === '.metadata' && !state.showMetadataFolder)
+      return false;
+    return true;
+  }
+
+  const {
+    projectInfo,
+    fileTreeState,
+    layoutState,
+    showMetadataFolder,
+    pluginsLoaded,
+  } = state;
+
+  return (
+    <Grid className={classes.root} container direction="row" wrap="nowrap">
+      <Grid
+        item
+        component={SquarePaper}
+        style={{
+          flex: '0 auto',
+          minWidth: '150px',
+          marginRight: '8px',
+          overflow: 'auto',
+        }}
+      >
+        <div className={classes.navToolbar}>
+          <Tooltip title={<M {...messages.simulatorTooltip} />}>
+            <IconButton
+              variant="contained"
+              color="primary"
+              size="small"
+              onClick={addSimulator}
+            >
+              <SimulatorIcon />
+            </IconButton>
+          </Tooltip>
+          <Tooltip title={<M {...messages.consoleTooltip} />}>
+            <IconButton
+              variant="contained"
+              color="primary"
+              size="small"
+              onClick={addConsole}
+            >
+              <ConsoleIcon />
+            </IconButton>
+          </Tooltip>
+          <PopupState variant="popover" popupId="project-controls-menu">
+            {popupState => (
+              <>
+                <Tooltip title={<M {...messages.projectSettingsTooltip} />}>
+                  <IconButton
+                    variant="contained"
+                    color="primary"
+                    size="small"
+                    {...bindTrigger(popupState)}
+                  >
+                    <SettingsIcon />
+                  </IconButton>
+                </Tooltip>
+                <Menu keepMounted {...bindMenu(popupState)}>
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    size="small"
+                    onClick={() => {
+                      popupState.close();
+                      dispatch({ type: 'TOGGLE_METADATA_FOLDER' });
+                    }}
+                  >
+                    <M
+                      {...messages.showHideMetadata}
+                      values={{
+                        action: showMetadataFolder ? 'HIDE' : 'SHOW',
+                      }}
+                    />
+                  </Button>
+                </Menu>
+              </>
+            )}
+          </PopupState>
+          <hr />
+        </div>
+        <FileTree
+          files={projectInfo.files}
+          {...fileTreeState}
+          filter={filter}
+          onFileAction={handleFileAction}
+          onUpdate={
+            // eslint-disable-next-line no-shadow
+            fileTreeState =>
+              dispatch({ type: 'UPDATE_FILE_TREE', fileTreeState })
+          }
+        />
+        <CreateFileDialog ref={createFileRef} onCreate={confirmCreateFile} />
+        <RenameFileDialog ref={renameFileRef} onRename={confirmRenameFile} />
+        <DeleteFileDialog ref={deleteFileRef} onDelete={confirmDeleteFile} />
+        <FileUpload ref={fileUploadRef} />
+        <FileDownload ref={fileDownloadRef} />
+      </Grid>
+      {pluginsLoaded && layoutState !== null ? (
+        <Grid item component={SquarePaper} className={classes.editorContainer}>
+          <FlexLayout.Layout
+            model={layoutState}
+            factory={factory}
+            classNameMapper={className => FlexLayoutTheme[className]}
+            onModelChange={save}
+          />
+        </Grid>
+      ) : null}
+      <Executor ref={executorRef} />
+    </Grid>
+  );
 }
 
-export default compose(
-  withStyles(FlexLayoutTheme),
-  styled,
-)(Ide);
+export default Ide;
