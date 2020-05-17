@@ -137,7 +137,6 @@ type StateTypes = {|
   showMetadataFolder: boolean,
   layoutState: FlexLayout.Model | null,
   editorStates: { [key: string]: EditorState },
-  runningTask: Task | null,
 |};
 
 const initialState: StateTypes = {
@@ -145,13 +144,11 @@ const initialState: StateTypes = {
   showMetadataFolder: false,
   layoutState: null,
   editorStates: {},
-  runningTask: null,
 };
 
 type IdeAction =
   | {| type: 'LOAD', persistentState: $Shape<StateTypes> |}
   | {| type: 'SET_EDITOR_STATE', path: string, editorState: EditorState |}
-  | {| type: 'SET_RUNNING_TASK', runningTask: Task | null |}
   | {| type: 'EXPAND_DIRECTORY', path: string |}
   | {| type: 'TOGGLE_METADATA_FOLDER' |}
   | {| type: 'UPDATE_FILE_TREE', fileTreeState: FileTreeState |}
@@ -179,13 +176,6 @@ function ideState(state: StateTypes, action: IdeAction): StateTypes {
             ...editorState,
           },
         },
-      };
-    }
-    case 'SET_RUNNING_TASK': {
-      const { runningTask } = action;
-      return {
-        ...state,
-        runningTask,
       };
     }
     case 'EXPAND_DIRECTORY': {
@@ -238,6 +228,7 @@ function Ide({ projectName }: Props) {
     null,
   );
   const [pluginsLoaded, setPluginsLoaded] = React.useState<boolean>(false);
+  const [runningTask, setRunningTask] = React.useState<Task | null>(null);
 
   const [state, dispatch] = React.useReducer<StateTypes, IdeAction>(
     ideState,
@@ -550,7 +541,7 @@ function Ide({ projectName }: Props) {
       misc: await initMiscSdk(
         getConsole,
         error => {
-          dispatch({ type: 'SET_RUNNING_TASK', runningTask: null });
+          setRunningTask(null);
           pluginManagerRef.current
             .getSdk()
             .misc.emit(executorRefCurrent, 'programTerminate', { error });
@@ -568,10 +559,7 @@ function Ide({ projectName }: Props) {
         ...sdk.hedgehog.handlers,
       },
     };
-    dispatch({
-      type: 'SET_RUNNING_TASK',
-      runningTask: executorRefCurrent.addTask(task),
-    });
+    setRunningTask(executorRefCurrent.addTask(task));
 
     pluginManagerRef.current
       .getSdk()
@@ -582,8 +570,10 @@ function Ide({ projectName }: Props) {
     // eslint-disable-next-line no-throw-literal
     if (executorRef.current === null) throw 'ref is null';
 
-    executorRef.current.removeTask(state.runningTask);
-    dispatch({ type: 'SET_RUNNING_TASK', runningTask: null });
+    if (runningTask !== null) {
+      executorRef.current.removeTask(runningTask);
+      setRunningTask(null);
+    }
     if (simulatorRef.current !== null) {
       simulatorRef.current.simulation.robots.forEach(robot => {
         robot.setSpeed(0, 0);
@@ -945,7 +935,7 @@ function Ide({ projectName }: Props) {
             project={projectInfo.project}
             path={id}
             onExecutionAction={handleExecutionAction}
-            running={!!state.runningTask}
+            running={runningTask !== null}
           />
         );
       }
@@ -956,7 +946,7 @@ function Ide({ projectName }: Props) {
             width={600}
             height={400}
             onExecutionAction={handleExecutionAction}
-            running={!!state.runningTask}
+            running={runningTask !== null}
           />
         );
       }
@@ -972,7 +962,7 @@ function Ide({ projectName }: Props) {
             {...getEditorState(id, 'blockly')}
             onUpdate={editorStateSetter(id, 'blockly')}
             onExecutionAction={handleExecutionAction}
-            running={!!state.runningTask}
+            running={runningTask !== null}
           />
         );
       }
