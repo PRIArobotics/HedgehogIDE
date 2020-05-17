@@ -2,6 +2,27 @@
 
 import * as React from 'react';
 
+// An almost-alias to React.useRef for the typical element ref use case.
+// useRef can also emulate instance variables, this can't.
+// `useElementRef<T>()` is the same as `useRef<React.ElementRef<T> | null>(null)`.
+// The default value of `null` is fixed.
+// example usage:
+//
+//    const aRef = useElementRef<'div'>();
+//    const bRef = useElementRef<typeof Component>();
+//
+//    return (
+//      <>
+//        <div ref={aRef} />
+//        <Component ref={bRef} />
+//      </>
+//    );
+export function useElementRef<T: React.ElementType>(): {|
+  current: React.ElementRef<T> | null,
+|} {
+  return React.useRef<React.ElementRef<T> | null>(null);
+}
+
 // similar to useMemo, but without dependencies, and guarantees that the same
 // instance is preserved. The initialization is eager, i.e. happens on the
 // first hook call.

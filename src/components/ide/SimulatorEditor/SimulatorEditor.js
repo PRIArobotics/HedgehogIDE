@@ -99,8 +99,8 @@ function SimulatorEditor({
   jsonCollapsed,
   onUpdate,
 }: Props) {
-  const blocklyRef = React.useRef<typeof BlocklyComponent | null>(null);
-  const jsonRef = React.useRef<HTMLPreElement | null>(null);
+  const blocklyRef = hooks.useElementRef<typeof BlocklyComponent>();
+  const jsonRef = hooks.useElementRef<'pre'>();
 
   const [content, setContent] = useFile(project, path);
 

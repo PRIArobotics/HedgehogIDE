@@ -21,6 +21,7 @@ import FlexLayout from 'flexlayout-react';
 import FlexLayoutTheme from './flex_layout_ide.css';
 
 import { SettingsIcon, ConsoleIcon, SimulatorIcon } from '../../misc/palette';
+import * as hooks from '../../misc/hooks';
 
 import Console from '../Console';
 import Editor from '../Editor';
@@ -257,31 +258,15 @@ function Ide({ projectName }: Props) {
     ideState,
     initialState,
   );
-  const consoleRef = React.useRef<React.ElementRef<typeof Console> | null>(
-    null,
-  );
-  const simulatorRef = React.useRef<React.ElementRef<typeof Simulator> | null>(
-    null,
-  );
-  const executorRef = React.useRef<React.ElementRef<typeof Executor> | null>(
-    null,
-  );
+  const consoleRef = hooks.useElementRef<typeof Console>();
+  const simulatorRef = hooks.useElementRef<typeof Simulator>();
+  const executorRef = hooks.useElementRef<typeof Executor>();
 
-  const createFileRef = React.useRef<React.ElementRef<
-    typeof CreateFileDialog,
-  > | null>(null);
-  const renameFileRef = React.useRef<React.ElementRef<
-    typeof RenameFileDialog,
-  > | null>(null);
-  const deleteFileRef = React.useRef<React.ElementRef<
-    typeof DeleteFileDialog,
-  > | null>(null);
-  const fileUploadRef = React.useRef<React.ElementRef<
-    typeof FileUpload,
-  > | null>(null);
-  const fileDownloadRef = React.useRef<React.ElementRef<
-    typeof FileDownload,
-  > | null>(null);
+  const createFileRef = hooks.useElementRef<typeof CreateFileDialog>();
+  const renameFileRef = hooks.useElementRef<typeof RenameFileDialog>();
+  const deleteFileRef = hooks.useElementRef<typeof DeleteFileDialog>();
+  const fileUploadRef = hooks.useElementRef<typeof FileUpload>();
+  const fileDownloadRef = hooks.useElementRef<typeof FileDownload>();
 
   const pluginManagerRef = React.useRef<PluginManager | null>(null);
 

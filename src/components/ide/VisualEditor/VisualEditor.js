@@ -81,8 +81,8 @@ function VisualEditor({
   onExecutionAction,
   running,
 }: Props) {
-  const blocklyRef = React.useRef<typeof BlocklyComponent | null>(null);
-  const codeRef = React.useRef<HTMLPreElement | null>(null);
+  const blocklyRef = hooks.useElementRef<typeof BlocklyComponent>();
+  const codeRef = hooks.useElementRef<'pre'>();
 
   const [content, setContent] = useFile(project, path);
 

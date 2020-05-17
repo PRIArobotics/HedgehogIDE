@@ -143,7 +143,7 @@ type Props = {|
 |};
 
 function Component({ prop }: Props) {
-  const childRef = React.useRef<typeof Child | null>(null);
+  const childRef = React.useRef<React.ComponentRef<typeof Child> | null>(null);
 
   return <Child ref={childRef} />;
 }
@@ -153,12 +153,18 @@ export default Component;
 
 `childRef.current` will contain the child component between mounting and unmounting.
 Be aware that, as `childRef` is a simple mutable object,
-a change to `childRef.current` will not trigger a re-render!
+a change to `childRef.current` will not trigger a re-render or effect!
 [This Hooks FAQ entry](https://reactjs.org/docs/hooks-faq.html#how-can-i-measure-a-dom-node) shows a possible solution.
 
-- Use `typeof Child | null` for the ref type, not `?typeof Child`;
-  the latter accepts `undefined` in addition to `null`.
+- Use `xy | null` for the ref type, not `?xy`; the latter accepts `undefined` in addition to `null`.
 - Initialize the ref to `null`; this is also the value the ref will have after unmounting.
+
+The `useElementRef` hook in `src/components/misc/hooks.js` makes this more convenient.
+The following is equivalent to the hook call above:
+
+```TS
+const childRef = hooks.useElementRef<typeof Child>();
+```
 
 ## Optimization hooks
 

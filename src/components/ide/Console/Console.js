@@ -3,6 +3,8 @@
 import * as React from 'react';
 import useStyles from 'isomorphic-style-loader/useStyles';
 
+import * as hooks from '../../misc/hooks';
+
 // eslint-disable-next-line css-modules/no-unused-class
 import s from './Console.scss';
 
@@ -56,8 +58,8 @@ function Console(props: Props, ref: Ref<Instance>) {
     nextKey: 0,
     items: [],
   });
-  const inputRef = React.useRef<HTMLInputElement | null>(null);
-  const bottomRef = React.useRef<HTMLDivElement | null>(null);
+  const inputRef = hooks.useElementRef<'input'>();
+  const bottomRef = hooks.useElementRef<'div'>();
 
   React.useEffect(() => {
     if (bottomRef.current !== null) bottomRef.current.scrollIntoView(false);

@@ -14,6 +14,7 @@ import {
   ResetIcon,
   TerminateAndResetIcon,
 } from '../../misc/palette';
+import * as hooks from '../../misc/hooks';
 
 import ExecutionAction from '../Ide';
 import ToolBar from '../ToolBar';
@@ -43,7 +44,7 @@ function Editor({
     '0',
     '0',
   ]);
-  const containerRef = React.useRef<HTMLDivElement | null>(null);
+  const containerRef = hooks.useElementRef<'div'>();
 
   const [content, setContent] = useFile(project, path);
 
