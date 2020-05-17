@@ -133,7 +133,6 @@ type EditorState = {|
 |};
 
 type StateTypes = {|
-  projectInfo: ProjectInfo | null,
   fileTreeState: FileTreeState,
   showMetadataFolder: boolean,
   layoutState: FlexLayout.Model | null,
@@ -143,7 +142,6 @@ type StateTypes = {|
 |};
 
 const initialState: StateTypes = {
-  projectInfo: null,
   fileTreeState: { expandedKeys: [] },
   showMetadataFolder: false,
   layoutState: null,
@@ -153,7 +151,6 @@ const initialState: StateTypes = {
 };
 
 type IdeAction =
-  | {| type: 'REFRESH_PROJECT', projectInfo: ProjectInfo |}
   | {| type: 'LOAD', persistentState: $Shape<StateTypes> |}
   | {| type: 'SET_EDITOR_STATE', path: string, editorState: EditorState |}
   | {| type: 'MARK_PLUGINS_LOADED' |}
@@ -165,14 +162,6 @@ type IdeAction =
 
 function ideState(state: StateTypes, action: IdeAction): StateTypes {
   switch (action.type) {
-    case 'REFRESH_PROJECT': {
-      const { projectInfo } = action;
-
-      return {
-        ...state,
-        projectInfo,
-      };
-    }
     case 'LOAD': {
       const { persistentState } = action;
 
@@ -254,6 +243,10 @@ type Props = {|
 |};
 
 function Ide({ projectName }: Props) {
+  const [projectInfo, setProjectInfo] = React.useState<ProjectInfo | null>(
+    null,
+  );
+
   const [state, dispatch] = React.useReducer<StateTypes, IdeAction>(
     ideState,
     initialState,
@@ -276,9 +269,7 @@ function Ide({ projectName }: Props) {
     const files = await project.getFiles();
     const projectUid = await project.getUid();
 
-    const projectInfo = { project, files, projectUid };
-
-    dispatch({ type: 'REFRESH_PROJECT', projectInfo });
+    setProjectInfo({ project, files, projectUid });
   }
 
   // refresh project when projectName changes
@@ -289,9 +280,9 @@ function Ide({ projectName }: Props) {
   // reload persistent state & create new plugin manager when the project was refreshed
   React.useEffect(() => {
     (async () => {
-      if (state.projectInfo === null) return;
+      if (projectInfo === null) return;
 
-      const { project, projectUid } = state.projectInfo;
+      const { project, projectUid } = projectInfo;
 
       // load persisted state from localStorage
       const json = localStorage.getItem(`IDE-State-${projectUid}`);
@@ -322,15 +313,14 @@ function Ide({ projectName }: Props) {
       await pluginManagerRef.current.loadFromProjectMetadata(project);
       dispatch({ type: 'MARK_PLUGINS_LOADED' });
     })();
-  }, [state.projectInfo]);
+  }, [projectInfo]);
 
   function save() {
-    if (state.projectInfo === null) return;
+    if (projectInfo === null) return;
     if (state.layoutState === null) return;
 
     // eslint-disable-next-line no-shadow
     const {
-      projectInfo: { projectUid },
       fileTreeState,
       showMetadataFolder,
       layoutState: layoutStateModel,
@@ -340,7 +330,7 @@ function Ide({ projectName }: Props) {
     const layoutState = layoutStateModel.toJson();
 
     localStorage.setItem(
-      `IDE-State-${projectUid}`,
+      `IDE-State-${projectInfo.projectUid}`,
       JSON.stringify({
         fileTreeState,
         showMetadataFolder,
@@ -355,7 +345,7 @@ function Ide({ projectName }: Props) {
   React.useEffect(() => {
     save();
   }, [
-    state.projectInfo,
+    projectInfo,
     state.fileTreeState,
     state.showMetadataFolder,
     state.layoutState,
@@ -364,11 +354,8 @@ function Ide({ projectName }: Props) {
 
   function getFile(path: string): FileReference {
     // eslint-disable-next-line no-throw-literal
-    if (state.projectInfo === null) throw 'unreachable';
+    if (projectInfo === null) throw 'unreachable';
 
-    const {
-      projectInfo: { files },
-    } = state;
     const [_root, ...fragments] = path.split('/');
 
     // The reducer function navigates to the child in a directory.
@@ -386,7 +373,7 @@ function Ide({ projectName }: Props) {
       return child;
     };
 
-    const file = fragments.reduce(reducer, files);
+    const file = fragments.reduce(reducer, projectInfo.files);
     return { path, file };
   }
 
@@ -663,14 +650,10 @@ function Ide({ projectName }: Props) {
     type: FileType,
   ): Promise<boolean> {
     // eslint-disable-next-line no-throw-literal
-    if (state.projectInfo === null) throw 'unreachable';
-
-    const {
-      projectInfo: { project },
-    } = state;
+    if (projectInfo === null) throw 'unreachable';
 
     try {
-      const path = project.resolve(parentDir.path, name);
+      const path = projectInfo.project.resolve(parentDir.path, name);
 
       if (type === 'FILE') {
         try {
@@ -715,9 +698,9 @@ function Ide({ projectName }: Props) {
     const path = file.path.split('/').slice(1, -1);
 
     // eslint-disable-next-line no-throw-literal
-    if (state.projectInfo === null) throw 'unreachable';
+    if (projectInfo === null) throw 'unreachable';
 
-    const root = state.projectInfo.files;
+    const root = projectInfo.files;
 
     // the project root is always a directory. assert and cast
     // eslint-disable-next-line no-throw-literal
@@ -747,15 +730,11 @@ function Ide({ projectName }: Props) {
     newName: string,
   ): Promise<boolean> {
     // eslint-disable-next-line no-throw-literal
-    if (state.projectInfo === null) throw 'unreachable';
-
-    const {
-      projectInfo: { project },
-    } = state;
+    if (projectInfo === null) throw 'unreachable';
 
     try {
-      const path = project.resolve(file.path);
-      const newPath = project.resolve(file.path, '..', newName);
+      const path = projectInfo.project.resolve(file.path);
+      const newPath = projectInfo.project.resolve(file.path, '..', newName);
 
       closeTabsForFile(file);
       await fs.promises.rename(path, newPath);
@@ -786,14 +765,10 @@ function Ide({ projectName }: Props) {
 
   async function confirmDeleteFile(file: FileReference): Promise<boolean> {
     // eslint-disable-next-line no-throw-literal
-    if (state.projectInfo === null) throw 'unreachable';
-
-    const {
-      projectInfo: { project },
-    } = state;
+    if (projectInfo === null) throw 'unreachable';
 
     try {
-      const path = project.resolve(file.path);
+      const path = projectInfo.project.resolve(file.path);
 
       closeTabsForFile(file);
       await sh.promises.rm(path, { recursive: true });
@@ -820,15 +795,11 @@ function Ide({ projectName }: Props) {
     destDirPath: string,
   ): Promise<boolean> {
     // eslint-disable-next-line no-throw-literal
-    if (state.projectInfo === null) throw 'unreachable';
-
-    const {
-      projectInfo: { project },
-    } = state;
+    if (projectInfo === null) throw 'unreachable';
 
     try {
-      const path = project.resolve(file.path);
-      const newPath = project.resolve(destDirPath, file.file.name);
+      const path = projectInfo.project.resolve(file.path);
+      const newPath = projectInfo.project.resolve(destDirPath, file.file.name);
 
       closeTabsForFile(file);
       await fs.promises.rename(path, newPath);
@@ -854,14 +825,11 @@ function Ide({ projectName }: Props) {
     // eslint-disable-next-line no-throw-literal
     if (fileDownloadRef.current === null) throw 'ref is null';
     // eslint-disable-next-line no-throw-literal
-    if (state.projectInfo === null) throw 'unreachable';
+    if (projectInfo === null) throw 'unreachable';
 
     const fileDownload = fileDownloadRef.current;
-    const {
-      projectInfo: { project },
-    } = state;
 
-    const path = project.resolve(file.path);
+    const path = projectInfo.project.resolve(file.path);
     const content = await fs.promises.readFile(path, 'utf8');
 
     fileDownload.show(file.file.name, content);
@@ -875,17 +843,13 @@ function Ide({ projectName }: Props) {
     if (files.length === 0) return;
 
     // eslint-disable-next-line no-throw-literal
-    if (state.projectInfo === null) throw 'unreachable';
-
-    const {
-      projectInfo: { project },
-    } = state;
+    if (projectInfo === null) throw 'unreachable';
 
     // TODO assumes there's exactly one file
     const file = files[0];
 
     try {
-      const path = project.resolve(parentDir.path, file.name);
+      const path = projectInfo.project.resolve(parentDir.path, file.name);
 
       // wrap into the augmented Node-style filer.Buffer object
       const buffer = filer.Buffer.from(await file.arrayBuffer());
@@ -968,8 +932,7 @@ function Ide({ projectName }: Props) {
 
   function factory(node: any): React.Node {
     // eslint-disable-next-line no-throw-literal
-    if (state.projectInfo === null) throw 'unreachable';
-    const { project } = state.projectInfo;
+    if (projectInfo === null) throw 'unreachable';
 
     const getEditorState = (path: string, editorType: string) => {
       const editorState = state.editorStates[path];
@@ -987,7 +950,7 @@ function Ide({ projectName }: Props) {
         return (
           <Editor
             layoutNode={node}
-            project={project}
+            project={projectInfo.project}
             path={id}
             onExecutionAction={handleExecutionAction}
             running={!!state.runningTask}
@@ -1012,7 +975,7 @@ function Ide({ projectName }: Props) {
         return (
           <VisualEditor
             layoutNode={node}
-            project={project}
+            project={projectInfo.project}
             path={id}
             {...getEditorState(id, 'blockly')}
             onUpdate={editorStateSetter(id, 'blockly')}
@@ -1025,7 +988,7 @@ function Ide({ projectName }: Props) {
         return (
           <SimulatorEditor
             layoutNode={node}
-            project={project}
+            project={projectInfo.project}
             path={id}
             onSchemaChange={schema => {
               if (simulatorRef.current && schema)
@@ -1044,7 +1007,7 @@ function Ide({ projectName }: Props) {
   useStyles(FlexLayoutTheme);
   const classes = useStylesMaterial();
 
-  if (state.projectInfo === null) return null;
+  if (projectInfo === null) return null;
 
   function filter(path: string, child: FilerRecursiveStatInfo): boolean {
     if (path === '.' && child.name === '.metadata' && !state.showMetadataFolder)
@@ -1053,7 +1016,6 @@ function Ide({ projectName }: Props) {
   }
 
   const {
-    projectInfo,
     fileTreeState,
     layoutState,
     showMetadataFolder,
