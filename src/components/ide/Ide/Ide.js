@@ -138,7 +138,6 @@ type StateTypes = {|
   layoutState: FlexLayout.Model | null,
   editorStates: { [key: string]: EditorState },
   runningTask: Task | null,
-  pluginsLoaded: boolean,
 |};
 
 const initialState: StateTypes = {
@@ -147,13 +146,11 @@ const initialState: StateTypes = {
   layoutState: null,
   editorStates: {},
   runningTask: null,
-  pluginsLoaded: false,
 };
 
 type IdeAction =
   | {| type: 'LOAD', persistentState: $Shape<StateTypes> |}
   | {| type: 'SET_EDITOR_STATE', path: string, editorState: EditorState |}
-  | {| type: 'MARK_PLUGINS_LOADED' |}
   | {| type: 'SET_RUNNING_TASK', runningTask: Task | null |}
   | {| type: 'EXPAND_DIRECTORY', path: string |}
   | {| type: 'TOGGLE_METADATA_FOLDER' |}
@@ -182,12 +179,6 @@ function ideState(state: StateTypes, action: IdeAction): StateTypes {
             ...editorState,
           },
         },
-      };
-    }
-    case 'MARK_PLUGINS_LOADED': {
-      return {
-        ...state,
-        pluginsLoaded: true,
       };
     }
     case 'SET_RUNNING_TASK': {
@@ -246,6 +237,7 @@ function Ide({ projectName }: Props) {
   const [projectInfo, setProjectInfo] = React.useState<ProjectInfo | null>(
     null,
   );
+  const [pluginsLoaded, setPluginsLoaded] = React.useState<boolean>(false);
 
   const [state, dispatch] = React.useReducer<StateTypes, IdeAction>(
     ideState,
@@ -311,7 +303,7 @@ function Ide({ projectName }: Props) {
       );
       await pluginManagerRef.current.initSdk();
       await pluginManagerRef.current.loadFromProjectMetadata(project);
-      dispatch({ type: 'MARK_PLUGINS_LOADED' });
+      setPluginsLoaded(true);
     })();
   }, [projectInfo]);
 
@@ -1015,12 +1007,7 @@ function Ide({ projectName }: Props) {
     return true;
   }
 
-  const {
-    fileTreeState,
-    layoutState,
-    showMetadataFolder,
-    pluginsLoaded,
-  } = state;
+  const { fileTreeState, layoutState, showMetadataFolder } = state;
 
   return (
     <Grid className={classes.root} container direction="row" wrap="nowrap">
