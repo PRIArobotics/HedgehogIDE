@@ -35,15 +35,10 @@ import FileTree, {
   type FileAction,
   type FileDesc,
   type FileType,
-  type ControlledState as FileTreeState,
 } from '../FileTree';
 import Simulator from '../Simulator';
-import VisualEditor, {
-  type ControlledState as VisualEditorState,
-} from '../VisualEditor';
-import SimulatorEditor, {
-  type ControlledState as SimulatorEditorState,
-} from '../SimulatorEditor';
+import VisualEditor from '../VisualEditor';
+import SimulatorEditor from '../SimulatorEditor';
 
 import {
   type FilerRecursiveStatInfo,
@@ -60,6 +55,8 @@ import Executor, { type Task } from '../Executor';
 import initMiscSdk from '../../../sdk/misc';
 import initHedgehogSdk from '../../../sdk/hedgehog';
 import PluginManager from '../../../sdk/PluginManager';
+
+import usePersistentState from './persistentState';
 
 const messages = defineMessages({
   simulatorTooltip: {
@@ -111,15 +108,6 @@ const useStylesMaterial = makeStyles(theme => ({
   },
 }));
 
-const defaultLayout = {
-  global: {},
-  borders: [],
-  layout: {
-    type: 'tabset',
-    children: [],
-  },
-};
-
 type ExecutionAction =
   | {| action: 'EXECUTE', code: string |}
   | {| action: 'TERMINATE', reset: boolean |}
@@ -130,98 +118,6 @@ type ProjectInfo = {|
   files: FilerRecursiveStatInfo,
   projectUid: string,
 |};
-
-type EditorState = {|
-  blockly?: VisualEditorState,
-  'simulator-editor'?: SimulatorEditorState,
-|};
-
-type StateTypes = {|
-  fileTreeState: FileTreeState,
-  showMetadataFolder: boolean,
-  layoutState: FlexLayout.Model | null,
-  editorStates: { [key: string]: EditorState },
-|};
-
-const initialState: StateTypes = {
-  fileTreeState: { expandedKeys: [] },
-  showMetadataFolder: false,
-  layoutState: null,
-  editorStates: {},
-};
-
-type IdeAction =
-  | {| type: 'LOAD', persistentState: $Shape<StateTypes> |}
-  | {| type: 'SET_EDITOR_STATE', path: string, editorState: EditorState |}
-  | {| type: 'EXPAND_DIRECTORY', path: string |}
-  | {| type: 'TOGGLE_METADATA_FOLDER' |}
-  | {| type: 'UPDATE_FILE_TREE', fileTreeState: FileTreeState |}
-  | {| type: 'LAYOUT', layoutAction: FlexLayout.Action |};
-
-function ideState(state: StateTypes, action: IdeAction): StateTypes {
-  switch (action.type) {
-    case 'LOAD': {
-      const { persistentState } = action;
-
-      return {
-        ...state,
-        ...persistentState,
-      };
-    }
-    case 'SET_EDITOR_STATE': {
-      const { path, editorState } = action;
-
-      return {
-        ...state,
-        editorStates: {
-          ...state.editorStates,
-          [path]: {
-            ...state.editorStates[path],
-            ...editorState,
-          },
-        },
-      };
-    }
-    case 'EXPAND_DIRECTORY': {
-      const { path } = action;
-      const { expandedKeys } = state.fileTreeState;
-
-      // no need to update state if the parent directory is already expanded
-      if (expandedKeys.includes(path)) return state;
-
-      return {
-        ...state,
-        fileTreeState: {
-          ...state.fileTreeState,
-          expandedKeys: [...expandedKeys, path],
-        },
-      };
-    }
-    case 'TOGGLE_METADATA_FOLDER': {
-      return {
-        ...state,
-        showMetadataFolder: !state.showMetadataFolder,
-      };
-    }
-    case 'UPDATE_FILE_TREE': {
-      const { fileTreeState } = action;
-      return {
-        ...state,
-        fileTreeState,
-      };
-    }
-    case 'LAYOUT': {
-      // eslint-disable-next-line no-throw-literal
-      if (state.layoutState === null) throw 'layoutState is null';
-
-      const { layoutAction } = action;
-      state.layoutState.doAction(layoutAction);
-      return state;
-    }
-    default:
-      return state;
-  }
-}
 
 type Props = {|
   projectName: string,
@@ -234,9 +130,8 @@ function Ide({ projectName }: Props) {
   const [pluginsLoaded, setPluginsLoaded] = React.useState<boolean>(false);
   const [runningTask, setRunningTask] = React.useState<Task | null>(null);
 
-  const [state, dispatch] = React.useReducer<StateTypes, IdeAction>(
-    ideState,
-    initialState,
+  const [state, dispatch, save] = usePersistentState(
+    projectInfo && projectInfo.projectUid,
   );
   const consoleRef = hooks.useElementRef<typeof Console>();
   const simulatorRef = hooks.useElementRef<typeof Simulator>();
@@ -264,33 +159,6 @@ function Ide({ projectName }: Props) {
     refreshProject();
   }, [projectName]);
 
-  // reload persistent state when the project was refreshed
-  React.useEffect(() => {
-    (async () => {
-      if (projectInfo === null) return;
-
-      // load persisted state from localStorage
-      const json = localStorage.getItem(`IDE-State-${projectInfo.projectUid}`);
-
-      const persistentState = {
-        // default state
-        fileTreeState: { expandedKeys: [] },
-        showMetadataFolder: false,
-        layoutState: defaultLayout,
-        editorStates: {},
-        // persisted state
-        ...(json ? JSON.parse(json) : {}),
-      };
-
-      // hydrate FlexLayout model
-      const { layoutState: layoutStateJson, ...rest } = persistentState;
-      const layoutState = FlexLayout.Model.fromJson(layoutStateJson);
-
-      // set state
-      dispatch({ type: 'LOAD', persistentState: { layoutState, ...rest } });
-    })();
-  }, [projectInfo]);
-
   // create new plugin manager when the project was refreshed
   React.useEffect(() => {
     (async () => {
@@ -308,43 +176,6 @@ function Ide({ projectName }: Props) {
       setPluginsLoaded(true);
     })();
   }, [projectInfo]);
-
-  function save() {
-    if (projectInfo === null) return;
-    if (state.layoutState === null) return;
-
-    // eslint-disable-next-line no-shadow
-    const {
-      fileTreeState,
-      showMetadataFolder,
-      layoutState: layoutStateModel,
-      editorStates,
-    } = state;
-
-    const layoutState = layoutStateModel.toJson();
-
-    localStorage.setItem(
-      `IDE-State-${projectInfo.projectUid}`,
-      JSON.stringify({
-        fileTreeState,
-        showMetadataFolder,
-        layoutState,
-        editorStates,
-      }),
-    );
-  }
-
-  // save when any of the persistent state changes
-  // TODO make sure the projectUid and the persistent state are not out of sync somewhere
-  React.useEffect(() => {
-    save();
-  }, [
-    projectInfo,
-    state.fileTreeState,
-    state.showMetadataFolder,
-    state.layoutState,
-    state.editorStates,
-  ]);
 
   function getFile(path: string): FileReference {
     // eslint-disable-next-line no-throw-literal
