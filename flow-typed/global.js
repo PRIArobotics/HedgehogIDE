@@ -45,4 +45,4 @@ declare module '@material-ui/lab/Alert' { declare module.exports: any; }
 
 declare module 'graphql' { declare module.exports: any; }
 declare module 'graphql/language' { declare module.exports: any; }
-declare module 'material-ui-popup-state' { declare module.exports: any; }
+declare module 'material-ui-popup-state/hooks' { declare module.exports: any; }

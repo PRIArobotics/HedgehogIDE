@@ -12,7 +12,11 @@ import Paper from '@material-ui/core/Paper';
 import IconButton from '@material-ui/core/IconButton';
 import Tooltip from '@material-ui/core/Tooltip';
 
-import PopupState, { bindTrigger, bindMenu } from 'material-ui-popup-state';
+import {
+  usePopupState,
+  bindTrigger,
+  bindMenu,
+} from 'material-ui-popup-state/hooks';
 
 import filer, { fs } from 'filer';
 
@@ -986,6 +990,11 @@ function Ide({ projectName }: Props) {
     }
   }
 
+  const projectSettingsPopupState = usePopupState({
+    variant: 'popover',
+    popupId: 'project-controls-menu',
+  });
+
   useStyles(FlexLayoutTheme);
   const classes = useStylesMaterial();
 
@@ -1032,40 +1041,34 @@ function Ide({ projectName }: Props) {
               <ConsoleIcon />
             </IconButton>
           </Tooltip>
-          <PopupState variant="popover" popupId="project-controls-menu">
-            {popupState => (
-              <>
-                <Tooltip title={<M {...messages.projectSettingsTooltip} />}>
-                  <IconButton
-                    variant="contained"
-                    color="primary"
-                    size="small"
-                    {...bindTrigger(popupState)}
-                  >
-                    <SettingsIcon />
-                  </IconButton>
-                </Tooltip>
-                <Menu keepMounted {...bindMenu(popupState)}>
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    size="small"
-                    onClick={() => {
-                      popupState.close();
-                      dispatch({ type: 'TOGGLE_METADATA_FOLDER' });
-                    }}
-                  >
-                    <M
-                      {...messages.showHideMetadata}
-                      values={{
-                        action: showMetadataFolder ? 'HIDE' : 'SHOW',
-                      }}
-                    />
-                  </Button>
-                </Menu>
-              </>
-            )}
-          </PopupState>
+          <Tooltip title={<M {...messages.projectSettingsTooltip} />}>
+            <IconButton
+              variant="contained"
+              color="primary"
+              size="small"
+              {...bindTrigger(projectSettingsPopupState)}
+            >
+              <SettingsIcon />
+            </IconButton>
+          </Tooltip>
+          <Menu keepMounted {...bindMenu(projectSettingsPopupState)}>
+            <Button
+              variant="contained"
+              color="primary"
+              size="small"
+              onClick={() => {
+                projectSettingsPopupState.close();
+                dispatch({ type: 'TOGGLE_METADATA_FOLDER' });
+              }}
+            >
+              <M
+                {...messages.showHideMetadata}
+                values={{
+                  action: showMetadataFolder ? 'HIDE' : 'SHOW',
+                }}
+              />
+            </Button>
+          </Menu>
           <hr />
         </div>
         <FileTree
