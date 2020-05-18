@@ -264,15 +264,13 @@ function Ide({ projectName }: Props) {
     refreshProject();
   }, [projectName]);
 
-  // reload persistent state & create new plugin manager when the project was refreshed
+  // reload persistent state when the project was refreshed
   React.useEffect(() => {
     (async () => {
       if (projectInfo === null) return;
 
-      const { project, projectUid } = projectInfo;
-
       // load persisted state from localStorage
-      const json = localStorage.getItem(`IDE-State-${projectUid}`);
+      const json = localStorage.getItem(`IDE-State-${projectInfo.projectUid}`);
 
       const persistentState = {
         // default state
@@ -290,6 +288,13 @@ function Ide({ projectName }: Props) {
 
       // set state
       dispatch({ type: 'LOAD', persistentState: { layoutState, ...rest } });
+    })();
+  }, [projectInfo]);
+
+  // create new plugin manager when the project was refreshed
+  React.useEffect(() => {
+    (async () => {
+      if (projectInfo === null) return;
 
       pluginManagerRef.current = new PluginManager(
         executorRef.current,
@@ -297,7 +302,9 @@ function Ide({ projectName }: Props) {
         getSimulator,
       );
       await pluginManagerRef.current.initSdk();
-      await pluginManagerRef.current.loadFromProjectMetadata(project);
+      await pluginManagerRef.current.loadFromProjectMetadata(
+        projectInfo.project,
+      );
       setPluginsLoaded(true);
     })();
   }, [projectInfo]);
