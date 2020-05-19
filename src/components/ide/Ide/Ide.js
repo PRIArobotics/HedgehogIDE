@@ -57,6 +57,7 @@ import initHedgehogSdk from '../../../sdk/hedgehog';
 import PluginManager from '../../../sdk/PluginManager';
 
 import usePersistentState from './persistentState';
+import useLayoutModel from './layoutModel';
 
 const messages = defineMessages({
   simulatorTooltip: {
@@ -130,7 +131,7 @@ function Ide({ projectName }: Props) {
   const [pluginsLoaded, setPluginsLoaded] = React.useState<boolean>(false);
   const [runningTask, setRunningTask] = React.useState<Task | null>(null);
 
-  const [state, dispatch, save] = usePersistentState(
+  const [state, dispatch] = usePersistentState(
     projectInfo && projectInfo.projectUid,
   );
   const consoleRef = hooks.useElementRef<typeof Console>();
@@ -144,6 +145,11 @@ function Ide({ projectName }: Props) {
   const fileDownloadRef = hooks.useElementRef<typeof FileDownload>();
 
   const pluginManagerRef = React.useRef<PluginManager | null>(null);
+
+  const [layoutModel, handleLayoutModelChange] = useLayoutModel(
+    state.layoutState,
+    (layoutState: { ... }) => dispatch({ type: 'LAYOUT', layoutState }),
+  );
 
   async function refreshProject() {
     // load project from the file system
@@ -204,11 +210,11 @@ function Ide({ projectName }: Props) {
 
   function getNodes() {
     // eslint-disable-next-line no-throw-literal
-    if (state.layoutState === null) throw 'layoutState is null';
+    if (layoutModel === null) throw 'layoutModel is null';
 
     const nodes = {};
 
-    state.layoutState.visitNodes(node => {
+    layoutModel.visitNodes(node => {
       nodes[node.getId()] = node;
     });
 
@@ -217,10 +223,9 @@ function Ide({ projectName }: Props) {
 
   function openOrFocusTab(nodeJson, options?: OpenOrFocusTabOptions) {
     // eslint-disable-next-line no-throw-literal
-    if (state.layoutState === null) throw 'layoutState is null';
+    if (layoutModel === null) throw 'layoutModel is null';
 
     const { id } = nodeJson;
-    const { layoutState } = state;
 
     const nodes = getNodes();
     if (id in nodes) {
@@ -228,10 +233,7 @@ function Ide({ projectName }: Props) {
       if (nodes[id].getType() !== 'tab') throw `'${id}' is not a tab`;
 
       // the tab exists, select it
-      dispatch({
-        type: 'LAYOUT',
-        layoutAction: FlexLayout.Actions.selectTab(id),
-      });
+      layoutModel.doAction(FlexLayout.Actions.selectTab(id));
     } else {
       // create the tab.
       const { location, alwaysNewTabset } = {
@@ -245,7 +247,7 @@ function Ide({ projectName }: Props) {
         targetTabset = null;
       } else {
         // what's the active tabset?
-        const active = layoutState.getActiveTabset();
+        const active = layoutModel.getActiveTabset();
 
         // the active tabset may be undefined or a tabset that was already removed, handle that
         if (
@@ -261,31 +263,32 @@ function Ide({ projectName }: Props) {
 
       if (targetTabset !== null) {
         // there's a target tabset; put the new tab there
-        dispatch({
-          type: 'LAYOUT',
-          layoutAction: FlexLayout.Actions.addNode(
+        layoutModel.doAction(
+          FlexLayout.Actions.addNode(
             nodeJson,
             targetTabset.getId(),
             FlexLayout.DockLocation.CENTER,
             -1,
           ),
-        });
+        );
       } else {
         // put the new tab into the root tabset, at the preferred location.
-        dispatch({
-          type: 'LAYOUT',
-          layoutAction: FlexLayout.Actions.addNode(
+        layoutModel.doAction(
+          FlexLayout.Actions.addNode(
             nodeJson,
-            layoutState.getRoot().getId(),
+            layoutModel.getRoot().getId(),
             location,
             -1,
           ),
-        });
+        );
       }
     }
   }
 
   function closeTabsForFile(file: FileReference) {
+    // eslint-disable-next-line no-throw-literal
+    if (layoutModel === null) throw 'layoutModel is null';
+
     // list all file paths below the given file/directory
     const pathsToClose = [];
     function listPaths(current: FileReference) {
@@ -305,10 +308,7 @@ function Ide({ projectName }: Props) {
     const nodes = getNodes();
     pathsToClose.forEach(path => {
       if (path in nodes) {
-        dispatch({
-          type: 'LAYOUT',
-          layoutAction: FlexLayout.Actions.deleteTab(path),
-        });
+        layoutModel.doAction(FlexLayout.Actions.deleteTab(path));
       }
     });
   }
@@ -844,7 +844,7 @@ function Ide({ projectName }: Props) {
     return true;
   }
 
-  const { fileTreeState, layoutState, showMetadataFolder } = state;
+  const { fileTreeState, showMetadataFolder } = state;
 
   return (
     <Grid className={classes.root} container direction="row" wrap="nowrap">
@@ -926,13 +926,13 @@ function Ide({ projectName }: Props) {
         <FileUpload ref={fileUploadRef} />
         <FileDownload ref={fileDownloadRef} />
       </Grid>
-      {pluginsLoaded && layoutState !== null ? (
+      {pluginsLoaded && layoutModel !== null ? (
         <Grid item component={SquarePaper} className={classes.editorContainer}>
           <FlexLayout.Layout
-            model={layoutState}
+            model={layoutModel}
             factory={factory}
             classNameMapper={className => FlexLayoutTheme[className]}
-            onModelChange={save}
+            onModelChange={handleLayoutModelChange}
           />
         </Grid>
       ) : null}

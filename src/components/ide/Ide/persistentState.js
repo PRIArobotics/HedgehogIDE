@@ -2,8 +2,6 @@
 
 import * as React from 'react';
 
-import FlexLayout from 'flexlayout-react';
-
 import { type ControlledState as FileTreeState } from '../FileTree';
 import { type ControlledState as VisualEditorState } from '../VisualEditor';
 import { type ControlledState as SimulatorEditorState } from '../SimulatorEditor';
@@ -16,7 +14,7 @@ type EditorState = {|
 type StateTypes = {|
   fileTreeState: FileTreeState,
   showMetadataFolder: boolean,
-  layoutState: FlexLayout.Model | null,
+  layoutState: { ... } | null,
   editorStates: { [key: string]: EditorState },
 |};
 
@@ -42,7 +40,7 @@ type IdeAction =
   | {| type: 'EXPAND_DIRECTORY', path: string |}
   | {| type: 'TOGGLE_METADATA_FOLDER' |}
   | {| type: 'UPDATE_FILE_TREE', fileTreeState: FileTreeState |}
-  | {| type: 'LAYOUT', layoutAction: FlexLayout.Action |};
+  | {| type: 'LAYOUT', layoutState: { ... } |};
 
 function ideState(state: StateTypes, action: IdeAction): StateTypes {
   switch (action.type) {
@@ -97,47 +95,21 @@ function ideState(state: StateTypes, action: IdeAction): StateTypes {
       };
     }
     case 'LAYOUT': {
-      // eslint-disable-next-line no-throw-literal
-      if (state.layoutState === null) throw 'layoutState is null';
+      const { layoutState } = action;
 
-      const { layoutAction } = action;
-      state.layoutState.doAction(layoutAction);
-      return state;
+      return {
+        ...state,
+        layoutState,
+      };
     }
     default:
       return state;
   }
 }
 
-function save(projectUid: string | null, state: StateTypes) {
-  if (projectUid === null) return;
-  if (state.layoutState === null) return;
-
-  // eslint-disable-next-line no-shadow
-  const {
-    fileTreeState,
-    showMetadataFolder,
-    layoutState: layoutStateModel,
-    editorStates,
-  } = state;
-
-  const layoutState = layoutStateModel.toJson();
-
-  localStorage.setItem(
-    `IDE-State-${projectUid}`,
-    JSON.stringify({
-      fileTreeState,
-      showMetadataFolder,
-      layoutState,
-      editorStates,
-    }),
-  );
-}
-export default function usePersistentState(projectUid: string | null): [
-  StateTypes,
-  (IdeAction) => void,
-  () => void,
-] {
+export default function usePersistentState(
+  projectUid: string | null,
+): [StateTypes, (IdeAction) => void] {
   const [state, dispatch] = React.useReducer(ideState, initialState);
 
   // reload persistent state when the project was refreshed
@@ -158,20 +130,19 @@ export default function usePersistentState(projectUid: string | null): [
         ...(json ? JSON.parse(json) : {}),
       };
 
-      // hydrate FlexLayout model
-      const { layoutState: layoutStateJson, ...rest } = persistentState;
-      const layoutState = FlexLayout.Model.fromJson(layoutStateJson);
-
       // set state
-      dispatch({ type: 'LOAD', persistentState: { layoutState, ...rest } });
+      dispatch({ type: 'LOAD', persistentState });
     })();
   }, [projectUid]);
 
   // save when any of the persistent state changes
   // TODO make sure the projectUid and the persistent state are not out of sync somewhere
   React.useEffect(() => {
-    save(projectUid, state);
+    if (projectUid === null) return;
+    if (state.layoutState === null) return;
+
+    localStorage.setItem(`IDE-State-${projectUid}`, JSON.stringify(state));
   }, [projectUid, state]);
 
-  return [state, dispatch, () => save(projectUid, state)];
+  return [state, dispatch];
 }
