@@ -114,25 +114,23 @@ export default function usePersistentState(
 
   // reload persistent state when the project was refreshed
   React.useEffect(() => {
-    (async () => {
-      if (projectUid === null) return;
+    if (projectUid === null) return;
 
-      // load persisted state from localStorage
-      const json = localStorage.getItem(`IDE-State-${projectUid}`);
+    // load persisted state from localStorage
+    const json = localStorage.getItem(`IDE-State-${projectUid}`);
 
-      const persistentState = {
-        // default state
-        fileTreeState: { expandedKeys: [] },
-        showMetadataFolder: false,
-        layoutState: defaultLayout,
-        editorStates: {},
-        // persisted state
-        ...(json ? JSON.parse(json) : {}),
-      };
+    const persistentState = {
+      // default state
+      fileTreeState: { expandedKeys: [] },
+      showMetadataFolder: false,
+      layoutState: defaultLayout,
+      editorStates: {},
+      // persisted state
+      ...(json ? JSON.parse(json) : {}),
+    };
 
-      // set state
-      dispatch({ type: 'LOAD', persistentState });
-    })();
+    // set state
+    dispatch({ type: 'LOAD', persistentState });
   }, [projectUid]);
 
   // save when any of the persistent state changes
