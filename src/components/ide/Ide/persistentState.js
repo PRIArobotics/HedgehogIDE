@@ -11,10 +11,12 @@ type EditorState = {|
   'simulator-editor'?: SimulatorEditorState,
 |};
 
-type StateTypes = {|
+type LayoutState = { ... };
+
+type PersistentState = {|
   fileTreeState: FileTreeState,
   showMetadataFolder: boolean,
-  layoutState: { ... } | null,
+  layoutState: LayoutState | null,
   editorStates: { [key: string]: EditorState },
 |};
 
@@ -27,7 +29,7 @@ const defaultLayout = {
   },
 };
 
-const initialState: StateTypes = {
+const initialState: PersistentState = {
   fileTreeState: { expandedKeys: [] },
   showMetadataFolder: false,
   layoutState: null,
@@ -35,14 +37,14 @@ const initialState: StateTypes = {
 };
 
 type IdeAction =
-  | {| type: 'LOAD', persistentState: $Shape<StateTypes> |}
+  | {| type: 'LOAD', persistentState: PersistentState |}
   | {| type: 'SET_EDITOR_STATE', path: string, editorState: EditorState |}
   | {| type: 'EXPAND_DIRECTORY', path: string |}
   | {| type: 'TOGGLE_METADATA_FOLDER' |}
   | {| type: 'UPDATE_FILE_TREE', fileTreeState: FileTreeState |}
-  | {| type: 'LAYOUT', layoutState: { ... } |};
+  | {| type: 'LAYOUT', layoutState: LayoutState |};
 
-function ideState(state: StateTypes, action: IdeAction): StateTypes {
+function ideState(state: PersistentState, action: IdeAction): PersistentState {
   switch (action.type) {
     case 'LOAD': {
       const { persistentState } = action;
@@ -109,7 +111,7 @@ function ideState(state: StateTypes, action: IdeAction): StateTypes {
 
 export default function usePersistentState(
   projectUid: string | null,
-): [StateTypes, (IdeAction) => void] {
+): [PersistentState, (IdeAction) => void] {
   const [state, dispatch] = React.useReducer(ideState, initialState);
 
   // reload persistent state when the project was refreshed
