@@ -4,6 +4,11 @@ import * as React from 'react';
 
 import FlexLayout from 'flexlayout-react';
 
+type LayoutProps = {|
+  model: FlexLayout.Model,
+  onModelChange: () => void,
+|};
+
 // FlexLayout.Model uses a different approach to state:
 // It uses a mutable model object which is not suitable for react's regular
 // handling of state updates.
@@ -22,12 +27,6 @@ import FlexLayout from 'flexlayout-react';
 //
 //    // layoutProps contains both model and onModelChange
 //    return model && <FlexLayout.Layout {...layoutProps} />;
-
-type LayoutProps = {|
-  model: FlexLayout.Model,
-  onModelChange: () => void,
-|};
-
 export default function useLayoutModel(
   layoutState: { ... } | null,
   setLayoutState: ({ ... }) => void,
