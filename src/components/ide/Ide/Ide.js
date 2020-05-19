@@ -146,7 +146,7 @@ function Ide({ projectName }: Props) {
 
   const pluginManagerRef = React.useRef<PluginManager | null>(null);
 
-  const [layoutModel, handleLayoutModelChange] = useLayoutModel(
+  const [layoutModel, layoutProps] = useLayoutModel(
     state.layoutState,
     (layoutState: { ... }) => dispatch({ type: 'LAYOUT', layoutState }),
   );
@@ -929,10 +929,9 @@ function Ide({ projectName }: Props) {
       {pluginsLoaded && layoutModel !== null ? (
         <Grid item component={SquarePaper} className={classes.editorContainer}>
           <FlexLayout.Layout
-            model={layoutModel}
+            {...layoutProps}
             factory={factory}
             classNameMapper={className => FlexLayoutTheme[className]}
-            onModelChange={handleLayoutModelChange}
           />
         </Grid>
       ) : null}
