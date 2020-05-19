@@ -117,7 +117,7 @@ function SimulatorEditor({
       layoutNode.setEventListener('resize', null);
       layoutNode.setEventListener('visibility', null);
     };
-  }, [layoutNode]);
+  }, [layoutNode, blocklyRef]);
 
   // animate workspace size when the sidebar is expanding or collapsing
   const [startAnimation, stopAnimation] = hooks.useAnimationFrame(() => {

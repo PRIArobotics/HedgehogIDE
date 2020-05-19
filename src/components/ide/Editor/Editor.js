@@ -68,7 +68,7 @@ function Editor({
       layoutNode.setEventListener('resize', null);
       layoutNode.setEventListener('visibility', null);
     };
-  }, [layoutNode]);
+  }, [layoutNode, containerRef]);
 
   useStyles(s);
   return (
