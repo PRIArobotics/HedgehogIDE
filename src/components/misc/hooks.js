@@ -70,3 +70,78 @@ export function useAnimationFrame(
 
   return [start, stop];
 }
+
+type StoreState<T> =
+  | {| type: 'CLEAR' |}
+  | {| type: 'PENDING', promise: Promise<T> |}
+  | {| type: 'RESOLVED', value: T |};
+
+// Accesses data in a store and puts it into a state variable.
+// A store here is anything that can be read/written using (optionally async)
+// load/store functions.
+// Whenever the load & store functions change the store value is reloaded,
+// and whenever the value is changed using the returned setter, it is stored.
+// Until a load is finished (i.e. initially and after changing the store),
+// the state is reset to null and any attempts to set it is ignored:
+// only a loaded value can be overwritten.
+// Possibly pending loads from a previous store are also ignored.
+//
+// As any change to load/store results in a reload and thus a re-render,
+// it would not be possible to pass inline functions to `useStore` without
+// wrapping them in `useCallback`.
+// For convenience, a `deps` array can be passed in that must be set to the
+// dependencies of the passed load/store functions.
+// If omitted, this hook uses load & store themselves as the deps.
+export function useStore<T>(
+  load: () => T | Promise<T>,
+  store: T => void | Promise<void>,
+  deps?: any[],
+): [T | null, (T) => void] {
+  const realDeps = deps || [load, store];
+
+  const [state, setState] = React.useState<StoreState<T>>({ type: 'CLEAR' });
+
+  // reload the state when the store changes
+  React.useEffect(() => {
+    // save the loading promise to verify only the latest load goes through
+    const promise = Promise.resolve(load());
+    setState({ type: 'PENDING', promise });
+
+    promise.then((value: T) => {
+      setState(oldState => {
+        // ignore the promise if it is not the currently loading one
+        if (oldState.type !== 'PENDING' || oldState.promise !== promise)
+          return oldState;
+
+        return { type: 'RESOLVED', value };
+      });
+    });
+
+    // after changing the store, clear the state to prevent further use
+    return () => {
+      setState({ type: 'CLEAR' });
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, realDeps);
+
+  // save the state when it changed
+  React.useEffect(() => {
+    // if the state was not loaded yet for whatever reason, store nothing
+    if (state.type !== 'RESOLVED') return;
+
+    store(state.value);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [...realDeps, state]);
+
+  return [
+    state.type === 'RESOLVED' ? state.value : null,
+    (value: T) => {
+      setState(oldState => {
+        // ignore attempts to set state unless it is loaded
+        if (oldState.type !== 'RESOLVED') return oldState;
+
+        return { type: 'RESOLVED', value };
+      });
+    },
+  ];
+}
