@@ -91,6 +91,26 @@ type Props = {|
   layoutNode: any,
 |};
 
+function generateSchema(
+  workspace: Blockly.Workspace,
+): SimulationSchema.SimulatorJson | null {
+  const roots = workspace.getBlocksByType('simulator_root');
+  if (roots.length !== 1) return null;
+
+  const [simulation] = roots;
+  return simulation.serialize();
+}
+
+export function generateSchemaFromXml(
+  workspaceXml: string,
+): SimulationSchema.SimulatorJson | null {
+  const workspace = new Blockly.Workspace();
+  Blockly.Xml.domToWorkspace(Blockly.Xml.textToDom(workspaceXml), workspace);
+  const result = generateSchema(workspace);
+  workspace.dispose();
+  return result;
+}
+
 function SimulatorEditor({
   layoutNode,
   project,
@@ -147,16 +167,6 @@ function SimulatorEditor({
   // handle blockly changes by saving the file and regenerating code
   const [json, setJson] = React.useState<string | null>(null);
 
-  // eslint-disable-next-line no-shadow
-  function generateSchema(
-    workspace: Blockly.Workspace,
-  ): SimulationSchema.SimulatorJson | null {
-    const roots = workspace.getBlocksByType('simulator_root');
-    if (roots.length !== 1) return null;
-
-    const [simulation] = roots;
-    return simulation.serialize();
-  }
   function refreshJson(schema: SimulationSchema.SimulatorJson | null) {
     setJson(schema === null ? '' : JSON.stringify(schema, undefined, 2));
   }
