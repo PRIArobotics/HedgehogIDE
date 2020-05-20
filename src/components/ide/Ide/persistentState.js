@@ -20,15 +20,6 @@ type PersistentState = {|
   editorStates: { [key: string]: EditorState },
 |};
 
-const defaultLayout = {
-  global: {},
-  borders: [],
-  layout: {
-    type: 'tabset',
-    children: [],
-  },
-};
-
 const initialState: PersistentState = {
   fileTreeState: { expandedKeys: [] },
   showMetadataFolder: false,
@@ -125,7 +116,14 @@ export default function usePersistentState(
       // default state
       fileTreeState: { expandedKeys: [] },
       showMetadataFolder: false,
-      layoutState: defaultLayout,
+      layoutState: {
+        global: {},
+        borders: [],
+        layout: {
+          type: 'tabset',
+          children: [],
+        },
+      },
       editorStates: {},
       // persisted state
       ...(json ? JSON.parse(json) : {}),
