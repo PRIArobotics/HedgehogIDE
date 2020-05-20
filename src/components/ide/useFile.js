@@ -1,62 +1,27 @@
 // @flow
 
-import * as React from 'react';
-
 import { fs } from 'filer';
 
 import { Project } from '../../core/store/projects';
+import { useStore } from '../misc/hooks';
 
 export { Project };
-
-type Content = string;
-type MaybeContent = Content | null;
-type ContentSetter = (content: Content) => void | Promise<void>;
 
 function useFile(
   project: Project,
   path: string,
-): [MaybeContent, ContentSetter] {
-  const [content, setContentImpl] = React.useState<MaybeContent>(null);
-
-  // reload file contents when the project or file changes
-  React.useEffect(() => {
-    // load the file's contents
-    (async () => {
-      const absolutePath = project.resolve(path);
-
-      const newContent = await fs.promises.readFile(absolutePath, 'utf8');
-      setContentImpl(newContent);
-    })();
-
-    // after changing the file, set the content to null to prevent further use
-    // of the old content
-    return () => {
-      setContentImpl(null);
-    };
-  }, [project, path]);
-
-  // save the file when content changed
-  // TODO test that the setContentImpl(null) when changing file is dispatched
-  // before this effect, so that content can not be erroneously written to the
-  // wrong file
-  React.useEffect(() => {
-    (async () => {
-      // if the content was not loaded yet for whatever reason, don't delete
-      // existing file contents.
-      if (content === null) return;
-
-      const absolutePath = project.resolve(path);
-      await fs.promises.writeFile(absolutePath, content, 'utf8');
-    })();
-  }, [project, path, content]);
-
-  function setContent(newContent: Content) {
-    // only set content if the current content is not null,
-    // i.e. the original file contents were loaded successfully
-    if (content !== null) setContentImpl(newContent);
+): [string | null, (string) => void] {
+  async function load() {
+    const absolutePath = project.resolve(path);
+    return /* await */ fs.promises.readFile(absolutePath, 'utf8');
   }
 
-  return [content, setContent];
+  async function store(content) {
+    const absolutePath = project.resolve(path);
+    await fs.promises.writeFile(absolutePath, content, 'utf8');
+  }
+
+  return useStore<string>(load, store, [project, path]);
 }
 
 export default useFile;
