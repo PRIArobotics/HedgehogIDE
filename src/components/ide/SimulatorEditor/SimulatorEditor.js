@@ -167,13 +167,9 @@ function SimulatorEditor({
   // handle blockly changes by saving the file and regenerating code
   const [json, setJson] = React.useState<string | null>(null);
 
-  function refreshJson(schema: SimulationSchema.SimulatorJson | null) {
-    setJson(schema === null ? '' : JSON.stringify(schema, undefined, 2));
-  }
-
   function handleBlocklyChange(workspace: Blockly.Workspace) {
     const schema = generateSchema(workspace);
-    refreshJson(schema);
+    setJson(schema === null ? '' : JSON.stringify(schema, undefined, 2));
     onSchemaChange(schema);
 
     const workspaceXml = Blockly.Xml.domToText(
