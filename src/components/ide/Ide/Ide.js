@@ -43,7 +43,6 @@ import SimulatorEditor from '../SimulatorEditor';
 import {
   type FilerRecursiveStatInfo,
   type FilerRecursiveDirectoryInfo,
-  Project,
 } from '../../../core/store/projects';
 
 import CreateFileDialog from '../FileTree/CreateFileDialog';
@@ -56,6 +55,7 @@ import initMiscSdk from '../../../sdk/misc';
 import initHedgehogSdk from '../../../sdk/hedgehog';
 import PluginManager from '../../../sdk/PluginManager';
 
+import useProjectInfo from './projectInfo';
 import usePersistentState from './persistentState';
 import useLayoutModel from './layoutModel';
 
@@ -114,20 +114,12 @@ type ExecutionAction =
   | {| action: 'TERMINATE', reset: boolean |}
   | {| action: 'RESET' |};
 
-type ProjectInfo = {|
-  project: Project,
-  files: FilerRecursiveStatInfo,
-  projectUid: string,
-|};
-
 type Props = {|
   projectName: string,
 |};
 
 function Ide({ projectName }: Props) {
-  const [projectInfo, setProjectInfo] = React.useState<ProjectInfo | null>(
-    null,
-  );
+  const [projectInfo, refreshProject] = useProjectInfo(projectName);
   const [pluginsLoaded, setPluginsLoaded] = React.useState<boolean>(false);
   const [runningTask, setRunningTask] = React.useState<Task | null>(null);
 
@@ -150,20 +142,6 @@ function Ide({ projectName }: Props) {
     state.layoutState,
     (layoutState: { ... }) => dispatch({ type: 'LAYOUT', layoutState }),
   );
-
-  async function refreshProject() {
-    // load project from the file system
-    const project = await Project.getProject(projectName);
-    const files = await project.getFiles();
-    const projectUid = await project.getUid();
-
-    setProjectInfo({ project, files, projectUid });
-  }
-
-  // refresh project when projectName changes
-  React.useEffect(() => {
-    refreshProject();
-  }, [projectName]);
 
   // create new plugin manager when the project was refreshed
   React.useEffect(() => {
