@@ -1,6 +1,6 @@
 // @flow
 
-import * as React from 'react';
+import { useStore } from '../../misc/hooks';
 
 import { type ControlledState as FileTreeState } from '../FileTree';
 import { type ControlledState as VisualEditorState } from '../VisualEditor';
@@ -96,16 +96,13 @@ function ideState(
 export default function usePersistentState(
   projectUid: string | null,
 ): [PersistentState | null, (IdeAction) => void] {
-  const [state, dispatch] = React.useReducer(ideState, null);
-
-  // reload persistent state when the project was refreshed
-  React.useEffect(() => {
-    if (projectUid === null) return;
+  function load() {
+    if (projectUid === null) return null;
 
     // load persisted state from localStorage
     const json = localStorage.getItem(`IDE-State-${projectUid}`);
 
-    const persistentState = {
+    const state = {
       // default state
       fileTreeState: { expandedKeys: [] },
       showMetadataFolder: false,
@@ -119,21 +116,25 @@ export default function usePersistentState(
       },
       editorStates: {},
       // persisted state
-      ...(json ? JSON.parse(json) : {}),
+      ...(json ? JSON.parse(json) : null),
     };
 
-    // set state
-    dispatch({ type: 'LOAD', persistentState });
-  }, [projectUid]);
+    return state;
+  }
 
-  // save when any of the persistent state changes
-  // TODO make sure the projectUid and the persistent state are not out of sync somewhere
-  React.useEffect(() => {
-    if (projectUid === null) return;
-    if (state === null) return;
+  function store(state) {
+    if (projectUid === null || state === null) return;
 
     localStorage.setItem(`IDE-State-${projectUid}`, JSON.stringify(state));
-  }, [projectUid, state]);
+  }
+
+  const [state, setState] = useStore<PersistentState | null>(load, store, [
+    projectUid,
+  ]);
+
+  function dispatch(action: IdeAction) {
+    setState(ideState(state, action));
+  }
 
   return [state, dispatch];
 }
