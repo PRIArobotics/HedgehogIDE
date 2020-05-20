@@ -16,16 +16,9 @@ type LayoutState = { ... };
 type PersistentState = {|
   fileTreeState: FileTreeState,
   showMetadataFolder: boolean,
-  layoutState: LayoutState | null,
+  layoutState: LayoutState,
   editorStates: { [path: string]: EditorStates },
 |};
-
-const initialState: PersistentState = {
-  fileTreeState: { expandedKeys: [] },
-  showMetadataFolder: false,
-  layoutState: null,
-  editorStates: {},
-};
 
 type IdeAction =
   | {| type: 'LOAD', persistentState: PersistentState |}
@@ -35,16 +28,16 @@ type IdeAction =
   | {| type: 'UPDATE_FILE_TREE', fileTreeState: FileTreeState |}
   | {| type: 'LAYOUT', layoutState: LayoutState |};
 
-function ideState(state: PersistentState, action: IdeAction): PersistentState {
-  switch (action.type) {
-    case 'LOAD': {
-      const { persistentState } = action;
+function ideState(
+  state: PersistentState | null,
+  action: IdeAction,
+): PersistentState {
+  // handle LOAD separately to be able to ensure a non-null state below
+  if (action.type === 'LOAD') return action.persistentState;
+  // eslint-disable-next-line no-throw-literal
+  if (state === null) throw 'state must be loaded first';
 
-      return {
-        ...state,
-        ...persistentState,
-      };
-    }
+  switch (action.type) {
     case 'SET_EDITOR_STATE': {
       const { path, editorStates } = action;
 
@@ -102,8 +95,8 @@ function ideState(state: PersistentState, action: IdeAction): PersistentState {
 
 export default function usePersistentState(
   projectUid: string | null,
-): [PersistentState, (IdeAction) => void] {
-  const [state, dispatch] = React.useReducer(ideState, initialState);
+): [PersistentState | null, (IdeAction) => void] {
+  const [state, dispatch] = React.useReducer(ideState, null);
 
   // reload persistent state when the project was refreshed
   React.useEffect(() => {
@@ -137,7 +130,7 @@ export default function usePersistentState(
   // TODO make sure the projectUid and the persistent state are not out of sync somewhere
   React.useEffect(() => {
     if (projectUid === null) return;
-    if (state.layoutState === null) return;
+    if (state === null) return;
 
     localStorage.setItem(`IDE-State-${projectUid}`, JSON.stringify(state));
   }, [projectUid, state]);

@@ -140,7 +140,7 @@ function Ide({ projectName }: Props) {
   const pluginManagerRef = React.useRef<PluginManager | null>(null);
 
   const [layoutModel, layoutProps] = useLayoutModel(
-    state.layoutState,
+    state && state.layoutState,
     (layoutState: { ... }) => dispatch({ type: 'LAYOUT', layoutState }),
   );
 
@@ -773,7 +773,7 @@ function Ide({ projectName }: Props) {
   useStyles(FlexLayoutTheme);
   const classes = useStylesMaterial();
 
-  if (projectInfo === null) return null;
+  if (projectInfo === null || state === null) return null;
 
   const { fileTreeState, showMetadataFolder } = state;
 
