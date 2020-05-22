@@ -38,7 +38,8 @@ import FileTree, {
 } from '../FileTree';
 import Simulator from '../Simulator';
 import VisualEditor from '../VisualEditor';
-import SimulatorEditor from '../SimulatorEditor';
+import SimulatorEditor, { generateSchemaFromXml } from '../SimulatorEditor';
+import * as SimulationSchema from '../SimulatorEditor/SimulationSchema';
 
 import {
   type FilerRecursiveStatInfo,
@@ -160,6 +161,38 @@ function Ide({ projectName }: Props) {
       setPluginsLoaded(true);
     })();
   }, [projectInfo]);
+
+  // load the project's simulator schema if it or the simulator changes
+  const simulatorXml = projectInfo && projectInfo.simulatorXml;
+
+  function refreshSimulatorFromSchema(
+    schema: SimulationSchema.SimulatorJson | null,
+  ) {
+    if (simulatorRef.current === null || schema === null) return;
+
+    simulatorRef.current.simulation.jsonInit(schema);
+  }
+
+  function refreshSimulator() {
+    if (simulatorXml === null) return;
+
+    const schema = generateSchemaFromXml(simulatorXml);
+    refreshSimulatorFromSchema(schema);
+  }
+
+  React.useEffect(() => {
+    refreshSimulator();
+  }, [simulatorXml]);
+
+  // uses useCallback because otherwise each render resets the ref.
+  // (the ref could be registered with a new callback,
+  // so the callback needs to be stable)
+  const attachSimulator = React.useCallback(
+    sim => {
+      simulatorRef.current = sim;
+    },
+    [simulatorRef],
+  );
 
   function getFile(path: string): FileReference {
     // eslint-disable-next-line no-throw-literal
@@ -766,7 +799,7 @@ function Ide({ projectName }: Props) {
       case 'simulator': {
         return (
           <Simulator
-            ref={simulatorRef}
+            ref={attachSimulator}
             width={600}
             height={400}
             onExecutionAction={handleExecutionAction}
@@ -796,10 +829,7 @@ function Ide({ projectName }: Props) {
             project={projectInfo.project}
             path={id}
             {...bindEditorProps(id, 'simulator-editor')}
-            onSchemaChange={schema => {
-              if (simulatorRef.current && schema)
-                simulatorRef.current.simulation.jsonInit(schema);
-            }}
+            onSchemaChange={refreshSimulatorFromSchema}
           />
         );
       }

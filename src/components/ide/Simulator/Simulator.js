@@ -328,7 +328,9 @@ function Simulator(
     };
   }, [renderTarget, simulation, width, height]);
 
-  React.useImperativeHandle(ref, () => ({ simulation }));
+  // Need to use a dependency array here, because Ide requires a stable ref.
+  // On each change to the Simulator ref, jsonInit is potentially called.
+  React.useImperativeHandle(ref, () => ({ simulation }), [simulation]);
 
   useStyles(s);
   return (
