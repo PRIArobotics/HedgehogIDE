@@ -63,7 +63,7 @@ function Console(props: Props, ref: Ref<Instance>) {
 
   React.useEffect(() => {
     if (bottomRef.current !== null) bottomRef.current.scrollIntoView(false);
-  }, [items]);
+  }, [items, bottomRef]);
 
   function print(text: string, stream: string) {
     dispatch({ type: 'PRINT', text, stream });
