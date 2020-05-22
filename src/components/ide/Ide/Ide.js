@@ -758,15 +758,18 @@ function Ide({ projectName }: Props) {
     // eslint-disable-next-line no-throw-literal
     if (projectInfo === null) throw 'unreachable';
 
-    const getEditorState = (path: string, editorType: string) => {
-      const editorState = state.editorStates[path];
-      return editorState ? editorState[editorType] : null;
-    };
-
-    const editorStateSetter = (path: string, editorType: string) => state => {
-      const editorState = { [editorType]: state };
-      dispatch({ type: 'SET_EDITOR_STATE', path, editorState });
-    };
+    function bindEditorProps(path: string, editorType: string) {
+      return {
+        ...(() => {
+          const editorState = state.editorStates[path];
+          return editorState ? editorState[editorType] : null;
+        })(),
+        onUpdate: state => {
+          const editorState = { [editorType]: state };
+          dispatch({ type: 'SET_EDITOR_STATE', path, editorState });
+        },
+      };
+    }
 
     const id = node.getId();
     switch (node.getComponent()) {
@@ -776,6 +779,7 @@ function Ide({ projectName }: Props) {
             layoutNode={node}
             project={projectInfo.project}
             path={id}
+            // {...bindEditorProps(id, 'editor')}
             onExecutionAction={handleExecutionAction}
             running={runningTask !== null}
           />
@@ -801,8 +805,7 @@ function Ide({ projectName }: Props) {
             layoutNode={node}
             project={projectInfo.project}
             path={id}
-            {...getEditorState(id, 'blockly')}
-            onUpdate={editorStateSetter(id, 'blockly')}
+            {...bindEditorProps(id, 'blockly')}
             onExecutionAction={handleExecutionAction}
             running={runningTask !== null}
           />
@@ -814,12 +817,11 @@ function Ide({ projectName }: Props) {
             layoutNode={node}
             project={projectInfo.project}
             path={id}
+            {...bindEditorProps(id, 'simulator-editor')}
             onSchemaChange={schema => {
               if (simulatorRef.current && schema)
                 simulatorRef.current.simulation.jsonInit(schema);
             }}
-            {...getEditorState(id, 'simulator-editor')}
-            onUpdate={editorStateSetter(id, 'simulator-editor')}
           />
         );
       }
