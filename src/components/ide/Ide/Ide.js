@@ -765,14 +765,23 @@ function Ide({ projectName }: Props) {
     }
   }
 
-  function factory(node: any): React.Node {
-    // eslint-disable-next-line no-throw-literal
-    if (projectInfo === null) throw 'unreachable';
+  const projectSettingsPopupState = usePopupState({
+    variant: 'popover',
+    popupId: 'project-controls-menu',
+  });
 
+  useStyles(FlexLayoutTheme);
+  const classes = useStylesMaterial();
+
+  if (projectInfo === null) return null;
+
+  const { fileTreeState, editorStates, showMetadataFolder } = state;
+
+  function factory(node: any): React.Node {
     function bindEditorProps(path: string, editorType: string) {
       return {
         ...(() => {
-          const editorState = state.editorStates[path];
+          const editorState = editorStates[path];
           return editorState ? editorState[editorType] : null;
         })(),
         onUpdate: state => {
@@ -838,23 +847,11 @@ function Ide({ projectName }: Props) {
     }
   }
 
-  const projectSettingsPopupState = usePopupState({
-    variant: 'popover',
-    popupId: 'project-controls-menu',
-  });
-
-  useStyles(FlexLayoutTheme);
-  const classes = useStylesMaterial();
-
-  if (projectInfo === null) return null;
-
   function filter(path: string, child: FilerRecursiveStatInfo): boolean {
-    if (path === '.' && child.name === '.metadata' && !state.showMetadataFolder)
+    if (path === '.' && child.name === '.metadata' && !showMetadataFolder)
       return false;
     return true;
   }
-
-  const { fileTreeState, showMetadataFolder } = state;
 
   return (
     <Grid className={classes.root} container direction="row" wrap="nowrap">
