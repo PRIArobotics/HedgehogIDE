@@ -775,18 +775,19 @@ function Ide({ projectName }: Props) {
 
   if (projectInfo === null) return null;
 
-  const { fileTreeState, editorStates, showMetadataFolder } = state;
+  const { fileTreeState, showMetadataFolder } = state;
 
   function factory(node: any): React.Node {
     function bindEditorProps(path: string, editorType: string) {
       return {
         ...(() => {
-          const editorState = editorStates[path];
-          return editorState ? editorState[editorType] : null;
+          const editorStates = state.editorStates[path];
+          const editorState = editorStates ? editorStates[editorType] : null;
+          return editorState;
         })(),
-        onUpdate: state => {
-          const editorState = { [editorType]: state };
-          dispatch({ type: 'SET_EDITOR_STATE', path, editorState });
+        onUpdate: editorState => {
+          const editorStates = { [editorType]: editorState };
+          dispatch({ type: 'SET_EDITOR_STATE', path, editorStates });
         },
       };
     }

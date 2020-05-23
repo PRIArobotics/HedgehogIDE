@@ -6,7 +6,7 @@ import { type ControlledState as FileTreeState } from '../FileTree';
 import { type ControlledState as VisualEditorState } from '../VisualEditor';
 import { type ControlledState as SimulatorEditorState } from '../SimulatorEditor';
 
-type EditorState = {|
+type EditorStates = {|
   blockly?: VisualEditorState,
   'simulator-editor'?: SimulatorEditorState,
 |};
@@ -17,7 +17,7 @@ type PersistentState = {|
   fileTreeState: FileTreeState,
   showMetadataFolder: boolean,
   layoutState: LayoutState | null,
-  editorStates: { [key: string]: EditorState },
+  editorStates: { [path: string]: EditorStates },
 |};
 
 const initialState: PersistentState = {
@@ -29,7 +29,7 @@ const initialState: PersistentState = {
 
 type IdeAction =
   | {| type: 'LOAD', persistentState: PersistentState |}
-  | {| type: 'SET_EDITOR_STATE', path: string, editorState: EditorState |}
+  | {| type: 'SET_EDITOR_STATE', path: string, editorStates: EditorStates |}
   | {| type: 'EXPAND_DIRECTORY', path: string |}
   | {| type: 'TOGGLE_METADATA_FOLDER' |}
   | {| type: 'UPDATE_FILE_TREE', fileTreeState: FileTreeState |}
@@ -46,7 +46,7 @@ function ideState(state: PersistentState, action: IdeAction): PersistentState {
       };
     }
     case 'SET_EDITOR_STATE': {
-      const { path, editorState } = action;
+      const { path, editorStates } = action;
 
       return {
         ...state,
@@ -54,7 +54,7 @@ function ideState(state: PersistentState, action: IdeAction): PersistentState {
           ...state.editorStates,
           [path]: {
             ...state.editorStates[path],
-            ...editorState,
+            ...editorStates,
           },
         },
       };
