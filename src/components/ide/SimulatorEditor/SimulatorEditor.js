@@ -76,9 +76,9 @@ const workspaceOptions = {
   scrollbars: true,
 };
 
-export type ControlledState = $Shape<{|
+export type ControlledState = {|
   jsonCollapsed: boolean,
-|}>;
+|};
 
 type Props = {|
   project: Project,
@@ -86,7 +86,7 @@ type Props = {|
   onSchemaChange: (
     schema: SimulationSchema.SimulatorJson | null,
   ) => void | Promise<void>,
-  jsonCollapsed: boolean,
+  ...ControlledState,
   onUpdate: (state: ControlledState) => void | Promise<void>,
   layoutNode: any,
 |};
@@ -213,6 +213,7 @@ function SimulatorEditor({
   );
 }
 SimulatorEditor.defaultProps = {
+  // eslint-disable-next-line react/default-props-match-prop-types
   jsonCollapsed: true,
 };
 

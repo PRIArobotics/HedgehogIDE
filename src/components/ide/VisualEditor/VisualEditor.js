@@ -55,16 +55,15 @@ const LOCALES: LocaleMap<BlocklyLocale> = {
   },
 };
 
-export type ControlledState = $Shape<{|
+export type ControlledState = {|
   codeCollapsed: boolean,
   codeLanguage: 'JavaScript' | 'Python',
-|}>;
+|};
 
 type Props = {|
   project: Project,
   path: string,
-  codeCollapsed: boolean,
-  codeLanguage: 'JavaScript' | 'Python',
+  ...ControlledState,
   onUpdate: (state: ControlledState) => void | Promise<void>,
   onExecutionAction: (action: ExecutionAction) => void | Promise<void>,
   running: boolean,
@@ -302,7 +301,7 @@ function VisualEditor({
   });
 
   function handleToggleCodeCollapsed() {
-    onUpdate({ codeCollapsed: !codeCollapsed });
+    onUpdate({ codeLanguage, codeCollapsed: !codeCollapsed });
     startAnimation();
   }
 
@@ -340,7 +339,7 @@ function VisualEditor({
 
   // eslint-disable-next-line no-shadow
   function setCodeLanguage(codeLanguage: 'JavaScript' | 'Python') {
-    onUpdate({ codeLanguage });
+    onUpdate({ codeLanguage, codeCollapsed });
   }
 
   useStyles(s);
@@ -454,7 +453,9 @@ function VisualEditor({
   );
 }
 VisualEditor.defaultProps = {
+  // eslint-disable-next-line react/default-props-match-prop-types
   codeCollapsed: true,
+  // eslint-disable-next-line react/default-props-match-prop-types
   codeLanguage: 'JavaScript',
 };
 // type: [() => Block[]]
