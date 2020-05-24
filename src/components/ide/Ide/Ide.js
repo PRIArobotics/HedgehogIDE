@@ -190,8 +190,9 @@ function Ide({ projectName }: Props) {
   const attachSimulator = React.useCallback(
     sim => {
       simulatorRef.current = sim;
+      refreshSimulator();
     },
-    [simulatorRef],
+    [simulatorRef, simulatorXml],
   );
 
   function getFile(path: string): FileReference {
