@@ -18,7 +18,7 @@ type PropTypes = {|
   initialWorkspaceXml: string,
   locale: Locale,
   workspaceOptions?: Object,
-  onChange: (workspace: Blockly.Workspace) => void | Promise<void>,
+  onChange?: (workspace: Blockly.Workspace) => void | Promise<void>,
 |};
 type StateTypes = {||};
 
@@ -32,13 +32,13 @@ class BlocklyComponent extends React.Component<PropTypes, StateTypes> {
     if (this.blocklyRef.current === null) throw 'ref is null';
     this.props.forwardedRef.current = this;
 
-    const { initialWorkspaceXml, locale, workspaceOptions } = this.props;
+    const { initialWorkspaceXml } = this.props;
 
     const dom =
       initialWorkspaceXml !== ''
         ? Blockly.Xml.textToDom(initialWorkspaceXml)
         : null;
-    this.injectWorkspace(locale, workspaceOptions, dom);
+    this.injectWorkspace(dom);
 
     this.refreshSize();
   }
@@ -54,26 +54,32 @@ class BlocklyComponent extends React.Component<PropTypes, StateTypes> {
     const {
       locale: { rtl: prevRtl, msg: prevMsg },
     } = prevProps;
-    const { locale, workspaceOptions } = this.props;
+    const {
+      locale: { rtl, msg },
+    } = this.props;
 
-    // eslint-disable-next-line no-throw-literal
     if (this.workspace === null) return;
     const { workspace } = this;
 
-    if (locale.rtl !== prevRtl || locale.msg !== prevMsg) {
+    if (rtl !== prevRtl || msg !== prevMsg) {
       const dom = Blockly.Xml.workspaceToDom(workspace);
       workspace.dispose();
-      this.injectWorkspace(locale, workspaceOptions, dom);
+      this.injectWorkspace(dom);
     }
   }
 
-  injectWorkspace({ rtl, msg }: Locale, options: Object, dom) {
+  injectWorkspace(dom) {
     // eslint-disable-next-line no-throw-literal
     if (this.blocklyRef.current === null) throw 'ref is null';
 
+    const {
+      locale: { rtl, msg },
+      workspaceOptions,
+    } = this.props;
+
     Blockly.setLocale(msg);
     const workspace = Blockly.inject(this.blocklyRef.current, {
-      ...options,
+      ...workspaceOptions,
       rtl,
     });
 
@@ -91,10 +97,7 @@ class BlocklyComponent extends React.Component<PropTypes, StateTypes> {
     }
 
     workspace.addChangeListener(() => {
-      // eslint-disable-next-line no-throw-literal
-      if (this.workspace === null) throw 'unreachable';
-
-      this.props.onChange(this.workspace);
+      if (this.props.onChange) this.props.onChange(workspace);
     });
 
     this.workspace = workspace;
