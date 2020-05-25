@@ -27,7 +27,10 @@ import {
 import * as hooks from '../../misc/hooks';
 
 import ExecutionAction from '../Ide';
-import BlocklyComponent, { type Locale as BlocklyLocale } from '../Blockly';
+import BlocklyComponent, {
+  type Locale as BlocklyLocale,
+  type WorkspaceTransform,
+} from '../Blockly';
 import ToolBar from '../ToolBar';
 import ToolBarIconButton from '../ToolBar/ToolBarIconButton';
 import ToolBarItem from '../ToolBar/ToolBarItem';
@@ -58,6 +61,7 @@ const LOCALES: LocaleMap<BlocklyLocale> = {
 export type ControlledState = {|
   codeCollapsed: boolean,
   codeLanguage: 'JavaScript' | 'Python',
+  workspaceTransform: WorkspaceTransform,
 |};
 
 type Props = {|
@@ -76,6 +80,7 @@ function VisualEditor({
   path,
   codeCollapsed,
   codeLanguage,
+  workspaceTransform,
   onUpdate,
   onExecutionAction,
   running,
@@ -249,7 +254,6 @@ function VisualEditor({
       zoom: {
         controls: false,
         wheel: true,
-        startScale: 1.0,
         maxScale: 1.5,
         minScale: 0.4,
         scaleSpeed: 1.02,
@@ -301,7 +305,11 @@ function VisualEditor({
   });
 
   function handleToggleCodeCollapsed() {
-    onUpdate({ codeLanguage, codeCollapsed: !codeCollapsed });
+    onUpdate({
+      codeLanguage,
+      codeCollapsed: !codeCollapsed,
+      workspaceTransform,
+    });
     startAnimation();
   }
 
@@ -332,6 +340,13 @@ function VisualEditor({
     refreshCode();
   }
 
+  function handleBlocklyScroll(workspace: Blockly.Workspace) {
+    const { scrollX, scrollY, scale } = workspace;
+    // eslint-disable-next-line no-shadow
+    const workspaceTransform = { scrollX, scrollY, scale };
+    onUpdate({ codeLanguage, codeCollapsed, workspaceTransform });
+  }
+
   // handle language changes by regenerating code
   React.useEffect(() => {
     refreshCode();
@@ -339,7 +354,7 @@ function VisualEditor({
 
   // eslint-disable-next-line no-shadow
   function setCodeLanguage(codeLanguage: 'JavaScript' | 'Python') {
-    onUpdate({ codeLanguage, codeCollapsed });
+    onUpdate({ codeLanguage, codeCollapsed, workspaceTransform });
   }
 
   useStyles(s);
@@ -353,7 +368,9 @@ function VisualEditor({
           initialWorkspaceXml={content}
           locale={locale}
           workspaceOptions={workspaceOptions}
+          workspaceTransform={workspaceTransform}
           onChange={handleBlocklyChange}
+          onScroll={handleBlocklyScroll}
         />
       )}
       <ToolBar>
@@ -457,6 +474,12 @@ VisualEditor.defaultProps = {
   codeCollapsed: true,
   // eslint-disable-next-line react/default-props-match-prop-types
   codeLanguage: 'JavaScript',
+  // eslint-disable-next-line react/default-props-match-prop-types
+  workspaceTransform: {
+    scrollX: 0.0,
+    scrollY: 0.0,
+    scale: 1.0,
+  },
 };
 // type: [() => Block[]]
 VisualEditor.dynamicBlockLoaders = [];

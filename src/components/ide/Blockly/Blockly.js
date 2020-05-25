@@ -12,13 +12,21 @@ export type Locale = {|
   msg: { [string]: string },
 |};
 
+export type WorkspaceTransform = {|
+  scrollX: number,
+  scrollY: number,
+  scale: number,
+|};
+
 type PropTypes = {|
   // eslint-disable-next-line no-use-before-define
   forwardedRef: RefObject<typeof BlocklyComponent>,
   initialWorkspaceXml: string,
   locale: Locale,
   workspaceOptions?: Object,
+  workspaceTransform?: WorkspaceTransform,
   onChange?: (workspace: Blockly.Workspace) => void | Promise<void>,
+  onScroll?: (workspace: Blockly.Workspace) => void | Promise<void>,
 |};
 type StateTypes = {||};
 
@@ -75,6 +83,7 @@ class BlocklyComponent extends React.Component<PropTypes, StateTypes> {
     const {
       locale: { rtl, msg },
       workspaceOptions,
+      workspaceTransform,
     } = this.props;
 
     Blockly.setLocale(msg);
@@ -99,6 +108,25 @@ class BlocklyComponent extends React.Component<PropTypes, StateTypes> {
     workspace.addChangeListener(() => {
       if (this.props.onChange) this.props.onChange(workspace);
     });
+
+    // TODO this is a terrible hack, but there's no scroll event
+    // translate is the most fundamental in a set of methods
+    // that move and zoom the workspace
+    // using an arrow function, so `this` is the component not the workspace
+    const translate = workspace.translate.bind(workspace);
+    workspace.translate = (x, y) => {
+      translate(x, y);
+      if (this.props.onScroll) this.props.onScroll(workspace);
+    };
+
+    if (workspaceTransform) {
+      const { scrollX, scrollY, scale } = workspaceTransform;
+
+      setTimeout(() => {
+        workspace.setScale(scale);
+        workspace.scroll(scrollX, scrollY);
+      }, 0);
+    }
 
     this.workspace = workspace;
   }

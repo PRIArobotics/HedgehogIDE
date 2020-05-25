@@ -12,7 +12,10 @@ import { type LocaleMap, getTranslation } from '../../../translations';
 import { SlideLeftIcon, SlideRightIcon } from '../../misc/palette';
 import * as hooks from '../../misc/hooks';
 
-import BlocklyComponent, { type Locale as BlocklyLocale } from '../Blockly';
+import BlocklyComponent, {
+  type Locale as BlocklyLocale,
+  type WorkspaceTransform,
+} from '../Blockly';
 import ToolBar from '../ToolBar';
 import ToolBarIconButton from '../ToolBar/ToolBarIconButton';
 import ToolBarItem from '../ToolBar/ToolBarItem';
@@ -61,7 +64,6 @@ const workspaceOptions = {
   zoom: {
     controls: false,
     wheel: true,
-    startScale: 1.0,
     maxScale: 1.5,
     minScale: 0.4,
     scaleSpeed: 1.02,
@@ -78,6 +80,7 @@ const workspaceOptions = {
 
 export type ControlledState = {|
   jsonCollapsed: boolean,
+  workspaceTransform: WorkspaceTransform,
 |};
 
 type Props = {|
@@ -117,6 +120,7 @@ function SimulatorEditor({
   path,
   onSchemaChange,
   jsonCollapsed,
+  workspaceTransform,
   onUpdate,
 }: Props) {
   const blocklyRef = hooks.useElementRef<typeof BlocklyComponent>();
@@ -160,7 +164,7 @@ function SimulatorEditor({
   });
 
   function handleToggleJsonCollapsed() {
-    onUpdate({ jsonCollapsed: !jsonCollapsed });
+    onUpdate({ jsonCollapsed: !jsonCollapsed, workspaceTransform });
     startAnimation();
   }
 
@@ -178,6 +182,13 @@ function SimulatorEditor({
     setContent(workspaceXml);
   }
 
+  function handleBlocklyScroll(workspace: Blockly.Workspace) {
+    const { scrollX, scrollY, scale } = workspace;
+    // eslint-disable-next-line no-shadow
+    const workspaceTransform = { scrollX, scrollY, scale };
+    onUpdate({ jsonCollapsed, workspaceTransform });
+  }
+
   useStyles(s);
   const { preferredLocales } = useLocale();
   const locale = getTranslation(preferredLocales, LOCALES) || LOCALES.en;
@@ -189,7 +200,9 @@ function SimulatorEditor({
           initialWorkspaceXml={content}
           locale={locale}
           workspaceOptions={workspaceOptions}
+          workspaceTransform={workspaceTransform}
           onChange={handleBlocklyChange}
+          onScroll={handleBlocklyScroll}
         />
       )}
       <ToolBar>
@@ -215,6 +228,12 @@ function SimulatorEditor({
 SimulatorEditor.defaultProps = {
   // eslint-disable-next-line react/default-props-match-prop-types
   jsonCollapsed: true,
+  // eslint-disable-next-line react/default-props-match-prop-types
+  workspaceTransform: {
+    scrollX: 0.0,
+    scrollY: 0.0,
+    scale: 1.0,
+  },
 };
 
 export default SimulatorEditor;
