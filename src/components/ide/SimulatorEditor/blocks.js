@@ -147,7 +147,7 @@ export const SIMULATOR_ROOT = {
         'simulator_circle',
       ];
 
-      const objects = this.getDescendants()
+      const objects = this.getDescendants(true)
         .filter(block => objectTypes.includes(block.type))
         .map(object => object.serialize());
 
