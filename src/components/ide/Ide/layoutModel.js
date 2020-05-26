@@ -31,25 +31,24 @@ export default function useLayoutModel(
   layoutState: { ... } | null,
   setLayoutState: ({ ... }) => void,
 ): [FlexLayout.Model | null, LayoutProps] {
-  const modelRef = React.useRef<FlexLayout.Model | null>(null);
+  const [model, setModel] = React.useState<FlexLayout.Model | null>(null);
 
   React.useEffect(() => {
     // only load the model once when the layoutState becomes non-null
-    if (layoutState === null || modelRef.current !== null) return;
+    if (layoutState === null || model !== null) return;
 
-    modelRef.current = FlexLayout.Model.fromJson(layoutState);
-  }, [layoutState]);
+    setModel(FlexLayout.Model.fromJson(layoutState));
+  }, [layoutState, model]);
 
-  // TODO is it safe to return modelRef.current here? It is not reactive...
   return [
-    modelRef.current,
+    model,
     {
-      model: modelRef.current,
+      model,
       onModelChange() {
         // eslint-disable-next-line no-throw-literal
-        if (modelRef.current === null) throw 'onModelChange when model is null';
+        if (model === null) throw 'onModelChange when model is null';
 
-        setLayoutState(modelRef.current.toJson());
+        setLayoutState(model.toJson());
       },
     },
   ];
