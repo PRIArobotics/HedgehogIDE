@@ -47,6 +47,11 @@ const messages = defineMessages({
     description: 'Tooltip for the language selection menu button',
     defaultMessage: 'Select Language',
   },
+  myAccount: {
+    id: 'app.header.my_account_tooltip',
+    description: 'Tooltip for the account toggle menu button',
+    defaultMessage: 'My Account',
+  },
 });
 
 const useStyles = makeStyles(theme => ({
@@ -123,34 +128,30 @@ function Header() {
         <PopupState variant="popover" popupId="select-language-menu">
           {popupState => (
             <>
-              <IconButton
-                aria-label="My Account"
-                color="inherit"
-                {...bindTrigger(popupState)}
-              >
-                <AccountCircleIcon />
-              </IconButton>
+              <Tooltip title={<M {...messages.myAccount} />}>
+                <IconButton color="inherit" {...bindTrigger(popupState)}>
+                  <AccountCircleIcon />
+                </IconButton>
+              </Tooltip>
               <Menu
                 anchorOrigin={{ horizontal: 'right', vertical: 'top' }}
                 transformOrigin={{ horizontal: 'right', vertical: 'top' }}
                 keepMounted
                 {...bindMenu(popupState)}
               >
-                <MenuItem onClick={auth.logout}>Log Out</MenuItem>
+                <MenuItem onClick={auth.logout}>
+                  <M {...messages.logout} />
+                </MenuItem>
               </Menu>
             </>
           )}
         </PopupState>
       ) : (
-        <IconButton
-          aria-label="Login"
-          aria-controls="menu-appbar"
-          aria-haspopup="true"
-          color="inherit"
-          onClick={() => setLoginOpen(true)}
-        >
-          <ExitToAppIcon />
-        </IconButton>
+        <Tooltip title={<M {...messages.login} />}>
+          <IconButton color="inherit" onClick={() => setLoginOpen(true)}>
+            <ExitToAppIcon />
+          </IconButton>
+        </Tooltip>
       )}
 
       <Login

@@ -1,7 +1,7 @@
 // @flow
 
 import * as React from 'react';
-import { defineMessages, FormattedMessage as M } from 'react-intl';
+import { FormattedMessage as M } from 'react-intl';
 
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
@@ -9,19 +9,7 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
-
-const messages = defineMessages({
-  ok: {
-    id: 'app.dialog.ok',
-    description: 'text for the OK button in dialogs',
-    defaultMessage: 'OK',
-  },
-  cancel: {
-    id: 'app.dialog.cancel',
-    description: 'text for the Cancel button in dialogs',
-    defaultMessage: 'Cancel',
-  },
-});
+import messages from './commonMessages';
 
 type ActionConstant =
   | 'OK_CANCEL'

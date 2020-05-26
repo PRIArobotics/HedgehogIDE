@@ -4,6 +4,7 @@ import * as React from 'react';
 
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
+import { defineMessages, FormattedMessage as M, useIntl } from 'react-intl';
 
 import DialogTitle from '@material-ui/core/DialogTitle';
 import { DialogActions, DialogContent } from '@material-ui/core';
@@ -12,6 +13,7 @@ import { ApolloError } from 'apollo-client';
 import Alert from '@material-ui/lab/Alert';
 import AlertTitle from '@material-ui/lab/AlertTitle';
 import { useAuth } from './AuthProvider';
+import commonMessages from '../misc/commonMessages';
 
 type LoginProps = {|
   open: boolean,
@@ -19,8 +21,30 @@ type LoginProps = {|
   onError: (err: any) => void | Promise<void>,
 |};
 
+const messages = {
+  ...defineMessages({
+    loginFailed: {
+      id: 'app.login.failed',
+      description: 'Log In Failed Error Message Title',
+      defaultMessage: 'Log In Failed',
+    },
+    username: {
+      id: 'app.auth.username',
+      description: 'Username',
+      defaultMessage: 'Username',
+    },
+    password: {
+      id: 'app.auth.password',
+      description: 'Password',
+      defaultMessage: 'Password',
+    },
+  }),
+  ...commonMessages,
+};
+
 function Login({ open, onSuccess, onError }: LoginProps) {
   const auth = useAuth();
+  const intl = useIntl();
 
   const [username, setUsername] = React.useState<string>('');
   const [password, setPassword] = React.useState<string>('');
@@ -47,12 +71,16 @@ function Login({ open, onSuccess, onError }: LoginProps) {
 
   return (
     <Dialog open={open} onClose={() => onError('CANCEL')}>
-      <DialogTitle>Log In</DialogTitle>
+      <DialogTitle>
+        <M {...messages.login} />
+      </DialogTitle>
       <form onSubmit={login}>
         <DialogContent>
           {error ? (
             <Alert severity="error">
-              <AlertTitle>Login Failed</AlertTitle>
+              <AlertTitle>
+                <M {...messages.loginFailed} />
+              </AlertTitle>
               {error}
             </Alert>
           ) : null}
@@ -60,7 +88,7 @@ function Login({ open, onSuccess, onError }: LoginProps) {
             margin="normal"
             required
             fullWidth
-            label="Username"
+            label={intl.formatMessage(messages.username)}
             value={username}
             onChange={e => setUsername(e.target.value)}
           />
@@ -68,7 +96,7 @@ function Login({ open, onSuccess, onError }: LoginProps) {
             margin="normal"
             required
             fullWidth
-            label="Password"
+            label={intl.formatMessage(messages.password)}
             type="password"
             value={password}
             onChange={e => setPassword(e.target.value)}
@@ -76,10 +104,10 @@ function Login({ open, onSuccess, onError }: LoginProps) {
         </DialogContent>
         <DialogActions>
           <Button onClick={() => onError('CANCEL')} color="secondary">
-            Cancel
+            <M {...messages.cancel} />
           </Button>
           <Button type="submit" color="primary">
-            Log In
+            <M {...messages.login} />
           </Button>
         </DialogActions>
       </form>
