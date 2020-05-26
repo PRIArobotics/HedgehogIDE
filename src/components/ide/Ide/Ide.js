@@ -144,23 +144,22 @@ function Ide({ projectName }: Props) {
     (layoutState: { ... }) => dispatch({ type: 'LAYOUT', layoutState }),
   );
 
-  // create new plugin manager when the project was refreshed
+  // create new plugin manager when ready, but only once
   React.useEffect(() => {
-    (async () => {
-      if (projectInfo === null) return;
+    if (projectInfo === null || layoutModel === null || pluginsLoaded) return;
 
-      pluginManagerRef.current = new PluginManager(
+    (async () => {
+      const pluginManager = new PluginManager(
         executorRef.current,
         getConsole,
         getSimulator,
       );
-      await pluginManagerRef.current.initSdk();
-      await pluginManagerRef.current.loadFromProjectMetadata(
-        projectInfo.project,
-      );
+      await pluginManager.initSdk();
+      await pluginManager.loadFromProjectMetadata(projectInfo.project);
+      pluginManagerRef.current = pluginManager;
       setPluginsLoaded(true);
     })();
-  }, [projectInfo]);
+  }, [projectInfo, layoutModel, pluginsLoaded]);
 
   // load the project's simulator schema if it or the simulator changes
   const simulatorXml = projectInfo && projectInfo.simulatorXml;
