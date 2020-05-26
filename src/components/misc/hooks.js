@@ -135,10 +135,7 @@ export function useAsyncState<T>(
   return [state, React.useCallback(setState, [setStateImpl])];
 }
 
-type StoreState<T> =
-  | {| type: 'CLEAR' |}
-  | {| type: 'PENDING', promise: Promise<T> |}
-  | {| type: 'RESOLVED', value: T |};
+type StoreState<T> = {| value: T |};
 
 // Accesses data in a store and puts it into a state variable.
 // A store here is anything that can be read/written using (optionally async)
@@ -163,27 +160,17 @@ export function useStore<T>(
 ): [T | null, (T) => void] {
   const realDeps = deps || [load, store];
 
-  const [state, setState] = React.useState<StoreState<T>>({ type: 'CLEAR' });
+  const [stateImpl, setStateImpl] = useAsyncState<StoreState<T> | null>(null);
+
+  const state = stateImpl !== null ? stateImpl.value : null;
 
   // reload the state when the store changes
   React.useEffect(() => {
-    // save the loading promise to verify only the latest load goes through
-    const promise = Promise.resolve(load());
-    setState({ type: 'PENDING', promise });
-
-    promise.then((value: T) => {
-      setState(oldState => {
-        // ignore the promise if it is not the currently loading one
-        if (oldState.type !== 'PENDING' || oldState.promise !== promise)
-          return oldState;
-
-        return { type: 'RESOLVED', value };
-      });
-    });
+    setStateImpl(Promise.resolve(load()).then(value => ({ value })));
 
     // after changing the store, clear the state to prevent further use
     return () => {
-      setState({ type: 'CLEAR' });
+      setStateImpl(null);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, realDeps);
@@ -191,21 +178,17 @@ export function useStore<T>(
   // save the state when it changed
   React.useEffect(() => {
     // if the state was not loaded yet for whatever reason, store nothing
-    if (state.type !== 'RESOLVED') return;
+    if (stateImpl === null) return;
 
-    store(state.value);
+    store(stateImpl.value);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [...realDeps, state]);
+  }, [...realDeps, stateImpl]);
 
-  return [
-    state.type === 'RESOLVED' ? state.value : null,
-    (value: T) => {
-      setState(oldState => {
-        // ignore attempts to set state unless it is loaded
-        if (oldState.type !== 'RESOLVED') return oldState;
+  function setState(value: T) {
+    setStateImpl({ value });
+  }
 
-        return { type: 'RESOLVED', value };
-      });
-    },
-  ];
+  // useCallback: React.useState guarantees stability of setState,
+  // mirror that here
+  return [state, React.useCallback(setState, [setStateImpl])];
 }
