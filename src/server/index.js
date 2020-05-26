@@ -22,7 +22,6 @@ import createApolloClient from '../core/createApolloClient';
 import App from '../components/App';
 import { ErrorPageWithoutStyle } from '../routes/error/ErrorPage';
 import errorPageStyle from '../routes/error/ErrorPage.css';
-import passport from './passport';
 import router from '../core/router';
 import models from './data/models';
 import schema from './data/schema';
@@ -92,43 +91,6 @@ app.use((err, req, res, next) => {
   }
   next(err);
 });
-
-app.use(passport.initialize());
-
-app.post(
-  '/login',
-  passport.authenticate('local', {
-    failureRedirect: '/login',
-    session: false,
-  }),
-  (req, res) => {
-    const expiresIn = 60 * 60 * 24 * 180; // 180 days
-    const token = jwt.sign(req.user, config.auth.jwt.secret, { expiresIn });
-    res.cookie('id_token', token, { maxAge: 1000 * expiresIn, httpOnly: true });
-    res.redirect('/');
-  },
-);
-
-app.get(
-  '/login/facebook',
-  passport.authenticate('facebook', {
-    scope: ['email', 'user_location'],
-    session: false,
-  }),
-);
-app.get(
-  '/login/facebook/return',
-  passport.authenticate('facebook', {
-    failureRedirect: '/login',
-    session: false,
-  }),
-  (req, res) => {
-    const expiresIn = 60 * 60 * 24 * 180; // 180 days
-    const token = jwt.sign(req.user, config.auth.jwt.secret, { expiresIn });
-    res.cookie('id_token', token, { maxAge: 1000 * expiresIn, httpOnly: true });
-    res.redirect('/');
-  },
-);
 
 //
 // Register API middleware
