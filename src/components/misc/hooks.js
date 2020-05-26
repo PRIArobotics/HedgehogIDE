@@ -71,6 +71,70 @@ export function useAnimationFrame(
   return [start, stop];
 }
 
+type AsyncState<T> =
+  | {| type: 'PENDING', previousValue: T, promise: Promise<T> |}
+  | {| type: 'RESOLVED', value: T |};
+
+function valueFromState<T>(stateImpl: AsyncState<T>): T {
+  switch (stateImpl.type) {
+    case 'PENDING':
+      return stateImpl.previousValue;
+    case 'RESOLVED':
+      return stateImpl.value;
+    default:
+      // eslint-disable-next-line no-throw-literal
+      throw 'unreachable';
+  }
+}
+
+// Implements state that can be set via a promise.
+// This hook makes sure that multiple setState calls can not race,
+// i.e. only the last promise will go through to the actual state.
+// While a setState promise is pending, the previous state will remain.
+export function useAsyncState<T>(
+  initialState: T,
+): [T, (T | Promise<T>) => void] {
+  const [stateImpl, setStateImpl] = React.useState<AsyncState<T>>({
+    type: 'RESOLVED',
+    value: initialState,
+  });
+
+  const state = valueFromState(stateImpl);
+
+  function setState(newState: T | Promise<T>) {
+    if (newState && typeof newState.then === 'function') {
+      // technically we have not checked this is a promise but a thenable.
+      // In practice this *should* not matter but who knows.
+      // $FlowExpectError
+      const promise: Promise<T> = newState;
+      setStateImpl(oldStateImpl => ({
+        type: 'PENDING',
+        previousValue: valueFromState(oldStateImpl),
+        promise,
+      }));
+
+      // wait for the promise to resolve
+      promise.then((value: T) => {
+        setStateImpl(oldState => {
+          // ignore the promise if it is not the currently loading one
+          if (oldState.type !== 'PENDING' || oldState.promise !== promise)
+            return oldState;
+
+          return { type: 'RESOLVED', value };
+        });
+      });
+    } else {
+      // $FlowExpectError
+      const value: T = newState;
+      setStateImpl({ type: 'RESOLVED', value });
+    }
+  }
+
+  // useCallback: React.useState guarantees stability of setState,
+  // mirror that here
+  return [state, React.useCallback(setState, [setStateImpl])];
+}
+
 type StoreState<T> =
   | {| type: 'CLEAR' |}
   | {| type: 'PENDING', promise: Promise<T> |}
