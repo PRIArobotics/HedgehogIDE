@@ -7,6 +7,7 @@ import { WebSocketLink } from 'apollo-link-ws';
 // import apolloLogger from 'apollo-link-logger';
 import createCache from './createCache';
 import clientSchema from '../graphql/schema';
+import { setContext } from 'apollo-link-context';
 
 export default function createApolloClient() {
   const cache = createCache();
@@ -34,6 +35,16 @@ export default function createApolloClient() {
     },
   });
 
+  const authLink = setContext((_, { headers }) => {
+    const authData = JSON.parse(localStorage.getItem('auth') || null);
+    return {
+      headers: {
+        ...headers,
+        authorization: authData && authData.token ? `${authData.token}` : '',
+      },
+    };
+  });
+
   const link = from([
     errorLink,
     // ...(__DEV__ ? [apolloLogger] : []),
@@ -43,7 +54,7 @@ export default function createApolloClient() {
         return kind === 'OperationDefinition' && operation === 'subscription';
       },
       wsLink,
-      httpLink,
+      authLink.concat(httpLink),
     ),
   ]);
 
