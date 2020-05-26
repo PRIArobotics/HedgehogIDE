@@ -12,7 +12,6 @@ import express from 'express';
 import cookieParser from 'cookie-parser';
 import bodyParser from 'body-parser';
 import expressJwt, { UnauthorizedError as Jwt401Error } from 'express-jwt';
-import jwt from 'jsonwebtoken';
 import * as React from 'react';
 import PrettyError from 'pretty-error';
 import { ApolloServer, makeExecutableSchema } from 'apollo-server-express';
@@ -23,7 +22,6 @@ import App from '../components/App';
 import { ErrorPageWithoutStyle } from '../routes/error/ErrorPage';
 import errorPageStyle from '../routes/error/ErrorPage.css';
 import router from '../core/router';
-import models from './data/models';
 import schema from './data/schema';
 import config from './config';
 import createInitialState from '../core/createInitialState';
@@ -268,16 +266,16 @@ app.use((err, req, res, next) => {
 //
 // Launch the server
 // -----------------------------------------------------------------------------
-const promise = models.sync().catch(err => console.error(err.stack));
+
 if (!module.hot) {
-  promise.then(() => {
-    // TODO no subscriptions when using `yarn start`
+  // TODO no subscriptions when using `yarn start`
+  () => {
     const ws = http.createServer(app);
     server.installSubscriptionHandlers(ws);
     ws.listen(config.port, () => {
       console.info(`The server is running at http://localhost:${config.port}/`);
     });
-  });
+  };
 }
 
 //
