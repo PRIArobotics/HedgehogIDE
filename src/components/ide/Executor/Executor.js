@@ -59,7 +59,7 @@ class Executor extends React.Component<PropTypes, StateTypes> {
       this.eventRegistry.set(event, [taskExecutor]);
     } else {
       const listeners = this.eventRegistry.get(event);
-      if (listeners.includes(this) === -1) {
+      if (!listeners.includes(this)) {
         listeners.push(this);
       }
     }

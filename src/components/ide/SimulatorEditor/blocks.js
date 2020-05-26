@@ -148,7 +148,7 @@ export const SIMULATOR_ROOT = {
       ];
 
       const objects = this.getDescendants()
-        .filter(block => objectTypes.indexOf(block.type) !== -1)
+        .filter(block => objectTypes.includes(block.type))
         .map(object => object.serialize());
 
       return {
