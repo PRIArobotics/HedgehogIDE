@@ -8,6 +8,7 @@ const def: GraphqlDefShape = {
     type Project {
       id: ID!
       name: String!
+      isPublic: Boolean!
       fileTreeRootId: ID!
       fileTrees: [FileTree!]
       files: [File!]
@@ -20,7 +21,7 @@ const def: GraphqlDefShape = {
 
     type File {
       id: ID!
-      data:
+      data: String
     }
 
     type FileTreeRecord {
@@ -34,27 +35,27 @@ const def: GraphqlDefShape = {
       TREE
     }
 
-    input Project {
+    input ProjectInput {
       id: ID
       name: String!
-      fileTree: FileTree!
+      fileTree: FileTreeInput!
     }
 
-    input FileTree {
+    input FileTreeInput {
       id: ID
-      files: [FileTreeFileRecord!]
-      trees: [FileTreeTreeRecord!]
+      files: [FileTreeFileRecordInput!]
+      trees: [FileTreeTreeRecordInput!]
     }
 
-    input FileTreeFileRecord {
+    input FileTreeFileRecordInput {
       id: ID
       name: String!
       data: String!
     }
 
-    input FileTreeTreeRecord {
+    input FileTreeTreeRecordInput {
       name: String!
-      tree: FileTree!
+      tree: FileTreeInput!
     }
     `,
   ],
@@ -66,9 +67,16 @@ const def: GraphqlDefShape = {
   ],
   mutations: [
     `
-    saveProject(Project!): ID!
+    saveProject(project: ProjectInput!) : ID! @auth
     `,
   ],
+  resolvers: () => ({
+    Mutation: {
+      async saveProject(_, project) {
+        console.log(project);
+      },
+    },
+  }),
 };
 
 export default def;

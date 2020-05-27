@@ -74,7 +74,7 @@ const SchemaDefinition = [
 
 const schema = [
   `
-  directive @auth on OBJECT | FIELD_DEFINITION
+  directive @auth on FIELD_DEFINITION
   `,
   ...SchemaDefinition,
   ...RootQuery,
