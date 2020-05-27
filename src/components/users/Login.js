@@ -6,14 +6,17 @@ import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import { defineMessages, FormattedMessage as M, useIntl } from 'react-intl';
 
-import DialogTitle from '@material-ui/core/DialogTitle';
-import { DialogActions, DialogContent } from '@material-ui/core';
-import Dialog from '@material-ui/core/Dialog';
-import { ApolloError } from 'apollo-client';
 import Alert from '@material-ui/lab/Alert';
 import AlertTitle from '@material-ui/lab/AlertTitle';
-import { useAuth } from './AuthProvider';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import { ApolloError } from 'apollo-client';
+
 import commonMessages from '../misc/commonMessages';
+
+import { useAuth } from './AuthProvider';
 
 type LoginProps = {|
   open: boolean,
