@@ -12,6 +12,7 @@ export const projectSchema: mongoose.Schema<any> = new mongoose.Schema({
 
 export const fileTreeSchema: mongoose.Schema<any> = new mongoose.Schema({
   name: String,
+  project: { type: mongoose.Schema.Types.ObjectId, ref: 'Project' },
   contents: [
     {
       name: String,
@@ -22,6 +23,7 @@ export const fileTreeSchema: mongoose.Schema<any> = new mongoose.Schema({
 });
 
 export const fileSchema: mongoose.Schema<any> = new mongoose.Schema({
+  project: { type: mongoose.Schema.Types.ObjectId, ref: 'Project' },
   data: Buffer,
 });
 
