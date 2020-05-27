@@ -26,7 +26,6 @@ import commonMessages from '../../misc/commonMessages';
 import logoUrl from './logo.svg';
 import Login from '../../users/Login';
 import { useAuth } from '../../users/AuthProvider';
-import commonMessages from '../../misc/commonMessages';
 
 const messages = {
   ...defineMessages({
