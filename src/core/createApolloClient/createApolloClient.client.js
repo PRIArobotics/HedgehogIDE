@@ -5,9 +5,9 @@ import { onError } from 'apollo-link-error';
 import { HttpLink } from 'apollo-link-http';
 import { WebSocketLink } from 'apollo-link-ws';
 // import apolloLogger from 'apollo-link-logger';
+import { setContext } from 'apollo-link-context';
 import createCache from './createCache';
 import clientSchema from '../graphql/schema';
-import { setContext } from 'apollo-link-context';
 
 export default function createApolloClient() {
   const cache = createCache();
