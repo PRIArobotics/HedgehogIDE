@@ -4,11 +4,11 @@ import { PubSub } from 'graphql-subscriptions';
 
 import { type GraphqlDef, merge } from '../../core/graphql/graphqlDef';
 
-import Server from './graphql/schema';
+import Schema from './schema/index';
 import Core from '../../core/graphql/schema';
 import AuthDirective from './AuthDirective';
 
-const def: GraphqlDef = merge(Server, Core);
+const def: GraphqlDef = merge(Schema, Core);
 
 const RootQuery = [
   `

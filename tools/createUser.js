@@ -1,7 +1,7 @@
 import readline from 'readline';
 import bcrypt from 'bcryptjs';
 
-import db, { User } from '../src/server/data/mongodb';
+import db, { User } from '../src/server/mongodb';
 
 // takes a function that takes a callback `(err, result) => ...`
 // as its last parameter and makes it into a function that

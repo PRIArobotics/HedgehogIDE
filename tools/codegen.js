@@ -16,7 +16,7 @@ export default async function codegen() {
   await runWebpack(
     {
       ...serverConfig,
-      entry: './src/server/data/schema.js',
+      entry: './src/server/graphql/schema.js',
       output: {
         path: serverConfig.output.path,
         filename: 'schema.js',
@@ -27,7 +27,7 @@ export default async function codegen() {
   );
 
   // eslint-disable-next-line global-require, import/no-dynamic-require, import/no-unresolved
-  const builtSchema = require('../build/schema').default;
+  const builtSchema = require('../build/server/schema').default;
   const server = new ApolloServer(builtSchema);
   const { server: httpServer } = await server.listen({ port: 3000 });
 

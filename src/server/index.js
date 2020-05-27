@@ -22,7 +22,7 @@ import App from '../components/App';
 import { ErrorPageWithoutStyle } from '../routes/error/ErrorPage';
 import errorPageStyle from '../routes/error/ErrorPage.css';
 import router from '../core/router';
-import schema from './data/schema';
+import schema from './graphql/schema';
 import config from './config';
 import createInitialState from '../core/createInitialState';
 import renderHtml from './renderHtml';

@@ -3,10 +3,10 @@ import { ApolloError, AuthenticationError } from 'apollo-server';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 
-import type { GraphqlDefShape } from '../../../../core/graphql/graphqlDef';
+import type { GraphqlDefShape } from '../../../core/graphql/graphqlDef';
 
 import { User } from '../../mongodb';
-import config from '../../../config';
+import config from '../../config';
 
 const def: GraphqlDefShape = {
   schema: [

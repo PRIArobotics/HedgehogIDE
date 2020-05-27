@@ -1,6 +1,6 @@
 // @flow
 
-import { merge } from '../../../../core/graphql/graphqlDef';
+import { merge } from '../../../core/graphql/graphqlDef';
 
 import User from './User';
 
