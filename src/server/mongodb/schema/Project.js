@@ -15,7 +15,6 @@ export const fileTreeSchema: mongoose.Schema<any> = new mongoose.Schema({
   project: { type: mongoose.Schema.Types.ObjectId, ref: 'Project' },
   contents: [
     {
-      name: String,
       type: { type: String, enum: ['File', 'Tree'] },
       ref: mongoose.Schema.Types.ObjectId,
     },
