@@ -47,6 +47,7 @@ const Mutation = [
 // This adds a dummy subscription in case no subscription is defined.
 // As the server cannot start without the Subscription type defined and
 // empty types are apparently not allowed (see https://github.com/graphql/graphql-js/issues/937).
+// prettier-ignore
 const Subscription = def.subscriptions.length > 0 ? [
   `
   type Subscription {
