@@ -43,6 +43,7 @@ function useMyDialog(): MyDialogHook {
 
       // eslint-disable-next-line no-shadow
       return new Promise<boolean>(resolve => {
+        // this is where we want to avoid the functional state setter
         setResolve([resolve]);
       });
     },
