@@ -707,7 +707,7 @@ function Ide({ projectName }: Props) {
       case 'CREATE': {
         const { parentDir, desc } = action;
         if (desc.type === 'METADATA') {
-          confirmCreateFile(parentDir, desc.name, 'FILE');
+          confirmCreateFile(parentDir, desc.name, desc.fileType);
         } else {
           beginCreateFile(parentDir, desc);
         }

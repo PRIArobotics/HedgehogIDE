@@ -12,6 +12,7 @@ import {
   FolderIcon,
   LanguageBlocklyIcon,
   LanguageJavascriptIcon,
+  MetadataPluginsIcon,
   MetadataSimulatorIcon,
   MetadataToolboxIcon,
   RenameIcon,
@@ -43,6 +44,11 @@ const messages = defineMessages({
     id: 'app.ide.file_menu.create_blockly_file',
     description: 'Menu item text for creating a Blockly file',
     defaultMessage: 'New Blockly File',
+  },
+  createPluginsDirectory: {
+    id: 'app.ide.file_menu.create_plugins_directory',
+    description: 'Menu item text for creating a plugin directory',
+    defaultMessage: 'Create Plugin Directory',
   },
   createSimulatorConfiguration: {
     id: 'app.ide.file_menu.create_simulator_configuration',
@@ -206,12 +212,25 @@ class FileMenu extends React.Component<PropTypes, StateTypes> {
                 ...(isMetadata
                   ? [
                       <FileMenuItem
+                        key="create_plugins_directory"
+                        titleMsg={messages.createPluginsDirectory}
+                        onClick={() =>
+                          this.handleCreate({
+                            type: 'METADATA',
+                            name: 'plugins',
+                            fileType: 'DIRECTORY',
+                          })
+                        }
+                        icon={MetadataPluginsIcon}
+                      />,
+                      <FileMenuItem
                         key="create_simulator_config"
                         titleMsg={messages.createSimulatorConfiguration}
                         onClick={() =>
                           this.handleCreate({
                             type: 'METADATA',
                             name: 'simulator',
+                            fileType: 'FILE',
                           })
                         }
                         icon={MetadataSimulatorIcon}
@@ -223,6 +242,7 @@ class FileMenu extends React.Component<PropTypes, StateTypes> {
                           this.handleCreate({
                             type: 'METADATA',
                             name: 'toolbox',
+                            fileType: 'FILE',
                           })
                         }
                         icon={MetadataToolboxIcon}

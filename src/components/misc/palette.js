@@ -29,6 +29,7 @@ import LanguageJavascriptIcon from 'mdi-material-ui/LanguageJavascript';
 import LanguagePythonIcon from 'mdi-material-ui/LanguagePython';
 
 // files: metadata
+import MetadataPluginsIcon from 'mdi-material-ui/Folder';
 import MetadataSimulatorIcon from 'mdi-material-ui/Cogs';
 import MetadataToolboxIcon from 'mdi-material-ui/Cogs';
 
@@ -93,6 +94,7 @@ export {
   LanguageBlocklyIcon,
   LanguageJavascriptIcon,
   LanguagePythonIcon,
+  MetadataPluginsIcon,
   MetadataSimulatorIcon,
   MetadataToolboxIcon,
   LocalProjectIcon,
