@@ -21,38 +21,42 @@ import {
   AccountCircleIcon,
   ExitToAppIcon,
 } from '../../misc/palette';
+import commonMessages from '../../misc/commonMessages';
 
 import logoUrl from './logo.svg';
 import Login from '../../users/Login';
 import { useAuth } from '../../users/AuthProvider';
 
-const messages = defineMessages({
-  homeLabel: {
-    id: 'app.header.home_label',
-    description: 'Home button label for screenreaders',
-    defaultMessage: 'Home',
-  },
-  homeLogoAlt: {
-    id: 'app.header.home_logo_alt',
-    description: "alt-text for the home button's icon",
-    defaultMessage: 'Hedgehog Logo',
-  },
-  title: {
-    id: 'app.header.title',
-    description: 'Main Hedgehog IDE title',
-    defaultMessage: 'Hedgehog IDE',
-  },
-  selectLanguageTooltip: {
-    id: 'app.header.select_language_tooltip',
-    description: 'Tooltip for the language selection menu button',
-    defaultMessage: 'Select Language',
-  },
-  myAccount: {
-    id: 'app.header.my_account_tooltip',
-    description: 'Tooltip for the account toggle menu button',
-    defaultMessage: 'My Account',
-  },
-});
+const messages = {
+  ...defineMessages({
+    homeLabel: {
+      id: 'app.header.home_label',
+      description: 'Home button label for screenreaders',
+      defaultMessage: 'Home',
+    },
+    homeLogoAlt: {
+      id: 'app.header.home_logo_alt',
+      description: "alt-text for the home button's icon",
+      defaultMessage: 'Hedgehog Logo',
+    },
+    title: {
+      id: 'app.header.title',
+      description: 'Main Hedgehog IDE title',
+      defaultMessage: 'Hedgehog IDE',
+    },
+    selectLanguageTooltip: {
+      id: 'app.header.select_language_tooltip',
+      description: 'Tooltip for the language selection menu button',
+      defaultMessage: 'Select Language',
+    },
+    myAccount: {
+      id: 'app.header.my_account_tooltip',
+      description: 'Tooltip for the account toggle menu button',
+      defaultMessage: 'My Account',
+    },
+  }),
+  ...commonMessages,
+};
 
 const useStyles = makeStyles(theme => ({
   gutters: {
