@@ -145,6 +145,8 @@ function Ide({ projectName }: Props) {
   );
 
   // create new plugin manager when ready, but only once
+  // TODO this has a potential race condition with the initialization
+  // of executorRef.current.
   React.useEffect(() => {
     if (projectInfo === null || layoutModel === null || pluginsLoaded) return;
 
