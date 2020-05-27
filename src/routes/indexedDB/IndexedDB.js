@@ -28,15 +28,6 @@ function useMyDialog(): MyDialogHook {
     null,
   );
 
-  function show() {
-    if (resolve !== null) throw 'show called while dialog is visible';
-
-    // eslint-disable-next-line no-shadow
-    return new Promise<boolean>(resolve => {
-      setResolve([resolve]);
-    });
-  }
-
   function hide(result: boolean) {
     if (resolve === null) throw 'hide called while dialog is not visible';
 
@@ -47,7 +38,14 @@ function useMyDialog(): MyDialogHook {
   }
 
   return {
-    show,
+    show() {
+      if (resolve !== null) throw 'show called while dialog is visible';
+
+      // eslint-disable-next-line no-shadow
+      return new Promise<boolean>(resolve => {
+        setResolve([resolve]);
+      });
+    },
     mountSimpleDialog() {
       return {
         open: resolve !== null,
