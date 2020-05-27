@@ -269,13 +269,11 @@ app.use((err, req, res, next) => {
 
 if (!module.hot) {
   // TODO no subscriptions when using `yarn start`
-  () => {
-    const ws = http.createServer(app);
-    server.installSubscriptionHandlers(ws);
-    ws.listen(config.port, () => {
-      console.info(`The server is running at http://localhost:${config.port}/`);
-    });
-  };
+  const ws = http.createServer(app);
+  server.installSubscriptionHandlers(ws);
+  ws.listen(config.port, () => {
+    console.info(`The server is running at http://localhost:${config.port}/`);
+  });
 }
 
 //
