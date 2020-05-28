@@ -11,10 +11,10 @@ export const projectSchema: mongoose.Schema<any> = new mongoose.Schema({
 });
 
 export const fileTreeSchema: mongoose.Schema<any> = new mongoose.Schema({
-  name: String,
   project: { type: mongoose.Schema.Types.ObjectId, ref: 'Project' },
   contents: [
     {
+      name: String,
       type: { type: String, enum: ['File', 'Tree'] },
       ref: mongoose.Schema.Types.ObjectId,
     },

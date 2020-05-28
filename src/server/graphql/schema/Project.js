@@ -2,6 +2,8 @@
 
 import type { GraphqlDefShape } from '../../../core/graphql/graphqlDef';
 
+import db, { File, FileTree, Project } from '../../mongodb';
+
 const def: GraphqlDefShape = {
   schema: [
     `
@@ -67,13 +69,83 @@ const def: GraphqlDefShape = {
   ],
   mutations: [
     `
-    saveProject(project: ProjectInput!) : ID! @auth
+    createProject(project: ProjectInput!) : ID! @auth
     `,
   ],
   resolvers: () => ({
     Mutation: {
-      async saveProject(_, project) {
-        console.log(project);
+      async createProject(_, projectData) {
+        console.log(projectData);
+        const session = await db.startSession();
+
+        const project = (await Project.create(
+          [
+            {
+              name: projectData.project.name,
+              isPublic: projectData.project.isPublic,
+            },
+          ],
+          { session },
+        ))[0];
+
+        const saveFileTree = async tree => {
+          console.log('saving tree', tree);
+
+          if (!tree.files) {
+            // eslint-disable-next-line no-param-reassign
+            tree.files = [];
+          }
+
+          if (!tree.trees) {
+            // eslint-disable-next-line no-param-reassign
+            tree.trees = [];
+          }
+
+          const savedFiles = await Promise.all(
+            tree.files.map(file =>
+              File.create(
+                [
+                  {
+                    project: project.id,
+                    data: file.data,
+                  },
+                ],
+                { session },
+              ).then(res => ({
+                name: file.name,
+                type: 'File',
+                file: res[0].id,
+              })),
+            ),
+          );
+
+          const savedTrees = await Promise.all(
+            tree.trees.map(childTree =>
+              saveFileTree(childTree.tree).then(savedTree => ({
+                name: childTree.name,
+                type: 'Tree',
+                tree: savedTree.id,
+              })),
+            ),
+          );
+
+          return (await FileTree.create(
+            [
+              {
+                project: project.id,
+                contents: [...savedFiles, ...savedTrees],
+              },
+            ],
+            { session },
+          ))[0];
+        };
+
+        project.fileTreeRoot = (await saveFileTree(
+          projectData.project.fileTree,
+        )).id;
+        await project.save();
+        await session.endSession();
+        return project.id;
       },
     },
   }),
