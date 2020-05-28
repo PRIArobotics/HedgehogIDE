@@ -22,31 +22,32 @@ type MyDialogHook = {
 };
 
 function useMyDialog(): MyDialogHook {
-  // this is a little strange - pack the resolve function into an array,
-  // so that React won't try to do a functional setter call.
-  const [resolve, setResolve] = React.useState<[(boolean) => void] | null>(
+  const [resolve, setResolve] = React.useState<((boolean) => void) | null>(
     null,
   );
 
+  async function show() {
+    return /* await */ new Promise<boolean>(newResolve => {
+      setResolve((oldResolve: ((boolean) => void) | null) => {
+        if (oldResolve !== null) throw 'show called while dialog is visible';
+
+        return newResolve;
+      });
+    });
+  }
+
   function hide(result: boolean) {
-    if (resolve === null) throw 'hide called while dialog is not visible';
+    setResolve((oldResolve: ((boolean) => void) | null) => {
+      if (oldResolve === null) throw 'hide called while dialog is not visible';
 
-    const [realResolve] = resolve;
-
-    realResolve(result);
-    setResolve(null);
+      // TODO side effect in functional update
+      oldResolve(result);
+      return null;
+    });
   }
 
   return {
-    show() {
-      if (resolve !== null) throw 'show called while dialog is visible';
-
-      // eslint-disable-next-line no-shadow
-      return new Promise<boolean>(resolve => {
-        // this is where we want to avoid the functional state setter
-        setResolve([resolve]);
-      });
-    },
+    show,
     mountSimpleDialog() {
       return {
         open: resolve !== null,
@@ -76,8 +77,8 @@ function Test() {
           const result = await myDialog.show();
           // TODO any state used here was captured when the button was clicked,
           // not when the dialog was closed.
-          // For example, even if we didn't await the show call, a subsequent
-          // show call wouldn't throw, as its version of resolve would be null.
+          // only stable state (such as memoized/memoizable setters)
+          // can be safely used here!
           console.log('result', result);
         }}
       >
