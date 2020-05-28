@@ -74,6 +74,10 @@ function Test() {
         variant="contained"
         onClick={async () => {
           const result = await myDialog.show();
+          // TODO any state used here was captured when the button was clicked,
+          // not when the dialog was closed.
+          // For example, even if we didn't await the show call, a subsequent
+          // show call wouldn't throw, as its version of resolve would be null.
           console.log('result', result);
         }}
       >
