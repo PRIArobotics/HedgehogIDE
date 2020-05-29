@@ -2,6 +2,7 @@
 
 import { useStore } from '../../misc/hooks';
 
+import { type LayoutState } from './layoutModel';
 import { type ControlledState as FileTreeState } from '../FileTree';
 import { type ControlledState as VisualEditorState } from '../VisualEditor';
 import { type ControlledState as SimulatorEditorState } from '../SimulatorEditor';
@@ -10,8 +11,6 @@ type EditorStates = {|
   blockly?: VisualEditorState,
   'simulator-editor'?: SimulatorEditorState,
 |};
-
-type LayoutState = { ... };
 
 type PersistentState = {|
   fileTreeState: FileTreeState,

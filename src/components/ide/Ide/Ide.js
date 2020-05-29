@@ -141,7 +141,7 @@ function Ide({ projectName }: Props) {
 
   const [layoutModel, layoutProps] = useLayoutModel(
     state && state.layoutState,
-    (layoutState: { ... }) => dispatch({ type: 'LAYOUT', layoutState }),
+    layoutState => dispatch({ type: 'LAYOUT', layoutState }),
   );
 
   // create new plugin manager when ready, but only once

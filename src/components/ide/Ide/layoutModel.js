@@ -4,6 +4,8 @@ import * as React from 'react';
 
 import FlexLayout from 'flexlayout-react';
 
+export type LayoutState = { ... };
+
 type LayoutProps = {|
   model: FlexLayout.Model,
   onModelChange: () => void,
@@ -28,8 +30,8 @@ type LayoutProps = {|
 //    // layoutProps contains both model and onModelChange
 //    return model && <FlexLayout.Layout {...layoutProps} />;
 export default function useLayoutModel(
-  layoutState: { ... } | null,
-  setLayoutState: ({ ... }) => void,
+  layoutState: LayoutState | null,
+  setLayoutState: LayoutState => void,
 ): [FlexLayout.Model | null, LayoutProps] {
   const [model, setModel] = React.useState<FlexLayout.Model | null>(null);
 
