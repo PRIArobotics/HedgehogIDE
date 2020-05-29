@@ -75,7 +75,6 @@ const def: GraphqlDefShape = {
   resolvers: () => ({
     Mutation: {
       async createProject(_, projectData) {
-        console.log(projectData);
         const session = await db.startSession();
 
         const project = (await Project.create(
@@ -89,7 +88,6 @@ const def: GraphqlDefShape = {
         ))[0];
 
         const saveFileTree = async tree => {
-          console.log('saving tree', tree);
 
           if (!tree.files) {
             // eslint-disable-next-line no-param-reassign

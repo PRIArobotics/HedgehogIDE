@@ -27,5 +27,6 @@ export const fileSchema: mongoose.Schema<any> = new mongoose.Schema({
 });
 
 export const createProjectModel = createModelHelper('Project', projectSchema);
-export const createFileTreeModel = createModelHelper('FileTree', projectSchema);
-export const createFileModel = createModelHelper('File', projectSchema);
+// prettier-ignore
+export const createFileTreeModel = createModelHelper('FileTree', fileTreeSchema);
+export const createFileModel = createModelHelper('File', fileSchema);
