@@ -149,29 +149,40 @@ function Ide({ projectName }: Props) {
   );
 
   // create new plugin manager when ready, but only once
-  // TODO this has a potential race condition with the initialization
-  // of executorRef.current.
-  React.useEffect(() => {
+  async function initializePluginManager() {
     if (
       projectInfo === null ||
-      projectCache === null ||
       layoutModel === null ||
+      executorRef.current === null ||
       pluginsLoaded
     )
       return;
 
-    (async () => {
-      const pluginManager = new PluginManager(
-        executorRef.current,
-        getConsole,
-        getSimulator,
-      );
-      await pluginManager.initSdk();
-      await pluginManager.loadFromProjectMetadata(projectInfo.project);
-      pluginManagerRef.current = pluginManager;
-      setPluginsLoaded(true);
-    })();
-  }, [projectInfo, projectCache, layoutModel, pluginsLoaded]);
+    const pluginManager = new PluginManager(
+      executorRef.current,
+      getConsole,
+      getSimulator,
+    );
+    await pluginManager.initSdk();
+    await pluginManager.loadFromProjectMetadata(projectInfo.project);
+    pluginManagerRef.current = pluginManager;
+    setPluginsLoaded(true);
+  }
+
+  React.useEffect(() => {
+    initializePluginManager();
+  }, [projectInfo, layoutModel, pluginsLoaded]);
+
+  // uses useCallback because otherwise each render resets the ref.
+  // (the ref could be registered with a new callback,
+  // so the callback needs to be stable)
+  const attachExecutor = React.useCallback(
+    sim => {
+      executorRef.current = sim;
+      initializePluginManager();
+    },
+    [executorRef, projectInfo, layoutModel, pluginsLoaded],
+  );
 
   // load the project's simulator schema if it or the simulator changes
   const simulatorXml = projectCache && projectCache.simulatorXml;
@@ -956,7 +967,7 @@ function Ide({ projectName }: Props) {
           />
         </Grid>
       ) : null}
-      <Executor ref={executorRef} />
+      <Executor ref={attachExecutor} />
     </Grid>
   );
 }
