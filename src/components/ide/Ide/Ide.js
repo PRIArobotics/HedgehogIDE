@@ -57,6 +57,7 @@ import initHedgehogSdk from '../../../sdk/hedgehog';
 import PluginManager from '../../../sdk/PluginManager';
 
 import useProjectInfo from './projectInfo';
+import useProjectCache from './projectCache';
 import usePersistentState from './persistentState';
 import useLayoutModel from './layoutModel';
 
@@ -120,10 +121,13 @@ type Props = {|
 |};
 
 function Ide({ projectName }: Props) {
-  const [projectInfo, refreshProject] = useProjectInfo(projectName);
+  const projectInfo = useProjectInfo(projectName);
   const [pluginsLoaded, setPluginsLoaded] = React.useState<boolean>(false);
   const [runningTask, setRunningTask] = React.useState<Task | null>(null);
 
+  const [projectCache, refreshProject] = useProjectCache(
+    projectInfo && projectInfo.project,
+  );
   const [state, dispatch] = usePersistentState(
     projectInfo && projectInfo.projectUid,
   );
@@ -148,7 +152,13 @@ function Ide({ projectName }: Props) {
   // TODO this has a potential race condition with the initialization
   // of executorRef.current.
   React.useEffect(() => {
-    if (projectInfo === null || layoutModel === null || pluginsLoaded) return;
+    if (
+      projectInfo === null ||
+      projectCache === null ||
+      layoutModel === null ||
+      pluginsLoaded
+    )
+      return;
 
     (async () => {
       const pluginManager = new PluginManager(
@@ -161,10 +171,10 @@ function Ide({ projectName }: Props) {
       pluginManagerRef.current = pluginManager;
       setPluginsLoaded(true);
     })();
-  }, [projectInfo, layoutModel, pluginsLoaded]);
+  }, [projectInfo, projectCache, layoutModel, pluginsLoaded]);
 
   // load the project's simulator schema if it or the simulator changes
-  const simulatorXml = projectInfo && projectInfo.simulatorXml;
+  const simulatorXml = projectCache && projectCache.simulatorXml;
 
   function refreshSimulatorFromSchema(
     schema: SimulationSchema.SimulatorJson | null,
@@ -198,7 +208,7 @@ function Ide({ projectName }: Props) {
 
   function getFile(path: string): FileReference {
     // eslint-disable-next-line no-throw-literal
-    if (projectInfo === null) throw 'unreachable';
+    if (projectCache === null) throw 'unreachable';
 
     const [_root, ...fragments] = path.split('/');
 
@@ -217,7 +227,7 @@ function Ide({ projectName }: Props) {
       return child;
     };
 
-    const file = fragments.reduce(reducer, projectInfo.files);
+    const file = fragments.reduce(reducer, projectCache.files);
     return { path, file };
   }
 
@@ -535,9 +545,9 @@ function Ide({ projectName }: Props) {
     const path = file.path.split('/').slice(1, -1);
 
     // eslint-disable-next-line no-throw-literal
-    if (projectInfo === null) throw 'unreachable';
+    if (projectCache === null) throw 'unreachable';
 
-    const root = projectInfo.files;
+    const root = projectCache.files;
 
     // the project root is always a directory. assert and cast
     // eslint-disable-next-line no-throw-literal
@@ -775,7 +785,8 @@ function Ide({ projectName }: Props) {
   useStyles(FlexLayoutTheme);
   const classes = useStylesMaterial();
 
-  if (projectInfo === null || state === null) return null;
+  if (projectInfo === null || projectCache === null || state === null)
+    return null;
 
   const { fileTreeState, showMetadataFolder } = state;
 
@@ -920,7 +931,7 @@ function Ide({ projectName }: Props) {
           <hr />
         </div>
         <FileTree
-          files={projectInfo.files}
+          files={projectCache.files}
           {...fileTreeState}
           filter={filter}
           onFileAction={handleFileAction}
