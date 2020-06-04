@@ -502,6 +502,21 @@ function Ide({ projectName }: Props) {
     createFileRef.current.show(parentDir, desc);
   }
 
+  // this is a hack to be able to open new files
+  const [createdPath, setCreatedPath] = React.useState<string | null>(null);
+
+  React.useEffect(() => {
+    if (createdPath === null) return;
+
+    try {
+      const file = getFile(createdPath);
+      if (file.file.isFile()) handleFileAction({ action: 'OPEN', file });
+      setCreatedPath(null);
+    } catch (ex) {
+      // will automatically try again when projectCache has been updated
+    }
+  }, [projectCache, createdPath]);
+
   async function confirmCreateFile(
     parentDir: DirReference,
     name: string,
@@ -537,9 +552,7 @@ function Ide({ projectName }: Props) {
       // TODO select the file in the file tree
 
       // // open the new file
-      // const file = getFile(`${parentDir.path}/${name}`);
-      // if (file.file.isFile()) handleFileAction({ action: 'OPEN', file });
-
+      setCreatedPath(`${parentDir.path}/${name}`);
       return true;
     } catch (ex) {
       if (ex instanceof filer.Errors.EEXIST) {
