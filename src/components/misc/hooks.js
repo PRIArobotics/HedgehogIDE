@@ -71,16 +71,46 @@ export function useAnimationFrame(
   return [start, stop];
 }
 
-type AsyncState<T> =
-  | {| type: 'PENDING', previousValue: T, promise: Promise<T> |}
-  | {| type: 'RESOLVED', value: T |};
+type AsyncState<T> = {|
+  value: T,
+  isLoading: boolean,
+  isError: boolean,
+|};
 
-function valueFromState<T>(stateImpl: AsyncState<T>): T {
-  switch (stateImpl.type) {
-    case 'PENDING':
-      return stateImpl.previousValue;
-    case 'RESOLVED':
-      return stateImpl.value;
+type AsyncStateAction<T> =
+  | {| type: 'START' |}
+  | {| type: 'RESOLVE', value: T |}
+  | {| type: 'REJECT' |};
+
+function asyncStateReducer<T>(
+  state: AsyncState<T>,
+  action: AsyncStateAction<T>,
+): AsyncState<T> {
+  switch (action.type) {
+    case 'START': {
+      return {
+        ...state,
+        isLoading: true,
+        isError: false,
+      };
+    }
+    case 'RESOLVE': {
+      const { value } = action;
+
+      return {
+        ...state,
+        value,
+        isLoading: false,
+        isError: false,
+      };
+    }
+    case 'REJECT': {
+      return {
+        ...state,
+        isLoading: false,
+        isError: true,
+      };
+    }
     default:
       // eslint-disable-next-line no-throw-literal
       throw 'unreachable';
@@ -94,45 +124,49 @@ function valueFromState<T>(stateImpl: AsyncState<T>): T {
 export function useAsyncState<T>(
   initialState: T,
 ): [T, (T | Promise<T>) => void] {
-  const [stateImpl, setStateImpl] = React.useState<AsyncState<T>>({
-    type: 'RESOLVED',
+  const [promise, setPromise] = React.useState<T | Promise<T>>(initialState);
+  const [state, dispatch] = React.useReducer(asyncStateReducer, {
     value: initialState,
+    isLoading: false,
+    isError: false,
   });
 
-  const state = valueFromState(stateImpl);
-
-  function setState(newState: T | Promise<T>) {
-    if (newState && typeof newState.then === 'function') {
+  React.useEffect(() => {
+    if (promise && typeof promise.then === 'function') {
       // technically we have not checked this is a promise but a thenable.
       // In practice this *should* not matter but who knows.
       // $FlowExpectError
-      const promise: Promise<T> = newState;
-      setStateImpl(oldStateImpl => ({
-        type: 'PENDING',
-        previousValue: valueFromState(oldStateImpl),
-        promise,
-      }));
+      const realPromise: Promise<T> = promise;
 
-      // wait for the promise to resolve
-      promise.then((value: T) => {
-        setStateImpl(oldState => {
-          // ignore the promise if it is not the currently loading one
-          if (oldState.type !== 'PENDING' || oldState.promise !== promise)
-            return oldState;
+      let cancelled = false;
 
-          return { type: 'RESOLVED', value };
-        });
-      });
+      dispatch({ type: 'START' });
+      realPromise.then(
+        value => {
+          if (!cancelled) {
+            dispatch({ type: 'RESOLVE', value });
+          }
+        },
+        _error => {
+          if (!cancelled) {
+            dispatch({ type: 'REJECT' });
+          }
+        },
+      );
+
+      return () => {
+        cancelled = true;
+      };
     } else {
       // $FlowExpectError
-      const value: T = newState;
-      setStateImpl({ type: 'RESOLVED', value });
-    }
-  }
+      const value: T = promise;
+      dispatch({ type: 'RESOLVE', value });
 
-  // useCallback: React.useState guarantees stability of setState,
-  // mirror that here
-  return [state, React.useCallback(setState, [setStateImpl])];
+      return undefined;
+    }
+  }, [promise]);
+
+  return [state.value, setPromise];
 }
 
 type StoreState<T> = {| value: T |};
