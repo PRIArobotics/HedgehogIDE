@@ -9,6 +9,8 @@ import {
   Project,
 } from '../../../core/store/projects';
 
+import { useAsyncState } from '../../misc/hooks';
+
 type ProjectCache = {|
   files: FilerRecursiveStatInfo,
   simulatorXml: string | null,
@@ -17,7 +19,7 @@ type ProjectCache = {|
 export default function useProjectCache(
   project: Project | null,
 ): [ProjectCache | null, () => void] {
-  const [state, setState] = React.useState<ProjectCache | null>(null);
+  const [state, setState] = useAsyncState<ProjectCache | null>(null);
 
   function refreshProject() {
     if (project === null) {
@@ -39,13 +41,15 @@ export default function useProjectCache(
       }
     }
 
-    (async () => {
+    async function loadProjectCache() {
       // load project from the file system
       const files = await project.getFiles();
       const simulatorXml = await loadSimulatorXml();
 
-      setState({ files, simulatorXml });
-    })();
+      return { files, simulatorXml };
+    }
+
+    setState(loadProjectCache());
   }
 
   // refresh project when projectName changes

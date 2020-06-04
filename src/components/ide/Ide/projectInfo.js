@@ -4,6 +4,8 @@ import * as React from 'react';
 
 import { Project } from '../../../core/store/projects';
 
+import { useAsyncState } from '../../misc/hooks';
+
 type ProjectInfo = {|
   project: Project,
   projectUid: string,
@@ -12,17 +14,19 @@ type ProjectInfo = {|
 export default function useProjectInfo(
   projectName: string,
 ): ProjectInfo | null {
-  const [state, setState] = React.useState<ProjectInfo | null>(null);
+  const [state, setState] = useAsyncState<ProjectInfo | null>(null);
 
   // refresh project when projectName changes
   React.useEffect(() => {
-    (async () => {
+    async function loadProjectInfo() {
       // load project from the file system
       const project = await Project.getProject(projectName);
       const projectUid = await project.getUid();
 
-      setState({ project, projectUid });
-    })();
+      return { project, projectUid };
+    }
+
+    setState(loadProjectInfo());
   }, [projectName]);
 
   return state;
