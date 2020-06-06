@@ -45,7 +45,6 @@ import IdeIcon from 'mdi-material-ui/CodeTags';
 import HelpIcon from 'mdi-material-ui/HelpCircleOutline';
 import ContestIcon from 'mdi-material-ui/ExclamationThick';
 import ControlsIcon from 'mdi-material-ui/TuneVertical';
-import ApolloTestIcon from 'mdi-material-ui/Graphql';
 import IndexDBTestIcon from 'mdi-material-ui/Database';
 import WebRTCTestIcon from 'mdi-material-ui/Forum';
 
@@ -104,7 +103,6 @@ export {
   HelpIcon,
   ContestIcon,
   ControlsIcon,
-  ApolloTestIcon,
   IndexDBTestIcon,
   WebRTCTestIcon,
   ConsoleIcon,

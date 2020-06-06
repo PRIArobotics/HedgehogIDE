@@ -15,7 +15,6 @@ import {
   HelpIcon,
   ContestIcon,
   // ControlsIcon,
-  ApolloTestIcon,
   IndexDBTestIcon,
   WebRTCTestIcon,
 } from '../../misc/palette';
@@ -84,7 +83,6 @@ function Sidebar() {
       {__DEV__ ? (
         <>
           <Divider />
-          <NavItem title="Apollo Test" target="/apollo" icon={ApolloTestIcon} />
           <NavItem
             title="IndexedDB Test"
             target="/indexedDB"
