@@ -1,5 +1,5 @@
 {
-  "flow.pathToFlow": "${workspaceFolder}/node_modules/.bin/flow",
+  "flow.pathToFlow": "${flowconfigDir}/node_modules/.bin/flow",
   "javascript.validate.enable": false,
   "python.pythonPath": "${env:HOME}/.pyenv/versions/hedgehog/bin/python"
 }
