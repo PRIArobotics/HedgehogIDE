@@ -23,7 +23,7 @@ const LOGIN = gql`
 `;
 
 function AuthProvider(props) {
-  const [performLogin, loginResponse] = useMutation(LOGIN);
+  const [performLogin, _loginResponse] = useMutation(LOGIN);
   const [authData, setAuthData] = React.useState<AuthData>({});
 
   const login = async (username: string, password: string) => {
