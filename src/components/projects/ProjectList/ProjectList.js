@@ -120,12 +120,10 @@ function ProjectList(_props: Props) {
   const deleteRef = hooks.useElementRef<typeof DeleteProjectDialog>();
   const renameRef = hooks.useElementRef<typeof RenameProjectDialog>();
 
-  const [projects, setProjects] = React.useState<Project[]>([]);
+  const [projects, setProjects] = hooks.useAsyncState<Project[]>([]);
 
-  async function refreshProjects() {
-    // eslint-disable-next-line no-shadow
-    const projects = await Project.getProjects();
-    setProjects(projects);
+  function refreshProjects() {
+    setProjects(Project.getProjects());
   }
 
   React.useEffect(() => {
@@ -142,11 +140,11 @@ function ProjectList(_props: Props) {
   async function confirmCreateProject(name: string): Promise<boolean> {
     try {
       await Project.createProject(name);
-      await refreshProjects();
+      refreshProjects();
       return true;
     } catch (ex) {
       if (!(ex instanceof ProjectError)) throw ex;
-      await refreshProjects();
+      refreshProjects();
       return false;
     }
   }
@@ -161,11 +159,11 @@ function ProjectList(_props: Props) {
   async function confirmDeleteProject(project: Project): Promise<boolean> {
     try {
       await project.delete();
-      await refreshProjects();
+      refreshProjects();
       return true;
     } catch (ex) {
       if (!(ex instanceof ProjectError)) throw ex;
-      await refreshProjects();
+      refreshProjects();
       return false;
     }
   }
@@ -183,11 +181,11 @@ function ProjectList(_props: Props) {
   ): Promise<boolean> {
     try {
       await project.rename(newName);
-      await refreshProjects();
+      refreshProjects();
       return true;
     } catch (ex) {
       if (!(ex instanceof ProjectError)) throw ex;
-      await refreshProjects();
+      refreshProjects();
       return false;
     }
   }
