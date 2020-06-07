@@ -76,8 +76,6 @@ function Header() {
 
   const [loginOpen, setLoginOpen] = React.useState(false);
 
-  React.useEffect(() => auth.recoverSession(), []);
-
   return (
     <Toolbar classes={{ gutters: classes.gutters }}>
       <IconButton

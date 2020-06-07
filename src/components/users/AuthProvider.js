@@ -43,9 +43,11 @@ function AuthProvider(props) {
     setAuthData(JSON.parse(localStorage.getItem('auth') || null));
   };
 
+  React.useEffect(() => recoverSession(), []);
+
   return (
     <AuthContext.Provider
-      value={{ authData, login, logout, recoverSession }}
+      value={{ authData, login, logout }}
       {...props}
     />
   );
