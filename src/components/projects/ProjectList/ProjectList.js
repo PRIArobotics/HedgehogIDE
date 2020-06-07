@@ -31,13 +31,14 @@ import {
 import * as hooks from '../../misc/hooks';
 
 import Link from '../../misc/Link';
+import SimpleDialog from '../../misc/SimpleDialog';
 import { Project, ProjectError } from '../../../core/store/projects';
 
 import s from './ProjectList.scss';
 
-import CreateProjectDialog from './CreateProjectDialog';
-import DeleteProjectDialog from './DeleteProjectDialog';
-import RenameProjectDialog from './RenameProjectDialog';
+import useCreateProjectDialog from './CreateProjectDialog';
+import useDeleteProjectDialog from './DeleteProjectDialog';
+import useRenameProjectDialog from './RenameProjectDialog';
 
 const messages = defineMessages({
   projectsTitle: {
@@ -116,10 +117,6 @@ type Props = {||};
 function ProjectList(_props: Props) {
   const intl = useIntl();
 
-  const createRef = hooks.useElementRef<typeof CreateProjectDialog>();
-  const deleteRef = hooks.useElementRef<typeof DeleteProjectDialog>();
-  const renameRef = hooks.useElementRef<typeof RenameProjectDialog>();
-
   const [projects, setProjects] = hooks.useAsyncState<Project[]>([]);
 
   function refreshProjects() {
@@ -129,13 +126,6 @@ function ProjectList(_props: Props) {
   React.useEffect(() => {
     refreshProjects();
   }, []);
-
-  function beginCreateProject() {
-    // eslint-disable-next-line no-throw-literal
-    if (createRef.current === null) throw 'ref is null';
-
-    createRef.current.show();
-  }
 
   async function confirmCreateProject(name: string): Promise<boolean> {
     try {
@@ -149,12 +139,7 @@ function ProjectList(_props: Props) {
     }
   }
 
-  function beginDeleteProject(project: Project) {
-    // eslint-disable-next-line no-throw-literal
-    if (deleteRef.current === null) throw 'ref is null';
-
-    deleteRef.current.show(project);
-  }
+  const createProject = useCreateProjectDialog(confirmCreateProject, projects);
 
   async function confirmDeleteProject(project: Project): Promise<boolean> {
     try {
@@ -168,12 +153,7 @@ function ProjectList(_props: Props) {
     }
   }
 
-  function beginRenameProject(project: Project) {
-    // eslint-disable-next-line no-throw-literal
-    if (renameRef.current === null) throw 'ref is null';
-
-    renameRef.current.show(project);
-  }
+  const deleteProject = useDeleteProjectDialog(confirmDeleteProject);
 
   async function confirmRenameProject(
     project: Project,
@@ -190,6 +170,8 @@ function ProjectList(_props: Props) {
     }
   }
 
+  const renameProject = useRenameProjectDialog(confirmRenameProject, projects);
+
   useStyles(s);
 
   return (
@@ -205,7 +187,7 @@ function ProjectList(_props: Props) {
           >
             <IconButton
               aria-label={intl.formatMessage(messages.createProjectTooltip)}
-              onClick={beginCreateProject}
+              onClick={createProject.show}
             >
               <CreateIcon />
             </IconButton>
@@ -251,7 +233,7 @@ function ProjectList(_props: Props) {
                       messages.renameProjectTooltip,
                       { name: project.name },
                     )}
-                    onClick={() => beginRenameProject(project)}
+                    onClick={() => renameProject.show(project)}
                   >
                     <RenameIcon />
                   </IconButton>
@@ -268,7 +250,7 @@ function ProjectList(_props: Props) {
                       messages.deleteProjectTooltip,
                       { name: project.name },
                     )}
-                    onClick={() => beginDeleteProject(project)}
+                    onClick={() => deleteProject.show(project)}
                   >
                     <DeleteIcon />
                   </IconButton>
@@ -277,16 +259,17 @@ function ProjectList(_props: Props) {
             </ListItem>
           ))}
         </List>
-        <CreateProjectDialog
-          ref={createRef}
-          onCreate={confirmCreateProject}
-          allProjects={projects}
+        <SimpleDialog
+          id="create-dialog"
+          {...createProject.mountSimpleDialog()}
         />
-        <DeleteProjectDialog ref={deleteRef} onDelete={confirmDeleteProject} />
-        <RenameProjectDialog
-          ref={renameRef}
-          onRename={confirmRenameProject}
-          allProjects={projects}
+        <SimpleDialog
+          id="delete-dialog"
+          {...deleteProject.mountSimpleDialog()}
+        />
+        <SimpleDialog
+          id="rename-dialog"
+          {...renameProject.mountSimpleDialog()}
         />
       </Paper>
       <Paper className={s.root}>
