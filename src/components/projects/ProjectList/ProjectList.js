@@ -1,13 +1,8 @@
 // @flow
 
 import * as React from 'react';
-import withStyles from 'isomorphic-style-loader/withStyles';
-import {
-  defineMessages,
-  injectIntl,
-  IntlShape,
-  FormattedMessage as M,
-} from 'react-intl';
+import useStyles from 'isomorphic-style-loader/useStyles';
+import { defineMessages, useIntl, FormattedMessage as M } from 'react-intl';
 
 import Avatar from '@material-ui/core/Avatar';
 import IconButton from '@material-ui/core/IconButton';
@@ -33,6 +28,7 @@ import {
   DeleteIcon,
   RefreshIcon,
 } from '../../misc/palette';
+import * as hooks from '../../misc/hooks';
 
 import Link from '../../misc/Link';
 import { Project, ProjectError } from '../../../core/store/projects';
@@ -115,354 +111,338 @@ const messages = defineMessages({
   },
 });
 
-type PropTypes = {|
-  intl: IntlShape,
-|};
-type StateTypes = {|
-  projects: Project[],
-|};
+type Props = {||};
 
-class ProjectList extends React.Component<PropTypes, StateTypes> {
-  createRef: RefObject<typeof CreateProjectDialog> = React.createRef();
-  deleteRef: RefObject<typeof DeleteProjectDialog> = React.createRef();
-  renameRef: RefObject<typeof RenameProjectDialog> = React.createRef();
+function ProjectList(_props: Props) {
+  const intl = useIntl();
 
-  state: StateTypes = {
-    projects: [],
-  };
+  const createRef = hooks.useElementRef<typeof CreateProjectDialog>();
+  const deleteRef = hooks.useElementRef<typeof DeleteProjectDialog>();
+  const renameRef = hooks.useElementRef<typeof RenameProjectDialog>();
 
-  componentDidMount() {
-    (async () => {
-      await this.refreshProjects();
-    })();
-  }
+  const [projects, setProjects] = React.useState<Project[]>([]);
 
-  async refreshProjects() {
+  async function refreshProjects() {
+    // eslint-disable-next-line no-shadow
     const projects = await Project.getProjects();
-    this.setState({ projects });
+    setProjects(projects);
   }
 
-  beginCreateProject() {
+  React.useEffect(() => {
+    refreshProjects();
+  }, []);
+
+  function beginCreateProject() {
     // eslint-disable-next-line no-throw-literal
-    if (this.createRef.current === null) throw 'ref is null';
+    if (createRef.current === null) throw 'ref is null';
 
-    this.createRef.current.show();
+    createRef.current.show();
   }
 
-  async confirmCreateProject(name: string): Promise<boolean> {
+  async function confirmCreateProject(name: string): Promise<boolean> {
     try {
       await Project.createProject(name);
-      await this.refreshProjects();
+      await refreshProjects();
       return true;
     } catch (ex) {
       if (!(ex instanceof ProjectError)) throw ex;
-      await this.refreshProjects();
+      await refreshProjects();
       return false;
     }
   }
 
-  beginDeleteProject(project: Project) {
+  function beginDeleteProject(project: Project) {
     // eslint-disable-next-line no-throw-literal
-    if (this.deleteRef.current === null) throw 'ref is null';
+    if (deleteRef.current === null) throw 'ref is null';
 
-    this.deleteRef.current.show(project);
+    deleteRef.current.show(project);
   }
 
-  async confirmDeleteProject(project: Project): Promise<boolean> {
+  async function confirmDeleteProject(project: Project): Promise<boolean> {
     try {
       await project.delete();
-      await this.refreshProjects();
+      await refreshProjects();
       return true;
     } catch (ex) {
       if (!(ex instanceof ProjectError)) throw ex;
-      await this.refreshProjects();
+      await refreshProjects();
       return false;
     }
   }
 
-  beginRenameProject(project: Project) {
+  function beginRenameProject(project: Project) {
     // eslint-disable-next-line no-throw-literal
-    if (this.renameRef.current === null) throw 'ref is null';
+    if (renameRef.current === null) throw 'ref is null';
 
-    this.renameRef.current.show(project);
+    renameRef.current.show(project);
   }
 
-  async confirmRenameProject(
+  async function confirmRenameProject(
     project: Project,
     newName: string,
   ): Promise<boolean> {
     try {
       await project.rename(newName);
-      await this.refreshProjects();
+      await refreshProjects();
       return true;
     } catch (ex) {
       if (!(ex instanceof ProjectError)) throw ex;
-      await this.refreshProjects();
+      await refreshProjects();
       return false;
     }
   }
 
-  render() {
-    const { intl } = this.props;
+  useStyles(s);
 
-    return (
-      <div className={s.container}>
-        <Paper className={s.root}>
-          <Toolbar className={s.toolbar}>
-            <Typography className={s.title} variant="h5" noWrap>
-              <M {...messages.projectsTitle} />
-            </Typography>
-            <Tooltip
-              title={intl.formatMessage(messages.createProjectTooltip)}
-              placement="bottom"
+  return (
+    <div className={s.container}>
+      <Paper className={s.root}>
+        <Toolbar className={s.toolbar}>
+          <Typography className={s.title} variant="h5" noWrap>
+            <M {...messages.projectsTitle} />
+          </Typography>
+          <Tooltip
+            title={intl.formatMessage(messages.createProjectTooltip)}
+            placement="bottom"
+          >
+            <IconButton
+              aria-label={intl.formatMessage(messages.createProjectTooltip)}
+              onClick={beginCreateProject}
             >
-              <IconButton
-                aria-label={intl.formatMessage(messages.createProjectTooltip)}
-                onClick={() => this.beginCreateProject()}
-              >
-                <CreateIcon />
-              </IconButton>
-            </Tooltip>
-            <Tooltip
-              title={intl.formatMessage(messages.refreshProjectListTooltip)}
-              placement="bottom"
+              <CreateIcon />
+            </IconButton>
+          </Tooltip>
+          <Tooltip
+            title={intl.formatMessage(messages.refreshProjectListTooltip)}
+            placement="bottom"
+          >
+            <IconButton
+              edge="end"
+              aria-label={intl.formatMessage(
+                messages.refreshProjectListTooltip,
+              )}
+              onClick={refreshProjects}
             >
-              <IconButton
-                edge="end"
-                aria-label={intl.formatMessage(
-                  messages.refreshProjectListTooltip,
-                )}
-                onClick={() => this.refreshProjects()}
-              >
-                <RefreshIcon />
-              </IconButton>
-            </Tooltip>
-          </Toolbar>
-          <List>
-            {this.state.projects.map(project => (
-              <ListItem
-                key={project.name}
-                button
-                component={Link}
-                to={`/projects/${project.name}`}
-              >
-                <ListItemAvatar>
-                  <Avatar>
-                    <LocalProjectIcon />
-                  </Avatar>
-                </ListItemAvatar>
-                <ListItemText primary={project.name} />
-                <ListItemSecondaryAction>
-                  <Tooltip
-                    title={intl.formatMessage(messages.renameProjectTooltip, {
-                      name: project.name,
-                    })}
-                    placement="bottom"
-                  >
-                    <IconButton
-                      aria-label={intl.formatMessage(
-                        messages.renameProjectTooltip,
-                        { name: project.name },
-                      )}
-                      onClick={() => this.beginRenameProject(project)}
-                    >
-                      <RenameIcon />
-                    </IconButton>
-                  </Tooltip>
-                  <Tooltip
-                    title={intl.formatMessage(messages.deleteProjectTooltip, {
-                      name: project.name,
-                    })}
-                    placement="bottom"
-                  >
-                    <IconButton
-                      edge="end"
-                      aria-label={intl.formatMessage(
-                        messages.deleteProjectTooltip,
-                        { name: project.name },
-                      )}
-                      onClick={() => this.beginDeleteProject(project)}
-                    >
-                      <DeleteIcon />
-                    </IconButton>
-                  </Tooltip>
-                </ListItemSecondaryAction>
-              </ListItem>
-            ))}
-          </List>
-          <CreateProjectDialog
-            ref={this.createRef}
-            onCreate={project => this.confirmCreateProject(project)}
-            allProjects={this.state.projects}
-          />
-          <DeleteProjectDialog
-            ref={this.deleteRef}
-            onDelete={project => this.confirmDeleteProject(project)}
-          />
-          <RenameProjectDialog
-            ref={this.renameRef}
-            onRename={(project, newName) =>
-              this.confirmRenameProject(project, newName)
-            }
-            allProjects={this.state.projects}
-          />
-        </Paper>
-        <Paper className={s.root}>
-          <Toolbar className={s.toolbar}>
-            <Typography className={s.title} variant="h5" noWrap>
-              <M {...messages.exercisesTitle} />
-            </Typography>
-            <Tooltip
-              title={intl.formatMessage(messages.refreshExerciseListTooltip)}
-              placement="bottom"
+              <RefreshIcon />
+            </IconButton>
+          </Tooltip>
+        </Toolbar>
+        <List>
+          {projects.map(project => (
+            <ListItem
+              key={project.name}
+              button
+              component={Link}
+              to={`/projects/${project.name}`}
             >
-              <IconButton
-                edge="end"
-                aria-label={intl.formatMessage(
-                  messages.refreshExerciseListTooltip,
-                )}
-                // onClick={() => this.refreshExercises()}
-              >
-                <RefreshIcon />
-              </IconButton>
-            </Tooltip>
-          </Toolbar>
-          <List>
-            {[
-              { name: 'Zoowärter', level: 1, projects: [] },
-              {
-                name: 'Zoowärter 2',
-                level: 2,
-                projects: [{ name: 'Zoowärter 2 Versuch' }],
-              },
-              {
-                name: 'Zoowärter 3',
-                level: 3,
-                projects: [
-                  { name: 'Zoowärter 3 v1' },
-                  { name: 'Zoowärter 3 v2' },
-                ],
-              },
-            ].map(exercise => (
-              <ListItem key={exercise.name} button>
-                <ListItemAvatar>
-                  <Avatar>
-                    <LocalProjectIcon />
-                  </Avatar>
-                </ListItemAvatar>
-                <ListItemText
-                  primary={exercise.name}
-                  secondary={intl.formatMessage(
-                    messages.exerciseSecondaryText,
-                    { ...exercise },
-                  )}
-                />
-                <ListItemSecondaryAction>
-                  <Tooltip
-                    title={intl.formatMessage(messages.cloneExerciseTooltip, {
-                      name: exercise.name,
-                    })}
-                    placement="bottom"
+              <ListItemAvatar>
+                <Avatar>
+                  <LocalProjectIcon />
+                </Avatar>
+              </ListItemAvatar>
+              <ListItemText primary={project.name} />
+              <ListItemSecondaryAction>
+                <Tooltip
+                  title={intl.formatMessage(messages.renameProjectTooltip, {
+                    name: project.name,
+                  })}
+                  placement="bottom"
+                >
+                  <IconButton
+                    aria-label={intl.formatMessage(
+                      messages.renameProjectTooltip,
+                      { name: project.name },
+                    )}
+                    onClick={() => beginRenameProject(project)}
                   >
-                    <IconButton
-                      {...(exercise.projects.length === 0
-                        ? { edge: 'end' }
-                        : {})}
-                      aria-label={intl.formatMessage(
-                        messages.cloneExerciseTooltip,
-                        { name: exercise.name },
+                    <RenameIcon />
+                  </IconButton>
+                </Tooltip>
+                <Tooltip
+                  title={intl.formatMessage(messages.deleteProjectTooltip, {
+                    name: project.name,
+                  })}
+                  placement="bottom"
+                >
+                  <IconButton
+                    edge="end"
+                    aria-label={intl.formatMessage(
+                      messages.deleteProjectTooltip,
+                      { name: project.name },
+                    )}
+                    onClick={() => beginDeleteProject(project)}
+                  >
+                    <DeleteIcon />
+                  </IconButton>
+                </Tooltip>
+              </ListItemSecondaryAction>
+            </ListItem>
+          ))}
+        </List>
+        <CreateProjectDialog
+          ref={createRef}
+          onCreate={confirmCreateProject}
+          allProjects={projects}
+        />
+        <DeleteProjectDialog ref={deleteRef} onDelete={confirmDeleteProject} />
+        <RenameProjectDialog
+          ref={renameRef}
+          onRename={confirmRenameProject}
+          allProjects={projects}
+        />
+      </Paper>
+      <Paper className={s.root}>
+        <Toolbar className={s.toolbar}>
+          <Typography className={s.title} variant="h5" noWrap>
+            <M {...messages.exercisesTitle} />
+          </Typography>
+          <Tooltip
+            title={intl.formatMessage(messages.refreshExerciseListTooltip)}
+            placement="bottom"
+          >
+            <IconButton
+              edge="end"
+              aria-label={intl.formatMessage(
+                messages.refreshExerciseListTooltip,
+              )}
+              // onClick={refreshExercises}
+            >
+              <RefreshIcon />
+            </IconButton>
+          </Tooltip>
+        </Toolbar>
+        <List>
+          {[
+            { name: 'Zoowärter', level: 1, projects: [] },
+            {
+              name: 'Zoowärter 2',
+              level: 2,
+              projects: [{ name: 'Zoowärter 2 Versuch' }],
+            },
+            {
+              name: 'Zoowärter 3',
+              level: 3,
+              projects: [
+                { name: 'Zoowärter 3 v1' },
+                { name: 'Zoowärter 3 v2' },
+              ],
+            },
+          ].map(exercise => (
+            <ListItem key={exercise.name} button>
+              <ListItemAvatar>
+                <Avatar>
+                  <LocalProjectIcon />
+                </Avatar>
+              </ListItemAvatar>
+              <ListItemText
+                primary={exercise.name}
+                secondary={intl.formatMessage(messages.exerciseSecondaryText, {
+                  ...exercise,
+                })}
+              />
+              <ListItemSecondaryAction>
+                <Tooltip
+                  title={intl.formatMessage(messages.cloneExerciseTooltip, {
+                    name: exercise.name,
+                  })}
+                  placement="bottom"
+                >
+                  <IconButton
+                    {...(exercise.projects.length === 0 ? { edge: 'end' } : {})}
+                    aria-label={intl.formatMessage(
+                      messages.cloneExerciseTooltip,
+                      { name: exercise.name },
+                    )}
+                    // onClick={() => beginCloneExercise(exercise)}
+                  >
+                    <CreateIcon />
+                  </IconButton>
+                </Tooltip>
+                {exercise.projects.length === 0 ? null : exercise.projects
+                    .length === 1 ? (
+                  exercise.projects.map(project => (
+                    <Tooltip
+                      key={project.name}
+                      title={intl.formatMessage(
+                        messages.openAssociatedProjectTooltip,
+                        { exercise: exercise.name, name: project.name },
                       )}
-                      // onClick={() => this.beginCloneExercise(exercise)}
+                      placement="bottom"
                     >
-                      <CreateIcon />
-                    </IconButton>
-                  </Tooltip>
-                  {exercise.projects.length === 0 ? null : exercise.projects
-                      .length === 1 ? (
-                    exercise.projects.map(project => (
-                      <Tooltip
-                        key={project.name}
-                        title={intl.formatMessage(
+                      <IconButton
+                        edge="end"
+                        aria-label={intl.formatMessage(
                           messages.openAssociatedProjectTooltip,
                           { exercise: exercise.name, name: project.name },
                         )}
-                        placement="bottom"
+                        component={Link}
+                        to={`/projects/${project.name}`}
                       >
-                        <IconButton
-                          edge="end"
-                          aria-label={intl.formatMessage(
-                            messages.openAssociatedProjectTooltip,
-                            { exercise: exercise.name, name: project.name },
+                        <OpenIcon />
+                      </IconButton>
+                    </Tooltip>
+                  ))
+                ) : (
+                  <PopupState
+                    variant="popover"
+                    popupId={`${exercise.name}-menu`}
+                  >
+                    {popupState => (
+                      <>
+                        <Tooltip
+                          title={intl.formatMessage(
+                            messages.openAssociatedProjectMenuTooltip,
+                            { exercise: exercise.name },
                           )}
-                          component={Link}
-                          to={`/projects/${project.name}`}
+                          placement="bottom"
                         >
-                          <OpenIcon />
-                        </IconButton>
-                      </Tooltip>
-                    ))
-                  ) : (
-                    <PopupState
-                      variant="popover"
-                      popupId={`${exercise.name}-menu`}
-                    >
-                      {popupState => (
-                        <>
-                          <Tooltip
-                            title={intl.formatMessage(
+                          <IconButton
+                            edge="end"
+                            {...bindTrigger(popupState)}
+                            aria-label={intl.formatMessage(
                               messages.openAssociatedProjectMenuTooltip,
                               { exercise: exercise.name },
                             )}
-                            placement="bottom"
                           >
-                            <IconButton
-                              edge="end"
-                              {...bindTrigger(popupState)}
-                              aria-label={intl.formatMessage(
-                                messages.openAssociatedProjectMenuTooltip,
-                                { exercise: exercise.name },
-                              )}
+                            <OpenIcon />
+                          </IconButton>
+                        </Tooltip>
+                        <Menu
+                          anchorOrigin={{
+                            horizontal: 'right',
+                            vertical: 'top',
+                          }}
+                          transformOrigin={{
+                            horizontal: 'right',
+                            vertical: 'top',
+                          }}
+                          keepMounted
+                          {...bindMenu(popupState)}
+                        >
+                          {exercise.projects.map(project => (
+                            <MenuItem
+                              key={project.name}
+                              component={Link}
+                              to={`/projects/${project.name}`}
                             >
-                              <OpenIcon />
-                            </IconButton>
-                          </Tooltip>
-                          <Menu
-                            anchorOrigin={{
-                              horizontal: 'right',
-                              vertical: 'top',
-                            }}
-                            transformOrigin={{
-                              horizontal: 'right',
-                              vertical: 'top',
-                            }}
-                            keepMounted
-                            {...bindMenu(popupState)}
-                          >
-                            {exercise.projects.map(project => (
-                              <MenuItem
-                                key={project.name}
-                                component={Link}
-                                to={`/projects/${project.name}`}
-                              >
-                                <M
-                                  {...messages.openAssociatedProjectMenuItem}
-                                  values={{ name: project.name }}
-                                />
-                              </MenuItem>
-                            ))}
-                          </Menu>
-                        </>
-                      )}
-                    </PopupState>
-                  )}
-                </ListItemSecondaryAction>
-              </ListItem>
-            ))}
-          </List>
-        </Paper>
-      </div>
-    );
-  }
+                              <M
+                                {...messages.openAssociatedProjectMenuItem}
+                                values={{ name: project.name }}
+                              />
+                            </MenuItem>
+                          ))}
+                        </Menu>
+                      </>
+                    )}
+                  </PopupState>
+                )}
+              </ListItemSecondaryAction>
+            </ListItem>
+          ))}
+        </List>
+      </Paper>
+    </div>
+  );
 }
 
-export default withStyles(s)(injectIntl(ProjectList));
+export default ProjectList;
