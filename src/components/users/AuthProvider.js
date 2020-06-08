@@ -4,12 +4,35 @@ import * as React from 'react';
 import { useMutation } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
 
-const AuthContext = React.createContext();
-
 type AuthData = {|
   id: string,
   username: string,
   token: string,
+|};
+
+type Auth = {|
+  authData: AuthData | null,
+  login(username: string, password: string): Promise<AuthData>,
+  logout(): void,
+|};
+
+export const AuthContext = React.createContext<Auth>({
+  authData: null,
+  login() {
+    throw new Error('login not specified');
+  },
+  logout() {
+    throw new Error('logout not specified');
+  },
+});
+
+type LoginVariables = {|
+  username: string,
+  password: string,
+|};
+
+type LoginData = {|
+  login: AuthData,
 |};
 
 const LOGIN = gql`
@@ -22,13 +45,24 @@ const LOGIN = gql`
   }
 `;
 
-function AuthProvider(props) {
-  const [performLogin, _loginResponse] = useMutation(LOGIN);
-  const [authData, setAuthData] = React.useState<AuthData>({});
+type AuthProviderPropTypes = {|
+  children: React.Node,
+|};
+
+export function AuthProvider({ children }: AuthProviderPropTypes) {
+  const [performLogin, _loginResponse] = useMutation<LoginData, LoginVariables>(
+    LOGIN,
+  );
+  const [authData, setAuthData] = React.useState<AuthData | null>(null);
 
   const login = async (username: string, password: string) => {
-    const data = (await performLogin({ variables: { username, password } }))
-      .data.login;
+    const result = await performLogin({ variables: { username, password } });
+
+    // we're not passing `ignoreResults`, so there will be a result
+    // eslint-disable-next-line no-throw-literal
+    if (!result.data) throw 'unreachable';
+
+    const data = result.data.login;
     setAuthData(data);
     localStorage.setItem('auth', JSON.stringify(data));
     return data;
@@ -40,16 +74,19 @@ function AuthProvider(props) {
   };
 
   const recoverSession = () => {
-    setAuthData(JSON.parse(localStorage.getItem('auth') || null));
+    const auth = localStorage.getItem('auth');
+    setAuthData(auth ? JSON.parse(auth) : null);
   };
 
   React.useEffect(() => recoverSession(), []);
 
   return (
-    <AuthContext.Provider value={{ authData, login, logout }} {...props} />
+    <AuthContext.Provider value={{ authData, login, logout }}>
+      {children}
+    </AuthContext.Provider>
   );
 }
 
-const useAuth = () => React.useContext(AuthContext);
-
-export { AuthProvider, useAuth };
+export function useAuth(): Auth {
+  return React.useContext(AuthContext);
+}
