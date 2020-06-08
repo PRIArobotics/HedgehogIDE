@@ -1,7 +1,7 @@
 // @flow
 
 import * as React from 'react';
-import withStyles from 'isomorphic-style-loader/withStyles';
+import useStyles from 'isomorphic-style-loader/useStyles';
 
 import Tree, { TreeNode } from 'rc-tree';
 // $FlowExpectError
@@ -16,6 +16,7 @@ import {
   MetadataSimulatorIcon,
   MetadataToolboxIcon,
 } from '../../misc/palette';
+import * as hooks from '../../misc/hooks';
 
 import s from './FileTree.scss';
 
@@ -73,40 +74,57 @@ After reloading, the root node will open even though it is not
 defined in the localstorage.
 */
 
-export type ControlledState = $Shape<{|
+export type ControlledState = {|
   expandedKeys: string[],
-|}>;
+|};
 
-type PropTypes = {|
+type Props = {|
   files: FilerRecursiveStatInfo,
-  expandedKeys: string[],
+  ...ControlledState,
   filter?: (path: string, child: FilerRecursiveStatInfo) => boolean,
   onFileAction: (action: FileAction) => void | Promise<void>,
   onUpdate: (state: ControlledState) => void | Promise<void>,
 |};
-type StateTypes = {|
-  selectedKeys: string[],
-|};
 
-class FileTree extends React.Component<PropTypes, StateTypes> {
-  rootDivRef: RefObject<'div'> = React.createRef();
-  menuRef: RefObject<typeof FileMenu> = React.createRef();
+function FileTree({
+  files,
+  expandedKeys,
+  filter,
+  onFileAction,
+  onUpdate,
+}: Props) {
+  const [selectedKeys, setSelectedKeys] = React.useState<string[]>([]);
 
-  state = {
-    selectedKeys: [],
-  };
+  const rootDivRef = hooks.useElementRef<'div'>();
+  const menuRef = hooks.useElementRef<typeof FileMenu>();
 
-  handleFileClick(event: MouseEvent, file: FileReference) {
-    this.setState({ selectedKeys: [file.path] });
+  function setExpandDirectory(file: FileReference, state: boolean | null) {
+    const newExpandedKeys = [...expandedKeys];
+    const index = newExpandedKeys.indexOf(file.path);
+    if (state === null) {
+      // toggle
+      if (index === -1) newExpandedKeys.push(file.path);
+      else newExpandedKeys.splice(index, 1);
+    } else {
+      // set/reset
+      // eslint-disable-next-line no-lonely-if
+      if (index === -1 && state) newExpandedKeys.push(file.path);
+      else if (index !== -1 && !state) newExpandedKeys.splice(index, 1);
+    }
+    onUpdate({ expandedKeys: newExpandedKeys });
+  }
+
+  function handleFileClick(event: MouseEvent, file: FileReference) {
+    setSelectedKeys([file.path]);
     event.preventDefault();
   }
 
-  handleFileRightClick(event: MouseEvent, file: FileReference) {
-    this.setState({ selectedKeys: [file.path] });
+  function handleFileRightClick(event: MouseEvent, file: FileReference) {
+    setSelectedKeys([file.path]);
 
     // eslint-disable-next-line no-throw-literal
-    if (this.menuRef.current === null) throw 'ref is null';
-    this.menuRef.current.show(
+    if (menuRef.current === null) throw 'ref is null';
+    menuRef.current.show(
       { left: event.clientX - 2, top: event.clientY - 4 },
       file,
     );
@@ -114,16 +132,16 @@ class FileTree extends React.Component<PropTypes, StateTypes> {
     event.preventDefault();
   }
 
-  handleFileDoubleClick(event: MouseEvent, file: FileReference) {
-    this.setState({ selectedKeys: [file.path] });
+  function handleFileDoubleClick(event: MouseEvent, file: FileReference) {
+    setSelectedKeys([file.path]);
 
-    if (file.file.isDirectory()) this.setExpandDirectory(file, null);
-    else this.props.onFileAction({ action: 'OPEN', file });
+    if (file.file.isDirectory()) setExpandDirectory(file, null);
+    else onFileAction({ action: 'OPEN', file });
 
     event.preventDefault();
   }
 
-  handleFileKeyDown(event: KeyboardEvent, file: FileReference) {
+  function handleFileKeyDown(event: KeyboardEvent, file: FileReference) {
     // we don't handle any of these
     if (
       event.altKey ||
@@ -137,11 +155,16 @@ class FileTree extends React.Component<PropTypes, StateTypes> {
     if (file.file.isDirectory())
       switch (event.key) {
         case 'ArrowLeft':
-          this.setExpandDirectory(file, false);
+          setExpandDirectory(file, false);
           event.preventDefault();
           break;
         case 'ArrowRight':
-          this.setExpandDirectory(file, true);
+          setExpandDirectory(file, true);
+          event.preventDefault();
+          break;
+        case ' ':
+        case 'Enter':
+          setExpandDirectory(file, null);
           event.preventDefault();
           break;
         default:
@@ -150,14 +173,14 @@ class FileTree extends React.Component<PropTypes, StateTypes> {
       switch (event.key) {
         case ' ':
         case 'Enter':
-          this.props.onFileAction({ action: 'OPEN', file });
+          onFileAction({ action: 'OPEN', file });
           event.preventDefault();
           break;
         default:
       }
   }
 
-  handleFileDrop({ dragNode, node, dropToGap }) {
+  function handleFileDrop({ dragNode, node, dropToGap }) {
     const file = {
       path: dragNode.props.eventKey,
       file: dragNode.props.file,
@@ -168,110 +191,93 @@ class FileTree extends React.Component<PropTypes, StateTypes> {
       destDirPath += '/..';
     }
 
-    this.props.onFileAction({ action: 'MOVE', file, destDirPath });
+    onFileAction({ action: 'MOVE', file, destDirPath });
   }
 
-  setExpandDirectory(file: FileReference, state: boolean | null) {
-    const expandedKeys = [...this.props.expandedKeys];
-    const index = expandedKeys.indexOf(file.path);
-    if (state === null) {
-      // toggle
-      if (index === -1) expandedKeys.push(file.path);
-      else expandedKeys.splice(index, 1);
-    } else {
-      // set/reset
-      // eslint-disable-next-line no-lonely-if
-      if (index === -1 && state) expandedKeys.push(file.path);
-      else if (index !== -1 && !state) expandedKeys.splice(index, 1);
-    }
-    this.props.onUpdate({ expandedKeys });
+  const effectiveFilter: (
+    path: string,
+    child: FilerRecursiveStatInfo,
+  ) => boolean = filter || (() => true);
+
+  function renderChildren(path: string, children: FilerRecursiveStatInfo[]) {
+    return children
+      .filter(child => effectiveFilter(path, child))
+      .map(child =>
+        // eslint-disable-next-line no-use-before-define
+        renderNode(`${path}/${child.name}`, child),
+      );
   }
 
-  render() {
-    const { expandedKeys, files, filter } = this.props;
-    const effectiveFilter: (
-      path: string,
-      child: FilerRecursiveStatInfo,
-    ) => boolean = filter || (() => true);
+  function renderNode(path: string, file: FilerRecursiveStatInfo) {
+    const isLeaf = !file.isDirectory();
+    const isExpanded = expandedKeys.includes(path);
 
-    const renderChildren = (path: string, children: FilerRecursiveStatInfo[]) =>
-      children
-        .filter(child => effectiveFilter(path, child))
-        .map(child =>
-          // eslint-disable-next-line no-use-before-define
-          renderNode(`${path}/${child.name}`, child),
-        );
-
-    const renderNode = (path: string, file: FilerRecursiveStatInfo) => {
-      const isLeaf = !file.isDirectory();
-      const isExpanded = expandedKeys.includes(path);
-
-      const TheIcon = (() => {
-        if (isLeaf) {
-          if (path === './.metadata/simulator') return MetadataSimulatorIcon;
-          if (path === './.metadata/toolbox') return MetadataToolboxIcon;
-          if (file.name.endsWith('.blockly')) return LanguageBlocklyIcon;
-          if (file.name.endsWith('.js')) return LanguageJavascriptIcon;
-          return FileIcon;
-        } else {
-          return isExpanded ? FolderOpenIcon : FolderIcon;
-        }
-      })();
-
-      const attrs = {
-        key: path,
-        isLeaf,
-        title: (
-          // TODO figure out accessibility
-          <span
-            onClick={e => this.handleFileClick(e, { path, file })}
-            onContextMenu={e => this.handleFileRightClick(e, { path, file })}
-            onDoubleClick={e => this.handleFileDoubleClick(e, { path, file })}
-            onKeyDown={e => this.handleFileKeyDown(e, { path, file })}
-            role="treeitem"
-            tabIndex="0"
-          >
-            <TheIcon className={s.fileIcon} />
-            {file.name}
-          </span>
-        ),
-        file,
-      };
-
+    const TheIcon = (() => {
       if (isLeaf) {
-        return <TreeNode {...attrs} />;
+        if (path === './.metadata/simulator') return MetadataSimulatorIcon;
+        if (path === './.metadata/toolbox') return MetadataToolboxIcon;
+        if (file.name.endsWith('.blockly')) return LanguageBlocklyIcon;
+        if (file.name.endsWith('.js')) return LanguageJavascriptIcon;
+        return FileIcon;
       } else {
-        // $FlowExpectError
-        const dir: FilerRecursiveDirectoryInfo = file;
-        return (
-          <TreeNode {...attrs}>{renderChildren(path, dir.contents)}</TreeNode>
-        );
+        return isExpanded ? FolderOpenIcon : FolderIcon;
       }
+    })();
+
+    const attrs = {
+      key: path,
+      isLeaf,
+      title: (
+        // TODO figure out accessibility
+        <span
+          onClick={e => handleFileClick(e, { path, file })}
+          onContextMenu={e => handleFileRightClick(e, { path, file })}
+          onDoubleClick={e => handleFileDoubleClick(e, { path, file })}
+          onKeyDown={e => handleFileKeyDown(e, { path, file })}
+          role="treeitem"
+          tabIndex="0"
+        >
+          <TheIcon className={s.fileIcon} />
+          {file.name}
+        </span>
+      ),
+      file,
     };
 
-    return (
-      <div ref={this.rootDivRef}>
-        <Tree
-          className="file-tree"
-          showLine
-          showIcon={false}
-          checkable={false}
-          selectable
-          draggable
-          expandedKeys={expandedKeys}
-          onExpand={
-            // eslint-disable-next-line no-shadow
-            expandedKeys => this.props.onUpdate({ expandedKeys })
-          }
-          selectedKeys={this.state.selectedKeys}
-          onDrop={event => this.handleFileDrop(event)}
-        >
-          {renderNode('.', files)}
-        </Tree>
-        <FileMenu ref={this.menuRef} onFileAction={this.props.onFileAction} />
-      </div>
-    );
+    if (isLeaf) {
+      return <TreeNode {...attrs} />;
+    } else {
+      // $FlowExpectError
+      const dir: FilerRecursiveDirectoryInfo = file;
+      return (
+        <TreeNode {...attrs}>{renderChildren(path, dir.contents)}</TreeNode>
+      );
+    }
   }
-}
 
-export default withStyles(sRcTree, s)(FileTree);
+  useStyles(sRcTree);
+  useStyles(s);
+  return (
+    <div ref={rootDivRef}>
+      <Tree
+        className="file-tree"
+        showLine
+        showIcon={false}
+        checkable={false}
+        selectable
+        draggable
+        expandedKeys={expandedKeys}
+        onExpand={
+          // eslint-disable-next-line no-shadow
+          expandedKeys => onUpdate({ expandedKeys })
+        }
+        selectedKeys={selectedKeys}
+        onDrop={handleFileDrop}
+      >
+        {renderNode('.', files)}
+      </Tree>
+      <FileMenu ref={menuRef} onFileAction={onFileAction} />
+    </div>
+  );
+}
+export default FileTree;
