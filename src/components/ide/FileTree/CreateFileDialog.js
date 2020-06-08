@@ -45,7 +45,6 @@ type Config = {|
 |};
 
 type FileNameState = {|
-  newFileName: string,
   actualNewFileName: string,
   valid: boolean,
 |};
@@ -59,20 +58,12 @@ export default function useCreateFileDialog(
 ): CreateFileDialogHook {
   const [open, setOpen] = React.useState<boolean>(false);
   const [config, setConfig] = React.useState<Config | null>(null);
-  const [fileNameState, setFileNameState] = React.useState<FileNameState>({
-    newFileName: '',
-    actualNewFileName: '',
-    valid: false,
-  });
+  const [newFileName, setNewFileName] = React.useState<string>('');
 
   function show(parentDir: DirReference, desc: FileDesc) {
     setOpen(true);
     setConfig({ parentDir, desc });
-    setFileNameState({
-      newFileName: '',
-      actualNewFileName: '',
-      valid: false,
-    });
+    setNewFileName('');
   }
 
   function onCancel() {
@@ -80,28 +71,32 @@ export default function useCreateFileDialog(
   }
 
   function onChange(event) {
-    // eslint-disable-next-line no-throw-literal
-    if (config === null) throw 'unreachable';
+    const name = event.target.value;
+    const nameClean = name.replace(/[^-\w#$%().,:; ]/g, '');
+    setNewFileName(nameClean);
+  }
+
+  const [fileNameState, setFileNameState] = React.useState<FileNameState>({
+    actualNewFileName: '',
+    valid: false,
+  });
+  React.useEffect(() => {
+    if (config === null) return;
 
     const { parentDir, desc } = config;
 
-    const name = event.target.value;
-    const newFileName = name.replace(/[^-\w#$%().,:; ]/g, '');
     const actualNewFileName =
-      desc.type === 'DIRECTORY'
-        ? newFileName
-        : newFileName.endsWith(desc.extension)
+      desc.type === 'DIRECTORY' || newFileName.endsWith(desc.extension)
         ? newFileName
         : `${newFileName}${desc.extension}`;
     const valid =
       newFileName !== '' &&
       parentDir.file.contents.every(f => f.name !== actualNewFileName);
     setFileNameState({
-      newFileName,
       actualNewFileName,
       valid,
     });
-  }
+  }, [config, newFileName]);
 
   async function onConfirm() {
     // eslint-disable-next-line no-throw-literal
@@ -120,7 +115,7 @@ export default function useCreateFileDialog(
 
   const desc = config !== null ? config.desc : { type: 'DIRECTORY' };
   const { type } = desc;
-  const { newFileName, valid } = fileNameState;
+  const { valid } = fileNameState;
 
   const placeholder = desc.type === 'FILE' ? `file${desc.extension}` : 'folder';
 
