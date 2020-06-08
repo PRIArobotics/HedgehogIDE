@@ -26,6 +26,7 @@ import FlexLayoutTheme from './flex_layout_ide.css';
 
 import { SettingsIcon, ConsoleIcon, SimulatorIcon } from '../../misc/palette';
 import * as hooks from '../../misc/hooks';
+import SimpleDialog from '../../misc/SimpleDialog';
 
 import Console from '../Console';
 import Editor from '../Editor';
@@ -33,7 +34,6 @@ import FileTree, {
   type DirReference,
   type FileReference,
   type FileAction,
-  type FileDesc,
   type FileType,
 } from '../FileTree';
 import Simulator from '../Simulator';
@@ -46,9 +46,9 @@ import {
   type FilerRecursiveDirectoryInfo,
 } from '../../../core/store/projects';
 
-import CreateFileDialog from '../FileTree/CreateFileDialog';
-import RenameFileDialog from '../FileTree/RenameFileDialog';
-import DeleteFileDialog from '../FileTree/DeleteFileDialog';
+import useCreateFileDialog from '../FileTree/CreateFileDialog';
+import useRenameFileDialog from '../FileTree/RenameFileDialog';
+import useDeleteFileDialog from '../FileTree/DeleteFileDialog';
 import FileUpload from '../FileTree/FileUpload';
 import FileDownload from '../FileTree/FileDownload';
 import Executor, { type Task } from '../Executor';
@@ -135,9 +135,6 @@ function Ide({ projectName }: Props) {
   const simulatorRef = hooks.useElementRef<typeof Simulator>();
   const executorRef = hooks.useElementRef<typeof Executor>();
 
-  const createFileRef = hooks.useElementRef<typeof CreateFileDialog>();
-  const renameFileRef = hooks.useElementRef<typeof RenameFileDialog>();
-  const deleteFileRef = hooks.useElementRef<typeof DeleteFileDialog>();
   const fileUploadRef = hooks.useElementRef<typeof FileUpload>();
   const fileDownloadRef = hooks.useElementRef<typeof FileDownload>();
 
@@ -495,13 +492,6 @@ function Ide({ projectName }: Props) {
     }
   }
 
-  function beginCreateFile(parentDir: DirReference, desc: FileDesc) {
-    // eslint-disable-next-line no-throw-literal
-    if (createFileRef.current === null) throw 'ref is null';
-
-    createFileRef.current.show(parentDir, desc);
-  }
-
   // this is a hack to be able to open new files
   const [createdPath, setCreatedPath] = React.useState<string | null>(null);
 
@@ -564,37 +554,7 @@ function Ide({ projectName }: Props) {
     }
   }
 
-  function beginRenameFile(file: FileReference) {
-    // split off the './' at the start and the file name at the end
-    const path = file.path.split('/').slice(1, -1);
-
-    // eslint-disable-next-line no-throw-literal
-    if (projectCache === null) throw 'unreachable';
-
-    const root = projectCache.files;
-
-    // the project root is always a directory. assert and cast
-    // eslint-disable-next-line no-throw-literal
-    if (!root.isDirectory()) throw 'unreachable';
-    // $FlowExpectError
-    let dir: FilerRecursiveDirectoryInfo = root;
-
-    // determine the files that are siblings of the event target
-    path.forEach(fragment => {
-      // right now `fragment` is a child of `dir`. look it up.
-      const child = dir.contents.find(c => c.name === fragment);
-
-      // the child is an ancestor of `file` and thus a directory. assert and cast
-      // eslint-disable-next-line no-throw-literal
-      if (child === undefined || !child.isDirectory()) throw 'unreachable';
-      // $FlowExpectError
-      dir = child;
-    });
-
-    // eslint-disable-next-line no-throw-literal
-    if (renameFileRef.current === null) throw 'ref is null';
-    renameFileRef.current.show(file, dir.contents.map(f => f.name));
-  }
+  const createFile = useCreateFileDialog(confirmCreateFile);
 
   async function confirmRenameFile(
     file: FileReference,
@@ -627,11 +587,36 @@ function Ide({ projectName }: Props) {
     }
   }
 
-  function beginDeleteFile(file: FileReference) {
-    // eslint-disable-next-line no-throw-literal
-    if (deleteFileRef.current === null) throw 'ref is null';
+  const renameFile = useRenameFileDialog(confirmRenameFile);
 
-    deleteFileRef.current.show(file);
+  function beginRenameFile(file: FileReference) {
+    // split off the './' at the start and the file name at the end
+    const path = file.path.split('/').slice(1, -1);
+
+    // eslint-disable-next-line no-throw-literal
+    if (projectCache === null) throw 'unreachable';
+
+    const root = projectCache.files;
+
+    // the project root is always a directory. assert and cast
+    // eslint-disable-next-line no-throw-literal
+    if (!root.isDirectory()) throw 'unreachable';
+    // $FlowExpectError
+    let dir: FilerRecursiveDirectoryInfo = root;
+
+    // determine the files that are siblings of the event target
+    path.forEach(fragment => {
+      // right now `fragment` is a child of `dir`. look it up.
+      const child = dir.contents.find(c => c.name === fragment);
+
+      // the child is an ancestor of `file` and thus a directory. assert and cast
+      // eslint-disable-next-line no-throw-literal
+      if (child === undefined || !child.isDirectory()) throw 'unreachable';
+      // $FlowExpectError
+      dir = child;
+    });
+
+    renameFile.show(file, dir.contents.map(f => f.name));
   }
 
   async function confirmDeleteFile(file: FileReference): Promise<boolean> {
@@ -660,6 +645,8 @@ function Ide({ projectName }: Props) {
       throw ex;
     }
   }
+
+  const deleteFile = useDeleteFileDialog(confirmDeleteFile);
 
   async function moveFile(
     file: FileReference,
@@ -745,7 +732,7 @@ function Ide({ projectName }: Props) {
         if (desc.type === 'METADATA') {
           confirmCreateFile(parentDir, desc.name, desc.fileType);
         } else {
-          beginCreateFile(parentDir, desc);
+          createFile.show(parentDir, desc);
         }
         break;
       }
@@ -756,7 +743,7 @@ function Ide({ projectName }: Props) {
       }
       case 'DELETE': {
         const { file } = action;
-        beginDeleteFile(file);
+        deleteFile.show(file);
         break;
       }
       case 'MOVE': {
@@ -965,9 +952,18 @@ function Ide({ projectName }: Props) {
               dispatch({ type: 'UPDATE_FILE_TREE', fileTreeState })
           }
         />
-        <CreateFileDialog ref={createFileRef} onCreate={confirmCreateFile} />
-        <RenameFileDialog ref={renameFileRef} onRename={confirmRenameFile} />
-        <DeleteFileDialog ref={deleteFileRef} onDelete={confirmDeleteFile} />
+        <SimpleDialog
+          id="create-file-dialog"
+          {...createFile.mountSimpleDialog()}
+        />
+        <SimpleDialog
+          id="rename-file-dialog"
+          {...renameFile.mountSimpleDialog()}
+        />
+        <SimpleDialog
+          id="delete-file-dialog"
+          {...deleteFile.mountSimpleDialog()}
+        />
         <FileUpload ref={fileUploadRef} />
         <FileDownload ref={fileDownloadRef} />
       </Grid>
