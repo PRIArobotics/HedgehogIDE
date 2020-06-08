@@ -16,7 +16,7 @@ const messages = defineMessages({
   description: {
     id: 'app.projects.delete_project_dialog.description',
     description: 'Text for the project deletion dialog',
-    defaultMessage: 'Are you sure yo want to delete project "{name}"?',
+    defaultMessage: 'Are you sure you want to delete project "{name}"?',
   },
 });
 

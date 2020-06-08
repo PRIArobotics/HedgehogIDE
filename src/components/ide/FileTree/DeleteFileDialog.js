@@ -17,7 +17,7 @@ const messages = defineMessages({
     id: 'app.ide.delete_file_dialog.description',
     description: 'Text for the file deletion dialog',
     defaultMessage:
-      'Are you sure yo want to delete {type, select, FILE {file} DIRECTORY {folder}} "{name}"?',
+      'Are you sure you want to delete {type, select, FILE {file} DIRECTORY {folder}} "{name}"?',
   },
 });
 
