@@ -88,7 +88,6 @@ const def: GraphqlDefShape = {
         ))[0];
 
         const saveFileTree = async tree => {
-
           if (!tree.files) {
             // eslint-disable-next-line no-param-reassign
             tree.files = [];

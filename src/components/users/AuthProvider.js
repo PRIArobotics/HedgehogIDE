@@ -46,10 +46,7 @@ function AuthProvider(props) {
   React.useEffect(() => recoverSession(), []);
 
   return (
-    <AuthContext.Provider
-      value={{ authData, login, logout }}
-      {...props}
-    />
+    <AuthContext.Provider value={{ authData, login, logout }} {...props} />
   );
 }
 
