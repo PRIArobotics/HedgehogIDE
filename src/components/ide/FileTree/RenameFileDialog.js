@@ -83,9 +83,9 @@ export default function useRenameFileDialog(
     }
   }
 
-  const isDirectory = config !== null ? config.file.file.isDirectory() : false;
-  const type = isDirectory ? 'DIRECTORY' : 'FILE';
-  const siblingNames = config !== null ? config.siblingNames : [];
+  const type =
+    config?.file?.file?.isDirectory() ?? false ? 'DIRECTORY' : 'FILE';
+  const siblingNames = config?.siblingNames ?? [];
 
   const valid =
     newFileName !== '' && siblingNames.every(name => name !== newFileName);

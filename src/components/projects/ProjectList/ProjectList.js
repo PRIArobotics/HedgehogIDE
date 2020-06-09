@@ -145,9 +145,7 @@ function ProjectList(_props: Props) {
   const remoteProjectsQuery = useQuery<ProjectsData, ProjectsVariables>(
     PROJECTS,
   );
-  const remoteProjects = remoteProjectsQuery.data
-    ? remoteProjectsQuery.data.projects
-    : [];
+  const remoteProjects = remoteProjectsQuery.data?.projects ?? [];
 
   function refreshProjects() {
     setProjects(Project.getProjects());

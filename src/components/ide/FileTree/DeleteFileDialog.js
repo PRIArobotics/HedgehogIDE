@@ -73,9 +73,9 @@ export default function useDeleteFileDialog(
     setOpen(false);
   }
 
-  const name = config !== null ? config.file.file.name : '';
-  const isDirectory = config !== null ? config.file.file.isDirectory() : false;
-  const type = isDirectory ? 'DIRECTORY' : 'FILE';
+  const file = config?.file?.file;
+  const name = file?.name ?? '';
+  const type = file?.isDirectory() ?? false ? 'DIRECTORY' : 'FILE';
 
   return {
     show,

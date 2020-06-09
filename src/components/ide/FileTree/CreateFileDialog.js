@@ -113,7 +113,7 @@ export default function useCreateFileDialog(
     }
   }
 
-  const desc = config !== null ? config.desc : { type: 'DIRECTORY' };
+  const desc = config?.desc ?? { type: 'DIRECTORY' };
   const { type } = desc;
   const { valid } = fileNameState;
 

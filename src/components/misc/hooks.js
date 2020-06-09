@@ -196,7 +196,7 @@ export function useStore<T>(
 
   const [stateImpl, setStateImpl] = useAsyncState<StoreState<T> | null>(null);
 
-  const state = stateImpl !== null ? stateImpl.value : null;
+  const state = stateImpl?.value ?? null;
 
   // reload the state when the store changes
   React.useEffect(() => {
