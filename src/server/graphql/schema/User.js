@@ -35,7 +35,7 @@ const def: GraphqlDefShape = {
   ],
   resolvers: () => ({
     RootQuery: {
-      async user(_parent, _args, context) {
+      async user(_, _args, context) {
         let user;
         try {
           user = await User.findById(context.user.userId);
@@ -51,7 +51,7 @@ const def: GraphqlDefShape = {
       },
     },
     Mutation: {
-      async login(_, { username, password }) {
+      async login(_, { username, password }, _context) {
         let user;
         try {
           user = await User.findOne({ username });

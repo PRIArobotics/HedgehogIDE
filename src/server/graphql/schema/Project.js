@@ -74,14 +74,14 @@ const def: GraphqlDefShape = {
   ],
   resolvers: () => ({
     Mutation: {
-      async createProject(_, projectData) {
+      async createProject(_, { project: projectInput }, _context) {
         const session = await db.startSession();
 
         const project = (await Project.create(
           [
             {
-              name: projectData.project.name,
-              isPublic: projectData.project.isPublic,
+              name: projectInput.name,
+              isPublic: projectInput.isPublic,
             },
           ],
           { session },
@@ -137,9 +137,7 @@ const def: GraphqlDefShape = {
           ))[0];
         };
 
-        project.fileTreeRoot = (await saveFileTree(
-          projectData.project.fileTree,
-        )).id;
+        project.fileTreeRoot = (await saveFileTree(projectInput.fileTree)).id;
         await project.save();
         await session.endSession();
         return project.id;

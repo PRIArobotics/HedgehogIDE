@@ -22,14 +22,14 @@ const def: GraphqlDefShape = {
   ],
   resolvers: () => ({
     Mutation: {
-      updateNetworkStatus: (_, { isConnected }, { cache }) => {
+      updateNetworkStatus: (_, { isConnected }, context) => {
         const data = {
           networkStatus: {
             __typename: 'NetworkStatus',
             isConnected,
           },
         };
-        cache.writeData({ data });
+        context.cache.writeData({ data });
         return null;
       },
     },
