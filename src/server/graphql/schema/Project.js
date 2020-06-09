@@ -73,6 +73,25 @@ const def: GraphqlDefShape = {
     `,
   ],
   resolvers: () => ({
+    RootQuery: {
+      projects(_, _args, _context) {
+        return [
+          {
+            id: '0001',
+            name: 'Zoowärter',
+            isPublic: true,
+            fileTreeRootId: '0002',
+            fileTrees: [
+              {
+                id: '0002',
+                contents: [],
+              },
+            ],
+            files: [],
+          },
+        ];
+      },
+    },
     Mutation: {
       async createProject(_, { project: projectInput }, _context) {
         const session = await db.startSession();

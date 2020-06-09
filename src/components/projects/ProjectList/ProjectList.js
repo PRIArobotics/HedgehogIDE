@@ -20,6 +20,9 @@ import Typography from '@material-ui/core/Typography';
 
 import PopupState, { bindTrigger, bindMenu } from 'material-ui-popup-state';
 
+import { useQuery } from '@apollo/react-hooks';
+import gql from 'graphql-tag';
+
 import {
   LocalProjectIcon,
   CreateIcon,
@@ -112,12 +115,39 @@ const messages = defineMessages({
   },
 });
 
+type ProjectsVariables = {||};
+
+type ProjectsData = {|
+  projects: [
+    {|
+      id: string,
+      name: string,
+    |},
+  ],
+|};
+
+const PROJECTS = gql`
+  query Projects {
+    projects {
+      id
+      name
+    }
+  }
+`;
+
 type Props = {||};
 
 function ProjectList(_props: Props) {
   const intl = useIntl();
 
   const [projects, setProjects] = hooks.useAsyncState<Project[]>([]);
+
+  const remoteProjectsQuery = useQuery<ProjectsData, ProjectsVariables>(
+    PROJECTS,
+  );
+  const remoteProjects = remoteProjectsQuery.data
+    ? remoteProjectsQuery.data.projects
+    : [];
 
   function refreshProjects() {
     setProjects(Project.getProjects());
@@ -293,22 +323,7 @@ function ProjectList(_props: Props) {
           </Tooltip>
         </Toolbar>
         <List>
-          {[
-            { name: 'Zoowärter', level: 1, projects: [] },
-            {
-              name: 'Zoowärter 2',
-              level: 2,
-              projects: [{ name: 'Zoowärter 2 Versuch' }],
-            },
-            {
-              name: 'Zoowärter 3',
-              level: 3,
-              projects: [
-                { name: 'Zoowärter 3 v1' },
-                { name: 'Zoowärter 3 v2' },
-              ],
-            },
-          ].map(exercise => (
+          {remoteProjects.map(exercise => (
             <ListItem key={exercise.name} button>
               <ListItemAvatar>
                 <Avatar>
@@ -329,7 +344,8 @@ function ProjectList(_props: Props) {
                   placement="bottom"
                 >
                   <IconButton
-                    {...(exercise.projects.length === 0 ? { edge: 'end' } : {})}
+                    edge="end"
+                    // {...(exercise.projects.length === 0 ? { edge: 'end' } : {})}
                     aria-label={intl.formatMessage(
                       messages.cloneExerciseTooltip,
                       { name: exercise.name },
@@ -339,7 +355,7 @@ function ProjectList(_props: Props) {
                     <CreateIcon />
                   </IconButton>
                 </Tooltip>
-                {exercise.projects.length === 0 ? null : exercise.projects
+                {/* {exercise.projects.length === 0 ? null : exercise.projects
                     .length === 1 ? (
                   exercise.projects.map(project => (
                     <Tooltip
@@ -416,7 +432,7 @@ function ProjectList(_props: Props) {
                       </>
                     )}
                   </PopupState>
-                )}
+                )} */}
               </ListItemSecondaryAction>
             </ListItem>
           ))}
