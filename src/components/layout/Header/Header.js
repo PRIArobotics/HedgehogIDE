@@ -12,7 +12,11 @@ import Typography from '@material-ui/core/Typography';
 import Icon from '@material-ui/core/Icon';
 import IconButton from '@material-ui/core/IconButton';
 
-import PopupState, { bindTrigger, bindMenu } from 'material-ui-popup-state';
+import {
+  usePopupState,
+  bindTrigger,
+  bindMenu,
+} from 'material-ui-popup-state/hooks';
 
 import { useLocale } from '../../locale';
 import Link from '../../misc/Link';
@@ -76,6 +80,15 @@ function Header() {
 
   const [loginOpen, setLoginOpen] = React.useState(false);
 
+  const selectLanguagePopupState = usePopupState({
+    variant: 'popover',
+    popupId: 'select-language-menu',
+  });
+  const authPopupState = usePopupState({
+    variant: 'popover',
+    popupId: 'auth-menu',
+  });
+
   return (
     <Toolbar classes={{ gutters: classes.gutters }}>
       <IconButton
@@ -92,62 +105,52 @@ function Header() {
       <Typography className={classes.brandTxt} variant="h6" noWrap>
         <M {...messages.title} />
       </Typography>
-      <PopupState variant="popover" popupId="select-language-menu">
-        {popupState => (
-          <>
-            <Tooltip title={<M {...messages.selectLanguageTooltip} />}>
-              <IconButton color="inherit" {...bindTrigger(popupState)}>
-                <SelectLanguageIcon />
-              </IconButton>
-            </Tooltip>
-            <Menu
-              anchorOrigin={{ horizontal: 'right', vertical: 'top' }}
-              transformOrigin={{ horizontal: 'right', vertical: 'top' }}
-              keepMounted
-              {...bindMenu(popupState)}
-            >
-              <MenuItem
-                onClick={() => {
-                  setPreferredLocale('de');
-                  popupState.close();
-                }}
-              >
-                Deutsch
-              </MenuItem>
-              <MenuItem
-                onClick={() => {
-                  setPreferredLocale('en');
-                  popupState.close();
-                }}
-              >
-                English
-              </MenuItem>
-            </Menu>
-          </>
-        )}
-      </PopupState>
+      <Tooltip title={<M {...messages.selectLanguageTooltip} />}>
+        <IconButton color="inherit" {...bindTrigger(selectLanguagePopupState)}>
+          <SelectLanguageIcon />
+        </IconButton>
+      </Tooltip>
+      <Menu
+        anchorOrigin={{ horizontal: 'right', vertical: 'top' }}
+        transformOrigin={{ horizontal: 'right', vertical: 'top' }}
+        keepMounted
+        {...bindMenu(selectLanguagePopupState)}
+      >
+        <MenuItem
+          onClick={() => {
+            setPreferredLocale('de');
+            selectLanguagePopupState.close();
+          }}
+        >
+          Deutsch
+        </MenuItem>
+        <MenuItem
+          onClick={() => {
+            setPreferredLocale('en');
+            selectLanguagePopupState.close();
+          }}
+        >
+          English
+        </MenuItem>
+      </Menu>
       {auth.authData && auth.authData.username ? (
-        <PopupState variant="popover" popupId="select-language-menu">
-          {popupState => (
-            <>
-              <Tooltip title={<M {...messages.myAccount} />}>
-                <IconButton color="inherit" {...bindTrigger(popupState)}>
-                  <AccountCircleIcon />
-                </IconButton>
-              </Tooltip>
-              <Menu
-                anchorOrigin={{ horizontal: 'right', vertical: 'top' }}
-                transformOrigin={{ horizontal: 'right', vertical: 'top' }}
-                keepMounted
-                {...bindMenu(popupState)}
-              >
-                <MenuItem onClick={auth.logout}>
-                  <M {...messages.logout} />
-                </MenuItem>
-              </Menu>
-            </>
-          )}
-        </PopupState>
+        <>
+          <Tooltip title={<M {...messages.myAccount} />}>
+            <IconButton color="inherit" {...bindTrigger(authPopupState)}>
+              <AccountCircleIcon />
+            </IconButton>
+          </Tooltip>
+          <Menu
+            anchorOrigin={{ horizontal: 'right', vertical: 'top' }}
+            transformOrigin={{ horizontal: 'right', vertical: 'top' }}
+            keepMounted
+            {...bindMenu(authPopupState)}
+          >
+            <MenuItem onClick={auth.logout}>
+              <M {...messages.logout} />
+            </MenuItem>
+          </Menu>
+        </>
       ) : (
         <Tooltip title={<M {...messages.login} />}>
           <IconButton color="inherit" onClick={() => setLoginOpen(true)}>
