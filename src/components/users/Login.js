@@ -51,7 +51,7 @@ function Login({ open, onSuccess, onError }: LoginProps) {
 
   const [username, setUsername] = React.useState<string>('');
   const [password, setPassword] = React.useState<string>('');
-  const [error, setError] = React.useState<string>(null);
+  const [error, setError] = React.useState<string | null>(null);
 
   const login = async event => {
     event.preventDefault();
