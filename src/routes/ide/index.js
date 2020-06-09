@@ -3,7 +3,7 @@ import * as React from 'react';
 import Layout from '../../components/layout/Layout';
 import NoSSR from '../../components/misc/NoSSR';
 
-async function action(context, params) {
+async function action(_context, params) {
   const projectName = params.id;
 
   const showIde = async () => {

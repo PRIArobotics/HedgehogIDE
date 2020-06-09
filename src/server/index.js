@@ -130,7 +130,7 @@ server.applyMiddleware({ app });
 //
 // Register server-side rendering middleware
 // -----------------------------------------------------------------------------
-app.get('/executor', async (req, res, next) => {
+app.get('/executor', async (_req, res, next) => {
   try {
     const html = renderExecutor();
     res.status(200);
@@ -140,7 +140,7 @@ app.get('/executor', async (req, res, next) => {
   }
 });
 
-app.get('/app-shell.html', async (req, res, next) => {
+app.get('/app-shell.html', async (_req, res, next) => {
   try {
     const html = renderHtml(null, {
       styles: [],

@@ -53,7 +53,7 @@ type Instance = {|
   clear(): void,
 |};
 
-function Console(props: Props, ref: Ref<Instance>) {
+function Console(_props: Props, ref: Ref<Instance>) {
   const [{ items }, dispatch] = React.useReducer(consoleReducer, {
     nextKey: 0,
     items: [],

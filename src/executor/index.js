@@ -23,13 +23,13 @@ const handlers = {
       }
     })();
   },
-  reply(source, value: any) {
+  reply(_source, value: any) {
     connection.handleReply(value);
   },
-  errorReply(source, error: any) {
+  errorReply(_source, error: any) {
     connection.handleErrorReply(error);
   },
-  event(source, { event, payload }: { event: string, payload: any }) {
+  event(_source, { event, payload }: { event: string, payload: any }) {
     eventHandler.handleEvent(event, payload);
   },
 };

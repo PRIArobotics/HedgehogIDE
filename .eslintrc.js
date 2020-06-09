@@ -39,6 +39,7 @@ module.exports = {
     'no-unused-vars': [
       'warn',
       {
+        args: 'all',
         // effectively force unused vars to use an underscore
         varsIgnorePattern: '^_',
         argsIgnorePattern: '^_',

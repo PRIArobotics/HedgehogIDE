@@ -502,7 +502,7 @@ function Ide({ projectName }: Props) {
       const file = getFile(createdPath);
       if (file.file.isFile()) handleFileAction({ action: 'OPEN', file });
       setCreatedPath(null);
-    } catch (ex) {
+    } catch (_ex) {
       // will automatically try again when projectCache has been updated
     }
   }, [projectCache, createdPath]);

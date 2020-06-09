@@ -35,7 +35,7 @@ const def: GraphqlDefShape = {
   ],
   resolvers: () => ({
     RootQuery: {
-      async user(parent, args, context) {
+      async user(_parent, _args, context) {
         let user;
         try {
           user = await User.findById(context.user.userId);
