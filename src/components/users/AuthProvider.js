@@ -2,13 +2,14 @@
 
 import * as React from 'react';
 import { useMutation } from '@apollo/react-hooks';
-import gql from 'graphql-tag';
 
-type AuthData = {|
-  id: string,
-  username: string,
-  token: string,
-|};
+// $FlowExpectError
+import LoginMutation from './LoginMutation.graphql';
+import {
+  type Login,
+  type LoginVariables,
+  type Login_login as AuthData,
+} from './__generated__/Login';
 
 type Auth = {|
   authData: AuthData | null,
@@ -26,32 +27,13 @@ export const AuthContext = React.createContext<Auth>({
   },
 });
 
-type LoginVariables = {|
-  username: string,
-  password: string,
-|};
-
-type LoginData = {|
-  login: AuthData,
-|};
-
-const LOGIN = gql`
-  mutation Login($username: String!, $password: String!) {
-    login(username: $username, password: $password) {
-      id
-      username
-      token
-    }
-  }
-`;
-
 type AuthProviderPropTypes = {|
   children: React.Node,
 |};
 
 export function AuthProvider({ children }: AuthProviderPropTypes) {
-  const [performLogin, _loginResponse] = useMutation<LoginData, LoginVariables>(
-    LOGIN,
+  const [performLogin, _loginResponse] = useMutation<Login, LoginVariables>(
+    LoginMutation,
   );
   const [authData, setAuthData] = React.useState<AuthData | null>(null);
 

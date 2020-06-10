@@ -12,13 +12,13 @@ const def: GraphqlDefShape = {
       name: String!
       isPublic: Boolean!
       fileTreeRootId: ID!
-      fileTrees: [FileTree!]
-      files: [File!]
+      fileTrees: [FileTree!]!
+      files: [File!]!
     }
 
     type FileTree {
       id: ID!
-      contents: [FileTreeRecord!]
+      contents: [FileTreeRecord!]!
     }
 
     type File {
@@ -45,8 +45,8 @@ const def: GraphqlDefShape = {
 
     input FileTreeInput {
       id: ID
-      files: [FileTreeFileRecordInput!]
-      trees: [FileTreeTreeRecordInput!]
+      files: [FileTreeFileRecordInput!]!
+      trees: [FileTreeTreeRecordInput!]!
     }
 
     input FileTreeFileRecordInput {
@@ -63,7 +63,7 @@ const def: GraphqlDefShape = {
   ],
   queries: [
     `
-    projects: [Project!]
+    projects: [Project!]!
     projectById(id: ID!): Project!
     `,
   ],

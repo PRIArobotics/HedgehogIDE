@@ -14,7 +14,7 @@ const def: GraphqlDefShape = {
     type UserLogin {
       id: ID!
       username: String!
-      token: String
+      token: String!
     }
 
     type User {
