@@ -63,22 +63,24 @@ const cmpFile = (a: FilerStatInfo, b: FilerStatInfo) => {
 
 export class Project {
   name: string;
+  uid: string;
 
-  constructor(name: string) {
+  constructor(name: string, uid: string) {
     this.name = name;
+    this.uid = uid;
   }
 
   static async getProjects(): Promise<Project[]> {
-    const projectNames = await fs.promises.readdir('/');
-    projectNames.sort((a, b) => a.localeCompare(b));
-    return projectNames.map(name => new Project(name));
+    const projects = await sh.promises.ls('/');
+    projects.sort((a, b) => a.name.localeCompare(b.name));
+    return projects.map(({ name, node: uid}) => new Project(name, uid));
   }
 
   static async getProject(name: string): Promise<Project> {
     try {
       const path = filer.path.resolve('/', name);
-      await fs.promises.stat(path);
-      return new Project(name);
+      const { node: uid } = await fs.promises.stat(path);
+      return new Project(name, uid);
     } catch (ex) {
       if (ex instanceof filer.Errors.ENOENT)
         throw new ProjectError(`Project "${name}" does not exist`);
@@ -91,7 +93,8 @@ export class Project {
     try {
       const path = filer.path.resolve('/', name);
       await fs.promises.mkdir(path);
-      return new Project(name);
+      const { node: uid } = await fs.promises.stat(path);
+      return new Project(name, uid);
     } catch (ex) {
       if (ex instanceof filer.Errors.EEXIST)
         throw new ProjectError(`Project "${name}" does already exist`);
@@ -125,9 +128,8 @@ export class Project {
     return root;
   }
 
-  async getUid(): Promise<string> {
-    const { node: uid } = await fs.promises.stat(this.path);
-    return uid;
+  getUid(): string {
+    return this.uid;
   }
 
   async rename(newName: string): Promise<void> {
