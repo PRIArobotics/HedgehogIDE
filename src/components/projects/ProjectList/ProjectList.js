@@ -46,6 +46,8 @@ import useRenameProjectDialog from './RenameProjectDialog';
 import ProjectsQuery from './ProjectsQuery.graphql';
 import { type Projects } from './__generated__/Projects';
 
+import useProjectIndex from './projectIndex';
+
 const messages = defineMessages({
   projectsTitle: {
     id: 'app.projects.list_title',
@@ -127,6 +129,8 @@ type ProjectsData = {|
   ],
 |};
 
+type ReverseIndex= {| [remoteId: string]: Project[] |};
+
 type Props = {||};
 
 function ProjectList(_props: Props) {
@@ -136,6 +140,23 @@ function ProjectList(_props: Props) {
 
   const remoteProjectsQuery = useQuery<ProjectsData, void>(ProjectsQuery);
   const remoteProjects = remoteProjectsQuery.data?.projects ?? [];
+
+  const [projectIndex, setProjectIndex] = useProjectIndex();
+
+  // projectIndex.remoteProjects maps local project IDs to remote project IDs
+  // on this page, we need the list of local projects per remote project ID.
+  // compute that here.
+  const reverseIndex: ReverseIndex = {};
+  if (projectIndex !== null) {
+    projects.forEach(project => {
+      if (project.uid in projectIndex.remoteProjects) {
+        const remoteProjectId = projectIndex.remoteProjects[project.uid];
+        if (!(remoteProjectId in reverseIndex))
+          reverseIndex[remoteProjectId] = [];
+        reverseIndex[remoteProjectId].push(project);
+      }
+    });
+  }
 
   function refreshProjects() {
     setProjects(Project.getProjects());
@@ -311,119 +332,122 @@ function ProjectList(_props: Props) {
           </Tooltip>
         </Toolbar>
         <List>
-          {remoteProjects.map(exercise => (
-            <ListItem key={exercise.name} button>
-              <ListItemAvatar>
-                <Avatar>
-                  <LocalProjectIcon />
-                </Avatar>
-              </ListItemAvatar>
-              <ListItemText
-                primary={exercise.name}
-                secondary={intl.formatMessage(messages.exerciseSecondaryText, {
-                  ...exercise,
-                })}
-              />
-              <ListItemSecondaryAction>
-                <Tooltip
-                  title={intl.formatMessage(messages.cloneExerciseTooltip, {
-                    name: exercise.name,
+          {remoteProjects.map(exercise => {
+            const localProjects = reverseIndex[exercise.id] ?? [];
+
+            return (
+              <ListItem key={exercise.name} button>
+                <ListItemAvatar>
+                  <Avatar>
+                    <LocalProjectIcon />
+                  </Avatar>
+                </ListItemAvatar>
+                <ListItemText
+                  primary={exercise.name}
+                  secondary={intl.formatMessage(messages.exerciseSecondaryText, {
+                    ...exercise,
                   })}
-                  placement="bottom"
-                >
-                  <IconButton
-                    edge="end"
-                    // {...(exercise.projects.length === 0 ? { edge: 'end' } : {})}
-                    aria-label={intl.formatMessage(
-                      messages.cloneExerciseTooltip,
-                      { name: exercise.name },
-                    )}
-                    // onClick={() => beginCloneExercise(exercise)}
+                />
+                <ListItemSecondaryAction>
+                  <Tooltip
+                    title={intl.formatMessage(messages.cloneExerciseTooltip, {
+                      name: exercise.name,
+                    })}
+                    placement="bottom"
                   >
-                    <CreateIcon />
-                  </IconButton>
-                </Tooltip>
-                {/* {exercise.projects.length === 0 ? null : exercise.projects
-                    .length === 1 ? (
-                  exercise.projects.map(project => (
-                    <Tooltip
-                      key={project.name}
-                      title={intl.formatMessage(
-                        messages.openAssociatedProjectTooltip,
-                        { exercise: exercise.name, name: project.name },
+                    <IconButton
+                      {...(localProjects.length === 0 ? { edge: 'end' } : {})}
+                      aria-label={intl.formatMessage(
+                        messages.cloneExerciseTooltip,
+                        { name: exercise.name },
                       )}
-                      placement="bottom"
+                      // onClick={() => beginCloneExercise(exercise)}
                     >
-                      <IconButton
-                        edge="end"
-                        aria-label={intl.formatMessage(
+                      <CreateIcon />
+                    </IconButton>
+                  </Tooltip>
+                  {localProjects.length === 0 ? null : localProjects
+                      .length === 1 ? (
+                    localProjects.map(project => (
+                      <Tooltip
+                        key={project.name}
+                        title={intl.formatMessage(
                           messages.openAssociatedProjectTooltip,
                           { exercise: exercise.name, name: project.name },
                         )}
-                        component={Link}
-                        to={`/projects/${project.name}`}
+                        placement="bottom"
                       >
-                        <OpenIcon />
-                      </IconButton>
-                    </Tooltip>
-                  ))
-                ) : (
-                  <PopupState
-                    variant="popover"
-                    popupId={`${exercise.name}-menu`}
-                  >
-                    {popupState => (
-                      <>
-                        <Tooltip
-                          title={intl.formatMessage(
-                            messages.openAssociatedProjectMenuTooltip,
-                            { exercise: exercise.name },
+                        <IconButton
+                          edge="end"
+                          aria-label={intl.formatMessage(
+                            messages.openAssociatedProjectTooltip,
+                            { exercise: exercise.name, name: project.name },
                           )}
-                          placement="bottom"
+                          component={Link}
+                          to={`/projects/${project.name}`}
                         >
-                          <IconButton
-                            edge="end"
-                            {...bindTrigger(popupState)}
-                            aria-label={intl.formatMessage(
+                          <OpenIcon />
+                        </IconButton>
+                      </Tooltip>
+                    ))
+                  ) : (
+                    <PopupState
+                      variant="popover"
+                      popupId={`${exercise.name}-menu`}
+                    >
+                      {popupState => (
+                        <>
+                          <Tooltip
+                            title={intl.formatMessage(
                               messages.openAssociatedProjectMenuTooltip,
                               { exercise: exercise.name },
                             )}
+                            placement="bottom"
                           >
-                            <OpenIcon />
-                          </IconButton>
-                        </Tooltip>
-                        <Menu
-                          anchorOrigin={{
-                            horizontal: 'right',
-                            vertical: 'top',
-                          }}
-                          transformOrigin={{
-                            horizontal: 'right',
-                            vertical: 'top',
-                          }}
-                          keepMounted
-                          {...bindMenu(popupState)}
-                        >
-                          {exercise.projects.map(project => (
-                            <MenuItem
-                              key={project.name}
-                              component={Link}
-                              to={`/projects/${project.name}`}
+                            <IconButton
+                              edge="end"
+                              {...bindTrigger(popupState)}
+                              aria-label={intl.formatMessage(
+                                messages.openAssociatedProjectMenuTooltip,
+                                { exercise: exercise.name },
+                              )}
                             >
-                              <M
-                                {...messages.openAssociatedProjectMenuItem}
-                                values={{ name: project.name }}
-                              />
-                            </MenuItem>
-                          ))}
-                        </Menu>
-                      </>
-                    )}
-                  </PopupState>
-                )} */}
-              </ListItemSecondaryAction>
-            </ListItem>
-          ))}
+                              <OpenIcon />
+                            </IconButton>
+                          </Tooltip>
+                          <Menu
+                            anchorOrigin={{
+                              horizontal: 'right',
+                              vertical: 'top',
+                            }}
+                            transformOrigin={{
+                              horizontal: 'right',
+                              vertical: 'top',
+                            }}
+                            keepMounted
+                            {...bindMenu(popupState)}
+                          >
+                            {localProjects.map(project => (
+                              <MenuItem
+                                key={project.name}
+                                component={Link}
+                                to={`/projects/${project.name}`}
+                              >
+                                <M
+                                  {...messages.openAssociatedProjectMenuItem}
+                                  values={{ name: project.name }}
+                                />
+                              </MenuItem>
+                            ))}
+                          </Menu>
+                        </>
+                      )}
+                    </PopupState>
+                  )}
+                </ListItemSecondaryAction>
+              </ListItem>
+            );
+          })}
         </List>
       </Paper>
     </div>
