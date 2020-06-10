@@ -128,10 +128,6 @@ export class Project {
     return root;
   }
 
-  getUid(): string {
-    return this.uid;
-  }
-
   async rename(newName: string): Promise<void> {
     try {
       const newPath = filer.path.resolve('/', newName);

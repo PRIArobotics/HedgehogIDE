@@ -121,16 +121,12 @@ type Props = {|
 |};
 
 function Ide({ projectName }: Props) {
-  const projectInfo = useProjectInfo(projectName);
+  const project = useProjectInfo(projectName);
   const [pluginsLoaded, setPluginsLoaded] = React.useState<boolean>(false);
   const [runningTask, setRunningTask] = React.useState<Task | null>(null);
 
-  const [projectCache, refreshProject] = useProjectCache(
-    projectInfo && projectInfo.project,
-  );
-  const [state, dispatch] = usePersistentState(
-    projectInfo && projectInfo.projectUid,
-  );
+  const [projectCache, refreshProject] = useProjectCache(project);
+  const [state, dispatch] = usePersistentState(project?.uid ?? null);
   const consoleRef = hooks.useElementRef<typeof Console>();
   const simulatorRef = hooks.useElementRef<typeof Simulator>();
   const executorRef = hooks.useElementRef<typeof Executor>();
@@ -148,7 +144,7 @@ function Ide({ projectName }: Props) {
   // create new plugin manager when ready, but only once
   async function initializePluginManager() {
     if (
-      projectInfo === null ||
+      project === null ||
       layoutModel === null ||
       executorRef.current === null ||
       pluginsLoaded
@@ -161,14 +157,14 @@ function Ide({ projectName }: Props) {
       getSimulator,
     );
     await pluginManager.initSdk();
-    await pluginManager.loadFromProjectMetadata(projectInfo.project);
+    await pluginManager.loadFromProjectMetadata(project);
     pluginManagerRef.current = pluginManager;
     setPluginsLoaded(true);
   }
 
   React.useEffect(() => {
     initializePluginManager();
-  }, [projectInfo, layoutModel, pluginsLoaded]);
+  }, [project, layoutModel, pluginsLoaded]);
 
   // uses useCallback because otherwise each render resets the ref.
   // (the ref could be registered with a new callback,
@@ -178,7 +174,7 @@ function Ide({ projectName }: Props) {
       executorRef.current = sim;
       initializePluginManager();
     },
-    [executorRef, projectInfo, layoutModel, pluginsLoaded],
+    [executorRef, project, layoutModel, pluginsLoaded],
   );
 
   // load the project's simulator schema if it or the simulator changes
@@ -513,10 +509,10 @@ function Ide({ projectName }: Props) {
     type: FileType,
   ): Promise<boolean> {
     // eslint-disable-next-line no-throw-literal
-    if (projectInfo === null) throw 'unreachable';
+    if (project === null) throw 'unreachable';
 
     try {
-      const path = projectInfo.project.resolve(parentDir.path, name);
+      const path = project.resolve(parentDir.path, name);
 
       if (type === 'FILE') {
         try {
@@ -561,11 +557,11 @@ function Ide({ projectName }: Props) {
     newName: string,
   ): Promise<boolean> {
     // eslint-disable-next-line no-throw-literal
-    if (projectInfo === null) throw 'unreachable';
+    if (project === null) throw 'unreachable';
 
     try {
-      const path = projectInfo.project.resolve(file.path);
-      const newPath = projectInfo.project.resolve(file.path, '..', newName);
+      const path = project.resolve(file.path);
+      const newPath = project.resolve(file.path, '..', newName);
 
       closeTabsForFile(file);
       await fs.promises.rename(path, newPath);
@@ -621,10 +617,10 @@ function Ide({ projectName }: Props) {
 
   async function confirmDeleteFile(file: FileReference): Promise<boolean> {
     // eslint-disable-next-line no-throw-literal
-    if (projectInfo === null) throw 'unreachable';
+    if (project === null) throw 'unreachable';
 
     try {
-      const path = projectInfo.project.resolve(file.path);
+      const path = project.resolve(file.path);
 
       closeTabsForFile(file);
       await sh.promises.rm(path, { recursive: true });
@@ -653,11 +649,11 @@ function Ide({ projectName }: Props) {
     destDirPath: string,
   ): Promise<boolean> {
     // eslint-disable-next-line no-throw-literal
-    if (projectInfo === null) throw 'unreachable';
+    if (project === null) throw 'unreachable';
 
     try {
-      const path = projectInfo.project.resolve(file.path);
-      const newPath = projectInfo.project.resolve(destDirPath, file.file.name);
+      const path = project.resolve(file.path);
+      const newPath = project.resolve(destDirPath, file.file.name);
 
       closeTabsForFile(file);
       await fs.promises.rename(path, newPath);
@@ -683,11 +679,11 @@ function Ide({ projectName }: Props) {
     // eslint-disable-next-line no-throw-literal
     if (fileDownloadRef.current === null) throw 'ref is null';
     // eslint-disable-next-line no-throw-literal
-    if (projectInfo === null) throw 'unreachable';
+    if (project === null) throw 'unreachable';
 
     const fileDownload = fileDownloadRef.current;
 
-    const path = projectInfo.project.resolve(file.path);
+    const path = project.resolve(file.path);
     const content = await fs.promises.readFile(path, 'utf8');
 
     fileDownload.show(file.file.name, content);
@@ -701,13 +697,13 @@ function Ide({ projectName }: Props) {
     if (files.length === 0) return;
 
     // eslint-disable-next-line no-throw-literal
-    if (projectInfo === null) throw 'unreachable';
+    if (project === null) throw 'unreachable';
 
     // TODO assumes there's exactly one file
     const file = files[0];
 
     try {
-      const path = projectInfo.project.resolve(parentDir.path, file.name);
+      const path = project.resolve(parentDir.path, file.name);
 
       // wrap into the augmented Node-style filer.Buffer object
       const buffer = filer.Buffer.from(await file.arrayBuffer());
@@ -796,7 +792,7 @@ function Ide({ projectName }: Props) {
   useStyles(FlexLayoutTheme);
   const classes = useStylesMaterial();
 
-  if (projectInfo === null || projectCache === null || state === null)
+  if (project === null || projectCache === null || state === null)
     return null;
 
   const { fileTreeState, showMetadataFolder } = state;
@@ -822,7 +818,7 @@ function Ide({ projectName }: Props) {
         return (
           <Editor
             layoutNode={node}
-            project={projectInfo.project}
+            project={project}
             path={id}
             // {...bindEditorProps(id, 'editor')}
             onExecutionAction={handleExecutionAction}
@@ -848,7 +844,7 @@ function Ide({ projectName }: Props) {
         return (
           <VisualEditor
             layoutNode={node}
-            project={projectInfo.project}
+            project={project}
             path={id}
             {...bindEditorProps(id, 'blockly')}
             onExecutionAction={handleExecutionAction}
@@ -860,7 +856,7 @@ function Ide({ projectName }: Props) {
         return (
           <SimulatorEditor
             layoutNode={node}
-            project={projectInfo.project}
+            project={project}
             path={id}
             {...bindEditorProps(id, 'simulator-editor')}
             onSchemaChange={refreshSimulatorFromSchema}
