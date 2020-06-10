@@ -304,7 +304,7 @@ function ProjectList(_props: Props) {
               aria-label={intl.formatMessage(
                 messages.refreshExerciseListTooltip,
               )}
-              // onClick={refreshExercises}
+              onClick={() => remoteProjectsQuery.refetch()}
             >
               <RefreshIcon />
             </IconButton>
