@@ -72,7 +72,7 @@ export default function useDeleteProjectDialog(
     setOpen(false);
   }
 
-  const name = config?.project?.name ?? '';
+  const name = config?.project.name ?? '';
 
   return {
     show,
