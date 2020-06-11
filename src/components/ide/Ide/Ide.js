@@ -792,8 +792,7 @@ function Ide({ projectName }: Props) {
   useStyles(FlexLayoutTheme);
   const classes = useStylesMaterial();
 
-  if (project === null || projectCache === null || state === null)
-    return null;
+  if (project === null || projectCache === null || state === null) return null;
 
   const { fileTreeState, showMetadataFolder } = state;
 

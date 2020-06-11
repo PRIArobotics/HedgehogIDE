@@ -129,7 +129,7 @@ type ProjectsData = {|
   ],
 |};
 
-type ReverseIndex= {| [remoteId: string]: Project[] |};
+type ReverseIndex = {| [remoteId: string]: Project[] |};
 
 type Props = {||};
 
@@ -366,8 +366,8 @@ function ProjectList(_props: Props) {
                       <CreateIcon />
                     </IconButton>
                   </Tooltip>
-                  {localProjects.length === 0 ? null : localProjects
-                      .length === 1 ? (
+                  {localProjects.length === 0 ? null : localProjects.length ===
+                    1 ? (
                     localProjects.map(project => (
                       <Tooltip
                         key={project.name}

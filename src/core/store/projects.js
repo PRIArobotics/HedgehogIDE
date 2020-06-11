@@ -73,7 +73,7 @@ export class Project {
   static async getProjects(): Promise<Project[]> {
     const projects = await sh.promises.ls('/');
     projects.sort((a, b) => a.name.localeCompare(b.name));
-    return projects.map(({ name, node: uid}) => new Project(name, uid));
+    return projects.map(({ name, node: uid }) => new Project(name, uid));
   }
 
   static async getProject(name: string): Promise<Project> {
