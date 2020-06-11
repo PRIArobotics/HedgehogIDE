@@ -197,7 +197,7 @@ function FileTree({
   const effectiveFilter: (
     path: string,
     child: FilerRecursiveStatInfo,
-  ) => boolean = filter || (() => true);
+  ) => boolean = filter ?? (() => true);
 
   function renderChildren(path: string, children: FilerRecursiveStatInfo[]) {
     return children

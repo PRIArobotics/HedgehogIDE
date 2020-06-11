@@ -359,7 +359,7 @@ function VisualEditor({
 
   useStyles(s);
   const { preferredLocales } = useLocale();
-  const locale = getTranslation(preferredLocales, LOCALES) || LOCALES.en;
+  const locale = getTranslation(preferredLocales, LOCALES) ?? LOCALES.en;
   return (
     <div className={s.tabRoot}>
       {content === null ? null : (

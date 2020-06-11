@@ -9,7 +9,7 @@ class EventHandler {
 
   on(prefix: string, event: string, cb: (payload: any) => void) {
     const eventName = `${prefix}_${event}`;
-    this.handlers[eventName] = [...(this.handlers[eventName] || []), cb];
+    this.handlers[eventName] = [...(this.handlers[eventName] ?? []), cb];
     connection.send('eventRegister', { event: eventName });
   }
 

@@ -36,7 +36,7 @@ export default function createApolloClient() {
   });
 
   const authLink = setContext((_, { headers }) => {
-    const authData = JSON.parse(localStorage.getItem('auth') || null);
+    const authData = JSON.parse(localStorage.getItem('auth') ?? null);
     return {
       headers: {
         ...headers,

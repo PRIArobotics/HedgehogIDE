@@ -266,7 +266,7 @@ function Ide({ projectName }: Props) {
       const { location, alwaysNewTabset } = {
         location: FlexLayout.DockLocation.RIGHT,
         alwaysNewTabset: false,
-        ...(options || {}),
+        ...(options ?? {}),
       };
 
       let targetTabset;

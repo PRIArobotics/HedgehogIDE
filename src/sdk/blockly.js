@@ -74,7 +74,7 @@ export default async function init() {
                 block,
                 arg.name,
                 Blockly.JavaScript.ORDER_NONE,
-              ) || block.getFieldValue(arg.name);
+              ) ?? block.getFieldValue(arg.name);
             code += `payload['${arg.name}'] = ${res};\n`;
           });
           code += `await sdk.misc.emit('blockly', 'blk_${type}_called', payload);\n`;

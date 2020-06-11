@@ -42,7 +42,7 @@ type LocaleProviderPropTypes = {|
  * Other than providing the preferences, `LocaleProvider` also instantiates a
  * `IntlProvider` with an appropriate locale, so the `children` can use all of
  * the `react-intl` facilities. The locale, used e.g. for date and number
- * formatting, is chosen as `preferredLocales[0] || en`; the translation
+ * formatting, is chosen as `preferredLocales[0] ?? en`; the translation
  * messages are chosen using `getTranslations`, with `en` as the fallback
  * message key.
  */
@@ -53,7 +53,7 @@ export function LocaleProvider({
   const [preferredLocale, setPreferredLocale] = React.useState<string | null>(
     () => {
       if (!process.env.BROWSER) return null;
-      return localStorage.getItem('preferred-locale') || null;
+      return localStorage.getItem('preferred-locale') ?? null;
     },
   );
 
@@ -72,8 +72,8 @@ export function LocaleProvider({
     ...userAgentLocales,
   ];
 
-  const locale = preferredLocales[0] || 'en';
-  const messages = getTranslation(preferredLocales, MESSAGES) || MESSAGES.en;
+  const locale = preferredLocales[0] ?? 'en';
+  const messages = getTranslation(preferredLocales, MESSAGES) ?? MESSAGES.en;
 
   return (
     <LocaleContext.Provider
@@ -123,7 +123,7 @@ export function LocaleSelector<T>({
 }: LocaleSelectorPropTypes<T>) {
   const { preferredLocales } = useLocale();
   const Component =
-    getTranslation(preferredLocales, components) || components.en;
+    getTranslation(preferredLocales, components) ?? components.en;
 
   return <Component {...props} />;
 }
