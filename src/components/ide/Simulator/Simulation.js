@@ -646,11 +646,7 @@ export class Simulation {
       ...Matter.Composite.allComposites(this.world),
       ...Matter.Composite.allBodies(this.world),
     ].forEach(composite => {
-      if (
-        composite.plugin &&
-        composite.plugin.hedgehog &&
-        composite.plugin.hedgehog.initialPose
-      ) {
+      if (composite.plugin?.hedgehog?.initialPose) {
         const { x, y, angle } = composite.plugin.hedgehog.initialPose;
         Matter.Body.setPosition(composite, { x, y });
         Matter.Body.setAngle(composite, angle);

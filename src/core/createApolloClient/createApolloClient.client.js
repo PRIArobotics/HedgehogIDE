@@ -40,7 +40,7 @@ export default function createApolloClient() {
     return {
       headers: {
         ...headers,
-        authorization: authData && authData.token ? `${authData.token}` : '',
+        authorization: authData?.token ? `${authData.token}` : '',
       },
     };
   });

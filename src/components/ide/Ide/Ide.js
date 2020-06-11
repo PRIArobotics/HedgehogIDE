@@ -137,7 +137,7 @@ function Ide({ projectName }: Props) {
   const pluginManagerRef = React.useRef<PluginManager | null>(null);
 
   const [layoutModel, layoutProps] = useLayoutModel(
-    state && state.layoutState,
+    state?.layoutState ?? null,
     layoutState => dispatch({ type: 'LAYOUT', layoutState }),
   );
 
@@ -178,7 +178,7 @@ function Ide({ projectName }: Props) {
   );
 
   // load the project's simulator schema if it or the simulator changes
-  const simulatorXml = projectCache && projectCache.simulatorXml;
+  const simulatorXml = projectCache?.simulatorXml ?? null;
 
   function refreshSimulatorFromSchema(
     schema: SimulationSchema.SimulatorJson | null,

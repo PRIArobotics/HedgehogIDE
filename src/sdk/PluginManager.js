@@ -49,7 +49,7 @@ class PluginManager {
         return;
       }
     } catch (e) {
-      if (e && e.code === 'ENOENT') {
+      if (e?.code === 'ENOENT') {
         return;
       } else {
         throw e;

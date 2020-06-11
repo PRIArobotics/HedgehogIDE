@@ -144,7 +144,7 @@ const history = setupHistory(async (history, location, isInitialRender) => {
 // Enable Hot Module Replacement (HMR)
 if (module.hot) {
   module.hot.accept('../core/router', () => {
-    if (appInstance && appInstance.updater.isMounted(appInstance)) {
+    if (appInstance?.updater.isMounted(appInstance)) {
       // Force-update the whole tree, including components that refuse to update
       deepForceUpdate(appInstance);
     }
