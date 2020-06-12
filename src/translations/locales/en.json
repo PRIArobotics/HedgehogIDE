@@ -10,6 +10,7 @@
   "app.exercises.open_associated_project_tooltip": "Open project \"{name}\" to work on exercise \"{exercise}\"",
   "app.exercises.refresh_exercise_list_tooltip": "Refresh Exercise List",
   "app.exercises.secondary_text": "Difficulty: {level}",
+  "app.exercises.upload_exercise_tooltip": "Upload exercise \"{name}\"",
   "app.footer.home": "Home",
   "app.header.home_label": "Home",
   "app.header.home_logo_alt": "Hedgehog Logo",
