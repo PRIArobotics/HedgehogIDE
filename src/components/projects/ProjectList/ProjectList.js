@@ -39,9 +39,10 @@ import { Project, ProjectError } from '../../../core/store/projects';
 
 import s from './ProjectList.scss';
 
-import useCreateProjectDialog from './CreateProjectDialog';
-import useDeleteProjectDialog from './DeleteProjectDialog';
-import useRenameProjectDialog from './RenameProjectDialog';
+import useCreateProjectDialog from './useCreateProjectDialog';
+import useDeleteProjectDialog from './useDeleteProjectDialog';
+import useRenameProjectDialog from './useRenameProjectDialog';
+import useProjectIndex from './useProjectIndex';
 
 import { type Projects } from './__generated__/Projects';
 import {
@@ -49,7 +50,6 @@ import {
   type CreateProjectVariables,
 } from './__generated__/CreateProject';
 
-import useProjectIndex from './projectIndex';
 import { useAuth } from '../../users/AuthProvider';
 
 const messages = defineMessages({

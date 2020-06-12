@@ -46,9 +46,9 @@ import {
   type FilerRecursiveDirectoryInfo,
 } from '../../../core/store/projects';
 
-import useCreateFileDialog from '../FileTree/CreateFileDialog';
-import useRenameFileDialog from '../FileTree/RenameFileDialog';
-import useDeleteFileDialog from '../FileTree/DeleteFileDialog';
+import useCreateFileDialog from '../FileTree/useCreateFileDialog';
+import useRenameFileDialog from '../FileTree/useRenameFileDialog';
+import useDeleteFileDialog from '../FileTree/useDeleteFileDialog';
 import FileUpload from '../FileTree/FileUpload';
 import FileDownload from '../FileTree/FileDownload';
 import Executor, { type Task } from '../Executor';
@@ -56,10 +56,10 @@ import initMiscSdk from '../../../sdk/misc';
 import initHedgehogSdk from '../../../sdk/hedgehog';
 import PluginManager from '../../../sdk/PluginManager';
 
-import useProjectInfo from './projectInfo';
-import useProjectCache from './projectCache';
-import usePersistentState from './persistentState';
-import useLayoutModel from './layoutModel';
+import useProjectInfo from './useProjectInfo';
+import useProjectCache from './useProjectCache';
+import usePersistentState from './usePersistentState';
+import useLayoutModel from './useLayoutModel';
 
 const messages = defineMessages({
   simulatorTooltip: {

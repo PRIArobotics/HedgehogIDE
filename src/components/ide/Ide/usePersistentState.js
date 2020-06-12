@@ -2,7 +2,7 @@
 
 import { useStore } from '../../misc/hooks';
 
-import { type LayoutState } from './layoutModel';
+import { type LayoutState } from './useLayoutModel';
 import { type ControlledState as FileTreeState } from '../FileTree';
 import { type ControlledState as VisualEditorState } from '../VisualEditor';
 import { type ControlledState as SimulatorEditorState } from '../SimulatorEditor';

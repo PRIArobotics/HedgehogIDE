@@ -7,7 +7,7 @@ import { useStore } from '../misc/hooks';
 
 export { Project };
 
-function useFile(
+export default function useFile(
   project: Project,
   path: string,
 ): [string | null, (string) => void] {
@@ -23,5 +23,3 @@ function useFile(
 
   return useStore<string>(load, store, [project, path]);
 }
-
-export default useFile;
