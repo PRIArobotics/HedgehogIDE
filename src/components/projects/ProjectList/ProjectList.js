@@ -43,6 +43,7 @@ import useCreateProjectDialog from './useCreateProjectDialog';
 import useDeleteProjectDialog from './useDeleteProjectDialog';
 import useRenameProjectDialog from './useRenameProjectDialog';
 import useProjectIndex from './useProjectIndex';
+import useLocalProjects from './useLocalProjects';
 
 import { type Projects } from './__generated__/Projects';
 import {
@@ -156,7 +157,7 @@ function ProjectList(_props: Props) {
   const auth = useAuth();
   const intl = useIntl();
 
-  const [projects, setProjects] = hooks.useAsyncState<Project[]>([]);
+  const [projects, refreshProjects] = useLocalProjects();
 
   const remoteProjectsQuery = useProjectsQuery();
   const remoteProjects = remoteProjectsQuery.data?.projects ?? [];
@@ -182,14 +183,6 @@ function ProjectList(_props: Props) {
       }
     });
   }
-
-  function refreshProjects() {
-    setProjects(Project.getProjects());
-  }
-
-  React.useEffect(() => {
-    refreshProjects();
-  }, []);
 
   async function confirmCreateProject(name: string): Promise<boolean> {
     try {
