@@ -148,7 +148,7 @@ function ProjectList(_props: Props) {
   const auth = useAuth();
   const intl = useIntl();
 
-  const [projects, refreshProjects] = useLocalProjects();
+  const [localProjects, refreshLocalProjects] = useLocalProjects();
   const [remoteProjects, refreshRemoteProjects] = useRemoteProjects();
 
   const [
@@ -163,12 +163,12 @@ function ProjectList(_props: Props) {
   // compute that here.
   const reverseIndex: ReverseIndex = {};
   if (projectIndex !== null) {
-    projects.forEach(project => {
-      if (project.uid in projectIndex.remoteProjects) {
-        const remoteProjectId = projectIndex.remoteProjects[project.uid];
+    localProjects.forEach(localProject => {
+      if (localProject.uid in projectIndex.remoteProjects) {
+        const remoteProjectId = projectIndex.remoteProjects[localProject.uid];
         if (!(remoteProjectId in reverseIndex))
           reverseIndex[remoteProjectId] = [];
-        reverseIndex[remoteProjectId].push(project);
+        reverseIndex[remoteProjectId].push(localProject);
       }
     });
   }
@@ -176,25 +176,28 @@ function ProjectList(_props: Props) {
   async function confirmCreateProject(name: string): Promise<boolean> {
     try {
       await Project.createProject(name);
-      refreshProjects();
+      refreshLocalProjects();
       return true;
     } catch (ex) {
       if (!(ex instanceof ProjectError)) throw ex;
-      refreshProjects();
+      refreshLocalProjects();
       return false;
     }
   }
 
-  const createProject = useCreateProjectDialog(confirmCreateProject, projects);
+  const createProject = useCreateProjectDialog(
+    confirmCreateProject,
+    localProjects,
+  );
 
   async function confirmDeleteProject(project: Project): Promise<boolean> {
     try {
       await project.delete();
-      refreshProjects();
+      refreshLocalProjects();
       return true;
     } catch (ex) {
       if (!(ex instanceof ProjectError)) throw ex;
-      refreshProjects();
+      refreshLocalProjects();
       return false;
     }
   }
@@ -207,16 +210,19 @@ function ProjectList(_props: Props) {
   ): Promise<boolean> {
     try {
       await project.rename(newName);
-      refreshProjects();
+      refreshLocalProjects();
       return true;
     } catch (ex) {
       if (!(ex instanceof ProjectError)) throw ex;
-      refreshProjects();
+      refreshLocalProjects();
       return false;
     }
   }
 
-  const renameProject = useRenameProjectDialog(confirmRenameProject, projects);
+  const renameProject = useRenameProjectDialog(
+    confirmRenameProject,
+    localProjects,
+  );
 
   useStyles(s);
 
@@ -247,14 +253,14 @@ function ProjectList(_props: Props) {
               aria-label={intl.formatMessage(
                 messages.refreshProjectListTooltip,
               )}
-              onClick={refreshProjects}
+              onClick={refreshLocalProjects}
             >
               <RefreshIcon />
             </IconButton>
           </Tooltip>
         </Toolbar>
         <List>
-          {projects.map(project => (
+          {localProjects.map(project => (
             <ListItem
               key={project.name}
               button
@@ -358,7 +364,7 @@ function ProjectList(_props: Props) {
         </Toolbar>
         <List>
           {remoteProjects.map(exercise => {
-            const localProjects = reverseIndex[exercise.id] ?? [];
+            const associatedProjects = reverseIndex[exercise.id] ?? [];
 
             return (
               <ListItem key={exercise.name} button>
@@ -384,7 +390,9 @@ function ProjectList(_props: Props) {
                     placement="bottom"
                   >
                     <IconButton
-                      {...(localProjects.length === 0 ? { edge: 'end' } : {})}
+                      {...(associatedProjects.length === 0
+                        ? { edge: 'end' }
+                        : {})}
                       aria-label={intl.formatMessage(
                         messages.cloneExerciseTooltip,
                         { name: exercise.name },
@@ -394,9 +402,9 @@ function ProjectList(_props: Props) {
                       <CreateIcon />
                     </IconButton>
                   </Tooltip>
-                  {localProjects.length === 0 ? null : localProjects.length ===
-                    1 ? (
-                    localProjects.map(project => (
+                  {associatedProjects.length ===
+                  0 ? null : associatedProjects.length === 1 ? (
+                    associatedProjects.map(project => (
                       <Tooltip
                         key={project.name}
                         title={intl.formatMessage(
@@ -455,7 +463,7 @@ function ProjectList(_props: Props) {
                             keepMounted
                             {...bindMenu(popupState)}
                           >
-                            {localProjects.map(project => (
+                            {associatedProjects.map(project => (
                               <MenuItem
                                 key={project.name}
                                 component={Link}
