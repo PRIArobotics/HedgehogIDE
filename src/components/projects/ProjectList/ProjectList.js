@@ -21,6 +21,7 @@ import Typography from '@material-ui/core/Typography';
 import PopupState, { bindTrigger, bindMenu } from 'material-ui-popup-state';
 
 import { useQuery } from '@apollo/react-hooks';
+import gql from 'graphql-tag';
 
 import {
   LocalProjectIcon,
@@ -43,8 +44,6 @@ import useCreateProjectDialog from './CreateProjectDialog';
 import useDeleteProjectDialog from './DeleteProjectDialog';
 import useRenameProjectDialog from './RenameProjectDialog';
 
-// $FlowExpectError
-import ProjectsQuery from './ProjectsQuery.graphql';
 import { type Projects } from './__generated__/Projects';
 
 import useProjectIndex from './projectIndex';
@@ -128,14 +127,14 @@ const messages = defineMessages({
   },
 });
 
-type ProjectsData = {|
-  projects: [
-    {|
-      id: string,
-      name: string,
-    |},
-  ],
-|};
+const ProjectsQuery = gql`
+  query Projects {
+    projects {
+      id
+      name
+    }
+  }
+`;
 
 type ReverseIndex = {| [remoteId: string]: Project[] |};
 
@@ -147,7 +146,7 @@ function ProjectList(_props: Props) {
 
   const [projects, setProjects] = hooks.useAsyncState<Project[]>([]);
 
-  const remoteProjectsQuery = useQuery<ProjectsData, void>(ProjectsQuery);
+  const remoteProjectsQuery = useQuery<Projects, void>(ProjectsQuery);
   const remoteProjects = remoteProjectsQuery.data?.projects ?? [];
 
   const [projectIndex, setProjectIndex] = useProjectIndex();

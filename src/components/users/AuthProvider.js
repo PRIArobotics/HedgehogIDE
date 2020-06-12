@@ -1,15 +1,25 @@
 // @flow
 
 import * as React from 'react';
-import { useMutation } from '@apollo/react-hooks';
 
-// $FlowExpectError
-import LoginMutation from './LoginMutation.graphql';
+import { useMutation } from '@apollo/react-hooks';
+import gql from 'graphql-tag';
+
 import {
   type Login,
   type LoginVariables,
   type Login_login as AuthData,
 } from './__generated__/Login';
+
+const LoginMutation = gql`
+  mutation Login($username: String!, $password: String!) {
+    login(username: $username, password: $password) {
+      id
+      username
+      token
+    }
+  }
+`;
 
 type Auth = {|
   authData: AuthData | null,
