@@ -44,6 +44,10 @@ import useDeleteProjectDialog from './DeleteProjectDialog';
 import useRenameProjectDialog from './RenameProjectDialog';
 
 import { type Projects } from './__generated__/Projects';
+import {
+  type CreateProject,
+  type CreateProjectVariables,
+} from './__generated__/CreateProject';
 
 import useProjectIndex from './projectIndex';
 import { useAuth } from '../../users/AuthProvider';
@@ -135,6 +139,15 @@ const useProjectsQuery = hooks.makeQuery<Projects, void>(gql`
   }
 `);
 
+const useCreateProjectMutation = hooks.makeMutation<
+  CreateProject,
+  CreateProjectVariables,
+>(gql`
+  mutation CreateProject($project: ProjectInput!) {
+    createProject(project: $project)
+  }
+`);
+
 type ReverseIndex = {| [remoteId: string]: Project[] |};
 
 type Props = {||};
@@ -147,6 +160,11 @@ function ProjectList(_props: Props) {
 
   const remoteProjectsQuery = useProjectsQuery();
   const remoteProjects = remoteProjectsQuery.data?.projects ?? [];
+
+  const [
+    createProjectMutation,
+    _createProjectResponse,
+  ] = useCreateProjectMutation();
 
   const [projectIndex, setProjectIndex] = useProjectIndex();
 
