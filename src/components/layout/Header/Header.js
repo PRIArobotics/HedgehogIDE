@@ -133,7 +133,7 @@ function Header() {
           English
         </MenuItem>
       </Menu>
-      {auth.authData?.username ? (
+      {auth.authData ? (
         <>
           <Tooltip title={<M {...messages.myAccount} />}>
             <IconButton color="inherit" {...bindTrigger(authPopupState)}>

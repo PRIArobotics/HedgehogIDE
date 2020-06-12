@@ -35,6 +35,7 @@ import MetadataToolboxIcon from 'mdi-material-ui/Cogs';
 
 // projects
 import LocalProjectIcon from 'mdi-material-ui/Folder';
+import UploadExerciseIcon from 'mdi-material-ui/CloudUpload';
 
 // project actions
 import SettingsIcon from 'mdi-material-ui/Cogs';
@@ -97,6 +98,7 @@ export {
   MetadataSimulatorIcon,
   MetadataToolboxIcon,
   LocalProjectIcon,
+  UploadExerciseIcon,
   SettingsIcon,
   SelectLanguageIcon,
   IdeIcon,

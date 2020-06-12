@@ -24,6 +24,7 @@ import { useQuery } from '@apollo/react-hooks';
 
 import {
   LocalProjectIcon,
+  UploadExerciseIcon,
   CreateIcon,
   OpenIcon,
   RenameIcon,
@@ -47,6 +48,7 @@ import ProjectsQuery from './ProjectsQuery.graphql';
 import { type Projects } from './__generated__/Projects';
 
 import useProjectIndex from './projectIndex';
+import { useAuth } from '../../users/AuthProvider';
 
 const messages = defineMessages({
   projectsTitle: {
@@ -95,6 +97,12 @@ const messages = defineMessages({
       'This text is shown below the exercise name and describes it further',
     defaultMessage: 'Difficulty: {level}',
   },
+  uploadExerciseTooltip: {
+    id: 'app.exercises.upload_exercise_tooltip',
+    description:
+      'Tooltip and screen reader label for the upload exercise button',
+    defaultMessage: 'Upload exercise "{name}"',
+  },
   cloneExerciseTooltip: {
     id: 'app.exercises.clone_exercise_tooltip',
     description:
@@ -134,6 +142,7 @@ type ReverseIndex = {| [remoteId: string]: Project[] |};
 type Props = {||};
 
 function ProjectList(_props: Props) {
+  const auth = useAuth();
   const intl = useIntl();
 
   const [projects, setProjects] = hooks.useAsyncState<Project[]>([]);
@@ -261,6 +270,24 @@ function ProjectList(_props: Props) {
               </ListItemAvatar>
               <ListItemText primary={project.name} />
               <ListItemSecondaryAction>
+                {auth.authData ? (
+                  <Tooltip
+                    title={intl.formatMessage(messages.uploadExerciseTooltip, {
+                      name: project.name,
+                    })}
+                    placement="bottom"
+                  >
+                    <IconButton
+                      aria-label={intl.formatMessage(
+                        messages.uploadExerciseTooltip,
+                        { name: project.name },
+                      )}
+                      onClick={() => renameProject.show(project)}
+                    >
+                      <UploadExerciseIcon />
+                    </IconButton>
+                  </Tooltip>
+                ) : null}
                 <Tooltip
                   title={intl.formatMessage(messages.renameProjectTooltip, {
                     name: project.name,
