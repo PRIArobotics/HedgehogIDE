@@ -2,8 +2,9 @@
 
 import * as React from 'react';
 
-import { useMutation } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
+
+import { makeMutation } from '../misc/hooks';
 
 import {
   type Login,
@@ -11,7 +12,7 @@ import {
   type Login_login as AuthData,
 } from './__generated__/Login';
 
-const LoginMutation = gql`
+const useLoginMutation = makeMutation<Login, LoginVariables>(gql`
   mutation Login($username: String!, $password: String!) {
     login(username: $username, password: $password) {
       id
@@ -19,7 +20,7 @@ const LoginMutation = gql`
       token
     }
   }
-`;
+`);
 
 type Auth = {|
   authData: AuthData | null,
@@ -42,9 +43,7 @@ type AuthProviderPropTypes = {|
 |};
 
 export function AuthProvider({ children }: AuthProviderPropTypes) {
-  const [performLogin, _loginResponse] = useMutation<Login, LoginVariables>(
-    LoginMutation,
-  );
+  const [performLogin, _loginResponse] = useLoginMutation();
   const [authData, setAuthData] = React.useState<AuthData | null>(null);
 
   const login = async (username: string, password: string) => {

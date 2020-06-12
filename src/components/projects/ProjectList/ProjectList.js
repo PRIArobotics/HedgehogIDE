@@ -20,7 +20,6 @@ import Typography from '@material-ui/core/Typography';
 
 import PopupState, { bindTrigger, bindMenu } from 'material-ui-popup-state';
 
-import { useQuery } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
 
 import {
@@ -127,14 +126,14 @@ const messages = defineMessages({
   },
 });
 
-const ProjectsQuery = gql`
+const useProjectsQuery = hooks.makeQuery<Projects, void>(gql`
   query Projects {
     projects {
       id
       name
     }
   }
-`;
+`);
 
 type ReverseIndex = {| [remoteId: string]: Project[] |};
 
@@ -146,7 +145,7 @@ function ProjectList(_props: Props) {
 
   const [projects, setProjects] = hooks.useAsyncState<Project[]>([]);
 
-  const remoteProjectsQuery = useQuery<Projects, void>(ProjectsQuery);
+  const remoteProjectsQuery = useProjectsQuery();
   const remoteProjects = remoteProjectsQuery.data?.projects ?? [];
 
   const [projectIndex, setProjectIndex] = useProjectIndex();
