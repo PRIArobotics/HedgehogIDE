@@ -387,9 +387,12 @@ function ProjectList(_props: Props) {
                 </ListItemAvatar>
                 <ListItemText
                   primary={exercise.name}
-                  secondary={intl.formatMessage(messages.exerciseSecondaryText, {
-                    ...exercise,
-                  })}
+                  secondary={intl.formatMessage(
+                    messages.exerciseSecondaryText,
+                    {
+                      ...exercise,
+                    },
+                  )}
                 />
                 <ListItemSecondaryAction>
                   <Tooltip
