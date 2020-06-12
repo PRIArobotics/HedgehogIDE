@@ -44,8 +44,8 @@ import useDeleteProjectDialog from './useDeleteProjectDialog';
 import useRenameProjectDialog from './useRenameProjectDialog';
 import useProjectIndex from './useProjectIndex';
 import useLocalProjects from './useLocalProjects';
+import useRemoteProjects from './useRemoteProjects';
 
-import { type Projects } from './__generated__/Projects';
 import {
   type CreateProject,
   type CreateProjectVariables,
@@ -131,15 +131,6 @@ const messages = defineMessages({
   },
 });
 
-const useProjectsQuery = hooks.makeQuery<Projects, void>(gql`
-  query Projects {
-    projects {
-      id
-      name
-    }
-  }
-`);
-
 const useCreateProjectMutation = hooks.makeMutation<
   CreateProject,
   CreateProjectVariables,
@@ -158,9 +149,7 @@ function ProjectList(_props: Props) {
   const intl = useIntl();
 
   const [projects, refreshProjects] = useLocalProjects();
-
-  const remoteProjectsQuery = useProjectsQuery();
-  const remoteProjects = remoteProjectsQuery.data?.projects ?? [];
+  const [remoteProjects, refreshRemoteProjects] = useRemoteProjects();
 
   const [
     createProjectMutation,
@@ -361,7 +350,7 @@ function ProjectList(_props: Props) {
               aria-label={intl.formatMessage(
                 messages.refreshExerciseListTooltip,
               )}
-              onClick={() => remoteProjectsQuery.refetch()}
+              onClick={refreshRemoteProjects}
             >
               <RefreshIcon />
             </IconButton>
