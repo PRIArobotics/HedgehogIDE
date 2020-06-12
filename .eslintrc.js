@@ -79,6 +79,8 @@ module.exports = {
       },
     ],
 
+    'no-restricted-syntax': ['off', { selector: 'ForOfStatement' }],
+
     // Prefer destructuring from arrays and objects
     // http://eslint.org/docs/rules/prefer-destructuring
     'prefer-destructuring': [
