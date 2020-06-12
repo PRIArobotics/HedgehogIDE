@@ -22,7 +22,7 @@ clientsClaim();
  */
 const precacheManifest = [].concat(
   [{ url: '/app-shell.html' }, { url: '/executor' }],
-  WB_MANIFEST || [],
+  WB_MANIFEST ?? [],
 );
 precacheAndRoute(precacheManifest, {});
 registerRoute(

@@ -123,7 +123,7 @@ export function useStore<T>(
   store: T => void | Promise<void>,
   deps?: any[],
 ): [T | null, (T) => void] {
-  const realDeps = deps || [load, store];
+  const realDeps = deps ?? [load, store];
 
   const [stateImpl, setStateImpl] = useAsyncState<StoreState<T> | null>(null);
 

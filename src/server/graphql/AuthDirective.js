@@ -15,7 +15,7 @@ export default class AuthDirective extends SchemaDirectiveVisitor {
     // eslint-disable-next-line no-param-reassign
     field.resolve = async function(...args) {
       const context = args[2];
-      if (!context.user || !context.user.userId) {
+      if (!context.user?.userId) {
         throw new AuthenticationError('not authorized');
       }
 

@@ -43,8 +43,8 @@ process.on('unhandledRejection', (reason, p) => {
 // Tell any CSS tooling (such as Material UI) to use all vendor prefixes if the
 // user agent is not known.
 // -----------------------------------------------------------------------------
-global.navigator = global.navigator || {};
-global.navigator.userAgent = global.navigator.userAgent || 'all';
+global.navigator = global.navigator ?? {};
+global.navigator.userAgent = global.navigator.userAgent ?? 'all';
 
 const app = express();
 
@@ -159,7 +159,7 @@ app.get('*', async (req, res, next) => {
     const materialStyleLoader = new MaterialStyleLoader();
 
     const initialState = createInitialState({
-      user: req.user || null,
+      user: req.user ?? null,
     });
 
     const apolloClient = createApolloClient(
@@ -190,7 +190,7 @@ app.get('*', async (req, res, next) => {
     const route = await router.resolve(context);
 
     if (route.redirect) {
-      res.redirect(route.status || 302, route.redirect);
+      res.redirect(route.status ?? 302, route.redirect);
       return;
     }
 
@@ -227,7 +227,7 @@ app.get('*', async (req, res, next) => {
     };
 
     const html = renderHtml(rootComponent, data);
-    res.status(route.status || 200);
+    res.status(route.status ?? 200);
     res.send(html);
   } catch (err) {
     next(err);
@@ -259,7 +259,7 @@ app.use((err, req, res, next) => {
   };
 
   const html = renderHtml(rootComponent, data);
-  res.status(err.status || 500);
+  res.status(err.status ?? 500);
   res.send(html);
 });
 
