@@ -156,22 +156,7 @@ function ProjectList(_props: Props) {
     _createProjectResponse,
   ] = useCreateProjectMutation();
 
-  const [projectIndex, setProjectIndex] = useProjectIndex();
-
-  // projectIndex.remoteProjects maps local project IDs to remote project IDs
-  // on this page, we need the list of local projects per remote project ID.
-  // compute that here.
-  const reverseIndex: ReverseIndex = {};
-  if (projectIndex !== null) {
-    localProjects.forEach(localProject => {
-      if (localProject.uid in projectIndex.remoteProjects) {
-        const remoteProjectId = projectIndex.remoteProjects[localProject.uid];
-        if (!(remoteProjectId in reverseIndex))
-          reverseIndex[remoteProjectId] = [];
-        reverseIndex[remoteProjectId].push(localProject);
-      }
-    });
-  }
+  const [projectIndex, setRemoteProjects] = useProjectIndex(localProjects);
 
   async function confirmCreateProject(name: string): Promise<boolean> {
     try {
@@ -364,7 +349,8 @@ function ProjectList(_props: Props) {
         </Toolbar>
         <List>
           {remoteProjects.map(exercise => {
-            const associatedProjects = reverseIndex[exercise.id] ?? [];
+            const associatedProjects =
+              projectIndex.localProjects[exercise.id] ?? [];
 
             return (
               <ListItem key={exercise.name} button>
