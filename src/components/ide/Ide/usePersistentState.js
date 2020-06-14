@@ -1,6 +1,6 @@
 // @flow
 
-import { useStore } from '../../misc/hooks';
+import { makeLocalStorageOpt } from '../../misc/hooks';
 
 import { type LayoutState } from './useLayoutModel';
 import { type ControlledState as FileTreeState } from '../FileTree';
@@ -83,51 +83,37 @@ function ideState(state: PersistentState, action: IdeAction): PersistentState {
   }
 }
 
+const useStorage = makeLocalStorageOpt<PersistentState>(
+  json => ({
+    // default state
+    fileTreeState: { expandedKeys: [] },
+    showMetadataFolder: false,
+    layoutState: {
+      global: {},
+      borders: [],
+      layout: {
+        type: 'tabset',
+        children: [],
+      },
+    },
+    editorStates: {},
+    // persisted state
+    ...(json !== null ? JSON.parse(json) : null),
+  }),
+  state => JSON.stringify(state),
+);
+
 export default function usePersistentState(
   projectUid: string | null,
 ): [PersistentState | null, (IdeAction) => void] {
-  function load() {
-    if (projectUid === null) return null;
-
-    // load persisted state from localStorage
-    const json = localStorage.getItem(`IDE-State-${projectUid}`);
-
-    const state = {
-      // default state
-      fileTreeState: { expandedKeys: [] },
-      showMetadataFolder: false,
-      layoutState: {
-        global: {},
-        borders: [],
-        layout: {
-          type: 'tabset',
-          children: [],
-        },
-      },
-      editorStates: {},
-      // persisted state
-      ...(json ? JSON.parse(json) : null),
-    };
-
-    return state;
-  }
-
-  function store(state) {
-    if (projectUid === null || state === null) return;
-
-    localStorage.setItem(`IDE-State-${projectUid}`, JSON.stringify(state));
-  }
-
-  const [state, setState] = useStore<PersistentState | null>(load, store, [
-    projectUid,
-  ]);
+  const [state, setState] = useStorage(projectUid && `IDE-State-${projectUid}`);
 
   function dispatch(action: IdeAction) {
     // eslint-disable-next-line no-throw-literal
-    if (state === null) throw 'state must be loaded first';
+    if (state === undefined) throw 'state must be loaded first';
 
     setState(ideState(state, action));
   }
 
-  return [state, dispatch];
+  return [state ?? null, dispatch];
 }

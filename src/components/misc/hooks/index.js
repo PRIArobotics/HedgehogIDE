@@ -4,6 +4,7 @@ import * as React from 'react';
 
 export * from './async_state';
 export * from './apollo';
+export * from './localStorage';
 
 // An almost-alias to React.useRef for the typical element ref use case.
 // useRef can also emulate instance variables, this can't.
