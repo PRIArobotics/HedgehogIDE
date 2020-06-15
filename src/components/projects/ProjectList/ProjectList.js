@@ -338,7 +338,7 @@ function ProjectList(_props: Props) {
               projectIndex.localProjects[exercise.id] ?? [];
 
             return (
-              <ListItem key={exercise.name} button>
+              <ListItem key={exercise.id} button>
                 <ListItemAvatar>
                   <Avatar>
                     <LocalProjectIcon />
