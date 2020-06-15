@@ -98,75 +98,77 @@ const def: GraphqlDefShape = {
     Mutation: {
       async createProject(_, { project: projectInput }, _context) {
         const session = await db.startSession();
-
-        const [project] = await Project.create(
-          [
-            {
-              name: projectInput.name,
-              isPublic: projectInput.isPublic,
-            },
-          ],
-          { session },
-        );
-
-        async function saveFileTree(tree) {
-          if (!tree.files) {
-            // eslint-disable-next-line no-param-reassign
-            tree.files = [];
-          }
-
-          if (!tree.trees) {
-            // eslint-disable-next-line no-param-reassign
-            tree.trees = [];
-          }
-
-          const savedFilePromises = tree.files.map(file =>
-            File.create(
-              [
-                {
-                  project: project.id,
-                  data: file.data,
-                },
-              ],
-              { session },
-            ).then(([savedFile]) => ({
-              name: file.name,
-              type: 'File',
-              file: savedFile.id,
-            })),
-          );
-
-          const savedTreePromises = tree.trees.map(childTree =>
-            saveFileTree(childTree.tree).then(savedTree => ({
-              name: childTree.name,
-              type: 'Tree',
-              tree: savedTree.id,
-            })),
-          );
-
-          const contents = await Promise.all([
-            ...savedFilePromises,
-            ...savedTreePromises,
-          ]);
-
-          const [fileTree] = await FileTree.create(
+        try {
+          const [project] = await Project.create(
             [
               {
-                project: project.id,
-                contents,
+                name: projectInput.name,
+                isPublic: projectInput.isPublic,
               },
             ],
             { session },
           );
 
-          return fileTree;
-        }
+          async function saveFileTree(tree) {
+            if (!tree.files) {
+              // eslint-disable-next-line no-param-reassign
+              tree.files = [];
+            }
 
-        const root = await saveFileTree(projectInput.fileTree);
-        project.fileTreeRoot = root.id;
-        await project.save();
-        await session.endSession();
-        return project.id;
+            if (!tree.trees) {
+              // eslint-disable-next-line no-param-reassign
+              tree.trees = [];
+            }
+
+            const savedFilePromises = tree.files.map(file =>
+              File.create(
+                [
+                  {
+                    project: project.id,
+                    data: file.data,
+                  },
+                ],
+                { session },
+              ).then(([savedFile]) => ({
+                name: file.name,
+                type: 'File',
+                file: savedFile.id,
+              })),
+            );
+
+            const savedTreePromises = tree.trees.map(childTree =>
+              saveFileTree(childTree.tree).then(savedTree => ({
+                name: childTree.name,
+                type: 'Tree',
+                tree: savedTree.id,
+              })),
+            );
+
+            const contents = await Promise.all([
+              ...savedFilePromises,
+              ...savedTreePromises,
+            ]);
+
+            const [fileTree] = await FileTree.create(
+              [
+                {
+                  project: project.id,
+                  contents,
+                },
+              ],
+              { session },
+            );
+
+            return fileTree;
+          }
+
+          const root = await saveFileTree(projectInput.fileTree);
+          project.fileTreeRoot = root.id;
+          await project.save();
+          return project.id;
+        } finally {
+          await session.endSession();
+        }
       },
     },
   }),
