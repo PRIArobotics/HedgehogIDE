@@ -110,16 +110,6 @@ const def: GraphqlDefShape = {
           );
 
           async function saveFileTree(tree) {
-            if (!tree.files) {
-              // eslint-disable-next-line no-param-reassign
-              tree.files = [];
-            }
-
-            if (!tree.trees) {
-              // eslint-disable-next-line no-param-reassign
-              tree.trees = [];
-            }
-
             const savedFilePromises = tree.files.map(file =>
               File.create(
                 [
