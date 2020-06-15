@@ -18,7 +18,7 @@ const useProjectsQuery = hooks.makeQuery<Projects, void>(gql`
   }
 `);
 
-export default function useLocalProjects(): [Project[], () => void] {
+export default function useRemoteProjects(): [Project[], () => void] {
   const remoteProjectsQuery = useProjectsQuery();
   const remoteProjects = remoteProjectsQuery.data?.projects ?? [];
 
