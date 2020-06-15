@@ -35,7 +35,7 @@ async function projectToInput(project: Project): Promise<ProjectInput> {
     path: string[],
   ): Promise<FileTreeFileRecordInput> {
     const { name } = file;
-    const absolutePath = project.resolve(...path, name);
+    const absolutePath = project.resolve(...path);
     const data = await fs.promises.readFile(absolutePath);
     return { name, data };
   }
@@ -48,13 +48,13 @@ async function projectToInput(project: Project): Promise<ProjectInput> {
     const filePromises: Promise<FileTreeFileRecordInput>[] = [];
     const treePromises: Promise<FileTreeTreeRecordInput>[] = [];
 
-    const newPath = [...path, name];
     for (const file of directory.contents) {
+      const childPath = [...path, file.name];
       if (file.isDirectory()) {
         // $FlowExpectError
-        treePromises.push(visitDirectory(file, newPath));
+        treePromises.push(visitDirectory(file, childPath));
       } else {
-        filePromises.push(visitFile(file, newPath));
+        filePromises.push(visitFile(file, childPath));
       }
     }
 
