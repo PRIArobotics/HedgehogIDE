@@ -120,7 +120,7 @@ const def: GraphqlDefShape = {
               ).then(([savedFile]) => ({
                 name: file.name,
                 type: 'File',
-                file: savedFile.id,
+                ref: savedFile.id,
               })),
             );
 
@@ -128,7 +128,7 @@ const def: GraphqlDefShape = {
               saveFileTree(childTree.tree).then(savedTree => ({
                 name: childTree.name,
                 type: 'Tree',
-                tree: savedTree.id,
+                ref: savedTree.id,
               })),
             );
 

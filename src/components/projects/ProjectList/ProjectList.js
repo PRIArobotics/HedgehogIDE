@@ -20,8 +20,6 @@ import Typography from '@material-ui/core/Typography';
 
 import PopupState, { bindTrigger, bindMenu } from 'material-ui-popup-state';
 
-import gql from 'graphql-tag';
-
 import {
   LocalProjectIcon,
   UploadExerciseIcon,
@@ -31,7 +29,6 @@ import {
   DeleteIcon,
   RefreshIcon,
 } from '../../misc/palette';
-import * as hooks from '../../misc/hooks';
 
 import Link from '../../misc/Link';
 import SimpleDialog from '../../misc/SimpleDialog';
@@ -45,11 +42,7 @@ import useRenameProjectDialog from './useRenameProjectDialog';
 import useProjectIndex from './useProjectIndex';
 import useLocalProjects from './useLocalProjects';
 import useRemoteProjects from './useRemoteProjects';
-
-import {
-  type CreateProject,
-  type CreateProjectVariables,
-} from './__generated__/CreateProject';
+import useCreateRemoteProject from './useCreateRemoteProject';
 
 import { useAuth } from '../../users/AuthProvider';
 
@@ -131,15 +124,6 @@ const messages = defineMessages({
   },
 });
 
-const useCreateProjectMutation = hooks.makeMutation<
-  CreateProject,
-  CreateProjectVariables,
->(gql`
-  mutation CreateProject($project: ProjectInput!) {
-    createProject(project: $project)
-  }
-`);
-
 type Props = {||};
 
 function ProjectList(_props: Props) {
@@ -149,10 +133,7 @@ function ProjectList(_props: Props) {
   const [localProjects, refreshLocalProjects] = useLocalProjects();
   const [remoteProjects, refreshRemoteProjects] = useRemoteProjects();
 
-  const [
-    createProjectMutation,
-    _createProjectResponse,
-  ] = useCreateProjectMutation();
+  const createProjectMutation = useCreateRemoteProject();
 
   const [projectIndex, setRemoteProjects] = useProjectIndex(localProjects);
 
@@ -269,7 +250,13 @@ function ProjectList(_props: Props) {
                         messages.uploadExerciseTooltip,
                         { name: project.name },
                       )}
-                      onClick={() => renameProject.show(project)}
+                      onClick={async () => {
+                        const id = await createProjectMutation(project);
+                        setRemoteProjects({
+                          ...projectIndex.remoteProjects,
+                          [project.uid]: id,
+                        });
+                      }}
                     >
                       <UploadExerciseIcon />
                     </IconButton>
