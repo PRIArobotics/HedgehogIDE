@@ -74,22 +74,25 @@ const def: GraphqlDefShape = {
   ],
   resolvers: () => ({
     RootQuery: {
-      projects(_, _args, _context) {
-        return [
-          {
-            id: '0001',
-            name: 'Zoowärter',
-            isPublic: true,
-            fileTreeRootId: '0002',
-            fileTrees: [
-              {
-                id: '0002',
-                contents: [],
-              },
-            ],
-            files: [],
-          },
-        ];
+      async projects(_, _args, _context) {
+        return /* await */ Project.find({});
+      },
+      async projectById(_, { id }, _context) {
+        return /* await */ Project.findById(id);
+      },
+    },
+    Project: {
+      isPublic(_parent, _args, _context) {
+        return true;
+      },
+      fileTreeRootId(parent, _args, _context) {
+        return parent.fileTreeRoot;
+      },
+      fileTrees(_parent, _args, _context) {
+        return [];
+      },
+      files(_parent, _args, _context) {
+        return [];
       },
     },
     Mutation: {
