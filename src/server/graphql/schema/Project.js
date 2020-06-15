@@ -83,9 +83,6 @@ const def: GraphqlDefShape = {
       },
     },
     Project: {
-      isPublic(_parent, _args, _context) {
-        return true;
-      },
       fileTreeRootId(parent, _args, _context) {
         return parent.fileTreeRoot;
       },
