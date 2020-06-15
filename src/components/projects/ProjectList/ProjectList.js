@@ -140,8 +140,6 @@ const useCreateProjectMutation = hooks.makeMutation<
   }
 `);
 
-type ReverseIndex = {| [remoteId: string]: Project[] |};
-
 type Props = {||};
 
 function ProjectList(_props: Props) {
