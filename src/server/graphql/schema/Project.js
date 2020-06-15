@@ -1,5 +1,7 @@
 // @flow
 
+import base64 from 'base64-js';
+
 import type { GraphqlDefShape } from '../../../core/graphql/graphqlDef';
 
 import db, { File, FileTree, Project } from '../../mongodb';
@@ -93,6 +95,11 @@ const def: GraphqlDefShape = {
         return File.find({ project: parent.id });
       },
     },
+    File: {
+      data(parent, _args, _context) {
+        return base64.fromByteArray(parent.data);
+      }
+    },
     FileTreeRecord: {
       itemId(parent, _args, _context) {
         return parent.ref;
@@ -118,7 +125,7 @@ const def: GraphqlDefShape = {
                 [
                   {
                     project: project.id,
-                    data: file.data,
+                    data: Buffer.from(base64.toByteArray(file.data)),
                   },
                 ],
                 { session },

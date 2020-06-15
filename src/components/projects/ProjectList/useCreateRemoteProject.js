@@ -3,6 +3,7 @@
 import gql from 'graphql-tag';
 
 import { fs } from 'filer';
+import base64 from 'base64-js';
 
 import * as hooks from '../../misc/hooks';
 
@@ -36,7 +37,8 @@ async function projectToInput(project: Project): Promise<ProjectInput> {
   ): Promise<FileTreeFileRecordInput> {
     const { name } = file;
     const absolutePath = project.resolve(...path);
-    const data = await fs.promises.readFile(absolutePath);
+    const binaryData = await fs.promises.readFile(absolutePath);
+    const data = base64.fromByteArray(binaryData);
     return { name, data };
   }
 
