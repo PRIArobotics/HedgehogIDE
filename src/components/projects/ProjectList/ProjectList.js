@@ -104,7 +104,7 @@ const messages = defineMessages({
     id: 'app.exercises.upload_exercise_tooltip',
     description:
       'Tooltip and screen reader label for the upload exercise button',
-    defaultMessage: 'Upload exercise "{name}"',
+    defaultMessage: 'Upload project "{name}" as an exercise',
   },
   cloneExerciseTooltip: {
     id: 'app.exercises.clone_exercise_tooltip',
