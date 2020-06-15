@@ -40,6 +40,7 @@ const def: GraphqlDefShape = {
     input ProjectInput {
       id: ID
       name: String!
+      isPublic: Boolean!
       fileTree: FileTreeInput!
     }
 
