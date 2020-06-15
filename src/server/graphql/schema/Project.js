@@ -86,12 +86,17 @@ const def: GraphqlDefShape = {
       fileTreeRootId(parent, _args, _context) {
         return parent.fileTreeRoot;
       },
-      fileTrees(_parent, _args, _context) {
-        return [];
+      async fileTrees(parent, _args, _context) {
+        return FileTree.find({ project: parent.id });
       },
-      files(_parent, _args, _context) {
-        return [];
+      async files(parent, _args, _context) {
+        return File.find({ project: parent.id });
       },
+    },
+    FileTreeRecord: {
+      itemId(parent, _args, _context) {
+        return parent.ref;
+      }
     },
     Mutation: {
       async createProject(_, { project: projectInput }, _context) {
@@ -119,7 +124,7 @@ const def: GraphqlDefShape = {
                 { session },
               ).then(([savedFile]) => ({
                 name: file.name,
-                type: 'File',
+                type: 'FILE',
                 ref: savedFile.id,
               })),
             );
@@ -127,7 +132,7 @@ const def: GraphqlDefShape = {
             const savedTreePromises = tree.trees.map(childTree =>
               saveFileTree(childTree.tree).then(savedTree => ({
                 name: childTree.name,
-                type: 'Tree',
+                type: 'TREE',
                 ref: savedTree.id,
               })),
             );
