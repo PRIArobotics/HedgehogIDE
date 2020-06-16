@@ -270,6 +270,7 @@ function ProjectList(_props: Props) {
                           ...projectIndex.remoteProjects,
                           [project.uid]: id,
                         });
+                        refreshRemoteProjects();
                       }}
                     >
                       <UploadExerciseIcon />
