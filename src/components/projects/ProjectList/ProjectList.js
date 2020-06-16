@@ -263,6 +263,7 @@ function ProjectList(_props: Props) {
                         messages.uploadExerciseTooltip,
                         { name: project.name },
                       )}
+                      disabled={project.uid in projectIndex.remoteProjects}
                       onClick={async () => {
                         const id = await createProjectMutation(project);
                         setRemoteProjects({
