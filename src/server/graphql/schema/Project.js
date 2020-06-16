@@ -178,6 +178,10 @@ const def: GraphqlDefShape = {
           const deleted = await promisify(
             Project.findByIdAndDelete.bind(Project),
           )({ _id: projectId });
+          if (deleted?.id) {
+            await promisify(FileTree.deleteMany.bind(FileTree))({ project: projectId });
+            await promisify(File.deleteMany.bind(File))({ project: projectId });
+          }
           return deleted?.id;
         } catch (err) {
           console.error(err);
