@@ -2,9 +2,11 @@
 
 import base64 from 'base64-js';
 
+import { ApolloError } from 'apollo-server';
 import type { GraphqlDefShape } from '../../../core/graphql/graphqlDef';
 
 import db, { File, FileTree, Project } from '../../mongodb';
+import { promisify } from '../../../util';
 
 const def: GraphqlDefShape = {
   schema: [
@@ -73,6 +75,7 @@ const def: GraphqlDefShape = {
   mutations: [
     `
     createProject(project: ProjectInput!) : ID! @auth
+    deleteProjectById(projectId: ID!): ID @auth
     `,
   ],
   resolvers: () => ({
@@ -168,6 +171,17 @@ const def: GraphqlDefShape = {
           return project.id;
         } finally {
           await session.endSession();
+        }
+      },
+      async deleteProjectById(_parent, { projectId }) {
+        try {
+          const deleted = await promisify(
+            Project.findByIdAndDelete.bind(Project),
+          )({ _id: projectId });
+          return deleted?.id;
+        } catch (err) {
+          console.error(err);
+          throw new ApolloError('Failed to delete project.');
         }
       },
     },
