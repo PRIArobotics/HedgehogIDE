@@ -122,6 +122,17 @@ const messages = defineMessages({
     description: 'text for the menu items in the associated projects menu.',
     defaultMessage: 'Open project "{name}"',
   },
+  editExerciseTooltip: {
+    id: 'app.projects.edit_exercise_tooltip',
+    description: 'Tooltip and screen reader label for the edit exercise button',
+    defaultMessage: 'Edit Exercise "{name}"',
+  },
+  deleteExerciseTooltip: {
+    id: 'app.projects.delete_exercise_tooltip',
+    description:
+      'Tooltip and screen reader label for the delete exercise button',
+    defaultMessage: 'Delete Exercise "{name}"',
+  },
 });
 
 type Props = {||};
@@ -188,6 +199,8 @@ function ProjectList(_props: Props) {
     localProjects,
   );
 
+  const isLoggedIn = !!auth.authData;
+
   useStyles(s);
 
   return (
@@ -238,7 +251,7 @@ function ProjectList(_props: Props) {
               </ListItemAvatar>
               <ListItemText primary={project.name} />
               <ListItemSecondaryAction>
-                {auth.authData ? (
+                {isLoggedIn ? (
                   <Tooltip
                     title={intl.formatMessage(messages.uploadExerciseTooltip, {
                       name: project.name,
@@ -337,6 +350,10 @@ function ProjectList(_props: Props) {
             const associatedProjects =
               projectIndex.localProjects[exercise.id] ?? [];
 
+            const hasOpenCommand = associatedProjects.length > 0;
+            const hasOpenPopup = associatedProjects.length > 1;
+            const hasAdminCommands = isLoggedIn;
+
             return (
               <ListItem key={exercise.id} button>
                 <ListItemAvatar>
@@ -361,9 +378,7 @@ function ProjectList(_props: Props) {
                     placement="bottom"
                   >
                     <IconButton
-                      {...(associatedProjects.length === 0
-                        ? { edge: 'end' }
-                        : {})}
+                      {...(!hasOpenCommand ? { edge: 'end' } : {})}
                       aria-label={intl.formatMessage(
                         messages.cloneExerciseTooltip,
                         { name: exercise.name },
@@ -373,8 +388,7 @@ function ProjectList(_props: Props) {
                       <CreateIcon />
                     </IconButton>
                   </Tooltip>
-                  {associatedProjects.length ===
-                  0 ? null : associatedProjects.length === 1 ? (
+                  {!hasOpenCommand ? null : !hasOpenPopup ? (
                     associatedProjects.map(project => (
                       <Tooltip
                         key={project.name}
@@ -385,7 +399,7 @@ function ProjectList(_props: Props) {
                         placement="bottom"
                       >
                         <IconButton
-                          edge="end"
+                          {...(!hasAdminCommands ? { edge: 'end' } : {})}
                           aria-label={intl.formatMessage(
                             messages.openAssociatedProjectTooltip,
                             { exercise: exercise.name, name: project.name },
@@ -412,7 +426,7 @@ function ProjectList(_props: Props) {
                             placement="bottom"
                           >
                             <IconButton
-                              edge="end"
+                              {...(!hasAdminCommands ? { edge: 'end' } : {})}
                               {...bindTrigger(popupState)}
                               aria-label={intl.formatMessage(
                                 messages.openAssociatedProjectMenuTooltip,
@@ -450,6 +464,45 @@ function ProjectList(_props: Props) {
                         </>
                       )}
                     </PopupState>
+                  )}
+                  {!hasAdminCommands ? null : (
+                    <>
+                      <Tooltip
+                        title={intl.formatMessage(
+                          messages.editExerciseTooltip,
+                          { name: exercise.name },
+                        )}
+                        placement="bottom"
+                      >
+                        <IconButton
+                          aria-label={intl.formatMessage(
+                            messages.editExerciseTooltip,
+                            { name: exercise.name },
+                          )}
+                          // onClick={() => ...}
+                        >
+                          <RenameIcon />
+                        </IconButton>
+                      </Tooltip>
+                      <Tooltip
+                        title={intl.formatMessage(
+                          messages.deleteExerciseTooltip,
+                          { name: exercise.name },
+                        )}
+                        placement="bottom"
+                      >
+                        <IconButton
+                          edge="end"
+                          aria-label={intl.formatMessage(
+                            messages.deleteExerciseTooltip,
+                            { name: exercise.name },
+                          )}
+                          // onClick={() => ...}
+                        >
+                          <DeleteIcon />
+                        </IconButton>
+                      </Tooltip>
+                    </>
                   )}
                 </ListItemSecondaryAction>
               </ListItem>
