@@ -98,12 +98,12 @@ const def: GraphqlDefShape = {
     File: {
       data(parent, _args, _context) {
         return base64.fromByteArray(parent.data);
-      }
+      },
     },
     FileTreeRecord: {
       itemId(parent, _args, _context) {
         return parent.ref;
-      }
+      },
     },
     Mutation: {
       async createProject(_, { project: projectInput }, _context) {
