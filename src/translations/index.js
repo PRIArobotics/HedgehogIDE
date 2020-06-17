@@ -9,7 +9,10 @@ import messages_en from './locales/en';
 
 export type LocaleMap<T> = { [locale: string]: T };
 
-type Messages = { [key: string]: string } | { [key: string]: MessageFormatElement[] };
+// prettier-ignore
+type Messages =
+  | { [key: string]: string }
+  | { [key: string]: MessageFormatElement[] };
 
 export const MESSAGES: LocaleMap<Messages> = {
   de: messages_de,

@@ -132,9 +132,9 @@ function Ide({ projectName }: Props) {
 
   const pluginManagerRef = React.useRef<PluginManager | null>(null);
 
-  const [layoutModel, layoutProps] = useLayoutModel(state?.layoutState ?? null, layoutState =>
-    dispatch({ type: 'LAYOUT', layoutState }),
-  );
+  const [layoutModel, layoutProps] = useLayoutModel(state?.layoutState ?? null, layoutState => {
+    dispatch({ type: 'LAYOUT', layoutState });
+  });
 
   // create new plugin manager when ready, but only once
   async function initializePluginManager() {

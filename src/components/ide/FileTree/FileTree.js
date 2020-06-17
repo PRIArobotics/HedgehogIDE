@@ -28,7 +28,10 @@ import type {
 import FileMenu from './FileMenu';
 
 export type FileType = 'FILE' | 'DIRECTORY';
-export type FileDesc = {| type: 'DIRECTORY' |} | {| type: 'FILE', extension: string |};
+// prettier-ignore
+export type FileDesc =
+  | {| type: 'DIRECTORY' |}
+  | {| type: 'FILE', extension: string |};
 export type MetadataDesc = {|
   type: 'METADATA',
   name: string,
