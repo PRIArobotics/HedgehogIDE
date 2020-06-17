@@ -40,8 +40,6 @@ import useCreateProjectDialog from './useCreateProjectDialog';
 import useDeleteProjectDialog from './useDeleteProjectDialog';
 import useRenameProjectDialog from './useRenameProjectDialog';
 import useProjectIndex from './useProjectIndex';
-import useLocalProjects from './useLocalProjects';
-import useRemoteProjects from './useRemoteProjects';
 import useCreateRemoteProject from './useCreateRemoteProject';
 
 import { useAuth } from '../../users/AuthProvider';
@@ -132,21 +130,21 @@ function ProjectList(_props: Props) {
   const auth = useAuth();
   const intl = useIntl();
 
-  const [localProjects, refreshLocalProjects] = useLocalProjects();
-  const [remoteProjects, refreshRemoteProjects] = useRemoteProjects();
-
   const createProjectMutation = useCreateRemoteProject();
 
-  const [projectIndex, setRemoteProjects] = useProjectIndex(localProjects);
+  const [
+    { localProjects, remoteProjects, localToRemoteMap, remoteToLocalMap },
+    projectIndexDispatch,
+  ] = useProjectIndex();
 
   async function confirmCreateProject(name: string): Promise<boolean> {
     try {
       await Project.createProject(name);
-      refreshLocalProjects();
+      projectIndexDispatch({ type: 'REFRESH_LOCAL' });
       return true;
     } catch (ex) {
       if (!(ex instanceof ProjectError)) throw ex;
-      refreshLocalProjects();
+      projectIndexDispatch({ type: 'REFRESH_LOCAL' });
       return false;
     }
   }
@@ -156,11 +154,12 @@ function ProjectList(_props: Props) {
   async function confirmDeleteProject(project: Project): Promise<boolean> {
     try {
       await project.delete();
-      refreshLocalProjects();
+      projectIndexDispatch({ type: 'REMOVE_MAPPING', projectUid: project.uid });
+      projectIndexDispatch({ type: 'REFRESH_LOCAL' });
       return true;
     } catch (ex) {
       if (!(ex instanceof ProjectError)) throw ex;
-      refreshLocalProjects();
+      projectIndexDispatch({ type: 'REFRESH_LOCAL' });
       return false;
     }
   }
@@ -170,11 +169,11 @@ function ProjectList(_props: Props) {
   async function confirmRenameProject(project: Project, newName: string): Promise<boolean> {
     try {
       await project.rename(newName);
-      refreshLocalProjects();
+      projectIndexDispatch({ type: 'REFRESH_LOCAL' });
       return true;
     } catch (ex) {
       if (!(ex instanceof ProjectError)) throw ex;
-      refreshLocalProjects();
+      projectIndexDispatch({ type: 'REFRESH_LOCAL' });
       return false;
     }
   }
@@ -207,7 +206,7 @@ function ProjectList(_props: Props) {
             <IconButton
               edge="end"
               aria-label={intl.formatMessage(messages.refreshProjectListTooltip)}
-              onClick={refreshLocalProjects}
+              onClick={() => projectIndexDispatch({ type: 'REFRESH_LOCAL' })}
             >
               <RefreshIcon />
             </IconButton>
@@ -234,14 +233,15 @@ function ProjectList(_props: Props) {
                       aria-label={intl.formatMessage(messages.uploadExerciseTooltip, {
                         name: project.name,
                       })}
-                      disabled={project.uid in projectIndex.remoteProjects}
+                      disabled={project.uid in localToRemoteMap}
                       onClick={async () => {
                         const id = await createProjectMutation(project);
-                        setRemoteProjects({
-                          ...projectIndex.remoteProjects,
-                          [project.uid]: id,
+                        projectIndexDispatch({
+                          type: 'ADD_MAPPING',
+                          projectUid: project.uid,
+                          remoteId: id,
                         });
-                        refreshRemoteProjects();
+                        projectIndexDispatch({ type: 'REFRESH_REMOTE' });
                       }}
                     >
                       <UploadExerciseIcon />
@@ -299,7 +299,7 @@ function ProjectList(_props: Props) {
             <IconButton
               edge="end"
               aria-label={intl.formatMessage(messages.refreshExerciseListTooltip)}
-              onClick={refreshRemoteProjects}
+              onClick={() => projectIndexDispatch({ type: 'REFRESH_REMOTE' })}
             >
               <RefreshIcon />
             </IconButton>
@@ -307,7 +307,7 @@ function ProjectList(_props: Props) {
         </Toolbar>
         <List>
           {remoteProjects.map(exercise => {
-            const associatedProjects = projectIndex.localProjects[exercise.id] ?? [];
+            const associatedProjects = remoteToLocalMap[exercise.id] ?? [];
 
             const hasOpenCommand = associatedProjects.length > 0;
             const hasOpenPopup = associatedProjects.length > 1;
