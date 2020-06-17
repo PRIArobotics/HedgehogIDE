@@ -60,8 +60,7 @@ class ExecutorTask extends React.Component<PropTypes, StateTypes> {
 
   receiveMessage = ({ data, origin, source }: ReceiveMessageEvent) => {
     if (this.frameRef.current === null) return;
-    if (origin !== 'null' || source !== this.frameRef.current.contentWindow)
-      return;
+    if (origin !== 'null' || source !== this.frameRef.current.contentWindow) return;
 
     const { command, payload } = (data: ExecutorMessage);
     if (command === 'eventRegister') {

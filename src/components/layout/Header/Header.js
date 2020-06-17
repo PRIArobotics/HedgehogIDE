@@ -12,19 +12,11 @@ import Typography from '@material-ui/core/Typography';
 import Icon from '@material-ui/core/Icon';
 import IconButton from '@material-ui/core/IconButton';
 
-import {
-  usePopupState,
-  bindTrigger,
-  bindMenu,
-} from 'material-ui-popup-state/hooks';
+import { usePopupState, bindTrigger, bindMenu } from 'material-ui-popup-state/hooks';
 
 import { useLocale } from '../../locale';
 import Link from '../../misc/Link';
-import {
-  SelectLanguageIcon,
-  AccountCircleIcon,
-  ExitToAppIcon,
-} from '../../misc/palette';
+import { SelectLanguageIcon, AccountCircleIcon, ExitToAppIcon } from '../../misc/palette';
 import commonMessages from '../../misc/commonMessages';
 
 import logoUrl from './logo.svg';

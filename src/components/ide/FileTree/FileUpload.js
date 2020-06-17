@@ -37,14 +37,7 @@ class FileUpload extends React.Component<PropTypes, StateTypes> {
   }
 
   render() {
-    return (
-      <input
-        ref={this.inputRef}
-        type="file"
-        style={{ display: 'none' }}
-        aria-hidden
-      />
-    );
+    return <input ref={this.inputRef} type="file" style={{ display: 'none' }} aria-hidden />;
   }
 }
 

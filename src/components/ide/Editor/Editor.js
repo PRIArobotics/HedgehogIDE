@@ -8,12 +8,7 @@ import 'brace/mode/javascript';
 import 'brace/ext/language_tools';
 import 'brace/theme/github';
 
-import {
-  ExecuteIcon,
-  TerminateIcon,
-  ResetIcon,
-  TerminateAndResetIcon,
-} from '../../misc/palette';
+import { ExecuteIcon, TerminateIcon, ResetIcon, TerminateAndResetIcon } from '../../misc/palette';
 import * as hooks from '../../misc/hooks';
 
 import ExecutionAction from '../Ide';
@@ -33,17 +28,8 @@ type Props = {|
   running: boolean,
 |};
 
-function Editor({
-  layoutNode,
-  project,
-  path,
-  onExecutionAction,
-  running,
-}: Props) {
-  const [[width, height], setDimension] = React.useState<[string, string]>([
-    '0',
-    '0',
-  ]);
+function Editor({ layoutNode, project, path, onExecutionAction, running }: Props) {
+  const [[width, height], setDimension] = React.useState<[string, string]>(['0', '0']);
   const containerRef = hooks.useElementRef<'div'>();
 
   const [content, setContent] = useFile(project, path);

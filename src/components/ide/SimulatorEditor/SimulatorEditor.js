@@ -86,17 +86,13 @@ export type ControlledState = {|
 type Props = {|
   project: Project,
   path: string,
-  onSchemaChange: (
-    schema: SimulationSchema.SimulatorJson | null,
-  ) => void | Promise<void>,
+  onSchemaChange: (schema: SimulationSchema.SimulatorJson | null) => void | Promise<void>,
   ...ControlledState,
   onUpdate: (state: ControlledState) => void | Promise<void>,
   layoutNode: any,
 |};
 
-function generateSchema(
-  workspace: Blockly.Workspace,
-): SimulationSchema.SimulatorJson | null {
+function generateSchema(workspace: Blockly.Workspace): SimulationSchema.SimulatorJson | null {
   const roots = workspace.getBlocksByType('simulator_root');
   if (roots.length !== 1) return null;
 
@@ -104,9 +100,7 @@ function generateSchema(
   return simulation.serialize();
 }
 
-export function generateSchemaFromXml(
-  workspaceXml: string,
-): SimulationSchema.SimulatorJson | null {
+export function generateSchemaFromXml(workspaceXml: string): SimulationSchema.SimulatorJson | null {
   const workspace = new Blockly.Workspace();
   Blockly.Xml.domToWorkspace(Blockly.Xml.textToDom(workspaceXml), workspace);
   const result = generateSchema(workspace);
@@ -176,9 +170,7 @@ function SimulatorEditor({
     setJson(schema === null ? '' : JSON.stringify(schema, undefined, 2));
     onSchemaChange(schema);
 
-    const workspaceXml = Blockly.Xml.domToText(
-      Blockly.Xml.workspaceToDom(workspace),
-    );
+    const workspaceXml = Blockly.Xml.domToText(Blockly.Xml.workspaceToDom(workspace));
     setContent(workspaceXml);
   }
 
@@ -216,9 +208,7 @@ function SimulatorEditor({
       </ToolBar>
       <pre
         ref={jsonRef}
-        className={
-          jsonCollapsed ? `${s.jsonContainer} ${s.collapsed}` : s.jsonContainer
-        }
+        className={jsonCollapsed ? `${s.jsonContainer} ${s.collapsed}` : s.jsonContainer}
       >
         {json}
       </pre>

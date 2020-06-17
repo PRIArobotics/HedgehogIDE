@@ -38,9 +38,7 @@ export type FilerRecursiveDirectoryInfo = FilerStatInfo & {
   +contents: FilerRecursiveStatInfo[],
 };
 
-export type FilerRecursiveStatInfo =
-  | FilerRecursiveDirectoryInfo
-  | FilerStatInfo;
+export type FilerRecursiveStatInfo = FilerRecursiveDirectoryInfo | FilerStatInfo;
 
 export class ProjectError extends Error {
   name = 'ProjectError';

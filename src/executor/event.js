@@ -24,8 +24,7 @@ class EventHandler {
 
   async waitForEvents() {
     const handlerCount = Object.entries(this.handlers).reduce(
-      (count, [_event, handlers]) =>
-        count + (Array.isArray(handlers) ? handlers.length : 0),
+      (count, [_event, handlers]) => count + (Array.isArray(handlers) ? handlers.length : 0),
       0,
     );
     if (handlerCount > 0) {

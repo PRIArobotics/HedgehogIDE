@@ -4,10 +4,7 @@ import * as React from 'react';
 
 import filer, { fs } from 'filer';
 
-import {
-  type FilerRecursiveStatInfo,
-  Project,
-} from '../../../core/store/projects';
+import { type FilerRecursiveStatInfo, Project } from '../../../core/store/projects';
 
 import { useAsyncState } from '../../misc/hooks';
 

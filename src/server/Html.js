@@ -47,35 +47,11 @@ class Html extends React.Component<PropTypes> {
           {scripts.map(script => (
             <link key={script} rel="preload" href={script} as="script" />
           ))}
-          <link
-            rel="apple-touch-icon"
-            sizes="180x180"
-            href="/apple-touch-icon.png"
-          />
-          <link
-            rel="icon"
-            type="image/png"
-            sizes="32x32"
-            href="/favicon-32x32.png"
-          />
-          <link
-            rel="icon"
-            type="image/png"
-            sizes="194x194"
-            href="/favicon-194x194.png"
-          />
-          <link
-            rel="icon"
-            type="image/png"
-            sizes="192x192"
-            href="/android-chrome-192x192.png"
-          />
-          <link
-            rel="icon"
-            type="image/png"
-            sizes="16x16"
-            href="/favicon-16x16.png"
-          />
+          <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+          <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+          <link rel="icon" type="image/png" sizes="194x194" href="/favicon-194x194.png" />
+          <link rel="icon" type="image/png" sizes="192x192" href="/android-chrome-192x192.png" />
+          <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
           <link rel="manifest" href="/site.webmanifest" />
           <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#7cd001" />
           <link rel="shortcut icon" href="/favicon.ico" />
@@ -95,9 +71,7 @@ class Html extends React.Component<PropTypes> {
         </head>
         <body>
           <div id="app" dangerouslySetInnerHTML={{ __html: children }} />
-          <script
-            dangerouslySetInnerHTML={{ __html: `window.App=${serialize(app)}` }}
-          />
+          <script dangerouslySetInnerHTML={{ __html: `window.App=${serialize(app)}` }} />
           {scripts.map(script => (
             <script key={script} src={script} />
           ))}
@@ -113,11 +87,7 @@ class Html extends React.Component<PropTypes> {
             />
           )}
           {config.analytics.googleTrackingId && (
-            <script
-              src="https://www.google-analytics.com/analytics.js"
-              async
-              defer
-            />
+            <script src="https://www.google-analytics.com/analytics.js" async defer />
           )}
         </body>
       </html>

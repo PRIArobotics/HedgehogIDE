@@ -46,16 +46,11 @@ type LocaleProviderPropTypes = {|
  * messages are chosen using `getTranslations`, with `en` as the fallback
  * message key.
  */
-export function LocaleProvider({
-  userAgentLocales,
-  children,
-}: LocaleProviderPropTypes) {
-  const [preferredLocale, setPreferredLocale] = React.useState<string | null>(
-    () => {
-      if (!process.env.BROWSER) return null;
-      return localStorage.getItem('preferred-locale') ?? null;
-    },
-  );
+export function LocaleProvider({ userAgentLocales, children }: LocaleProviderPropTypes) {
+  const [preferredLocale, setPreferredLocale] = React.useState<string | null>(() => {
+    if (!process.env.BROWSER) return null;
+    return localStorage.getItem('preferred-locale') ?? null;
+  });
 
   React.useEffect(() => {
     if (!process.env.BROWSER) return;
@@ -76,9 +71,7 @@ export function LocaleProvider({
   const messages = getTranslation(preferredLocales, MESSAGES) ?? MESSAGES.en;
 
   return (
-    <LocaleContext.Provider
-      value={{ preferredLocale, preferredLocales, setPreferredLocale }}
-    >
+    <LocaleContext.Provider value={{ preferredLocale, preferredLocales, setPreferredLocale }}>
       <IntlProvider locale={locale} messages={messages}>
         {children}
       </IntlProvider>
@@ -117,13 +110,9 @@ type LocaleSelectorPropTypes<T> = {|
  * One component is chosen using `getTranslation`, with `en` as the fallback
  * key.
  */
-export function LocaleSelector<T>({
-  components,
-  ...props
-}: LocaleSelectorPropTypes<T>) {
+export function LocaleSelector<T>({ components, ...props }: LocaleSelectorPropTypes<T>) {
   const { preferredLocales } = useLocale();
-  const Component =
-    getTranslation(preferredLocales, components) ?? components.en;
+  const Component = getTranslation(preferredLocales, components) ?? components.en;
 
   return <Component {...props} />;
 }

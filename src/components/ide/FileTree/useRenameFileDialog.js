@@ -18,8 +18,7 @@ const messages = defineMessages({
   description: {
     id: 'app.ide.rename_file_dialog.description',
     description: 'Text for the file rename dialog',
-    defaultMessage:
-      "Please enter the {type, select, FILE {file's} DIRECTORY {folder's}} new name.",
+    defaultMessage: "Please enter the {type, select, FILE {file's} DIRECTORY {folder's}} new name.",
   },
 });
 
@@ -45,10 +44,7 @@ type Config = {|
 |};
 
 export default function useRenameFileDialog(
-  onRename: (
-    file: FileReference,
-    newFileName: string,
-  ) => boolean | Promise<boolean>,
+  onRename: (file: FileReference, newFileName: string) => boolean | Promise<boolean>,
 ): RenameFileDialogHook {
   const [open, setOpen] = React.useState<boolean>(false);
   const [config, setConfig] = React.useState<Config | null>(null);
@@ -86,8 +82,7 @@ export default function useRenameFileDialog(
   const type = config?.file.file.isDirectory() ?? false ? 'DIRECTORY' : 'FILE';
   const siblingNames = config?.siblingNames ?? [];
 
-  const valid =
-    newFileName !== '' && siblingNames.every(name => name !== newFileName);
+  const valid = newFileName !== '' && siblingNames.every(name => name !== newFileName);
 
   return {
     show,

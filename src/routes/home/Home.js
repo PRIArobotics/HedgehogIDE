@@ -38,34 +38,18 @@ const messages = defineMessages({
 function Home() {
   return (
     <Container maxWidth="sm" className={s.root}>
-      <Typography
-        component="h1"
-        variant="h2"
-        align="center"
-        color="textPrimary"
-        gutterBottom
-      >
+      <Typography component="h1" variant="h2" align="center" color="textPrimary" gutterBottom>
         <M {...messages.welcome} />
       </Typography>
       <Typography variant="h5" align="center" color="textSecondary" paragraph>
         <M {...messages.description} />
       </Typography>
       <Typography variant="body1" align="center" paragraph>
-        <Button
-          variant="contained"
-          color="primary"
-          component={Link}
-          to="/projects"
-        >
+        <Button variant="contained" color="primary" component={Link} to="/projects">
           <M {...messages.create} />
         </Button>
       </Typography>
-      <Typography
-        variant="body1"
-        align="center"
-        color="textSecondary"
-        paragraph
-      >
+      <Typography variant="body1" align="center" color="textSecondary" paragraph>
         <Link to="/help">
           <M {...messages.learn} />
         </Link>

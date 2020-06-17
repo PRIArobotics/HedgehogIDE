@@ -11,11 +11,7 @@ function forbidsAncestor(types, warning) {
     if (this.workspace.isDragging()) return;
     let legal = true;
     // Is the block nested in a scope?
-    for (
-      let block = this.getSurroundParent();
-      block !== null;
-      block = block.getSurroundParent()
-    ) {
+    for (let block = this.getSurroundParent(); block !== null; block = block.getSurroundParent()) {
       if (types.indexOf(block.type) !== -1) {
         legal = false;
         break;
@@ -63,11 +59,7 @@ function collectSettings(object) {
     group.type === 'simulator_group';
     group = group.getSurroundParent()
   ) {
-    const {
-      position: outerPosition,
-      angle: outerAngle,
-      ...outerSettings
-    } = group.getSettings();
+    const { position: outerPosition, angle: outerAngle, ...outerSettings } = group.getSettings();
 
     const cos = Math.cos(outerAngle);
     const sin = Math.sin(outerAngle);
@@ -136,16 +128,10 @@ export const SIMULATOR_ROOT = {
   blockExtras: {
     onchange() {
       const roots = this.workspace.getBlocksByType('simulator_root');
-      this.setWarningText(
-        roots.length >= 2 ? 'only one configuration root allowed' : null,
-      );
+      this.setWarningText(roots.length >= 2 ? 'only one configuration root allowed' : null);
     },
     serialize(): SimulationSchema.SimulatorJson {
-      const objectTypes = [
-        'simulator_robot',
-        'simulator_rect',
-        'simulator_circle',
-      ];
+      const objectTypes = ['simulator_robot', 'simulator_rect', 'simulator_circle'];
 
       const objects = this.getDescendants(true)
         .filter(block => objectTypes.includes(block.type))
@@ -580,15 +566,11 @@ export const SIMULATOR_SETTINGS_FRICTION_AIR = {
     inputsInline: false,
     output: 'SimulatorObjectSettings',
     colour: 180,
-    tooltip:
-      'friction determines how much resistance a sliding object experiences',
+    tooltip: 'friction determines how much resistance a sliding object experiences',
     helpUrl: 'TODO',
   },
   blockExtras: {
-    onchange: forbidsAncestor(
-      ['simulator_robot'],
-      'robots have fixed friction',
-    ),
+    onchange: forbidsAncestor(['simulator_robot'], 'robots have fixed friction'),
     getSettings() {
       return {
         frictionAir: this.getFieldValue('FRICTION_AIR'),

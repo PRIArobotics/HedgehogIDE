@@ -25,17 +25,14 @@ const BUILD_DIR = resolvePath('build');
 
 const isDebug = !process.argv.includes('--release');
 const isVerbose = process.argv.includes('--verbose');
-const isAnalyze =
-  process.argv.includes('--analyze') || process.argv.includes('--analyse');
+const isAnalyze = process.argv.includes('--analyze') || process.argv.includes('--analyse');
 
 const reScript = /\.(js|jsx|mjs)$/;
 const reGraphql = /\.(graphql|gql)$/;
 const reStyle = /\.(css|less|styl|scss|sass|sss)$/;
 const reImage = /\.(bmp|gif|jpg|jpeg|png|svg)$/;
 
-const staticAssetName = isDebug
-  ? '[path][name].[ext]?[hash:8]'
-  : '[hash:8].[ext]';
+const staticAssetName = isDebug ? '[path][name].[ext]?[hash:8]' : '[hash:8].[ext]';
 
 // CSS Nano options http://cssnano.co/
 const minimizeCssOptions = {
@@ -57,9 +54,7 @@ const config = {
     publicPath: '/assets/',
     pathinfo: isVerbose,
     filename: isDebug ? '[name].js' : '[name].[chunkhash:8].js',
-    chunkFilename: isDebug
-      ? '[name].chunk.js'
-      : '[name].[chunkhash:8].chunk.js',
+    chunkFilename: isDebug ? '[name].chunk.js' : '[name].[chunkhash:8].chunk.js',
     // Point sourcemap entries to original disk location (format as URL on Windows)
     devtoolModuleFilenameTemplate: info =>
       path.resolve(info.absoluteResourcePath).replace(/\\/g, '/'),
@@ -115,10 +110,7 @@ const config = {
             '@babel/plugin-proposal-nullish-coalescing-operator',
             '@babel/plugin-proposal-optional-chaining',
             '@babel/plugin-syntax-dynamic-import',
-            [
-              'react-intl',
-              { messagesDir: './src/translations/extractedMessages' },
-            ],
+            ['react-intl', { messagesDir: './src/translations/extractedMessages' }],
             // Treat React JSX elements as value types and hoist them to the highest scope
             // https://github.com/babel/babel/tree/master/packages/babel-plugin-transform-react-constant-elements
             ...(isDebug ? [] : ['@babel/transform-react-constant-elements']),
@@ -169,9 +161,7 @@ const config = {
               sourceMap: isDebug,
               // CSS Modules https://github.com/css-modules/css-modules
               modules: true,
-              localIdentName: isDebug
-                ? '[name]-[local]-[hash:base64:5]'
-                : '[hash:base64:5]',
+              localIdentName: isDebug ? '[name]-[local]-[hash:base64:5]' : '[hash:base64:5]',
               // CSS Nano http://cssnano.co/
               minimize: isDebug ? false : minimizeCssOptions,
             },
@@ -259,15 +249,7 @@ const config = {
       // Return public URL for all assets unless explicitly excluded
       // DO NOT FORGET to update `exclude` list when you adding a new loader
       {
-        exclude: [
-          reScript,
-          reStyle,
-          reImage,
-          reGraphql,
-          /\.json$/,
-          /\.txt$/,
-          /\.md$/,
-        ],
+        exclude: [reScript, reStyle, reImage, reGraphql, /\.json$/, /\.txt$/, /\.md$/],
         loader: 'file-loader',
         options: {
           name: staticAssetName,
@@ -279,9 +261,7 @@ const config = {
         ? []
         : [
             {
-              test: resolvePath(
-                'node_modules/react-deep-force-update/lib/index.js',
-              ),
+              test: resolvePath('node_modules/react-deep-force-update/lib/index.js'),
               loader: 'null-loader',
             },
           ]),
@@ -361,10 +341,7 @@ const clientConfig = {
             acc[c.name] = [
               ...(acc[c.name] || []),
               ...c.chunks.reduce(
-                (files, cc) => [
-                  ...files,
-                  ...cc.files.filter(fileFilter).map(addPath),
-                ],
+                (files, cc) => [...files, ...cc.files.filter(fileFilter).map(addPath)],
                 [],
               ),
             ];

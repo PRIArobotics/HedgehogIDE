@@ -68,26 +68,14 @@ function NavItem({ title, titleMsg, target, icon: TheIcon }: NavItemProps) {
 function Sidebar() {
   return (
     <List>
-      <NavItem
-        titleMsg={messages.ideTooltip}
-        target="/projects"
-        icon={IdeIcon}
-      />
+      <NavItem titleMsg={messages.ideTooltip} target="/projects" icon={IdeIcon} />
       <NavItem titleMsg={messages.helpTooltip} target="/help" icon={HelpIcon} />
-      <NavItem
-        titleMsg={messages.contestTooltip}
-        target="/contest"
-        icon={ContestIcon}
-      />
+      <NavItem titleMsg={messages.contestTooltip} target="/contest" icon={ContestIcon} />
       {/* <NavItem titleMsg={messages.controlsTooltip} target="/control" icon={ControlsIcon} /> */}
       {__DEV__ ? (
         <>
           <Divider />
-          <NavItem
-            title="IndexedDB Test"
-            target="/indexedDB"
-            icon={IndexDBTestIcon}
-          />
+          <NavItem title="IndexedDB Test" target="/indexedDB" icon={IndexDBTestIcon} />
           <NavItem title="WebRTC Test" target="/webrtc" icon={WebRTCTestIcon} />
         </>
       ) : null}

@@ -3,11 +3,7 @@
 import * as React from 'react';
 import useStyles from 'isomorphic-style-loader/useStyles';
 
-import {
-  TerminateIcon,
-  ResetIcon,
-  TerminateAndResetIcon,
-} from '../../misc/palette';
+import { TerminateIcon, ResetIcon, TerminateAndResetIcon } from '../../misc/palette';
 import * as hooks from '../../misc/hooks';
 
 import ExecutionAction from '../Ide';
@@ -29,10 +25,7 @@ type Instance = {|
   simulation: Simulation,
 |};
 
-function Simulator(
-  { width, height, onExecutionAction, running }: Props,
-  ref: Ref<Instance>,
-) {
+function Simulator({ width, height, onExecutionAction, running }: Props, ref: Ref<Instance>) {
   const simulation = hooks.useValue(() => {
     const sim = new Simulation();
     sim.jsonInit({
@@ -312,9 +305,7 @@ function Simulator(
   });
 
   // mount simulator in the target and simulate continuously
-  const [renderTarget, setRenderTarget] = React.useState<HTMLDivElement | null>(
-    null,
-  );
+  const [renderTarget, setRenderTarget] = React.useState<HTMLDivElement | null>(null);
   React.useEffect(() => {
     if (renderTarget === null) return undefined;
 

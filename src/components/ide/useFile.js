@@ -7,10 +7,7 @@ import { useStore } from '../misc/hooks';
 
 export { Project };
 
-export default function useFile(
-  project: Project,
-  path: string,
-): [string | null, (string) => void] {
+export default function useFile(project: Project, path: string): [string | null, (string) => void] {
   async function load() {
     const absolutePath = project.resolve(path);
     return /* await */ fs.promises.readFile(absolutePath, 'utf8');

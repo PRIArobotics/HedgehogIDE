@@ -19,14 +19,9 @@ type ConsoleState = {|
   items: ConsoleItem[],
 |};
 
-export type ConsoleAction =
-  | {| type: 'PRINT', text: string, stream: string |}
-  | {| type: 'CLEAR' |};
+export type ConsoleAction = {| type: 'PRINT', text: string, stream: string |} | {| type: 'CLEAR' |};
 
-function consoleReducer(
-  state: ConsoleState,
-  action: ConsoleAction,
-): ConsoleState {
+function consoleReducer(state: ConsoleState, action: ConsoleAction): ConsoleState {
   switch (action.type) {
     case 'PRINT': {
       const key = state.nextKey;

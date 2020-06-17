@@ -29,9 +29,7 @@ const Chat = ({
 }: ChatProps) => (
   <Paper className={s.chat} square>
     {messages.map(({ type, text }) => (
-      <div className={`${s.msg} ${type === 'OUT' ? s.mine : s.theirs}`}>
-        {text}
-      </div>
+      <div className={`${s.msg} ${type === 'OUT' ? s.mine : s.theirs}`}>{text}</div>
     ))}
     <button type="button" onClick={() => onSend(sendText)}>
       Send

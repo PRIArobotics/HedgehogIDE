@@ -9,9 +9,7 @@ import messages_en from './locales/en';
 
 export type LocaleMap<T> = { [locale: string]: T };
 
-type Messages =
-  | { [key: string]: string }
-  | { [key: string]: MessageFormatElement[] };
+type Messages = { [key: string]: string } | { [key: string]: MessageFormatElement[] };
 
 export const MESSAGES: LocaleMap<Messages> = {
   de: messages_de,
@@ -34,23 +32,16 @@ export const MESSAGES: LocaleMap<Messages> = {
 // Will return 'de' in favor of 'en' if those are supported but 'en-US' isn't.
 // Instead of valuing a language match over an exact match, a sufficiently
 // detailed list of preferences is required.
-export function getEffectiveLocale(
-  locales: string[],
-  supported: string => boolean,
-): string | null {
+export function getEffectiveLocale(locales: string[], supported: string => boolean): string | null {
   // normalize things like 'de-AT' to 'de_at'
-  const normalized = locales.map(locale =>
-    locale.toLowerCase().replace('-', '_'),
-  );
+  const normalized = locales.map(locale => locale.toLowerCase().replace('-', '_'));
 
   // try to find a match for any of the exact locales
   const exact = normalized.find(supported);
   if (exact) return exact;
 
   // try to find a match for any of the exact language-only locales
-  const language = normalized
-    .map(locale => locale.split('_')[0])
-    .find(supported);
+  const language = normalized.map(locale => locale.split('_')[0]).find(supported);
   if (language) return language;
 
   return null;
@@ -58,10 +49,7 @@ export function getEffectiveLocale(
 
 // chooses the best element in `map` based on the given `locales`,
 // using the algorithm of `getEffectiveLocale()`.
-export function getTranslation<T>(
-  locales: string[],
-  map: LocaleMap<T>,
-): T | null {
+export function getTranslation<T>(locales: string[], map: LocaleMap<T>): T | null {
   const locale = getEffectiveLocale(locales, Object.hasOwnProperty.bind(map));
 
   return locale ? map[locale] : null;

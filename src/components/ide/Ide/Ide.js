@@ -12,11 +12,7 @@ import Paper from '@material-ui/core/Paper';
 import IconButton from '@material-ui/core/IconButton';
 import Tooltip from '@material-ui/core/Tooltip';
 
-import {
-  usePopupState,
-  bindTrigger,
-  bindMenu,
-} from 'material-ui-popup-state/hooks';
+import { usePopupState, bindTrigger, bindMenu } from 'material-ui-popup-state/hooks';
 
 import filer, { fs } from 'filer';
 
@@ -136,26 +132,16 @@ function Ide({ projectName }: Props) {
 
   const pluginManagerRef = React.useRef<PluginManager | null>(null);
 
-  const [layoutModel, layoutProps] = useLayoutModel(
-    state?.layoutState ?? null,
-    layoutState => dispatch({ type: 'LAYOUT', layoutState }),
+  const [layoutModel, layoutProps] = useLayoutModel(state?.layoutState ?? null, layoutState =>
+    dispatch({ type: 'LAYOUT', layoutState }),
   );
 
   // create new plugin manager when ready, but only once
   async function initializePluginManager() {
-    if (
-      project === null ||
-      layoutModel === null ||
-      executorRef.current === null ||
-      pluginsLoaded
-    )
+    if (project === null || layoutModel === null || executorRef.current === null || pluginsLoaded)
       return;
 
-    const pluginManager = new PluginManager(
-      executorRef.current,
-      getConsole,
-      getSimulator,
-    );
+    const pluginManager = new PluginManager(executorRef.current, getConsole, getSimulator);
     await pluginManager.initSdk();
     await pluginManager.loadFromProjectMetadata(project);
     pluginManagerRef.current = pluginManager;
@@ -180,9 +166,7 @@ function Ide({ projectName }: Props) {
   // load the project's simulator schema if it or the simulator changes
   const simulatorXml = projectCache?.simulatorXml ?? null;
 
-  function refreshSimulatorFromSchema(
-    schema: SimulationSchema.SimulatorJson | null,
-  ) {
+  function refreshSimulatorFromSchema(schema: SimulationSchema.SimulatorJson | null) {
     if (simulatorRef.current === null || schema === null) return;
 
     simulatorRef.current.simulation.jsonInit(schema);
@@ -220,8 +204,7 @@ function Ide({ projectName }: Props) {
     // Therefore the parameter must be a directory - if it isn't, there can't be a child.
     // The end result, however, can be a regular file.
     const reducer = (file: FilerRecursiveStatInfo, name: string) => {
-      if (!file.isDirectory())
-        throw new Error(`'${file.name}' is not a directory`);
+      if (!file.isDirectory()) throw new Error(`'${file.name}' is not a directory`);
       // $FlowExpectError
       const directory: FilerRecursiveDirectoryInfo = file;
 
@@ -301,12 +284,7 @@ function Ide({ projectName }: Props) {
       } else {
         // put the new tab into the root tabset, at the preferred location.
         layoutModel.doAction(
-          FlexLayout.Actions.addNode(
-            nodeJson,
-            layoutModel.getRoot().getId(),
-            location,
-            -1,
-          ),
+          FlexLayout.Actions.addNode(nodeJson, layoutModel.getRoot().getId(), location, -1),
         );
       }
     }
@@ -340,9 +318,7 @@ function Ide({ projectName }: Props) {
     });
   }
 
-  async function waitForSimulator(): Promise<
-    React.ElementRef<typeof Simulator>,
-  > {
+  async function waitForSimulator(): Promise<React.ElementRef<typeof Simulator>> {
     return /* await */ new Promise(resolve => {
       function tryIt() {
         if (simulatorRef.current) {
@@ -430,9 +406,7 @@ function Ide({ projectName }: Props) {
     };
     setRunningTask(executorRefCurrent.addTask(task));
 
-    pluginManagerRef.current
-      .getSdk()
-      .misc.emit(executorRefCurrent, 'programExecute', null);
+    pluginManagerRef.current.getSdk().misc.emit(executorRefCurrent, 'programExecute', null);
   }
 
   async function handleTerminate() {
@@ -455,9 +429,7 @@ function Ide({ projectName }: Props) {
     if (simulatorRef.current === null) throw 'ref is null';
 
     simulatorRef.current.simulation.reset();
-    pluginManagerRef.current
-      .getSdk()
-      .misc.emit(executorRef.current, 'simulationReset', null);
+    pluginManagerRef.current.getSdk().misc.emit(executorRef.current, 'simulationReset', null);
   }
 
   async function handleExecutionAction(action: ExecutionAction) {
@@ -552,10 +524,7 @@ function Ide({ projectName }: Props) {
 
   const createFile = useCreateFileDialog(confirmCreateFile);
 
-  async function confirmRenameFile(
-    file: FileReference,
-    newName: string,
-  ): Promise<boolean> {
+  async function confirmRenameFile(file: FileReference, newName: string): Promise<boolean> {
     // eslint-disable-next-line no-throw-literal
     if (project === null) throw 'unreachable';
 
@@ -644,10 +613,7 @@ function Ide({ projectName }: Props) {
 
   const deleteFile = useDeleteFileDialog(confirmDeleteFile);
 
-  async function moveFile(
-    file: FileReference,
-    destDirPath: string,
-  ): Promise<boolean> {
+  async function moveFile(file: FileReference, destDirPath: string): Promise<boolean> {
     // eslint-disable-next-line no-throw-literal
     if (project === null) throw 'unreachable';
 
@@ -868,8 +834,7 @@ function Ide({ projectName }: Props) {
   }
 
   function filter(path: string, child: FilerRecursiveStatInfo): boolean {
-    if (path === '.' && child.name === '.metadata' && !showMetadataFolder)
-      return false;
+    if (path === '.' && child.name === '.metadata' && !showMetadataFolder) return false;
     return true;
   }
 
@@ -887,22 +852,12 @@ function Ide({ projectName }: Props) {
       >
         <div className={classes.navToolbar}>
           <Tooltip title={<M {...messages.simulatorTooltip} />}>
-            <IconButton
-              variant="contained"
-              color="primary"
-              size="small"
-              onClick={addSimulator}
-            >
+            <IconButton variant="contained" color="primary" size="small" onClick={addSimulator}>
               <SimulatorIcon />
             </IconButton>
           </Tooltip>
           <Tooltip title={<M {...messages.consoleTooltip} />}>
-            <IconButton
-              variant="contained"
-              color="primary"
-              size="small"
-              onClick={addConsole}
-            >
+            <IconButton variant="contained" color="primary" size="small" onClick={addConsole}>
               <ConsoleIcon />
             </IconButton>
           </Tooltip>
@@ -943,22 +898,12 @@ function Ide({ projectName }: Props) {
           onFileAction={handleFileAction}
           onUpdate={
             // eslint-disable-next-line no-shadow
-            fileTreeState =>
-              dispatch({ type: 'UPDATE_FILE_TREE', fileTreeState })
+            fileTreeState => dispatch({ type: 'UPDATE_FILE_TREE', fileTreeState })
           }
         />
-        <SimpleDialog
-          id="create-file-dialog"
-          {...createFile.mountSimpleDialog()}
-        />
-        <SimpleDialog
-          id="rename-file-dialog"
-          {...renameFile.mountSimpleDialog()}
-        />
-        <SimpleDialog
-          id="delete-file-dialog"
-          {...deleteFile.mountSimpleDialog()}
-        />
+        <SimpleDialog id="create-file-dialog" {...createFile.mountSimpleDialog()} />
+        <SimpleDialog id="rename-file-dialog" {...renameFile.mountSimpleDialog()} />
+        <SimpleDialog id="delete-file-dialog" {...deleteFile.mountSimpleDialog()} />
         <FileUpload ref={fileUploadRef} />
         <FileDownload ref={fileDownloadRef} />
       </Grid>

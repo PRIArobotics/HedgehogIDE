@@ -21,13 +21,7 @@ import {
   UploadIcon,
 } from '../../misc/palette';
 
-import type {
-  FileDesc,
-  MetadataDesc,
-  FileReference,
-  DirReference,
-  FileAction,
-} from '.';
+import type { FileDesc, MetadataDesc, FileReference, DirReference, FileAction } from '.';
 
 const messages = defineMessages({
   createFolder: {
@@ -89,10 +83,7 @@ type FileMenuItemProps = {|
 |};
 
 const FileMenuItem = React.forwardRef<FileMenuItemProps, MenuItem>(
-  (
-    { titleMsg, icon: TheIcon, ...props }: FileMenuItemProps,
-    ref: Ref<MenuItem>,
-  ) => (
+  ({ titleMsg, icon: TheIcon, ...props }: FileMenuItemProps, ref: Ref<MenuItem>) => (
     <MenuItem ref={ref} {...props}>
       <ListItemIcon>
         <TheIcon fontSize="small" />
@@ -252,9 +243,7 @@ class FileMenu extends React.Component<PropTypes, StateTypes> {
                       <FileMenuItem
                         key="create_js_file"
                         titleMsg={messages.createJavascriptFile}
-                        onClick={() =>
-                          this.handleCreate({ type: 'FILE', extension: '.js' })
-                        }
+                        onClick={() => this.handleCreate({ type: 'FILE', extension: '.js' })}
                         icon={LanguageJavascriptIcon}
                       />,
                       <FileMenuItem

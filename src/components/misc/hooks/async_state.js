@@ -13,10 +13,7 @@ type AsyncStateAction<T> =
   | {| type: 'RESOLVE', value: T |}
   | {| type: 'REJECT' |};
 
-function asyncStateReducer<T>(
-  state: AsyncState<T>,
-  action: AsyncStateAction<T>,
-): AsyncState<T> {
+function asyncStateReducer<T>(state: AsyncState<T>, action: AsyncStateAction<T>): AsyncState<T> {
   switch (action.type) {
     case 'START': {
       return {
@@ -52,9 +49,7 @@ function asyncStateReducer<T>(
 // This hook makes sure that multiple setState calls can not race,
 // i.e. only the last promise will go through to the actual state.
 // While a setState promise is pending, the previous state will remain.
-export function useAsyncState<T>(
-  initialState: T,
-): [T, (T | Promise<T>) => void] {
+export function useAsyncState<T>(initialState: T): [T, (T | Promise<T>) => void] {
   const [promise, setPromise] = React.useState<T | Promise<T>>(initialState);
   const [state, dispatch] = React.useReducer(asyncStateReducer, {
     value: initialState,

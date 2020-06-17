@@ -147,10 +147,7 @@ const def: GraphqlDefShape = {
               })),
             );
 
-            const contents = await Promise.all([
-              ...savedFilePromises,
-              ...savedTreePromises,
-            ]);
+            const contents = await Promise.all([...savedFilePromises, ...savedTreePromises]);
 
             const [fileTree] = await FileTree.create(
               [
@@ -175,9 +172,9 @@ const def: GraphqlDefShape = {
       },
       async deleteProjectById(_parent, { projectId }) {
         try {
-          const deleted = await promisify(
-            Project.findByIdAndDelete.bind(Project),
-          )({ _id: projectId });
+          const deleted = await promisify(Project.findByIdAndDelete.bind(Project))({
+            _id: projectId,
+          });
           if (deleted?.id) {
             await promisify(FileTree.deleteMany.bind(FileTree))({ project: projectId });
             await promisify(File.deleteMany.bind(File))({ project: projectId });

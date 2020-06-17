@@ -28,9 +28,7 @@ import type {
 import FileMenu from './FileMenu';
 
 export type FileType = 'FILE' | 'DIRECTORY';
-export type FileDesc =
-  | {| type: 'DIRECTORY' |}
-  | {| type: 'FILE', extension: string |};
+export type FileDesc = {| type: 'DIRECTORY' |} | {| type: 'FILE', extension: string |};
 export type MetadataDesc = {|
   type: 'METADATA',
   name: string,
@@ -86,13 +84,7 @@ type Props = {|
   onUpdate: (state: ControlledState) => void | Promise<void>,
 |};
 
-function FileTree({
-  files,
-  expandedKeys,
-  filter,
-  onFileAction,
-  onUpdate,
-}: Props) {
+function FileTree({ files, expandedKeys, filter, onFileAction, onUpdate }: Props) {
   const [selectedKeys, setSelectedKeys] = React.useState<string[]>([]);
 
   const rootDivRef = hooks.useElementRef<'div'>();
@@ -124,10 +116,7 @@ function FileTree({
 
     // eslint-disable-next-line no-throw-literal
     if (menuRef.current === null) throw 'ref is null';
-    menuRef.current.show(
-      { left: event.clientX - 2, top: event.clientY - 4 },
-      file,
-    );
+    menuRef.current.show({ left: event.clientX - 2, top: event.clientY - 4 }, file);
 
     event.preventDefault();
   }
@@ -143,13 +132,7 @@ function FileTree({
 
   function handleFileKeyDown(event: KeyboardEvent, file: FileReference) {
     // we don't handle any of these
-    if (
-      event.altKey ||
-      event.ctrlKey ||
-      event.metaKey ||
-      event.shiftKey ||
-      event.isComposing
-    )
+    if (event.altKey || event.ctrlKey || event.metaKey || event.shiftKey || event.isComposing)
       return;
 
     if (file.file.isDirectory())
@@ -194,10 +177,8 @@ function FileTree({
     onFileAction({ action: 'MOVE', file, destDirPath });
   }
 
-  const effectiveFilter: (
-    path: string,
-    child: FilerRecursiveStatInfo,
-  ) => boolean = filter ?? (() => true);
+  const effectiveFilter: (path: string, child: FilerRecursiveStatInfo) => boolean =
+    filter ?? (() => true);
 
   function renderChildren(path: string, children: FilerRecursiveStatInfo[]) {
     return children
@@ -249,9 +230,7 @@ function FileTree({
     } else {
       // $FlowExpectError
       const dir: FilerRecursiveDirectoryInfo = file;
-      return (
-        <TreeNode {...attrs}>{renderChildren(path, dir.contents)}</TreeNode>
-      );
+      return <TreeNode {...attrs}>{renderChildren(path, dir.contents)}</TreeNode>;
     }
   }
 

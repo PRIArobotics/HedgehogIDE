@@ -15,10 +15,7 @@ type Props = {|
   ...React.ElementConfig<typeof StyledIconButton>,
 |};
 
-function ToolBarIconButton(
-  { icon: Icon, color, ...props }: Props,
-  ref: Ref<StyledIconButton>,
-) {
+function ToolBarIconButton({ icon: Icon, color, ...props }: Props, ref: Ref<StyledIconButton>) {
   return (
     <StyledIconButton ref={ref} {...props}>
       <Icon

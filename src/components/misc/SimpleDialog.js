@@ -11,10 +11,7 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import messages from './commonMessages';
 
-type ActionConstant =
-  | 'OK_CANCEL'
-  | 'OK_autofocus_CANCEL'
-  | 'OK_CANCEL_autofocus';
+type ActionConstant = 'OK_CANCEL' | 'OK_autofocus_CANCEL' | 'OK_CANCEL_autofocus';
 
 type SimpleDialogProps = {|
   id: string,
@@ -41,8 +38,7 @@ function SimpleDialog({
 }: SimpleDialogProps) {
   const conditionalProps = {};
   if (title !== undefined) conditionalProps['aria-labelledby'] = `${id}-title`;
-  if (description !== undefined)
-    conditionalProps['aria-describedby'] = `${id}-description`;
+  if (description !== undefined) conditionalProps['aria-describedby'] = `${id}-description`;
 
   let actionsNode: React.Node;
   switch (actions) {
@@ -81,14 +77,10 @@ function SimpleDialog({
   return (
     <Dialog open={open} onClose={onCancel} {...conditionalProps}>
       <form onSubmit={handleSubmit}>
-        {title !== undefined ? (
-          <DialogTitle id={`${id}-title`}>{title}</DialogTitle>
-        ) : null}
+        {title !== undefined ? <DialogTitle id={`${id}-title`}>{title}</DialogTitle> : null}
         <DialogContent>
           {description !== undefined ? (
-            <DialogContentText id={`${id}-description`}>
-              {description}
-            </DialogContentText>
+            <DialogContentText id={`${id}-description`}>{description}</DialogContentText>
           ) : null}
           {children}
         </DialogContent>

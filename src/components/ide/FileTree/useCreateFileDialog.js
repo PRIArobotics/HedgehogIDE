@@ -18,8 +18,7 @@ const messages = defineMessages({
   description: {
     id: 'app.ide.create_file_dialog.description',
     description: 'Text for the file creation dialog',
-    defaultMessage:
-      "Please enter the new {type, select, FILE {file's} DIRECTORY {folder's}} name.",
+    defaultMessage: "Please enter the new {type, select, FILE {file's} DIRECTORY {folder's}} name.",
   },
 });
 
@@ -90,8 +89,7 @@ export default function useCreateFileDialog(
         ? newFileName
         : `${newFileName}${desc.extension}`;
     const valid =
-      newFileName !== '' &&
-      parentDir.file.contents.every(f => f.name !== actualNewFileName);
+      newFileName !== '' && parentDir.file.contents.every(f => f.name !== actualNewFileName);
     setFileNameState({
       actualNewFileName,
       valid,

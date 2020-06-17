@@ -48,9 +48,7 @@ export default function useProjectIndex(
     };
   }
 
-  const [projectIndex, setProjectIndex] = React.useState<ProjectIndex>(
-    computeProjectIndex,
-  );
+  const [projectIndex, setProjectIndex] = React.useState<ProjectIndex>(computeProjectIndex);
 
   React.useEffect(() => {
     setProjectIndex(computeProjectIndex());

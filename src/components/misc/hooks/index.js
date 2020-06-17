@@ -48,9 +48,7 @@ export function useValue<T>(init: () => T): T {
 //    const [start] = useAnimationFrame(cb);
 //
 // Of course, `stop` can be used with self-stopping callbacks as well.
-export function useAnimationFrame(
-  cb: () => boolean | void,
-): [() => void, () => void] {
+export function useAnimationFrame(cb: () => boolean | void): [() => void, () => void] {
   const id = React.useRef<AnimationFrameID | null>(null);
 
   function run() {

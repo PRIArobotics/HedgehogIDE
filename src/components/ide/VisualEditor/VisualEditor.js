@@ -228,16 +228,8 @@ function VisualEditor({
           <block type="lists_setIndex" />
         </category>
         <sep />
-        <category
-          name="%{BKY_CAT_VARIABLES}"
-          custom="VARIABLE"
-          colour="%{BKY_VARIABLES_HUE}"
-        />
-        <category
-          name="%{BKY_CAT_FUNCTIONS}"
-          custom="PROCEDURE"
-          colour="%{BKY_PROCEDURES_HUE}"
-        />
+        <category name="%{BKY_CAT_VARIABLES}" custom="VARIABLE" colour="%{BKY_VARIABLES_HUE}" />
+        <category name="%{BKY_CAT_FUNCTIONS}" custom="PROCEDURE" colour="%{BKY_PROCEDURES_HUE}" />
         <category name="%{BKY_CAT_TEXT}" colour="70">
           {miscBlocks.PRINT_BLOCK.toolboxBlocks.default()}
           <block type="text" />
@@ -327,15 +319,12 @@ function VisualEditor({
     return language.workspaceToCode(blocklyRef.current.workspace);
   }
   function refreshCode() {
-    if (blocklyRef.current === null || blocklyRef.current.workspace === null)
-      return;
+    if (blocklyRef.current === null || blocklyRef.current.workspace === null) return;
     setCode(generateCode(codeLanguage));
   }
 
   function handleBlocklyChange(workspace: Blockly.Workspace) {
-    const workspaceXml = Blockly.Xml.domToText(
-      Blockly.Xml.workspaceToDom(workspace),
-    );
+    const workspaceXml = Blockly.Xml.domToText(Blockly.Xml.workspaceToDom(workspace));
     setContent(workspaceXml);
     refreshCode();
   }
@@ -386,9 +375,7 @@ function VisualEditor({
             color="limegreen"
             disableRipple
             disabled={
-              running ||
-              blocklyRef.current === null ||
-              blocklyRef.current.workspace === null
+              running || blocklyRef.current === null || blocklyRef.current.workspace === null
             }
           />
         </ToolBarItem>
@@ -460,9 +447,7 @@ function VisualEditor({
       </ToolBar>
       <pre
         ref={codeRef}
-        className={
-          codeCollapsed ? `${s.codeContainer} ${s.collapsed}` : s.codeContainer
-        }
+        className={codeCollapsed ? `${s.codeContainer} ${s.collapsed}` : s.codeContainer}
       >
         {code}
       </pre>

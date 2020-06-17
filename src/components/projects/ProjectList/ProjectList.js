@@ -54,26 +54,22 @@ const messages = defineMessages({
   },
   createProjectTooltip: {
     id: 'app.projects.create_project_tooltip',
-    description:
-      'Tooltip and screen reader label for the create project button',
+    description: 'Tooltip and screen reader label for the create project button',
     defaultMessage: 'Create Project',
   },
   refreshProjectListTooltip: {
     id: 'app.projects.refresh_project_list_tooltip',
-    description:
-      'Tooltip and screen reader label for the refresh projects button',
+    description: 'Tooltip and screen reader label for the refresh projects button',
     defaultMessage: 'Refresh Project List',
   },
   renameProjectTooltip: {
     id: 'app.projects.rename_project_tooltip',
-    description:
-      'Tooltip and screen reader label for the rename project button',
+    description: 'Tooltip and screen reader label for the rename project button',
     defaultMessage: 'Rename Project "{name}"',
   },
   deleteProjectTooltip: {
     id: 'app.projects.delete_project_tooltip',
-    description:
-      'Tooltip and screen reader label for the delete project button',
+    description: 'Tooltip and screen reader label for the delete project button',
     defaultMessage: 'Delete Project "{name}"',
   },
   exercisesTitle: {
@@ -83,26 +79,22 @@ const messages = defineMessages({
   },
   refreshExerciseListTooltip: {
     id: 'app.exercises.refresh_exercise_list_tooltip',
-    description:
-      'Tooltip and screen reader label for the refresh exercises button',
+    description: 'Tooltip and screen reader label for the refresh exercises button',
     defaultMessage: 'Refresh Exercise List',
   },
   exerciseSecondaryText: {
     id: 'app.exercises.secondary_text',
-    description:
-      'This text is shown below the exercise name and describes it further',
+    description: 'This text is shown below the exercise name and describes it further',
     defaultMessage: 'Difficulty: {level}',
   },
   uploadExerciseTooltip: {
     id: 'app.exercises.upload_exercise_tooltip',
-    description:
-      'Tooltip and screen reader label for the upload exercise button',
+    description: 'Tooltip and screen reader label for the upload exercise button',
     defaultMessage: 'Upload project "{name}" as an exercise',
   },
   cloneExerciseTooltip: {
     id: 'app.exercises.clone_exercise_tooltip',
-    description:
-      'Tooltip and screen reader label for the clone exercise button',
+    description: 'Tooltip and screen reader label for the clone exercise button',
     defaultMessage: 'Create new project to work on exercise "{name}"',
   },
   openAssociatedProjectTooltip: {
@@ -129,8 +121,7 @@ const messages = defineMessages({
   },
   deleteExerciseTooltip: {
     id: 'app.projects.delete_exercise_tooltip',
-    description:
-      'Tooltip and screen reader label for the delete exercise button',
+    description: 'Tooltip and screen reader label for the delete exercise button',
     defaultMessage: 'Delete Exercise "{name}"',
   },
 });
@@ -160,10 +151,7 @@ function ProjectList(_props: Props) {
     }
   }
 
-  const createProject = useCreateProjectDialog(
-    confirmCreateProject,
-    localProjects,
-  );
+  const createProject = useCreateProjectDialog(confirmCreateProject, localProjects);
 
   async function confirmDeleteProject(project: Project): Promise<boolean> {
     try {
@@ -179,10 +167,7 @@ function ProjectList(_props: Props) {
 
   const deleteProject = useDeleteProjectDialog(confirmDeleteProject);
 
-  async function confirmRenameProject(
-    project: Project,
-    newName: string,
-  ): Promise<boolean> {
+  async function confirmRenameProject(project: Project, newName: string): Promise<boolean> {
     try {
       await project.rename(newName);
       refreshLocalProjects();
@@ -194,10 +179,7 @@ function ProjectList(_props: Props) {
     }
   }
 
-  const renameProject = useRenameProjectDialog(
-    confirmRenameProject,
-    localProjects,
-  );
+  const renameProject = useRenameProjectDialog(confirmRenameProject, localProjects);
 
   const isLoggedIn = !!auth.authData;
 
@@ -210,10 +192,7 @@ function ProjectList(_props: Props) {
           <Typography className={s.title} variant="h5" noWrap>
             <M {...messages.projectsTitle} />
           </Typography>
-          <Tooltip
-            title={intl.formatMessage(messages.createProjectTooltip)}
-            placement="bottom"
-          >
+          <Tooltip title={intl.formatMessage(messages.createProjectTooltip)} placement="bottom">
             <IconButton
               aria-label={intl.formatMessage(messages.createProjectTooltip)}
               onClick={createProject.show}
@@ -227,9 +206,7 @@ function ProjectList(_props: Props) {
           >
             <IconButton
               edge="end"
-              aria-label={intl.formatMessage(
-                messages.refreshProjectListTooltip,
-              )}
+              aria-label={intl.formatMessage(messages.refreshProjectListTooltip)}
               onClick={refreshLocalProjects}
             >
               <RefreshIcon />
@@ -238,12 +215,7 @@ function ProjectList(_props: Props) {
         </Toolbar>
         <List>
           {localProjects.map(project => (
-            <ListItem
-              key={project.name}
-              button
-              component={Link}
-              to={`/projects/${project.name}`}
-            >
+            <ListItem key={project.name} button component={Link} to={`/projects/${project.name}`}>
               <ListItemAvatar>
                 <Avatar>
                   <LocalProjectIcon />
@@ -259,10 +231,9 @@ function ProjectList(_props: Props) {
                     placement="bottom"
                   >
                     <IconButton
-                      aria-label={intl.formatMessage(
-                        messages.uploadExerciseTooltip,
-                        { name: project.name },
-                      )}
+                      aria-label={intl.formatMessage(messages.uploadExerciseTooltip, {
+                        name: project.name,
+                      })}
                       disabled={project.uid in projectIndex.remoteProjects}
                       onClick={async () => {
                         const id = await createProjectMutation(project);
@@ -284,10 +255,9 @@ function ProjectList(_props: Props) {
                   placement="bottom"
                 >
                   <IconButton
-                    aria-label={intl.formatMessage(
-                      messages.renameProjectTooltip,
-                      { name: project.name },
-                    )}
+                    aria-label={intl.formatMessage(messages.renameProjectTooltip, {
+                      name: project.name,
+                    })}
                     onClick={() => renameProject.show(project)}
                   >
                     <RenameIcon />
@@ -301,10 +271,9 @@ function ProjectList(_props: Props) {
                 >
                   <IconButton
                     edge="end"
-                    aria-label={intl.formatMessage(
-                      messages.deleteProjectTooltip,
-                      { name: project.name },
-                    )}
+                    aria-label={intl.formatMessage(messages.deleteProjectTooltip, {
+                      name: project.name,
+                    })}
                     onClick={() => deleteProject.show(project)}
                   >
                     <DeleteIcon />
@@ -314,18 +283,9 @@ function ProjectList(_props: Props) {
             </ListItem>
           ))}
         </List>
-        <SimpleDialog
-          id="create-dialog"
-          {...createProject.mountSimpleDialog()}
-        />
-        <SimpleDialog
-          id="delete-dialog"
-          {...deleteProject.mountSimpleDialog()}
-        />
-        <SimpleDialog
-          id="rename-dialog"
-          {...renameProject.mountSimpleDialog()}
-        />
+        <SimpleDialog id="create-dialog" {...createProject.mountSimpleDialog()} />
+        <SimpleDialog id="delete-dialog" {...deleteProject.mountSimpleDialog()} />
+        <SimpleDialog id="rename-dialog" {...renameProject.mountSimpleDialog()} />
       </Paper>
       <Paper className={s.root}>
         <Toolbar className={s.toolbar}>
@@ -338,9 +298,7 @@ function ProjectList(_props: Props) {
           >
             <IconButton
               edge="end"
-              aria-label={intl.formatMessage(
-                messages.refreshExerciseListTooltip,
-              )}
+              aria-label={intl.formatMessage(messages.refreshExerciseListTooltip)}
               onClick={refreshRemoteProjects}
             >
               <RefreshIcon />
@@ -349,8 +307,7 @@ function ProjectList(_props: Props) {
         </Toolbar>
         <List>
           {remoteProjects.map(exercise => {
-            const associatedProjects =
-              projectIndex.localProjects[exercise.id] ?? [];
+            const associatedProjects = projectIndex.localProjects[exercise.id] ?? [];
 
             const hasOpenCommand = associatedProjects.length > 0;
             const hasOpenPopup = associatedProjects.length > 1;
@@ -381,10 +338,9 @@ function ProjectList(_props: Props) {
                   >
                     <IconButton
                       {...(!hasOpenCommand ? { edge: 'end' } : {})}
-                      aria-label={intl.formatMessage(
-                        messages.cloneExerciseTooltip,
-                        { name: exercise.name },
-                      )}
+                      aria-label={intl.formatMessage(messages.cloneExerciseTooltip, {
+                        name: exercise.name,
+                      })}
                       // onClick={() => beginCloneExercise(exercise)}
                     >
                       <CreateIcon />
@@ -394,18 +350,18 @@ function ProjectList(_props: Props) {
                     associatedProjects.map(project => (
                       <Tooltip
                         key={project.name}
-                        title={intl.formatMessage(
-                          messages.openAssociatedProjectTooltip,
-                          { exercise: exercise.name, name: project.name },
-                        )}
+                        title={intl.formatMessage(messages.openAssociatedProjectTooltip, {
+                          exercise: exercise.name,
+                          name: project.name,
+                        })}
                         placement="bottom"
                       >
                         <IconButton
                           {...(!hasAdminCommands ? { edge: 'end' } : {})}
-                          aria-label={intl.formatMessage(
-                            messages.openAssociatedProjectTooltip,
-                            { exercise: exercise.name, name: project.name },
-                          )}
+                          aria-label={intl.formatMessage(messages.openAssociatedProjectTooltip, {
+                            exercise: exercise.name,
+                            name: project.name,
+                          })}
                           component={Link}
                           to={`/projects/${project.name}`}
                         >
@@ -414,17 +370,13 @@ function ProjectList(_props: Props) {
                       </Tooltip>
                     ))
                   ) : (
-                    <PopupState
-                      variant="popover"
-                      popupId={`${exercise.name}-menu`}
-                    >
+                    <PopupState variant="popover" popupId={`${exercise.name}-menu`}>
                       {popupState => (
                         <>
                           <Tooltip
-                            title={intl.formatMessage(
-                              messages.openAssociatedProjectMenuTooltip,
-                              { exercise: exercise.name },
-                            )}
+                            title={intl.formatMessage(messages.openAssociatedProjectMenuTooltip, {
+                              exercise: exercise.name,
+                            })}
                             placement="bottom"
                           >
                             <IconButton
@@ -470,35 +422,31 @@ function ProjectList(_props: Props) {
                   {!hasAdminCommands ? null : (
                     <>
                       <Tooltip
-                        title={intl.formatMessage(
-                          messages.editExerciseTooltip,
-                          { name: exercise.name },
-                        )}
+                        title={intl.formatMessage(messages.editExerciseTooltip, {
+                          name: exercise.name,
+                        })}
                         placement="bottom"
                       >
                         <IconButton
-                          aria-label={intl.formatMessage(
-                            messages.editExerciseTooltip,
-                            { name: exercise.name },
-                          )}
+                          aria-label={intl.formatMessage(messages.editExerciseTooltip, {
+                            name: exercise.name,
+                          })}
                           // onClick={() => ...}
                         >
                           <RenameIcon />
                         </IconButton>
                       </Tooltip>
                       <Tooltip
-                        title={intl.formatMessage(
-                          messages.deleteExerciseTooltip,
-                          { name: exercise.name },
-                        )}
+                        title={intl.formatMessage(messages.deleteExerciseTooltip, {
+                          name: exercise.name,
+                        })}
                         placement="bottom"
                       >
                         <IconButton
                           edge="end"
-                          aria-label={intl.formatMessage(
-                            messages.deleteExerciseTooltip,
-                            { name: exercise.name },
-                          )}
+                          aria-label={intl.formatMessage(messages.deleteExerciseTooltip, {
+                            name: exercise.name,
+                          })}
                           // onClick={() => ...}
                         >
                           <DeleteIcon />

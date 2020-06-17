@@ -27,11 +27,7 @@ import config from './config';
 import createInitialState from '../core/createInitialState';
 import renderHtml from './renderHtml';
 import renderExecutor from './renderExecutor';
-import {
-  IsomorphicStyleLoader,
-  MaterialStyleLoader,
-  loadScripts,
-} from './loaders';
+import { IsomorphicStyleLoader, MaterialStyleLoader, loadScripts } from './loaders';
 
 process.on('unhandledRejection', (reason, p) => {
   console.error('Unhandled Rejection at:', p, 'reason:', reason);
@@ -183,9 +179,7 @@ app.get('*', async (req, res, next) => {
       locales: ['en'],
     };
 
-    const insertCss = isomorphicStyleLoader.insertCss.bind(
-      isomorphicStyleLoader,
-    );
+    const insertCss = isomorphicStyleLoader.insertCss.bind(isomorphicStyleLoader);
 
     const route = await router.resolve(context);
 

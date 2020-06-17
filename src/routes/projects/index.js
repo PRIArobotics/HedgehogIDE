@@ -7,9 +7,7 @@ import NoSSR from '../../components/misc/NoSSR';
 
 async function action() {
   const showProjectList = async () => {
-    const {
-      default: ProjectList,
-    } = await import('../../components/projects/ProjectList');
+    const { default: ProjectList } = await import('../../components/projects/ProjectList');
 
     return <ProjectList />;
   };

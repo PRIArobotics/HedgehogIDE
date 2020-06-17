@@ -153,13 +153,7 @@ export class Robot {
       }),
     ];
     this.body = Matter.Body.create({
-      parts: [
-        this.leftWheel,
-        this.rightWheel,
-        ...this.lineSensors,
-        ...this.touchSensors,
-        body,
-      ],
+      parts: [this.leftWheel, this.rightWheel, ...this.lineSensors, ...this.touchSensors, body],
       ...material,
       label: 'body',
       plugin: {},
@@ -331,10 +325,7 @@ export class Robot {
     this.applyForce(rPos, this.motors[1] / 800, cos, sin);
   }
 
-  handleLineSensor(
-    eventName: 'collisionStart' | 'collisionEnd',
-    sensor: Matter.Body,
-  ) {
+  handleLineSensor(eventName: 'collisionStart' | 'collisionEnd', sensor: Matter.Body) {
     const plugin = sensor.plugin.hedgehog;
     switch (eventName) {
       case 'collisionStart':
@@ -350,10 +341,7 @@ export class Robot {
     this.sensors[plugin.sensorPort] = plugin.collisionCount > 0 ? 4000 : 100;
   }
 
-  handleTouchSensor(
-    eventName: 'collisionStart' | 'collisionEnd',
-    sensor: Matter.Body,
-  ) {
+  handleTouchSensor(eventName: 'collisionStart' | 'collisionEnd', sensor: Matter.Body) {
     const plugin = sensor.plugin.hedgehog;
     switch (eventName) {
       case 'collisionStart':

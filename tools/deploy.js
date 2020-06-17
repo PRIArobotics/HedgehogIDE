@@ -62,11 +62,7 @@ async function deploy() {
   // Changing a remote's URL
   let isRemoteExists = false;
   try {
-    await spawn(
-      'git',
-      ['config', '--get', `remote.${remote.name}.url`],
-      options,
-    );
+    await spawn('git', ['config', '--get', `remote.${remote.name}.url`], options);
     isRemoteExists = true;
   } catch (_error) {
     /* skip */
@@ -80,22 +76,14 @@ async function deploy() {
   // Fetch the remote repository if it exists
   let isRefExists = false;
   try {
-    await spawn(
-      'git',
-      ['ls-remote', '--quiet', '--exit-code', remote.url, remote.branch],
-      options,
-    );
+    await spawn('git', ['ls-remote', '--quiet', '--exit-code', remote.url, remote.branch], options);
     isRefExists = true;
   } catch (_error) {
     await spawn('git', ['update-ref', '-d', 'HEAD'], options);
   }
   if (isRefExists) {
     await spawn('git', ['fetch', remote.name], options);
-    await spawn(
-      'git',
-      ['reset', `${remote.name}/${remote.branch}`, '--hard'],
-      options,
-    );
+    await spawn('git', ['reset', `${remote.name}/${remote.branch}`, '--hard'], options);
     await spawn('git', ['clean', '--force'], options);
   }
 
@@ -118,11 +106,7 @@ async function deploy() {
   try {
     await spawn('git', ['diff', '--cached', '--exit-code', '--quiet'], options);
   } catch (_error) {
-    await spawn(
-      'git',
-      ['commit', '--message', `Update ${new Date().toISOString()}`],
-      options,
-    );
+    await spawn('git', ['commit', '--message', `Update ${new Date().toISOString()}`], options);
   }
   // await spawn(
   //   'git',
@@ -132,9 +116,7 @@ async function deploy() {
 
   // Check if the site was successfully deployed
   const response = await fetch(remote.website);
-  console.info(
-    `${remote.website} => ${response.status} ${response.statusText}`,
-  );
+  console.info(`${remote.website} => ${response.status} ${response.statusText}`);
 }
 
 export default deploy;

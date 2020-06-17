@@ -72,9 +72,7 @@ export function AuthProvider({ children }: AuthProviderPropTypes) {
   React.useEffect(() => recoverSession(), []);
 
   return (
-    <AuthContext.Provider value={{ authData, login, logout }}>
-      {children}
-    </AuthContext.Provider>
+    <AuthContext.Provider value={{ authData, login, logout }}>{children}</AuthContext.Provider>
   );
 }
 

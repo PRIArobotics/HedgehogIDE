@@ -21,9 +21,7 @@ type QueryHook<TData, TVariables> = (
   options?: QueryHookOptions<TData, TVariables>,
 ) => QueryResult<TData, TVariables>;
 
-export function makeQuery<TData, TVariables>(
-  query: DocumentNode,
-): QueryHook<TData, TVariables> {
+export function makeQuery<TData, TVariables>(query: DocumentNode): QueryHook<TData, TVariables> {
   return options => useQuery<TData, TVariables>(query, options);
 }
 

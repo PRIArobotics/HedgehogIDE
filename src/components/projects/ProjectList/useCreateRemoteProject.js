@@ -21,20 +21,14 @@ import {
   type FileTreeTreeRecordInput,
 } from './__generated__/CreateProject';
 
-const useCreateProjectMutation = hooks.makeMutation<
-  CreateProject,
-  CreateProjectVariables,
->(gql`
+const useCreateProjectMutation = hooks.makeMutation<CreateProject, CreateProjectVariables>(gql`
   mutation CreateProject($projectInput: ProjectInput!) {
     createProject(project: $projectInput)
   }
 `);
 
 async function projectToInput(project: Project): Promise<ProjectInput> {
-  async function visitFile(
-    file: FilerStatInfo,
-    path: string[],
-  ): Promise<FileTreeFileRecordInput> {
+  async function visitFile(file: FilerStatInfo, path: string[]): Promise<FileTreeFileRecordInput> {
     const { name } = file;
     const absolutePath = project.resolve(...path);
     const binaryData = await fs.promises.readFile(absolutePath);
@@ -81,10 +75,7 @@ async function projectToInput(project: Project): Promise<ProjectInput> {
 }
 
 export default function useCreateRemoteProject(): Project => Promise<string> {
-  const [
-    performCreateProject,
-    _createProjectResponse,
-  ] = useCreateProjectMutation();
+  const [performCreateProject, _createProjectResponse] = useCreateProjectMutation();
 
   async function createProject(project: Project) {
     const projectInput = await projectToInput(project);

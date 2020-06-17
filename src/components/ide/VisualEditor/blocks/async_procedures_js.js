@@ -14,37 +14,25 @@ function requiresAsyncJsFunction(block: Blockly.Block): boolean {
 }
 
 function isAsyncProcedureCall(block: Blockly.Block): boolean {
-  if (
-    block.type !== 'procedures_callnoreturn' &&
-    block.type !== 'procedures_callreturn'
-  )
+  if (block.type !== 'procedures_callnoreturn' && block.type !== 'procedures_callreturn')
     return false;
 
-  const defBlock = Blockly.Procedures.getDefinition(
-    block.getProcedureCall(),
-    block.workspace,
-  );
+  const defBlock = Blockly.Procedures.getDefinition(block.getProcedureCall(), block.workspace);
   // eslint-disable-next-line no-use-before-define
   return isAsyncProcedure(defBlock);
 }
 
 function isAsyncProcedure(block: Blockly.Block): boolean {
-  if (
-    block.type !== 'procedures_defnoreturn' &&
-    block.type !== 'procedures_defreturn'
-  )
+  if (block.type !== 'procedures_defnoreturn' && block.type !== 'procedures_defreturn')
     return false;
 
   // a procedure is async if any descendant is async,
   // i.e. if not every descendant is not async
-  return !block
-    .getDescendants()
-    .every(child => !requiresAsyncJsFunction(child));
+  return !block.getDescendants().every(child => !requiresAsyncJsFunction(child));
 }
 
 // eslint-disable-next-line camelcase
-const original_procedures_callreturn_generator =
-  Blockly.JavaScript.procedures_callreturn;
+const original_procedures_callreturn_generator = Blockly.JavaScript.procedures_callreturn;
 Blockly.JavaScript.procedures_callreturn = block => {
   let code = original_procedures_callreturn_generator(block)[0];
   if (isAsyncProcedureCall(block)) code = `await ${code}`;

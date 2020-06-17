@@ -20,18 +20,11 @@ type OpenDrawerProps = {|
 |};
 
 // eslint-disable-next-line react/prop-types
-const OpenDrawer = React.forwardRef<
-  OpenDrawerProps,
-  React.Element<typeof Drawer>,
->(({ drawerClasses, ...props }: OpenDrawerProps, ref: Ref<typeof Drawer>) => (
-  <Drawer
-    ref={ref}
-    variant="permanent"
-    open
-    classes={drawerClasses}
-    {...props}
-  />
-));
+const OpenDrawer = React.forwardRef<OpenDrawerProps, React.Element<typeof Drawer>>(
+  ({ drawerClasses, ...props }: OpenDrawerProps, ref: Ref<typeof Drawer>) => (
+    <Drawer ref={ref} variant="permanent" open classes={drawerClasses} {...props} />
+  ),
+);
 
 // main component
 
@@ -58,11 +51,7 @@ function Layout({ children, contentFill }: Props) {
       <AppBar className={classes.appBar}>
         <Header />
       </AppBar>
-      <Grid
-        item
-        component={OpenDrawer}
-        drawerClasses={{ paper: classes.sidebar }}
-      >
+      <Grid item component={OpenDrawer} drawerClasses={{ paper: classes.sidebar }}>
         <div className={classes.appBarSpacer} />
         <Divider />
         <div style={{ overflow: 'auto' }}>

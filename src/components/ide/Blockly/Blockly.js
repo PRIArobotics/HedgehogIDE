@@ -42,10 +42,7 @@ class BlocklyComponent extends React.Component<PropTypes, StateTypes> {
 
     const { initialWorkspaceXml } = this.props;
 
-    const dom =
-      initialWorkspaceXml !== ''
-        ? Blockly.Xml.textToDom(initialWorkspaceXml)
-        : null;
+    const dom = initialWorkspaceXml !== '' ? Blockly.Xml.textToDom(initialWorkspaceXml) : null;
     this.injectWorkspace(dom);
 
     this.refreshSize();
@@ -134,8 +131,7 @@ class BlocklyComponent extends React.Component<PropTypes, StateTypes> {
   refreshSize() {
     const container = this.containerRef.current;
     const blockly = this.blocklyRef.current;
-    if (container === null || blockly === null || this.workspace === null)
-      return;
+    if (container === null || blockly === null || this.workspace === null) return;
 
     blockly.style.width = `${container.offsetWidth}px`;
     blockly.style.height = `${container.offsetHeight}px`;

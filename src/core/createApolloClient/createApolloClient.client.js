@@ -16,9 +16,7 @@ export default function createApolloClient() {
   const errorLink = onError(({ graphQLErrors, networkError }) => {
     if (graphQLErrors)
       graphQLErrors.map(({ message, locations, path }) =>
-        console.warn(
-          `[GraphQL error]: Message: ${message}, Location: ${locations}, Path: ${path}`,
-        ),
+        console.warn(`[GraphQL error]: Message: ${message}, Location: ${locations}, Path: ${path}`),
       );
     if (networkError) console.warn(`[Network error]: ${networkError}`);
   });
