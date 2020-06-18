@@ -41,6 +41,7 @@ import useDeleteProjectDialog from './useDeleteProjectDialog';
 import useRenameProjectDialog from './useRenameProjectDialog';
 import useCreateRemoteProjectDialog from './useCreateRemoteProjectDialog';
 import useDeleteRemoteProjectDialog from './useDeleteRemoteProjectDialog';
+import useCloneRemoteProjectDialog from './useCloneRemoteProjectDialog';
 import useProjectIndex, { type RemoteProject } from './useProjectIndex';
 import useCreateRemoteProject from './useCreateRemoteProject';
 import useDeleteRemoteProject from './useDeleteRemoteProject';
@@ -205,6 +206,25 @@ function ProjectList(_props: Props) {
 
   const deleteRemoteProject = useDeleteRemoteProjectDialog(confirmDeleteRemoteProject);
 
+  async function confirmCloneRemoteProject(project: RemoteProject, name: string): Promise<boolean> {
+    try {
+      const localProject = await Project.createProject(name);
+      projectIndexDispatch({ type: 'REFRESH_LOCAL' });
+      projectIndexDispatch({
+        type: 'ADD_MAPPING',
+        projectUid: localProject.uid,
+        remoteId: project.id,
+      });
+      return true;
+    } catch (ex) {
+      if (!(ex instanceof ProjectError)) throw ex;
+      projectIndexDispatch({ type: 'REFRESH_LOCAL' });
+      return false;
+    }
+  }
+
+  const cloneRemoteProject = useCloneRemoteProjectDialog(confirmCloneRemoteProject, localProjects);
+
   const isLoggedIn = !!auth.authData;
 
   useStyles(s);
@@ -359,7 +379,7 @@ function ProjectList(_props: Props) {
                       aria-label={intl.formatMessage(messages.cloneExerciseTooltip, {
                         name: exercise.name,
                       })}
-                      // onClick={() => beginCloneExercise(exercise)}
+                      onClick={() => cloneRemoteProject.show(exercise)}
                     >
                       <CreateIcon />
                     </IconButton>
@@ -477,6 +497,7 @@ function ProjectList(_props: Props) {
             );
           })}
         </List>
+        <SimpleDialog id="clone-remote-dialog" {...cloneRemoteProject.mountSimpleDialog()} />
         <SimpleDialog id="delete-remote-dialog" {...deleteRemoteProject.mountSimpleDialog()} />
       </Paper>
     </div>
