@@ -2,6 +2,8 @@
 
 import * as React from 'react';
 
+import base64 from 'base64-js';
+import filer, { fs } from 'filer';
 import gql from 'graphql-tag';
 
 import * as hooks from '../../misc/hooks';
@@ -12,6 +14,7 @@ import {
   type RemoteProjectContent,
   type RemoteProjectContentVariables,
   type RemoteProjectContent_projectById as RemoteProjectContents,
+  type RemoteProjectContent_projectById_fileTrees_contents as FileTree,
 } from './__generated__/RemoteProjectContent';
 
 export type { RemoteProjectContents };
@@ -40,7 +43,31 @@ const useRemoteProjectContentQuery = hooks.makeLazyQuery<
   }
 `);
 
-export async function populateProject(_project: Project, _contents: RemoteProjectContents) {}
+export async function populateProject(project: Project, contents: RemoteProjectContents) {
+  // prettier-ignore
+  const fileTrees = Object.fromEntries(contents.fileTrees.map(({ id, contents }) => [id, contents]));
+  const files = Object.fromEntries(contents.files.map(({ id, data }) => [id, data]));
+
+  async function visitChildren(fileTree: FileTree[], path: string[]) {
+    return Promise.all(fileTree.map(async ({ name, type, itemId }) => {
+      const absolutePath = project.resolve(...path, name);
+      switch (type) {
+        case 'FILE': {
+          const data = filer.Buffer.from(base64.toByteArray(files[itemId]));
+          await fs.promises.writeFile(absolutePath, data);
+          break;
+        }
+        case 'TREE': {
+          await fs.promises.mkdir(absolutePath);
+          await visitChildren(fileTrees[itemId], [...path, name]);
+          break;
+        }
+      }
+    }));
+  }
+
+  await visitChildren(fileTrees[contents.fileTreeRootId], []);
+}
 
 export default function useProjectContentQuery(): (
   projectId: string,

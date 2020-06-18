@@ -26,7 +26,7 @@ const def: GraphqlDefShape = {
 
     type File {
       id: ID!
-      data: String
+      data: String!
     }
 
     type FileTreeRecord {
