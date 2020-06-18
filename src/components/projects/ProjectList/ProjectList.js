@@ -45,6 +45,7 @@ import useCloneRemoteProjectDialog from './useCloneRemoteProjectDialog';
 import useProjectIndex, { type RemoteProject } from './useProjectIndex';
 import useCreateRemoteProject from './useCreateRemoteProject';
 import useDeleteRemoteProject from './useDeleteRemoteProject';
+import useProjectContentQuery, { populateProject } from './useProjectContentQuery';
 
 import { useAuth } from '../../users/AuthProvider';
 
@@ -136,6 +137,7 @@ function ProjectList(_props: Props) {
 
   const createProjectMutation = useCreateRemoteProject();
   const deleteProjectMutation = useDeleteRemoteProject();
+  const loadProjectContent = useProjectContentQuery();
 
   const [
     { localProjects, remoteProjects, localToRemoteMap, remoteToLocalMap },
@@ -207,8 +209,17 @@ function ProjectList(_props: Props) {
   const deleteRemoteProject = useDeleteRemoteProjectDialog(confirmDeleteRemoteProject);
 
   async function confirmCloneRemoteProject(project: RemoteProject, name: string): Promise<boolean> {
+    let content;
+    try {
+      content = await loadProjectContent(project.id);
+    } catch (_ex) {
+      projectIndexDispatch({ type: 'REFRESH_REMOTE' });
+      return true;
+    }
+
     try {
       const localProject = await Project.createProject(name);
+      await populateProject(localProject, content);
       projectIndexDispatch({ type: 'REFRESH_LOCAL' });
       projectIndexDispatch({
         type: 'ADD_MAPPING',
