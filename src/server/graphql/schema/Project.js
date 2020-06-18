@@ -6,7 +6,6 @@ import { ApolloError } from 'apollo-server';
 import type { GraphqlDefShape } from '../../../core/graphql/graphqlDef';
 
 import db, { File, FileTree, Project } from '../../mongodb';
-import { promisify } from '../../../util';
 
 const def: GraphqlDefShape = {
   schema: [
@@ -172,12 +171,10 @@ const def: GraphqlDefShape = {
       },
       async deleteProjectById(_parent, { projectId }) {
         try {
-          const deleted = await promisify(Project.findByIdAndDelete.bind(Project))({
-            _id: projectId,
-          });
+          const deleted = await Project.findByIdAndDelete({ _id: projectId });
           if (deleted?.id) {
-            await promisify(FileTree.deleteMany.bind(FileTree))({ project: projectId });
-            await promisify(File.deleteMany.bind(File))({ project: projectId });
+            await FileTree.deleteMany({ project: projectId });
+            await File.deleteMany({ project: projectId });
           }
           return deleted?.id;
         } catch (err) {
