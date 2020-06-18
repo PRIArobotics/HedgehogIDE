@@ -13,6 +13,8 @@ import {
   type RemoteProjects_projects as RemoteProject,
 } from './__generated__/RemoteProjects';
 
+export type { RemoteProject };
+
 const useRemoteProjectsQuery = hooks.makeQuery<RemoteProjects, void>(gql`
   query RemoteProjects {
     projects {

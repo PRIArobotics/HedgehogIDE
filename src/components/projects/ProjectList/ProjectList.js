@@ -39,7 +39,9 @@ import s from './ProjectList.scss';
 import useCreateProjectDialog from './useCreateProjectDialog';
 import useDeleteProjectDialog from './useDeleteProjectDialog';
 import useRenameProjectDialog from './useRenameProjectDialog';
-import useProjectIndex from './useProjectIndex';
+import useCreateRemoteProjectDialog from './useCreateRemoteProjectDialog';
+import useDeleteRemoteProjectDialog from './useDeleteRemoteProjectDialog';
+import useProjectIndex, { type RemoteProject } from './useProjectIndex';
 import useCreateRemoteProject from './useCreateRemoteProject';
 import useDeleteRemoteProject from './useDeleteRemoteProject';
 
@@ -114,12 +116,12 @@ const messages = defineMessages({
     defaultMessage: 'Open project "{name}"',
   },
   editExerciseTooltip: {
-    id: 'app.projects.edit_exercise_tooltip',
+    id: 'app.exercises.edit_exercise_tooltip',
     description: 'Tooltip and screen reader label for the edit exercise button',
     defaultMessage: 'Edit Exercise "{name}"',
   },
   deleteExerciseTooltip: {
-    id: 'app.projects.delete_exercise_tooltip',
+    id: 'app.exercises.delete_exercise_tooltip',
     description: 'Tooltip and screen reader label for the delete exercise button',
     defaultMessage: 'Delete Exercise "{name}"',
   },
@@ -182,6 +184,27 @@ function ProjectList(_props: Props) {
 
   const renameProject = useRenameProjectDialog(confirmRenameProject, localProjects);
 
+  async function confirmCreateRemoteProject(localProject: Project): Promise<boolean> {
+    const id = await createProjectMutation(localProject);
+    projectIndexDispatch({
+      type: 'ADD_MAPPING',
+      projectUid: localProject.uid,
+      remoteId: id,
+    });
+    projectIndexDispatch({ type: 'REFRESH_REMOTE' });
+    return true;
+  }
+
+  const createRemoteProject = useCreateRemoteProjectDialog(confirmCreateRemoteProject);
+
+  async function confirmDeleteRemoteProject(project: RemoteProject): Promise<boolean> {
+    await deleteProjectMutation(project.id);
+    projectIndexDispatch({ type: 'REFRESH_REMOTE' });
+    return true;
+  }
+
+  const deleteRemoteProject = useDeleteRemoteProjectDialog(confirmDeleteRemoteProject);
+
   const isLoggedIn = !!auth.authData;
 
   useStyles(s);
@@ -236,15 +259,7 @@ function ProjectList(_props: Props) {
                         name: project.name,
                       })}
                       disabled={project.uid in localToRemoteMap}
-                      onClick={async () => {
-                        const id = await createProjectMutation(project);
-                        projectIndexDispatch({
-                          type: 'ADD_MAPPING',
-                          projectUid: project.uid,
-                          remoteId: id,
-                        });
-                        projectIndexDispatch({ type: 'REFRESH_REMOTE' });
-                      }}
+                      onClick={() => createRemoteProject.show(project)}
                     >
                       <UploadExerciseIcon />
                     </IconButton>
@@ -288,6 +303,7 @@ function ProjectList(_props: Props) {
         <SimpleDialog id="create-dialog" {...createProject.mountSimpleDialog()} />
         <SimpleDialog id="delete-dialog" {...deleteProject.mountSimpleDialog()} />
         <SimpleDialog id="rename-dialog" {...renameProject.mountSimpleDialog()} />
+        <SimpleDialog id="create-remote-dialog" {...createRemoteProject.mountSimpleDialog()} />
       </Paper>
       <Paper className={s.root}>
         <Toolbar className={s.toolbar}>
@@ -449,10 +465,7 @@ function ProjectList(_props: Props) {
                           aria-label={intl.formatMessage(messages.deleteExerciseTooltip, {
                             name: exercise.name,
                           })}
-                          onClick={async () => {
-                            await deleteProjectMutation(exercise.id);
-                            projectIndexDispatch({ type: 'REFRESH_REMOTE' });
-                          }}
+                          onClick={() => deleteRemoteProject.show(exercise)}
                         >
                           <DeleteIcon />
                         </IconButton>
@@ -464,6 +477,7 @@ function ProjectList(_props: Props) {
             );
           })}
         </List>
+        <SimpleDialog id="delete-remote-dialog" {...deleteRemoteProject.mountSimpleDialog()} />
       </Paper>
     </div>
   );

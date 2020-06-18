@@ -1,0 +1,1 @@
+[{"id":"app.exercises.delete_exercise_dialog.title","description":"Title for the exercise deletion dialog","defaultMessage":"Confirm deletion"},{"id":"app.exercises.delete_exercise_dialog.description","description":"Text for the exercise deletion dialog","defaultMessage":"Are you sure you want to delete exercise \"{name}\"?"}]
