@@ -41,6 +41,7 @@ import useDeleteProjectDialog from './useDeleteProjectDialog';
 import useRenameProjectDialog from './useRenameProjectDialog';
 import useProjectIndex from './useProjectIndex';
 import useCreateRemoteProject from './useCreateRemoteProject';
+import useDeleteRemoteProject from './useDeleteRemoteProject';
 
 import { useAuth } from '../../users/AuthProvider';
 
@@ -131,6 +132,7 @@ function ProjectList(_props: Props) {
   const intl = useIntl();
 
   const createProjectMutation = useCreateRemoteProject();
+  const deleteProjectMutation = useDeleteRemoteProject();
 
   const [
     { localProjects, remoteProjects, localToRemoteMap, remoteToLocalMap },
@@ -447,7 +449,10 @@ function ProjectList(_props: Props) {
                           aria-label={intl.formatMessage(messages.deleteExerciseTooltip, {
                             name: exercise.name,
                           })}
-                          // onClick={() => ...}
+                          onClick={async () => {
+                            await deleteProjectMutation(exercise.id);
+                            projectIndexDispatch({ type: 'REFRESH_REMOTE' });
+                          }}
                         >
                           <DeleteIcon />
                         </IconButton>
