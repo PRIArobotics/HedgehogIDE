@@ -87,7 +87,7 @@ modules:
         hasReply: true
         args:
         - name: dynamicBlock
-          type: any
+          type: DynamicBlock
   simulation:
     init:
       args:

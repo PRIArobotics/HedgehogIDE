@@ -4,12 +4,13 @@
 
 import connection from '../connection';
 import eventHandler from '../event';
-// <default GSL customizable: blockly-executor-imports>
+// <GSL customizable: blockly-executor-imports>
 // Put your imports tags here
+import { type DynamicBlock } from '../../sdk/blockly';
 
 // </GSL customizable: blockly-executor-imports>
 
-export async function addBlock(dynamicBlock: any) {
+export async function addBlock(dynamicBlock: DynamicBlock) {
   connection.send('blockly_addBlock', { dynamicBlock });
   return connection.recv();
 }

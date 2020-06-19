@@ -9,33 +9,41 @@ import * as React from 'react';
 import Blockly from 'blockly';
 import VisualEditor from '../components/ide/VisualEditor';
 
+import { type Block } from '../components/ide/VisualEditor/blocks';
+
+export type Input = {
+  valueType: string,
+  fields: [
+    {
+      name: string,
+      value: any,
+    },
+  ],
+};
 export type DynamicBlock = {
   blockJson: Object,
   toolboxBlocksData: {
-    [inputName: string]: {
-      valueType: string,
-      fields: [
-        {
-          name: string,
-          value: any,
-        },
-      ],
-    },
+    [inputName: string]: Input,
   },
 };
 
-function buildToolboxBlock(block: DynamicBlock) {
+function buildToolboxBlock(block: DynamicBlock): React.Node {
   return (
     <block type={block.blockJson.type}>
-      {Object.entries(block.toolboxBlocksData).map(([name, input]) => (
-        <value name={name}>
-          <shadow type={input.valueType}>
-            {input.fields.map(field => (
-              <field name={field.name}>{field.value}</field>
-            ))}
-          </shadow>
-        </value>
-      ))}
+      {Object.entries(block.toolboxBlocksData).map(([name, input0]) => {
+        // $FlowExpectError
+        const input: Input = input0;
+
+        return (
+          <value name={name}>
+            <shadow type={input.valueType}>
+              {input.fields.map(field => (
+                <field name={field.name}>{field.value}</field>
+              ))}
+            </shadow>
+          </value>
+        );
+      })}
     </block>
   );
 }
@@ -53,7 +61,7 @@ export default async function init() {
 
   const emit = baseEmit.bind(null, 'blockly');
 
-  async function addBlock(dynamicBlock: any) {
+  async function addBlock(dynamicBlock: DynamicBlock) {
     // <GSL customizable: blockly-body-addBlock>
     // Your function code goes here
     const { type } = dynamicBlock.blockJson;
