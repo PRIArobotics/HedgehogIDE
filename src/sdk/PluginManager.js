@@ -24,7 +24,7 @@ class PluginManager {
 
   getConsole: () => Promise<ConsoleType>;
   getSimulator: () => Promise<SimulatorType>;
-  sdk;
+  sdk: any;
 
   constructor(
     executor: Executor,
