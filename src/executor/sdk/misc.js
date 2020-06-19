@@ -13,7 +13,7 @@ export function print(text: string) {
   connection.send('misc_print', { text });
 }
 
-export function exit(error: any) {
+export function exit(error: string | void) {
   connection.send('misc_exit', { error });
 }
 

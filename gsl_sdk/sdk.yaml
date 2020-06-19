@@ -5,7 +5,7 @@ modules:
       - name: getConsole
         type: () => Promise<ConsoleType>
       - name: onExit
-        type: () => void | Promise<void>
+        type: (string | void) => void | Promise<void>
       - name: pluginManager
         type: PluginManager
       - name: executor
@@ -18,7 +18,7 @@ modules:
       exit:
         args:
         - name: error
-          type: any
+          type: string | void
       pluginReady:
         args: []
       emit:
