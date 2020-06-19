@@ -56,10 +56,10 @@ export default async function init(getConsole: () => Promise<ConsoleType>, onExi
     // </GSL customizable: misc-extra-return>
     emit,
     handlers: {
-      'misc_print': ({ text }) => print(text),
-      'misc_exit': ({ error }) => exit(error),
-      'misc_pluginReady': ({  }) => pluginReady(),
-      'misc_emit': ({ prefix, event, payload }) => handleEmit(prefix, event, payload),
+      'misc_print': ({ text }: { text: string }) => print(text),
+      'misc_exit': ({ error }: { error: string | void }) => exit(error),
+      'misc_pluginReady': ({  }: {  }) => pluginReady(),
+      'misc_emit': ({ prefix, event, payload }: { prefix: string, event: string, payload: any }) => handleEmit(prefix, event, payload),
     },
   };
 }

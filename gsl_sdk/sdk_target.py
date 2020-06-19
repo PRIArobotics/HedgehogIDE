@@ -18,15 +18,17 @@ def generate_ide_code(model, module, root):
   os.makedirs(os.path.dirname(out_file), exist_ok=True)
 
   def handler_function_code(function):
+    payloadArg = f"{{ {', '.join([arg.name for arg in function.args])} }}: {{ {', '.join([f'{arg.name}: {arg.type}' for arg in function.args])} }}"
+
     if function.hasReply:
       yield from lines(f"""\
-      '{command_for(module, function.name)}': async ({{ {', '.join([arg.name for arg in function.args])} }}, executorTask: ExecutorTask) => {{
+      '{command_for(module, function.name)}': async ({payloadArg}, executorTask: ExecutorTask) => {{
         return executorTask.withReply({function.handlerName}.bind(null, {', '.join([arg.name for arg in function.args])}));
       }},
 """)
     else:
       yield from lines(f"""\
-      '{command_for(module, function.name)}': ({{ {', '.join([arg.name for arg in function.args])} }}) => {function.handlerName}({', '.join([arg.name for arg in function.args])}),
+      '{command_for(module, function.name)}': ({payloadArg}) => {function.handlerName}({', '.join([arg.name for arg in function.args])}),
 """)
 
   def handler_code():

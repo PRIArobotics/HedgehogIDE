@@ -115,7 +115,7 @@ export default async function init() {
     // </GSL customizable: blockly-extra-return>
     emit,
     handlers: {
-      'blockly_addBlock': async ({ dynamicBlock }, executorTask: ExecutorTask) => {
+      'blockly_addBlock': async ({ dynamicBlock }: { dynamicBlock: DynamicBlock }, executorTask: ExecutorTask) => {
         return executorTask.withReply(addBlock.bind(null, dynamicBlock));
       },
     },

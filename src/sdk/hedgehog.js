@@ -73,19 +73,19 @@ export default async function init(getSimulator: () => Promise<SimulatorType>) {
     // </GSL customizable: hedgehog-extra-return>
     emit,
     handlers: {
-      'hedgehog_commands': async ({ robot, cmds }, executorTask: ExecutorTask) => {
+      'hedgehog_commands': async ({ robot, cmds }: { robot: string, cmds: Command[] }, executorTask: ExecutorTask) => {
         return executorTask.withReply(commands.bind(null, robot, cmds));
       },
-      'hedgehog_moveMotor': async ({ robot, port, power }, executorTask: ExecutorTask) => {
+      'hedgehog_moveMotor': async ({ robot, port, power }: { robot: string, port: number, power: number }, executorTask: ExecutorTask) => {
         return executorTask.withReply(moveMotor.bind(null, robot, port, power));
       },
-      'hedgehog_setServo': async ({ robot, port, position }, executorTask: ExecutorTask) => {
+      'hedgehog_setServo': async ({ robot, port, position }: { robot: string, port: number, position: number }, executorTask: ExecutorTask) => {
         return executorTask.withReply(setServo.bind(null, robot, port, position));
       },
-      'hedgehog_getAnalog': async ({ robot, port }, executorTask: ExecutorTask) => {
+      'hedgehog_getAnalog': async ({ robot, port }: { robot: string, port: number }, executorTask: ExecutorTask) => {
         return executorTask.withReply(getAnalog.bind(null, robot, port));
       },
-      'hedgehog_getDigital': async ({ robot, port }, executorTask: ExecutorTask) => {
+      'hedgehog_getDigital': async ({ robot, port }: { robot: string, port: number }, executorTask: ExecutorTask) => {
         return executorTask.withReply(getDigital.bind(null, robot, port));
       },
     },
