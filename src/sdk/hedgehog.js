@@ -6,6 +6,7 @@ import ExecutorTask from '../components/ide/Executor/ExecutorTask';
 import baseEmit from './base';
 // <GSL customizable: hedgehog-imports>
 import Simulator from '../components/ide/Simulator';
+import { type Command } from '../executor/Hedgehog';
 // </GSL customizable: hedgehog-imports>
 
 export default async function init(getSimulator: () => Promise<Simulator>) {

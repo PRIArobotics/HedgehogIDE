@@ -2,7 +2,7 @@
 
 import sdk from './sdk';
 
-type Command = [string, any];
+export type Command = [string, any];
 
 export default class Hedgehog {
   name: string;

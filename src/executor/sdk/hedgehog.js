@@ -4,8 +4,9 @@
 
 import connection from '../connection';
 import eventHandler from '../event';
-// <default GSL customizable: hedgehog-executor-imports>
+// <GSL customizable: hedgehog-executor-imports>
 // Put your imports tags here
+import { type Command } from '../Hedgehog';
 
 // </GSL customizable: hedgehog-executor-imports>
 
