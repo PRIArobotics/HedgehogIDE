@@ -26,7 +26,7 @@ import {
 } from '../../misc/palette';
 import * as hooks from '../../misc/hooks';
 
-import ExecutionAction from '../Ide';
+import { type ExecutionAction } from '../Ide';
 import BlocklyComponent, {
   type Locale as BlocklyLocale,
   type WorkspaceTransform,

@@ -107,7 +107,7 @@ const useStylesMaterial = makeStyles(theme => ({
   },
 }));
 
-type ExecutionAction =
+export type ExecutionAction =
   | {| action: 'EXECUTE', code: string |}
   | {| action: 'TERMINATE', reset: boolean |}
   | {| action: 'RESET' |};

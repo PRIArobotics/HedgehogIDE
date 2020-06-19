@@ -6,7 +6,7 @@ import useStyles from 'isomorphic-style-loader/useStyles';
 import { TerminateIcon, ResetIcon, TerminateAndResetIcon } from '../../misc/palette';
 import * as hooks from '../../misc/hooks';
 
-import ExecutionAction from '../Ide';
+import { type ExecutionAction } from '../Ide';
 import ToolBar from '../ToolBar';
 import ToolBarIconButton from '../ToolBar/ToolBarIconButton';
 import ToolBarItem from '../ToolBar/ToolBarItem';
