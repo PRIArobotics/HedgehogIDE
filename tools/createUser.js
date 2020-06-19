@@ -2,7 +2,6 @@ import readline from 'readline';
 import bcrypt from 'bcryptjs';
 
 import db, { User } from '../src/server/mongodb';
-import { promisify } from '../src/util';
 
 export default async function() {
   const input = readline.createInterface({
@@ -20,8 +19,8 @@ export default async function() {
   input.close();
 
   try {
-    const salt = await promisify(bcrypt.genSalt)(10);
-    const hash = await promisify(bcrypt.hash)(password, salt);
+    const salt = await bcrypt.genSalt(10);
+    const hash = await bcrypt.hash(password, salt);
 
     // Store hash in your password DB.
     password = hash;
