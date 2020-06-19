@@ -49,21 +49,23 @@ export async function populateProject(project: Project, contents: RemoteProjectC
   const files = Object.fromEntries(contents.files.map(({ id, data }) => [id, data]));
 
   async function visitChildren(fileTree: FileTree[], path: string[]) {
-    return Promise.all(fileTree.map(async ({ name, type, itemId }) => {
-      const absolutePath = project.resolve(...path, name);
-      switch (type) {
-        case 'FILE': {
-          const data = filer.Buffer.from(base64.toByteArray(files[itemId]));
-          await fs.promises.writeFile(absolutePath, data);
-          break;
+    return Promise.all(
+      fileTree.map(async ({ name, type, itemId }) => {
+        const absolutePath = project.resolve(...path, name);
+        switch (type) {
+          case 'FILE': {
+            const data = filer.Buffer.from(base64.toByteArray(files[itemId]));
+            await fs.promises.writeFile(absolutePath, data);
+            break;
+          }
+          case 'TREE': {
+            await fs.promises.mkdir(absolutePath);
+            await visitChildren(fileTrees[itemId], [...path, name]);
+            break;
+          }
         }
-        case 'TREE': {
-          await fs.promises.mkdir(absolutePath);
-          await visitChildren(fileTrees[itemId], [...path, name]);
-          break;
-        }
-      }
-    }));
+      }),
+    );
   }
 
   await visitChildren(fileTrees[contents.fileTreeRootId], []);
