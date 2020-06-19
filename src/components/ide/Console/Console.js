@@ -51,7 +51,7 @@ type Instance = {|
   clear(): void,
 |};
 
-function Console(_props: Props, ref: Ref<Instance>) {
+const Console = React.forwardRef<Props, Instance>((_props: Props, ref: Ref<Instance>) => {
   const [{ items }, dispatch] = React.useReducer(consoleReducer, {
     nextKey: 0,
     items: [],
@@ -117,6 +117,7 @@ function Console(_props: Props, ref: Ref<Instance>) {
       </div>
     </div>
   );
-}
+});
 
-export default React.forwardRef<Props, Instance>(Console);
+export type ConsoleType = React.ElementRef<typeof Console>;
+export default Console;

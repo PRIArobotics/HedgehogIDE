@@ -5,14 +5,14 @@
 import ExecutorTask from '../components/ide/Executor/ExecutorTask';
 import baseEmit from './base';
 // <GSL customizable: simulation-imports>
-import Simulator from '../components/ide/Simulator';
+import { type SimulatorType } from '../components/ide/Simulator';
 import Executor from '../components/ide/Executor';
 // </GSL customizable: simulation-imports>
 
 export default async function init(executor: Executor) {
   // <GSL customizable: simulation-init>
   // Your module initialization code
-  function simulatorAdded(simulator: Simulator) {
+  function simulatorAdded(simulator: SimulatorType) {
     simulator.simulation.addSensorHandler((bodyA, bodyB) => {
       emit(executor, 'collision', { bodyA, bodyB });
       emit(executor, `collision_${bodyA.label}`, { bodyA, bodyB });

@@ -3,7 +3,7 @@ modules:
     init:
       args:
       - name: getConsole
-        type: () => Promise<Console>
+        type: () => Promise<ConsoleType>
       - name: onExit
         type: () => void | Promise<void>
       - name: pluginManager
@@ -38,7 +38,7 @@ modules:
     init:
       args:
       - name: getSimulator
-        type: () => Promise<Simulator>
+        type: () => Promise<SimulatorType>
     functions:
       commands:
         hasReply: true

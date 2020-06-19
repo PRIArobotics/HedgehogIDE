@@ -5,7 +5,8 @@ import { fs } from 'filer';
 import type { Task } from '../components/ide/Executor';
 import Executor from '../components/ide/Executor';
 import { Project } from '../core/store/projects';
-import Simulator from '../components/ide/Simulator';
+import { type ConsoleType } from '../components/ide/Console';
+import { type SimulatorType } from '../components/ide/Simulator';
 import initMiscSdk from './misc';
 import initHedgehogSdk from './hedgehog';
 import initBlocklySdk from './blockly';
@@ -21,11 +22,15 @@ class PluginManager {
   plugins: Plugin[] = [];
   pluginReadyResolvers: (() => void)[] = [];
 
-  getConsole: () => Promise<Console>;
-  getSimulator: () => Promise<Simulator>;
+  getConsole: () => Promise<ConsoleType>;
+  getSimulator: () => Promise<SimulatorType>;
   sdk;
 
-  constructor(executor, getConsole, getSimulator) {
+  constructor(
+    executor: Executor,
+    getConsole: () => Promise<ConsoleType>,
+    getSimulator: () => Promise<SimulatorType>,
+  ) {
     this.executor = executor;
     this.getConsole = getConsole;
     this.getSimulator = getSimulator;
@@ -92,7 +97,7 @@ class PluginManager {
     return plugin;
   }
 
-  simulatorAdded(simulator: Simulator) {
+  simulatorAdded(simulator: SimulatorType) {
     this.sdk.simulation.simulatorAdded(simulator);
   }
 

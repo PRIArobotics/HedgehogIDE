@@ -24,7 +24,7 @@ import { SettingsIcon, ConsoleIcon, SimulatorIcon } from '../../misc/palette';
 import * as hooks from '../../misc/hooks';
 import SimpleDialog from '../../misc/SimpleDialog';
 
-import Console from '../Console';
+import Console, { type ConsoleType } from '../Console';
 import Editor from '../Editor';
 import FileTree, {
   type DirReference,
@@ -32,7 +32,7 @@ import FileTree, {
   type FileAction,
   type FileType,
 } from '../FileTree';
-import Simulator from '../Simulator';
+import Simulator, { type SimulatorType } from '../Simulator';
 import VisualEditor from '../VisualEditor';
 import SimulatorEditor, { generateSchemaFromXml } from '../SimulatorEditor';
 import * as SimulationSchema from '../SimulatorEditor/SimulationSchema';
@@ -318,7 +318,7 @@ function Ide({ projectName }: Props) {
     });
   }
 
-  async function waitForSimulator(): Promise<React.ElementRef<typeof Simulator>> {
+  async function waitForSimulator(): Promise<SimulatorType> {
     return /* await */ new Promise(resolve => {
       function tryIt() {
         if (simulatorRef.current) {
@@ -343,7 +343,7 @@ function Ide({ projectName }: Props) {
     });
   }
 
-  async function getSimulator(): Promise<React.ElementRef<typeof Simulator>> {
+  async function getSimulator(): Promise<SimulatorType> {
     addSimulator();
     return /* await */ waitForSimulator();
   }
@@ -363,7 +363,7 @@ function Ide({ projectName }: Props) {
     );
   }
 
-  async function getConsole(): Promise<React.ElementRef<typeof Console>> {
+  async function getConsole(): Promise<ConsoleType> {
     addConsole();
     return /* await */ new Promise(resolve => {
       function tryIt() {

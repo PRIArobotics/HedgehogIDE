@@ -7,10 +7,11 @@ import baseEmit from './base';
 // <GSL customizable: misc-imports>
 import PluginManager from './PluginManager';
 import Executor from '../components/ide/Executor';
+import { type ConsoleType } from '../components/ide/Console';
 
 // </GSL customizable: misc-imports>
 
-export default async function init(getConsole: () => Promise<Console>, onExit: () => void | Promise<void>, pluginManager: PluginManager, executor: Executor) {
+export default async function init(getConsole: () => Promise<ConsoleType>, onExit: () => void | Promise<void>, pluginManager: PluginManager, executor: Executor) {
   // <default GSL customizable: misc-init>
   // Your module initialization code
 
