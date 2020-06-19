@@ -45,6 +45,7 @@ const useRemoteProjectContentQuery = hooks.makeLazyQuery<
 
 export async function populateProject(project: Project, contents: RemoteProjectContents) {
   // prettier-ignore
+  // eslint-disable-next-line no-shadow
   const fileTrees = Object.fromEntries(contents.fileTrees.map(({ id, contents }) => [id, contents]));
   const files = Object.fromEntries(contents.files.map(({ id, data }) => [id, data]));
 
@@ -63,6 +64,9 @@ export async function populateProject(project: Project, contents: RemoteProjectC
             await visitChildren(fileTrees[itemId], [...path, name]);
             break;
           }
+          default:
+            // eslint-disable-next-line no-throw-literal
+            throw 'unreachable';
         }
       }),
     );
