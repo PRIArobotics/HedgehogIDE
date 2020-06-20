@@ -44,6 +44,11 @@ global.navigator.userAgent = global.navigator.userAgent ?? 'all';
 
 const app = express();
 
+let ws = null;
+if (!module.hot) {
+  ws = http.createServer(app);
+}
+
 //
 // If you are using proxy from external machine, you can set TRUST_PROXY env
 // Default is to trust proxy headers only from loopback interface.
@@ -122,6 +127,11 @@ const apolloServer = new ApolloServer({
   }),
 });
 apolloServer.applyMiddleware({ app });
+
+if (ws !== null) {
+  // TODO no subscriptions when using `yarn start`
+  apolloServer.installSubscriptionHandlers(ws);
+}
 
 //
 // Register server-side rendering middleware
@@ -261,10 +271,7 @@ app.use((err, req, res, next) => {
 // Launch the server
 // -----------------------------------------------------------------------------
 
-if (!module.hot) {
-  // TODO no subscriptions when using `yarn start`
-  const ws = http.createServer(app);
-  apolloServer.installSubscriptionHandlers(ws);
+if (ws !== null) {
   ws.listen(config.port, () => {
     console.info(`The server is running at http://localhost:${config.port}/`);
   });
