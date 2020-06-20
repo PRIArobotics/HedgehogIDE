@@ -338,6 +338,9 @@ function Ide({ projectName }: Props) {
       name: 'Simulator',
     });
     waitForSimulator().then(s => {
+      // eslint-disable-next-line no-throw-literal
+      if (pluginManagerRef.current === null) throw 'ref is null';
+
       pluginManagerRef.current.simulatorAdded(s);
     });
   }
@@ -377,21 +380,24 @@ function Ide({ projectName }: Props) {
   }
 
   async function handleExecute(code: string) {
+    const executor = executorRef.current;
     // eslint-disable-next-line no-throw-literal
-    if (executorRef.current === null) throw 'ref is null';
-    const executorRefCurrent = executorRef.current;
+    if (executor === null) throw 'ref is null';
+
+    const pluginManager = pluginManagerRef.current;
+    // eslint-disable-next-line no-throw-literal
+    if (pluginManager === null) throw 'ref is null';
 
     const sdk = {
       misc: await initMiscSdk(
         getConsole,
         error => {
           setRunningTask(null);
-          pluginManagerRef.current
-            .getSdk()
-            .misc.emit(executorRefCurrent, 'programTerminate', { error });
+
+          pluginManager.getSdk().misc.emit(executor, 'programTerminate', { error });
         },
-        pluginManagerRef.current,
-        executorRefCurrent,
+        pluginManager,
+        executor,
       ),
       hedgehog: await initHedgehogSdk(getSimulator),
     };
@@ -403,9 +409,9 @@ function Ide({ projectName }: Props) {
         ...sdk.hedgehog.handlers,
       },
     };
-    setRunningTask(executorRefCurrent.addTask(task));
+    setRunningTask(executor.addTask(task));
 
-    pluginManagerRef.current.getSdk().misc.emit(executorRefCurrent, 'programExecute', null);
+    pluginManager.getSdk().misc.emit(executor, 'programExecute', null);
   }
 
   async function handleTerminate() {
@@ -424,11 +430,20 @@ function Ide({ projectName }: Props) {
   }
 
   function handleReset() {
+    const simulator = simulatorRef.current;
     // eslint-disable-next-line no-throw-literal
-    if (simulatorRef.current === null) throw 'ref is null';
+    if (simulator === null) throw 'ref is null';
 
-    simulatorRef.current.simulation.reset();
-    pluginManagerRef.current.getSdk().misc.emit(executorRef.current, 'simulationReset', null);
+    const executor = executorRef.current;
+    // eslint-disable-next-line no-throw-literal
+    if (executor === null) throw 'ref is null';
+
+    const pluginManager = pluginManagerRef.current;
+    // eslint-disable-next-line no-throw-literal
+    if (pluginManager === null) throw 'ref is null';
+
+    simulator.simulation.reset();
+    pluginManager.getSdk().misc.emit(executor, 'simulationReset', null);
   }
 
   async function handleExecutionAction(action: ExecutionAction) {
