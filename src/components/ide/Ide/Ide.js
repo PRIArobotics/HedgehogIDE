@@ -46,7 +46,7 @@ import useCreateFileDialog from '../FileTree/useCreateFileDialog';
 import useRenameFileDialog from '../FileTree/useRenameFileDialog';
 import useDeleteFileDialog from '../FileTree/useDeleteFileDialog';
 import FileUpload from '../FileTree/FileUpload';
-import FileDownload from '../FileTree/FileDownload';
+import useFileDownload from '../FileTree/useFileDownload';
 import Executor, { type Task } from '../Executor';
 import initMiscSdk from '../../../sdk/misc';
 import initHedgehogSdk from '../../../sdk/hedgehog';
@@ -128,7 +128,6 @@ function Ide({ projectName }: Props) {
   const executorRef = hooks.useElementRef<typeof Executor>();
 
   const fileUploadRef = hooks.useElementRef<typeof FileUpload>();
-  const fileDownloadRef = hooks.useElementRef<typeof FileDownload>();
 
   const pluginManagerRef = React.useRef<PluginManager | null>(null);
 
@@ -641,13 +640,11 @@ function Ide({ projectName }: Props) {
     }
   }
 
+  const fileDownload = useFileDownload();
+
   async function downloadFile(file: FileReference): Promise<void> {
     // eslint-disable-next-line no-throw-literal
-    if (fileDownloadRef.current === null) throw 'ref is null';
-    // eslint-disable-next-line no-throw-literal
     if (project === null) throw 'unreachable';
-
-    const fileDownload = fileDownloadRef.current;
 
     const path = project.resolve(file.path);
     const content = await fs.promises.readFile(path, 'utf8');
@@ -905,7 +902,8 @@ function Ide({ projectName }: Props) {
         <SimpleDialog id="rename-file-dialog" {...renameFile.mountSimpleDialog()} />
         <SimpleDialog id="delete-file-dialog" {...deleteFile.mountSimpleDialog()} />
         <FileUpload ref={fileUploadRef} />
-        <FileDownload ref={fileDownloadRef} />
+        {/* eslint-disable-next-line jsx-a11y/anchor-has-content */}
+        <a {...fileDownload.mountLink()} />
       </Grid>
       {pluginsLoaded && layoutModel !== null ? (
         <Grid item component={SquarePaper} className={classes.editorContainer}>
