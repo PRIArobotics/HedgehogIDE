@@ -61,6 +61,7 @@
     "node-fetch": "^2.2.0",
     "normalize.css": "^8.0.0",
     "peer": "^0.5.3",
+    "peerjs": "^1.2.0",
     "postcss-preset-env": "^6.7.0",
     "pretty-error": "^2.1.1",
     "prop-types": "^15.6.2",
