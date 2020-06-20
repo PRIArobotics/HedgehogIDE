@@ -155,8 +155,8 @@ function Ide({ projectName }: Props) {
   // (the ref could be registered with a new callback,
   // so the callback needs to be stable)
   const attachExecutor = React.useCallback(
-    sim => {
-      executorRef.current = sim;
+    executor => {
+      executorRef.current = executor;
       initializePluginManager();
     },
     [executorRef, project, layoutModel, pluginsLoaded],
