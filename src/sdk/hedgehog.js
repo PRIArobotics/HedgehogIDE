@@ -6,13 +6,16 @@ import ExecutorTask from '../components/ide/Executor/ExecutorTask';
 import baseEmit from './base';
 // <GSL customizable: hedgehog-imports>
 import { type SimulatorType } from '../components/ide/Simulator';
+import { Robot } from '../components/ide/Simulator/Simulation';
 import { type Command } from '../executor/Hedgehog';
 // </GSL customizable: hedgehog-imports>
 
 export default async function init(getSimulator: () => Promise<SimulatorType>) {
   // <GSL customizable: hedgehog-init>
-  async function getRobot(name: string) {
-    return (await getSimulator()).simulation.robots.get(name);
+  async function getRobot(name: string): Promise<Robot> {
+    const robot = (await getSimulator()).simulation.robots.get(name);
+    if (robot === undefined) throw new Error(`no robot named "${name}"`);
+    return robot;
   }
   // </GSL customizable: hedgehog-init>
 
