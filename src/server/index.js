@@ -17,6 +17,8 @@ import PrettyError from 'pretty-error';
 import { ApolloServer, makeExecutableSchema } from 'apollo-server-express';
 import { getDataFromTree } from '@apollo/react-ssr';
 import http from 'http';
+import { ExpressPeerServer } from 'peer';
+
 import createApolloClient from '../core/createApolloClient';
 import App from '../components/App';
 import { ErrorPageWithoutStyle } from '../routes/error/ErrorPage';
@@ -158,6 +160,13 @@ app.get('/app-shell.html', async (_req, res, next) => {
     next(err);
   }
 });
+
+if (ws !== null) {
+  // TODO no peerjs server when using `yarn start`
+  const peerServer = ExpressPeerServer(ws, { path: '/peerjs' });
+
+  app.use('/peerjs', peerServer);
+}
 
 app.get('*', async (req, res, next) => {
   try {
