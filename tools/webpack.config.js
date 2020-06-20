@@ -407,6 +407,7 @@ const serverConfig = {
 
   entry: {
     server: ['@babel/polyfill', './src/server/index.js'],
+    runTool: ['@babel/polyfill', './src/tools/run.js'],
   },
 
   output: {
