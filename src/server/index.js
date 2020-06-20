@@ -91,7 +91,7 @@ app.use((err, req, res, next) => {
 // -----------------------------------------------------------------------------
 // https://github.com/graphql/express-graphql#options
 
-const server = new ApolloServer({
+const apolloServer = new ApolloServer({
   ...schema,
   subscriptions: {
     path: '/subscriptions',
@@ -121,7 +121,7 @@ const server = new ApolloServer({
     user: req.user,
   }),
 });
-server.applyMiddleware({ app });
+apolloServer.applyMiddleware({ app });
 
 //
 // Register server-side rendering middleware
@@ -264,7 +264,7 @@ app.use((err, req, res, next) => {
 if (!module.hot) {
   // TODO no subscriptions when using `yarn start`
   const ws = http.createServer(app);
-  server.installSubscriptionHandlers(ws);
+  apolloServer.installSubscriptionHandlers(ws);
   ws.listen(config.port, () => {
     console.info(`The server is running at http://localhost:${config.port}/`);
   });
