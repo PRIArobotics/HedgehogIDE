@@ -86,11 +86,9 @@ function WebRTC(_props: Props) {
       rightPeer.on('error', err => console.log(err));
 
       const leftId = await new Promise(resolve => leftPeer.on('open', resolve));
+      const rightId = await new Promise(resolve => rightPeer.on('open', resolve));
       // eslint-disable-next-line no-console
-      console.log(leftId);
-      await new Promise(resolve => setTimeout(resolve, 500));
-      // eslint-disable-next-line no-console
-      console.log('trying to connect...');
+      console.log(leftId, rightId);
       const rightConn = rightPeer.connect(leftId);
       const leftConn = await new Promise(resolve => leftPeer.on('connection', resolve));
       // eslint-disable-next-line no-console
