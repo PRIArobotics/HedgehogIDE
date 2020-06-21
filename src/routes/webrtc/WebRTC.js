@@ -17,7 +17,7 @@ function msg(type: 'IN' | 'OUT', text: string): Message {
 }
 
 type ChatProps = {|
-  channel: RTCDataChannel,
+  channel: RTCDataChannel | null,
   sendText: string,
 |};
 
@@ -28,11 +28,15 @@ function Chat({
   const [messages, setMessages] = React.useState<Message[]>([]);
 
   function handleSend() {
+    if (channel === null) return;
+
     setMessages(oldMessages => [...oldMessages, msg('OUT', sendText)]);
     channel.send(sendText);
   }
 
   React.useEffect(() => {
+    if (channel === null) return undefined;
+
     channel.onmessage = ({ data: text }) => {
       setMessages(oldMessages => [...oldMessages, msg('IN', text)]);
     };
@@ -47,9 +51,12 @@ function Chat({
       {messages.map(({ type, text }) => (
         <div className={`${s.msg} ${type === 'OUT' ? s.mine : s.theirs}`}>{text}</div>
       ))}
-      <button type="button" onClick={handleSend}>
-        Send
-      </button>
+      <div>
+        <button type="button" onClick={handleSend}>
+          Send
+        </button>
+        Connected: {channel !== null ? 'yes' : 'no'}
+      </div>
     </Paper>
   );
 }
@@ -57,8 +64,8 @@ function Chat({
 type Props = {||};
 
 function WebRTC(_props: Props) {
-  const [left, setLeft] = React.useState<ChatProps | null>(null);
-  const [right, setRight] = React.useState<ChatProps | null>(null);
+  const [left, setLeft] = React.useState<RTCDataChannel | null>(null);
+  const [right, setRight] = React.useState<RTCDataChannel | null>(null);
 
   React.useEffect(() => {
     (async () => {
@@ -99,23 +106,16 @@ function WebRTC(_props: Props) {
       // eslint-disable-next-line no-console
       console.log('channel connected @ right');
 
-      setLeft({
-        channel: leftChannel,
-        sendText: 'Hello',
-      });
-
-      setRight({
-        channel: rightChannel,
-        sendText: 'There',
-      });
+      setLeft(leftChannel);
+      setRight(rightChannel);
     })();
   }, []);
 
   return (
     <div className={s.root}>
       <div className={s.container}>
-        {left === null ? null : <Chat {...left} />}
-        {right === null ? null : <Chat {...right} />}
+        <Chat channel={left} sendText="Hello" />
+        <Chat channel={right} sendText="There" />
       </div>
     </div>
   );
