@@ -5,7 +5,12 @@ import withStyles from 'isomorphic-style-loader/withStyles';
 
 import Paper from '@material-ui/core/Paper';
 
+import Peer, { DataConnection } from 'peerjs';
+
 import s from './WebRTC.scss';
+
+// TODO for now, use the central 0.peerjs.com server during development
+const peerOptions = __DEV__ ? {} : { host: '/', path: '/peerjs' };
 
 type Message = {|
   type: 'IN' | 'OUT',
@@ -17,34 +22,36 @@ function msg(type: 'IN' | 'OUT', text: string): Message {
 }
 
 type ChatProps = {|
-  channel: RTCDataChannel | null,
+  connection: DataConnection | null,
   sendText: string,
 |};
 
 function Chat({
-  channel,
+  connection,
   sendText,
 }: ChatProps) {
   const [messages, setMessages] = React.useState<Message[]>([]);
 
   function handleSend() {
-    if (channel === null) return;
+    if (connection === null) return;
 
     setMessages(oldMessages => [...oldMessages, msg('OUT', sendText)]);
-    channel.send(sendText);
+    connection.send(sendText);
   }
 
   React.useEffect(() => {
-    if (channel === null) return undefined;
+    if (connection === null) return undefined;
 
-    channel.onmessage = ({ data: text }) => {
+    function handleRecv(text) {
       setMessages(oldMessages => [...oldMessages, msg('IN', text)]);
-    };
+    }
+
+    connection.on('data', handleRecv);
 
     return () => {
-      channel.onmessage = undefined;
+      connection.off('data', handleRecv);
     }
-  }, [channel]);
+  }, [connection]);
 
   return (
     <Paper className={s.chat} square>
@@ -55,7 +62,7 @@ function Chat({
         <button type="button" onClick={handleSend}>
           Send
         </button>
-        Connected: {channel !== null ? 'yes' : 'no'}
+        Connected: {connection !== null ? 'yes' : 'no'}
       </div>
     </Paper>
   );
@@ -64,58 +71,35 @@ function Chat({
 type Props = {||};
 
 function WebRTC(_props: Props) {
-  const [left, setLeft] = React.useState<RTCDataChannel | null>(null);
-  const [right, setRight] = React.useState<RTCDataChannel | null>(null);
+  const [left, setLeft] = React.useState<DataConnection | null>(null);
+  const [right, setRight] = React.useState<DataConnection | null>(null);
 
   React.useEffect(() => {
     (async () => {
-      const leftConnection = new RTCPeerConnection(null);
-      const rightConnection = new RTCPeerConnection(null);
-      leftConnection.onicecandidate = async ({ candidate }) => {
-        await rightConnection.addIceCandidate(candidate);
-        // eslint-disable-next-line no-console
-        console.log('left ICE candidate added to right');
-      };
-      rightConnection.onicecandidate = async ({ candidate }) => {
-        await leftConnection.addIceCandidate(candidate);
-        // eslint-disable-next-line no-console
-        console.log('right ICE candidate added to left');
-      };
+      const leftPeer = new Peer(peerOptions);
+      const rightPeer = new Peer(peerOptions);
+      console.log('peers created');
+      leftPeer.on('error', err => console.log(err));
+      rightPeer.on('error', err => console.log(err));
 
-      // eslint-disable-next-line no-console
-      console.log('left & right created');
+      const leftId = await new Promise(resolve => leftPeer.on('open', resolve));
+      console.log(leftId);
+      await new Promise(resolve => setTimeout(resolve, 500));
+      console.log('trying to connect...');
+      const rightConn = rightPeer.connect(leftId);
+      const leftConn = await new Promise(resolve => leftPeer.on('connection', resolve));
+      console.log('peers connected');
 
-      const leftChannel = leftConnection.createDataChannel('chat');
-      // eslint-disable-next-line no-console
-      console.log('channel created @ left');
-
-      const offer = await leftConnection.createOffer();
-      leftConnection.setLocalDescription(offer);
-      rightConnection.setRemoteDescription(offer);
-      // eslint-disable-next-line no-console
-      console.log('left offered right');
-      const answer = await rightConnection.createAnswer();
-      // eslint-disable-next-line no-console
-      console.log('right answered left');
-      rightConnection.setLocalDescription(answer);
-      leftConnection.setRemoteDescription(answer);
-
-      const rightChannel = await new Promise(resolve => {
-        rightConnection.ondatachannel = ({ channel }) => resolve(channel);
-      });
-      // eslint-disable-next-line no-console
-      console.log('channel connected @ right');
-
-      setLeft(leftChannel);
-      setRight(rightChannel);
+      setLeft(leftConn);
+      setRight(rightConn);
     })();
   }, []);
 
   return (
     <div className={s.root}>
       <div className={s.container}>
-        <Chat channel={left} sendText="Hello" />
-        <Chat channel={right} sendText="There" />
+        <Chat connection={left} sendText="Hello" />
+        <Chat connection={right} sendText="There" />
       </div>
     </div>
   );
