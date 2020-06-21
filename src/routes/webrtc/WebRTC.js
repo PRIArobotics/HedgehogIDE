@@ -12,145 +12,131 @@ type Message = {|
   text: string,
 |};
 
+function msg(type: 'IN' | 'OUT', text: string): Message {
+  return { type, text };
+}
+
 type ChatProps = {|
   messages: Message[],
-  connection: RTCPeerConnection,
-  channel: RTCDataChannel,
   onSend: (text: string) => void | Promise<void>,
   sendText: string,
 |};
 
-const Chat = ({
+function Chat({
   messages,
-  connection: _connection,
-  channel: _channel,
   onSend,
   sendText,
-}: ChatProps) => (
-  <Paper className={s.chat} square>
-    {messages.map(({ type, text }) => (
-      <div className={`${s.msg} ${type === 'OUT' ? s.mine : s.theirs}`}>{text}</div>
-    ))}
-    <button type="button" onClick={() => onSend(sendText)}>
-      Send
-    </button>
-  </Paper>
-);
+}: ChatProps) {
+  return (
+    <Paper className={s.chat} square>
+      {messages.map(({ type, text }) => (
+        <div className={`${s.msg} ${type === 'OUT' ? s.mine : s.theirs}`}>{text}</div>
+      ))}
+      <button type="button" onClick={() => onSend(sendText)}>
+        Send
+      </button>
+    </Paper>
+  );
+}
 
-const msg = (type: 'IN' | 'OUT', text: string): Message => ({ type, text });
+type Props = {||};
 
-type PropTypes = {||};
-type StateTypes = {|
-  left: ChatProps | null,
-  right: ChatProps | null,
-|};
+function WebRTC(_props: Props) {
+  const [left, setLeft] = React.useState<ChatProps | null>(null);
+  const [right, setRight] = React.useState<ChatProps | null>(null);
 
-class WebRTC extends React.Component<PropTypes, StateTypes> {
-  state = {
-    left: null,
-    right: null,
-  };
+  React.useEffect(() => {
+    const setters = {
+      left: setLeft,
+      right: setRight,
+    }
 
-  async createConnections() {
-    const leftConnection = new RTCPeerConnection(null);
-    const rightConnection = new RTCPeerConnection(null);
-    leftConnection.onicecandidate = async ({ candidate }) => {
-      await rightConnection.addIceCandidate(candidate);
-      // eslint-disable-next-line no-console
-      console.log('left ICE candidate added to right');
-    };
-    rightConnection.onicecandidate = async ({ candidate }) => {
-      await leftConnection.addIceCandidate(candidate);
-      // eslint-disable-next-line no-console
-      console.log('right ICE candidate added to left');
-    };
+    function handleRecv(to: string) {
+      const setState = setters[to];
 
-    // eslint-disable-next-line no-console
-    console.log('left & right created');
+      return ({ data: text }) => {
+        setState(oldState => ({
+          ...oldState,
+          messages: [...oldState.messages, msg('IN', text)],
+        }));
+      }
+    }
 
-    const leftChannel = leftConnection.createDataChannel('chat');
-    // eslint-disable-next-line no-console
-    console.log('channel created @ left');
+    function handleSend(from: string, channel: RTCDataChannel) {
+      const setState = setters[from];
 
-    const offer = await leftConnection.createOffer();
-    leftConnection.setLocalDescription(offer);
-    rightConnection.setRemoteDescription(offer);
-    // eslint-disable-next-line no-console
-    console.log('left offered right');
-    const answer = await rightConnection.createAnswer();
-    // eslint-disable-next-line no-console
-    console.log('right answered left');
-    rightConnection.setLocalDescription(answer);
-    leftConnection.setRemoteDescription(answer);
-
-    const rightChannel = await new Promise(resolve => {
-      rightConnection.ondatachannel = ({ channel }) => resolve(channel);
-    });
-    // eslint-disable-next-line no-console
-    console.log('channel connected @ right');
-
-    leftChannel.onmessage = ({ data }) => this.handleRecv('left', data);
-    rightChannel.onmessage = ({ data }) => this.handleRecv('right', data);
-
-    this.setState({
-      left: {
-        messages: [],
-        connection: leftConnection,
-        channel: leftChannel,
-        onSend: this.handleSend('left'),
-        sendText: 'Hello',
-      },
-      right: {
-        messages: [],
-        connection: rightConnection,
-        channel: rightChannel,
-        onSend: this.handleSend('right'),
-        sendText: 'There',
-      },
-    });
-  }
-
-  componentDidMount() {
-    this.createConnections();
-  }
-
-  handleRecv(to: string, text: string) {
-    this.setState(oldState => {
-      const chat = oldState[to];
-      return {
-        [to]: {
-          ...chat,
-          messages: [...chat.messages, msg('IN', text)],
-        },
+      return (text: string) => {
+        setState(oldState => ({
+          ...oldState,
+          messages: [...oldState.messages, msg('OUT', text)],
+        }));
+        channel.send(text);
       };
-    });
-  }
+    }
 
-  handleSend(from: string) {
-    return (text: string) => {
-      this.state[from].channel.send(text);
-      this.setState(oldState => {
-        const chat = oldState[from];
-        return {
-          [from]: {
-            ...chat,
-            messages: [...chat.messages, msg('OUT', text)],
-          },
-        };
+    (async () => {
+      const leftConnection = new RTCPeerConnection(null);
+      const rightConnection = new RTCPeerConnection(null);
+      leftConnection.onicecandidate = async ({ candidate }) => {
+        await rightConnection.addIceCandidate(candidate);
+        // eslint-disable-next-line no-console
+        console.log('left ICE candidate added to right');
+      };
+      rightConnection.onicecandidate = async ({ candidate }) => {
+        await leftConnection.addIceCandidate(candidate);
+        // eslint-disable-next-line no-console
+        console.log('right ICE candidate added to left');
+      };
+
+      // eslint-disable-next-line no-console
+      console.log('left & right created');
+
+      const leftChannel = leftConnection.createDataChannel('chat');
+      // eslint-disable-next-line no-console
+      console.log('channel created @ left');
+
+      const offer = await leftConnection.createOffer();
+      leftConnection.setLocalDescription(offer);
+      rightConnection.setRemoteDescription(offer);
+      // eslint-disable-next-line no-console
+      console.log('left offered right');
+      const answer = await rightConnection.createAnswer();
+      // eslint-disable-next-line no-console
+      console.log('right answered left');
+      rightConnection.setLocalDescription(answer);
+      leftConnection.setRemoteDescription(answer);
+
+      const rightChannel = await new Promise(resolve => {
+        rightConnection.ondatachannel = ({ channel }) => resolve(channel);
       });
-    };
-  }
+      // eslint-disable-next-line no-console
+      console.log('channel connected @ right');
 
-  render() {
-    return (
-      <div className={s.root}>
-        <div className={s.container}>
-          {this.state.left === null ? null : <Chat {...this.state.left} />}
-          {this.state.right === null ? null : <Chat {...this.state.right} />}
-        </div>
+      leftChannel.onmessage = handleRecv('left');
+      rightChannel.onmessage = handleRecv('right');
+
+      setLeft({
+        messages: [],
+        onSend: handleSend('left', leftChannel),
+        sendText: 'Hello',
+      });
+
+      setRight({
+        messages: [],
+        onSend: handleSend('right', rightChannel),
+        sendText: 'There',
+      });
+    })();
+  }, []);
+
+  return (
+    <div className={s.root}>
+      <div className={s.container}>
+        {left === null ? null : <Chat {...left} />}
+        {right === null ? null : <Chat {...right} />}
       </div>
-    );
-  }
+    </div>
+  );
 }
 
 export default withStyles(s)(WebRTC);
