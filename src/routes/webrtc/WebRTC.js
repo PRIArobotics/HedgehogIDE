@@ -26,10 +26,7 @@ type ChatProps = {|
   sendText: string,
 |};
 
-function Chat({
-  connection,
-  sendText,
-}: ChatProps) {
+function Chat({ connection, sendText }: ChatProps) {
   const [messages, setMessages] = React.useState<Message[]>([]);
 
   function handleSend() {
@@ -50,13 +47,16 @@ function Chat({
 
     return () => {
       connection.off('data', handleRecv);
-    }
+    };
   }, [connection]);
 
   return (
     <Paper className={s.chat} square>
-      {messages.map(({ type, text }) => (
-        <div className={`${s.msg} ${type === 'OUT' ? s.mine : s.theirs}`}>{text}</div>
+      {messages.map(({ type, text }, index) => (
+        // eslint-disable-next-line react/no-array-index-key
+        <div key={index} className={`${s.msg} ${type === 'OUT' ? s.mine : s.theirs}`}>
+          {text}
+        </div>
       ))}
       <div>
         <button type="button" onClick={handleSend}>
@@ -78,16 +78,22 @@ function WebRTC(_props: Props) {
     (async () => {
       const leftPeer = new Peer(peerOptions);
       const rightPeer = new Peer(peerOptions);
+      // eslint-disable-next-line no-console
       console.log('peers created');
+      // eslint-disable-next-line no-console
       leftPeer.on('error', err => console.log(err));
+      // eslint-disable-next-line no-console
       rightPeer.on('error', err => console.log(err));
 
       const leftId = await new Promise(resolve => leftPeer.on('open', resolve));
+      // eslint-disable-next-line no-console
       console.log(leftId);
       await new Promise(resolve => setTimeout(resolve, 500));
+      // eslint-disable-next-line no-console
       console.log('trying to connect...');
       const rightConn = rightPeer.connect(leftId);
       const leftConn = await new Promise(resolve => leftPeer.on('connection', resolve));
+      // eslint-disable-next-line no-console
       console.log('peers connected');
 
       setLeft(leftConn);
