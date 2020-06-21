@@ -17,22 +17,37 @@ function msg(type: 'IN' | 'OUT', text: string): Message {
 }
 
 type ChatProps = {|
-  messages: Message[],
-  onSend: (text: string) => void | Promise<void>,
+  channel: RTCDataChannel,
   sendText: string,
 |};
 
 function Chat({
-  messages,
-  onSend,
+  channel,
   sendText,
 }: ChatProps) {
+  const [messages, setMessages] = React.useState<Message[]>([]);
+
+  function handleSend() {
+    setMessages(oldMessages => [...oldMessages, msg('OUT', sendText)]);
+    channel.send(sendText);
+  }
+
+  React.useEffect(() => {
+    channel.onmessage = ({ data: text }) => {
+      setMessages(oldMessages => [...oldMessages, msg('IN', text)]);
+    };
+
+    return () => {
+      channel.onmessage = undefined;
+    }
+  }, [channel]);
+
   return (
     <Paper className={s.chat} square>
       {messages.map(({ type, text }) => (
         <div className={`${s.msg} ${type === 'OUT' ? s.mine : s.theirs}`}>{text}</div>
       ))}
-      <button type="button" onClick={() => onSend(sendText)}>
+      <button type="button" onClick={handleSend}>
         Send
       </button>
     </Paper>
@@ -46,34 +61,6 @@ function WebRTC(_props: Props) {
   const [right, setRight] = React.useState<ChatProps | null>(null);
 
   React.useEffect(() => {
-    const setters = {
-      left: setLeft,
-      right: setRight,
-    }
-
-    function handleRecv(to: string) {
-      const setState = setters[to];
-
-      return ({ data: text }) => {
-        setState(oldState => ({
-          ...oldState,
-          messages: [...oldState.messages, msg('IN', text)],
-        }));
-      }
-    }
-
-    function handleSend(from: string, channel: RTCDataChannel) {
-      const setState = setters[from];
-
-      return (text: string) => {
-        setState(oldState => ({
-          ...oldState,
-          messages: [...oldState.messages, msg('OUT', text)],
-        }));
-        channel.send(text);
-      };
-    }
-
     (async () => {
       const leftConnection = new RTCPeerConnection(null);
       const rightConnection = new RTCPeerConnection(null);
@@ -112,18 +99,13 @@ function WebRTC(_props: Props) {
       // eslint-disable-next-line no-console
       console.log('channel connected @ right');
 
-      leftChannel.onmessage = handleRecv('left');
-      rightChannel.onmessage = handleRecv('right');
-
       setLeft({
-        messages: [],
-        onSend: handleSend('left', leftChannel),
+        channel: leftChannel,
         sendText: 'Hello',
       });
 
       setRight({
-        messages: [],
-        onSend: handleSend('right', rightChannel),
+        channel: rightChannel,
         sendText: 'There',
       });
     })();
