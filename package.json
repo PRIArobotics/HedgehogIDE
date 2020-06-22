@@ -189,6 +189,7 @@
     "mongod": "mongod --dbpath mongodb/data/ --bind_ip 127.0.0.1",
     "serve": "babel-node tools/run runServer",
     "start": "babel-node tools/run start",
+    "start-peer": "peerjs --port 3010 --path /peerjs",
     "create-user": "babel-node tools/run createUser"
   }
 }

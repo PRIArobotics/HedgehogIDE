@@ -9,8 +9,14 @@ import Peer, { DataConnection } from 'peerjs';
 
 import s from './WebRTC.scss';
 
-// TODO for now, use the central 0.peerjs.com server during development
-const peerOptions = __DEV__ ? {} : { host: '/', path: '/peerjs' };
+const peerOptions = __DEV__ ? {
+  host: 'localhost',
+  port: 3010,
+  path: '/peerjs',
+} : {
+  host: '/',
+  path: '/peerjs',
+};
 
 type Message = {|
   type: 'IN' | 'OUT',
@@ -76,6 +82,8 @@ function WebRTC(_props: Props) {
 
   React.useEffect(() => {
     (async () => {
+      // eslint-disable-next-line no-console
+      console.log('options:', peerOptions);
       const leftPeer = new Peer(peerOptions);
       const rightPeer = new Peer(peerOptions);
       // eslint-disable-next-line no-console
