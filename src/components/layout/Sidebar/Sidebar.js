@@ -68,7 +68,7 @@ function NavItem({ title, titleMsg, target, icon: TheIcon }: NavItemProps) {
 function Sidebar() {
   return (
     <List>
-      <NavItem titleMsg={messages.ideTooltip} target="/projects" icon={IdeIcon} />
+      <NavItem titleMsg={messages.ideTooltip} target="/" icon={IdeIcon} />
       <NavItem titleMsg={messages.helpTooltip} target="/help" icon={HelpIcon} />
       <NavItem titleMsg={messages.contestTooltip} target="/contest" icon={ContestIcon} />
       {/* <NavItem titleMsg={messages.controlsTooltip} target="/control" icon={ControlsIcon} /> */}

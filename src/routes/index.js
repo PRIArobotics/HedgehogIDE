@@ -17,20 +17,11 @@ const routes = {
   children: [
     {
       path: '',
-      load: () => import(/* webpackChunkName: 'home' */ './home'),
+      load: () => import(/* webpackChunkName: 'ide' */ './projects'),
     },
     {
-      path: '/projects',
-      children: [
-        {
-          path: '',
-          load: () => import(/* webpackChunkName: 'ide' */ './projects'),
-        },
-        {
-          path: '/:id',
-          load: () => import(/* webpackChunkName: 'ide' */ './ide'),
-        },
-      ],
+      path: '/projects/:id',
+      load: () => import(/* webpackChunkName: 'ide' */ './ide'),
     },
     {
       path: '/contact',
