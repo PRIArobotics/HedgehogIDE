@@ -63,6 +63,11 @@ const def: GraphqlDefShape = {
       name: String!
       tree: FileTreeInput!
     }
+
+    input ProjectUpdateInput {
+      name: String
+      isPublic: Boolean
+    }
     `,
   ],
   queries: [
@@ -75,6 +80,7 @@ const def: GraphqlDefShape = {
     `
     createProject(project: ProjectInput!) : ID! @auth
     deleteProjectById(projectId: ID!): ID @auth
+    updateProject(projectId: ID!, project: ProjectUpdateInput!): ID @auth
     `,
   ],
   resolvers: () => ({
@@ -180,6 +186,18 @@ const def: GraphqlDefShape = {
         } catch (err) {
           console.error(err);
           throw new ApolloError('Failed to delete project.');
+        }
+      },
+      async updateProject(_parent, { projectId, project }) {
+        try {
+          const res = await Project.update({ _id: projectId }, { ...project });
+          if (res.n === 0) {
+            return null;
+          }
+          return projectId;
+        } catch (err) {
+          console.error(err);
+          throw new ApolloError('Failed to update project.');
         }
       },
     },
