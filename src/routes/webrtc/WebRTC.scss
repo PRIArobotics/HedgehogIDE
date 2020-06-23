@@ -43,3 +43,16 @@
     }
   }
 }
+
+.remote-cursor {
+  position: absolute;
+  z-index: 4;
+  border-radius: 0;
+  border-left: 2px solid #cc0000;
+}
+
+.remote-selection {
+  position: absolute;
+  background-color: #ff7788;
+  z-index: 3;
+}

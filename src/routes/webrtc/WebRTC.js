@@ -7,6 +7,12 @@ import Paper from '@material-ui/core/Paper';
 
 import Peer, { DataConnection } from 'peerjs';
 
+import AceEditor from 'react-ace';
+import 'ace-builds/webpack-resolver';
+import 'ace-builds/src-noconflict/mode-javascript';
+import 'ace-builds/src-noconflict/ext-language_tools';
+import 'ace-builds/src-noconflict/theme-github';
+
 import s from './WebRTC.scss';
 
 const peerOptions = __DEV__ ? {
@@ -74,6 +80,85 @@ function Chat({ connection, sendText }: ChatProps) {
   );
 }
 
+type EditorProps = {||};
+
+function Editor(_props: Props) {
+  const [content, setContent] = React.useState<string | null>(null);
+
+  React.useEffect(() => {
+    setContent('foo');
+  }, []);
+
+  function positionToString({ row, column }) {
+    return `${row}:${column}`;
+  }
+
+  function rangeToString({ start, end }) {
+    return `(${positionToString(start)}, ${positionToString(end)})`;
+  }
+
+  return content !== null && (
+    <AceEditor
+      mode="javascript"
+      theme="github"
+      name="editor"
+      width={'800px'}
+      height={'600px'}
+      // onLoad={onLoad}
+      onChange={(value, event) => {
+        console.log(event);
+        setContent(value);
+      }}
+      fontSize={16}
+      onSelectionChange={(selection, _event) => {
+        const ranges = selection.getAllRanges();
+        console.log(ranges.map(rangeToString).join(', '));
+      }}
+      onCursorChange={(selection, _event) => {
+        const cursor = selection.getCursor();
+        console.log(positionToString(cursor));
+      }}
+      markers={[
+        {
+          startRow: 0,
+          startCol: 1,
+          endRow: 0,
+          endCol: 3,
+          className: s['remote-selection'],
+          type: 'text',
+        },
+        {
+          startRow: 0,
+          startCol: 3,
+          endRow: 0,
+          endCol: 4,
+          className: s['remote-cursor'],
+          type: 'text',
+        },
+      ]}
+      // onValidate={onValidate}
+      value={content}
+      showGutter
+      highlightActiveLine
+      autoScrollEditorIntoView
+      style={{
+        position: 'absolute',
+      }}
+      editorProps={{
+        // $blockScrolling: Infinity,
+      }}
+      setOptions={{
+        // useWorker: false,
+        enableBasicAutocompletion: true,
+        enableLiveAutocompletion: true,
+        // enableSnippets: enableSnippets,
+        showLineNumbers: true,
+        tabSize: 2,
+      }}
+    />
+  );
+}
+
 type Props = {||};
 
 function WebRTC(_props: Props) {
@@ -115,6 +200,7 @@ function WebRTC(_props: Props) {
         <Chat connection={left} sendText="Hello" />
         <Chat connection={right} sendText="There" />
       </div>
+      <Editor />
     </div>
   );
 }
