@@ -1,7 +1,7 @@
 // @flow
 
 import * as React from 'react';
-import withStyles from 'isomorphic-style-loader/withStyles';
+import useStyles from 'isomorphic-style-loader/useStyles';
 
 import Paper from '@material-ui/core/Paper';
 
@@ -107,6 +107,8 @@ function WebRTC(_props: Props) {
     })();
   }, []);
 
+  useStyles(s);
+
   return (
     <div className={s.root}>
       <div className={s.container}>
@@ -117,4 +119,4 @@ function WebRTC(_props: Props) {
   );
 }
 
-export default withStyles(s)(WebRTC);
+export default WebRTC;
