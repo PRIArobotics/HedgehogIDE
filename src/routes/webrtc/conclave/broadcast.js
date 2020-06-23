@@ -41,22 +41,24 @@ class Broadcast {
   startPeerHeartBeat(peer) {
     let timeoutId = 0;
     const heartbeat = () => {
-      timeoutId = setTimeout( heartbeat, 20000 );
-      if ( peer.socket._wsOpen() ) {
-          peer.socket.send( {type:'HEARTBEAT'} );
+      timeoutId = setTimeout(heartbeat, 20000);
+      if (peer.socket._wsOpen()) {
+        peer.socket.send({ type: 'HEARTBEAT' });
       }
     };
 
     heartbeat();
 
     return {
-      start : function () {
-        if ( timeoutId === 0 ) { heartbeat(); }
+      start() {
+        if (timeoutId === 0) {
+          heartbeat();
+        }
       },
-      stop : function () {
-        clearTimeout( timeoutId );
+      stop() {
+        clearTimeout(timeoutId);
         timeoutId = 0;
-      }
+      },
     };
   }
 
@@ -69,14 +71,14 @@ class Broadcast {
       if (targetPeerId == 0) {
         this.controller.addToNetwork(id, this.controller.siteId);
       } else {
-        this.requestConnection(targetPeerId, id, this.controller.siteId)
+        this.requestConnection(targetPeerId, id, this.controller.siteId);
       }
     });
   }
 
   onError() {
-    this.peer.on("error", err => {
-      const pid = String(err).replace("Error: Could not connect to peer ", "");
+    this.peer.on('error', err => {
+      const pid = String(err).replace('Error: Could not connect to peer ', '');
       this.removeFromConnections(pid);
       console.log(err.type);
       if (!this.peer.disconnected) {
@@ -96,11 +98,13 @@ class Broadcast {
     const conn = this.peer.connect(target);
     this.addToOutConns(conn);
     conn.on('open', () => {
-      conn.send(JSON.stringify({
-        type: 'connRequest',
-        peerId: peerId,
-        siteId: siteId,
-      }));
+      conn.send(
+        JSON.stringify({
+          type: 'connRequest',
+          peerId,
+          siteId,
+        }),
+      );
     });
   }
 
@@ -123,11 +127,13 @@ class Broadcast {
   forwardConnRequest(peerId, siteId) {
     const connected = this.outConns.filter(conn => conn.peer !== peerId);
     const randomIdx = Math.floor(Math.random() * connected.length);
-    connected[randomIdx].send(JSON.stringify({
-      type: 'connRequest',
-      peerId: peerId,
-      siteId: siteId,
-    }));
+    connected[randomIdx].send(
+      JSON.stringify({
+        type: 'connRequest',
+        peerId,
+        siteId,
+      }),
+    );
   }
 
   addToOutConns(connection) {
@@ -144,16 +150,16 @@ class Broadcast {
 
   addToNetwork(peerId, siteId) {
     this.send({
-      type: "add to network",
+      type: 'add to network',
       newPeer: peerId,
-      newSite: siteId
+      newSite: siteId,
     });
   }
 
   removeFromNetwork(peerId) {
     this.send({
-      type: "remove from network",
-      oldPeer: peerId
+      type: 'remove from network',
+      oldPeer: peerId,
     });
     this.controller.removeFromNetwork(peerId);
   }
@@ -181,7 +187,7 @@ class Broadcast {
   }
 
   onPeerConnection() {
-    this.peer.on('connection', (connection) => {
+    this.peer.on('connection', connection => {
       this.onConnection(connection);
       this.onVideoCall(connection);
       this.onData(connection);
@@ -200,7 +206,7 @@ class Broadcast {
       peerId: this.peer.id,
       initialStruct: this.controller.crdt.struct,
       initialVersions: this.controller.vector.versions,
-      network: this.controller.network
+      network: this.controller.network,
     });
 
     if (connBack.open) {
@@ -240,12 +246,14 @@ class Broadcast {
 
   onStream(callObj) {
     callObj.on('stream', stream => {
-      if (this.currentStream) { this.currentStream.close(); }
+      if (this.currentStream) {
+        this.currentStream.close();
+      }
       this.currentStream = callObj;
 
       this.controller.streamVideo(stream, callObj);
 
-      callObj.on('close', () => this.onStreamClose(callObj.peer))
+      callObj.on('close', () => this.onStreamClose(callObj.peer));
     });
   }
 
@@ -260,7 +268,7 @@ class Broadcast {
     connection.on('data', data => {
       const dataObj = JSON.parse(data);
 
-      switch(dataObj.type) {
+      switch (dataObj.type) {
         case 'connRequest':
           this.evaluateRequest(dataObj.peerId, dataObj.siteId);
           break;
@@ -284,9 +292,7 @@ class Broadcast {
   }
 
   randomId() {
-    const possConns = this.inConns.filter(conn => {
-      return this.peer.id !== conn.peer;
-    });
+    const possConns = this.inConns.filter(conn => this.peer.id !== conn.peer);
     const randomIdx = Math.floor(Math.random() * possConns.length);
     if (possConns[randomIdx]) {
       return possConns[randomIdx].peer;
@@ -300,7 +306,9 @@ class Broadcast {
       this.removeFromConnections(connection.peer);
       if (connection.peer == this.controller.urlId) {
         const id = this.randomId();
-        if (id) { this.controller.updatePageURL(id); }
+        if (id) {
+          this.controller.updatePageURL(id);
+        }
       }
       if (!this.hasReachedMax()) {
         this.controller.findNewTarget();

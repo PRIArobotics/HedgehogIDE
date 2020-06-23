@@ -1,33 +1,41 @@
+import UUID from 'uuid/v1';
 import CRDT from './crdtLinear';
 import * as Util from './utilLinear';
-import UUID from 'uuid/v1';
 
 function mockController() {
   return {
     siteId: UUID(),
-    broadcastInsertion: function() {},
-    broadcastDeletion: function() {},
-    insertIntoEditor: function() {},
-    deleteFromEditor: function() {},
+    broadcastInsertion() {},
+    broadcastDeletion() {},
+    insertIntoEditor() {},
+    deleteFromEditor() {},
     vector: {
       localVersion: {
-        counter: 0
+        counter: 0,
       },
-      increment: function() {
+      increment() {
         this.localVersion.counter++;
-      }
-    }
-  }
+      },
+    },
+  };
 }
 
-let multipliers, bases, boundaries, strategies, crdt, xs, ys, data, name, title;
+let multipliers;
+let bases;
+let boundaries;
+let strategies;
+let crdt;
+let xs;
+let ys;
+let data;
+let name;
+let title;
 const ops = [100, 500, 1000, 3000, 5000];
 const funcs = [
   [Util.insertRandom, 'Inserted Randomly'],
   [Util.insertEnd, 'Inserted at End'],
-  [Util.insertBeginning, 'Inserted at Beginning']
+  [Util.insertBeginning, 'Inserted at Beginning'],
 ];
-
 
 // comparing multipliers
 
@@ -48,13 +56,12 @@ multipliers.forEach(mult => {
       crdt.struct = [];
     });
     name = `multiplier: ${mult}, ${func[1]}`;
-    data.push({x: xs, y: ys, type: 'scatter', name: name});
+    data.push({ x: xs, y: ys, type: 'scatter', name });
   });
 });
 
-title = 'Different Base Multiplications (base = 32, boundary = 10, strategy = random)'
-Plotly.newPlot('g0', data, {title: title, height: 600});
-
+title = 'Different Base Multiplications (base = 32, boundary = 10, strategy = random)';
+Plotly.newPlot('g0', data, { title, height: 600 });
 
 // comparing base
 
@@ -75,13 +82,12 @@ bases.forEach(base => {
       crdt.struct = [];
     });
     name = `base: ${base}, ${func[1]}`;
-    data.push({x: xs, y: ys, type: 'scatter', name: name});
+    data.push({ x: xs, y: ys, type: 'scatter', name });
   });
 });
 
 title = 'Different Starting Bases (mult = 2, boundary = 10, strategy = random)';
-Plotly.newPlot('g1', data, {title: title, height: 600});
-
+Plotly.newPlot('g1', data, { title, height: 600 });
 
 // comparing boundary
 
@@ -102,13 +108,12 @@ boundaries.forEach(boundary => {
       crdt.struct = [];
     });
     name = `boundary: ${boundary}, ${func[1]}`;
-    data.push({x: xs, y: ys, type: 'scatter', name: name});
+    data.push({ x: xs, y: ys, type: 'scatter', name });
   });
 });
 
 title = 'Different Boundaries (mult = 2, base = 32, strategy = random)';
-Plotly.newPlot('g2', data, {title: title, height: 600});
-
+Plotly.newPlot('g2', data, { title, height: 600 });
 
 // comparing strategy
 
@@ -129,9 +134,9 @@ strategies.forEach(strat => {
       crdt.struct = [];
     });
     name = `strategy: ${strat}, ${func[1]}`;
-    data.push({x: xs, y: ys, type: 'scatter', name: name});
+    data.push({ x: xs, y: ys, type: 'scatter', name });
   });
 });
 
 title = 'Different Strategies (mult = 2, base = 32, boundary = 10)';
-Plotly.newPlot('g3', data, {title: title, height: 600});
+Plotly.newPlot('g3', data, { title, height: 600 });

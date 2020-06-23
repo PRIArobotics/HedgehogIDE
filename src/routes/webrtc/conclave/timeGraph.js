@@ -1,34 +1,43 @@
+import UUID from 'uuid/v1';
 import CRDT from './crdtLinear';
 import * as Util from './utilLinear';
-import UUID from 'uuid/v1';
 
 function mockController() {
   return {
     siteId: UUID(),
-    broadcastInsertion: function() {},
-    broadcastDeletion: function() {},
-    insertIntoEditor: function() {},
-    deleteFromEditor: function() {},
+    broadcastInsertion() {},
+    broadcastDeletion() {},
+    insertIntoEditor() {},
+    deleteFromEditor() {},
     vector: {
       localVersion: {
-        counter: 0
+        counter: 0,
       },
-      increment: function() {
+      increment() {
         this.localVersion.counter++;
-      }
-    }
-  }
+      },
+    },
+  };
 }
 
-let funcs, crdt, xs, ys, data, name, title;
+let funcs;
+let crdt;
+let xs;
+let ys;
+let data;
+let name;
+let title;
 const bases = [32, 2064];
 const boundaries = [10, 100];
 const ops = [1000, 5000, 10000, 20000];
 
-
 // local insertions
 
-funcs = [[Util.insertRandom, 'random'], [Util.insertEnd, 'at end'], [Util.insertBeginning, 'at beginning']];
+funcs = [
+  [Util.insertRandom, 'random'],
+  [Util.insertEnd, 'at end'],
+  [Util.insertBeginning, 'at beginning'],
+];
 data = [];
 
 funcs.forEach(func => {
@@ -45,18 +54,21 @@ funcs.forEach(func => {
         crdt.struct = [];
       });
       name = `base: ${base}, boundary: ${boundary}, ${func[1]}`;
-      data.push({x: xs, y: ys, type: 'scatter', name: name});
+      data.push({ x: xs, y: ys, type: 'scatter', name });
     });
   });
 });
 
 title = 'Local Insertions, Different Bases and Boundaries (mult = 2, strategy = random)';
-Plotly.newPlot('g0', data, {title: title, height: 600});
-
+Plotly.newPlot('g0', data, { title, height: 600 });
 
 // local deletions
 
-funcs = [[Util.deleteRandom, 'random'], [Util.deleteEnd, 'at end'], [Util.deleteEnd, 'at beginning']];
+funcs = [
+  [Util.deleteRandom, 'random'],
+  [Util.deleteEnd, 'at end'],
+  [Util.deleteEnd, 'at beginning'],
+];
 data = [];
 
 funcs.forEach(func => {
@@ -74,18 +86,21 @@ funcs.forEach(func => {
         crdt.struct = [];
       });
       name = `base: ${base}, boundary: ${boundary}, ${func[1]}`;
-      data.push({x: xs, y: ys, type: 'scatter', name: name});
+      data.push({ x: xs, y: ys, type: 'scatter', name });
     });
   });
 });
 
 title = 'Local Deletions, Different Bases and Boundaries (mult = 2, strategy = random)';
-Plotly.newPlot('g1', data, {title: title, height: 600});
-
+Plotly.newPlot('g1', data, { title, height: 600 });
 
 // remote insertions
 
-funcs = [[Util.remoteInsertRandom, 'random'], [Util.remoteInsertEnd, 'at end'], [Util.remoteInsertBeginning, 'at beginning']];
+funcs = [
+  [Util.remoteInsertRandom, 'random'],
+  [Util.remoteInsertEnd, 'at end'],
+  [Util.remoteInsertBeginning, 'at beginning'],
+];
 data = [];
 
 funcs.forEach(func => {
@@ -102,18 +117,21 @@ funcs.forEach(func => {
         crdt.struct = [];
       });
       name = `base: ${base}, boundary: ${boundary}, ${func[1]}`;
-      data.push({x: xs, y: ys, type: 'scatter', name: name});
+      data.push({ x: xs, y: ys, type: 'scatter', name });
     });
   });
 });
 
 title = 'Remote Insertions, Different Bases and Boundaries (mult = 2, strategy = random)';
-Plotly.newPlot('g2', data, {title: title, height: 600});
-
+Plotly.newPlot('g2', data, { title, height: 600 });
 
 // remote deletions
 
-funcs = [[Util.remoteDeleteRandom, 'random'], [Util.remoteDeleteEnd, 'at end'], [Util.remoteDeleteBeginning, 'at beginning']];
+funcs = [
+  [Util.remoteDeleteRandom, 'random'],
+  [Util.remoteDeleteEnd, 'at end'],
+  [Util.remoteDeleteBeginning, 'at beginning'],
+];
 data = [];
 
 funcs.forEach(func => {
@@ -130,10 +148,10 @@ funcs.forEach(func => {
         ys.push(func[0](crdt, op));
       });
       name = `base: ${base}, boundary: ${boundary}, ${func[1]}`;
-      data.push({x: xs, y: ys, type: 'scatter', name: name});
+      data.push({ x: xs, y: ys, type: 'scatter', name });
     });
   });
 });
 
 title = 'Remote Deletions, Different Bases and Boundaries (mult = 2, strategy = random)';
-Plotly.newPlot('g3', data, {title: title, height: 600});
+Plotly.newPlot('g3', data, { title, height: 600 });

@@ -6,7 +6,7 @@ function hashAlgo(input, collection) {
   // return Math.floor((sum * 13) / 7) % collection.length;
 
   const justNums = input.toLowerCase().replace(/[a-z\-]/g, '');
-  return Math.floor(justNums * 13) % collection.length
+  return Math.floor(justNums * 13) % collection.length;
 }
 
 function generateItemFromHash(siteId, collection) {
@@ -15,7 +15,4 @@ function generateItemFromHash(siteId, collection) {
   return collection[hashIdx];
 }
 
-export {
-  hashAlgo,
-  generateItemFromHash
-}
+export { hashAlgo, generateItemFromHash };

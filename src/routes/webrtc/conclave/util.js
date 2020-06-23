@@ -1,45 +1,46 @@
+import UUID from 'uuid/v1';
 import Char from './char';
 import CRDT from './crdt';
-import UUID from 'uuid/v1';
 
 export function mockController() {
   return {
     siteId: UUID(),
-    broadcastInsertion: function() {},
-    broadcastDeletion: function() {},
-    insertIntoEditor: function() {},
-    deleteFromEditor: function() {},
+    broadcastInsertion() {},
+    broadcastDeletion() {},
+    insertIntoEditor() {},
+    deleteFromEditor() {},
     vector: {
       getLocalVersion: () => {},
       localVersion: {
-        counter: 0
+        counter: 0,
       },
-      increment: function() {
+      increment() {
         this.localVersion.counter++;
-      }
-    }
-  }
+      },
+    },
+  };
 }
 
 function insertRandom(crdt, numberOfOperations) {
   let counter = 0;
   let line = 0;
-  let ch, pos;
+  let ch;
+  let pos;
   const start = Date.now();
 
   for (let i = 0; i < numberOfOperations; i++) {
     if (counter === 100) {
-      pos = { line: line, ch: counter}
+      pos = { line, ch: counter };
       crdt.handleLocalInsert('\n', pos);
 
       line++;
       counter = 0;
     } else {
       ch = Math.floor(Math.random() * counter);
-      pos = { line: line, ch: ch };
+      pos = { line, ch };
       crdt.handleLocalInsert('a', pos);
-``
-      counter++
+      ``;
+      counter++;
     }
   }
 
@@ -64,13 +65,16 @@ function remoteInsert(crdt, chars) {
 function deleteRandom(crdt) {
   const totalChars = crdt.totalChars();
   const start = Date.now();
-  let line, ch, startPos, endPos;
+  let line;
+  let ch;
+  let startPos;
+  let endPos;
 
-  for(let i = totalChars; i > 0; i--) {
-    line = Math.floor(Math.random() * crdt.struct.length)
+  for (let i = totalChars; i > 0; i--) {
+    line = Math.floor(Math.random() * crdt.struct.length);
     ch = Math.floor(Math.random() * crdt.struct[line].length);
-    startPos = { line: line, ch: ch }
-    endPos = { line: line, ch: ch + 1 }
+    startPos = { line, ch };
+    endPos = { line, ch: ch + 1 };
     crdt.handleLocalDelete(startPos, endPos);
   }
 
@@ -96,21 +100,22 @@ function remoteDelete(crdt, chars) {
 function insertBeginning(crdt, numberOfOperations) {
   let counter = 0;
   let line = 0;
-  let ch, pos;
+  let ch;
+  let pos;
   const start = Date.now();
 
   for (let i = 0; i < numberOfOperations; i++) {
     if (counter === 100) {
-      pos = { line: line, ch: counter };
+      pos = { line, ch: counter };
       crdt.handleLocalInsert('\n', pos);
 
       line++;
       counter = 0;
     } else {
-      pos = { line: line, ch: 0 };
+      pos = { line, ch: 0 };
       crdt.handleLocalInsert('a', pos);
 
-      counter++
+      counter++;
     }
   }
 
@@ -123,8 +128,8 @@ function deleteBeginning(crdt) {
   const start = Date.now();
 
   for (let i = totalChars; i > 0; i--) {
-    let startPos = { line: 0, ch: 0 };
-    let endPos = { line: 0, ch: 1};
+    const startPos = { line: 0, ch: 0 };
+    const endPos = { line: 0, ch: 1 };
 
     crdt.handleLocalDelete(startPos, endPos);
   }
@@ -148,11 +153,12 @@ function remoteDeleteBeginning(crdt) {
 function insertEnd(crdt, numberOfOperations) {
   let counter = 0;
   let line = 0;
-  let ch, pos;
+  let ch;
+  let pos;
   const start = Date.now();
 
   for (let i = 0; i < numberOfOperations; i++) {
-    pos = { line: line, ch: counter };
+    pos = { line, ch: counter };
 
     if (counter === 100) {
       crdt.handleLocalInsert('\n', pos);
@@ -162,7 +168,7 @@ function insertEnd(crdt, numberOfOperations) {
     } else {
       crdt.handleLocalInsert('a', pos);
 
-      counter++
+      counter++;
     }
   }
 
@@ -181,8 +187,8 @@ function deleteEnd(crdt) {
     lineNum = crdt.struct.length - 1;
     line = crdt.struct[lineNum];
     ch = line[line.length - 1];
-    let startPos = { line: lineNum, ch: ch };
-    let endPos = { line: lineNum, ch: ch + 1};
+    const startPos = { line: lineNum, ch };
+    const endPos = { line: lineNum, ch: ch + 1 };
 
     crdt.handleLocalDelete(startPos, endPos);
   }
@@ -204,7 +210,7 @@ function remoteDeleteEnd(crdt) {
 }
 
 function generateChars(numOps) {
-  let crdts = [];
+  const crdts = [];
   let crdt;
 
   // Create crdts based on number of operations requested
@@ -217,11 +223,9 @@ function generateChars(numOps) {
   const numOpsPerCRDT = numOps / crdts.length;
   crdts.forEach(crdt => insertRandom(crdt, numOpsPerCRDT));
 
-  let chars = [];
+  const chars = [];
   const structsWithLines = crdts.map(crdt => crdt.struct);
-  const structs = structsWithLines.map(struct => {
-    return [].concat.apply([], struct);
-  });
+  const structs = structsWithLines.map(struct => [].concat.apply([], struct));
 
   for (let i = 0; i < structs[0].length; i++) {
     structs.forEach(struct => chars.push(struct[i]));
@@ -241,13 +245,18 @@ function shuffle(a) {
 function avgIdLength(crdt) {
   let numChars = 0;
 
-  const idArray = crdt.struct.map(line => line.map(char => char.position.map(id => id.digit).join('')));
-  const digitLengthSum = idArray.reduce((acc, line) => {
-    return acc + line.reduce((acc, id) => {
-      numChars++;
-      return acc + id.length;
-    }, 0);
-  }, 0);
+  const idArray = crdt.struct.map(line =>
+    line.map(char => char.position.map(id => id.digit).join('')),
+  );
+  const digitLengthSum = idArray.reduce(
+    (acc, line) =>
+      acc +
+      line.reduce((acc, id) => {
+        numChars++;
+        return acc + id.length;
+      }, 0),
+    0,
+  );
 
   return Math.floor(digitLengthSum / numChars);
 }
@@ -256,12 +265,15 @@ function avgPosLength(crdt) {
   let numChars = 0;
 
   const posArray = crdt.struct.map(line => line.map(char => char.position.length));
-  const posLengthSum = posArray.reduce((acc, line) => {
-    return acc + line.reduce((acc, len) => {
-      numChars++;
-      return acc + len;
-    }, 0);
-  }, 0);
+  const posLengthSum = posArray.reduce(
+    (acc, line) =>
+      acc +
+      line.reduce((acc, len) => {
+        numChars++;
+        return acc + len;
+      }, 0),
+    0,
+  );
 
   return Math.floor(posLengthSum / numChars);
 }
@@ -277,8 +289,8 @@ function addPadding(value, cellSize) {
     value = value.slice(0, cellSize);
   }
 
-  const padding = ((cellSize - value.length) / 2);
-  return (' ').repeat(Math.floor(padding)) + value + (' ').repeat(Math.ceil(padding));
+  const padding = (cellSize - value.length) / 2;
+  return ' '.repeat(Math.floor(padding)) + value + ' '.repeat(Math.ceil(padding));
 }
 
 function addRowWithId(operations, crdt, func) {
@@ -290,8 +302,7 @@ function addRowWithId(operations, crdt, func) {
   const cell5 = addPadding(avgPosLength(crdt), CELL_5_SIZE);
 
   return `|${cell1}|${cell2}|${cell3}|${cell4}|${cell5}|
-${'-'.repeat(95)}`
-
+${'-'.repeat(95)}`;
 }
 
 function addRow(operations, crdt, func) {
@@ -301,7 +312,7 @@ function addRow(operations, crdt, func) {
   const cell3 = addPadding(average(totalTime, operations), CELL_3_SIZE);
 
   return `|${cell1}|${cell2}|${cell3}|
-${'-'.repeat(62)}`
+${'-'.repeat(62)}`;
 }
 
 function getTimestamp() {
@@ -331,5 +342,5 @@ export {
   remoteDeleteEnd,
   deleteBeginning,
   remoteDeleteBeginning,
-  getTimestamp
+  getTimestamp,
 };

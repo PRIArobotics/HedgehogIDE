@@ -1,20 +1,20 @@
+import Peer from 'peerjs';
+import UUID from 'uuid/v1';
 import CRDT from './crdt';
 import VersionVector from './versionVector';
-import Peer from 'peerjs';
 import Broadcast from './broadcast';
 import Identifier from './identifier';
 import Char from './char';
-import UUID from 'uuid/v1';
 
 class UserBot {
   constructor(peerId, targetPeerId, script, mde) {
     this.siteId = 'bot-1';
     this.peer = new Peer(peerId, {
-  			host: location.hostname,
-  			port: location.port || (location.protocol === 'https:' ? 443 : 80),
-  			path: '/peerjs',
-  			debug: 3
-  		});
+      host: location.hostname,
+      port: location.port || (location.protocol === 'https:' ? 443 : 80),
+      path: '/peerjs',
+      debug: 3,
+    });
     this.vector = new VersionVector(this.siteId);
     this.crdt = new CRDT(this);
     this.buffer = [];
@@ -30,9 +30,9 @@ class UserBot {
 
     this.connection.on('open', () => {
       const message = JSON.stringify({
-        type: "add to network",
+        type: 'add to network',
         newPeer: this.peer.id,
-        newSite: this.siteId
+        newSite: this.siteId,
       });
       this.connection.send(message);
     });
@@ -44,10 +44,10 @@ class UserBot {
     let line = 0;
     let ch = 0;
 
-    self.intervalId = setInterval(function() {
-      let index = self.counter;
-      let val = self.script[self.counter++];
-      let pos = { line: line, ch: ch };
+    self.intervalId = setInterval(() => {
+      const index = self.counter;
+      const val = self.script[self.counter++];
+      const pos = { line, ch };
       ch++;
 
       if (!val) {
@@ -106,7 +106,7 @@ class UserBot {
   }
 
   applyOperation(operation) {
-    const char = operation.char;
+    const { char } = operation;
     const identifiers = char.position.map(pos => new Identifier(pos.digit, pos.siteId));
     const newChar = new Char(char.value, char.counter, char.siteId, identifiers);
 
@@ -122,8 +122,8 @@ class UserBot {
   broadcastInsertion(char) {
     const operation = JSON.stringify({
       type: 'insert',
-      char: char,
-      version: this.vector.getLocalVersion()
+      char,
+      version: this.vector.getLocalVersion(),
     });
 
     if (this.connection.open) {
@@ -138,8 +138,8 @@ class UserBot {
   broadcastDeletion(char) {
     const operation = JSON.stringify({
       type: 'delete',
-      char: char,
-      version: this.vector.getLocalVersion()
+      char,
+      version: this.vector.getLocalVersion(),
     });
 
     if (this.connection.open) {

@@ -9,7 +9,7 @@ class VersionVector {
   // initialize Version/Clock for local site and insert into SortedArray vector object
   constructor(siteId) {
     // this.versions = new SortedArray(this.siteIdComparator);
-    this.versions = []
+    this.versions = [];
     this.localVersion = new Version(siteId);
     this.versions.push(this.localVersion);
   }
@@ -22,7 +22,9 @@ class VersionVector {
   // if vector doesn't contain version, it's created and added to vector
   // create exceptions if need be.
   update(incomingVersion) {
-    const existingVersion = this.versions.find(version => incomingVersion.siteId === version.siteId);
+    const existingVersion = this.versions.find(
+      version => incomingVersion.siteId === version.siteId,
+    );
 
     if (!existingVersion) {
       const newVersion = new Version(incomingVersion.siteId);
@@ -54,7 +56,7 @@ class VersionVector {
   getLocalVersion() {
     return {
       siteId: this.localVersion.siteId,
-      counter: this.localVersion.counter
+      counter: this.localVersion.counter,
     };
   }
 }

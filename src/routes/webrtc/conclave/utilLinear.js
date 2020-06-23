@@ -1,30 +1,30 @@
+import UUID from 'uuid/v1';
 import Char from './char';
 import CRDT from './crdtLinear';
-import UUID from 'uuid/v1';
 
 function mockController() {
   return {
     siteId: UUID(),
-    broadcastInsertion: function() {},
-    broadcastDeletion: function() {},
-    insertIntoEditor: function() {},
-    deleteFromEditor: function() {},
+    broadcastInsertion() {},
+    broadcastDeletion() {},
+    insertIntoEditor() {},
+    deleteFromEditor() {},
     vector: {
       localVersion: {
-        counter: 0
+        counter: 0,
       },
-      increment: function() {
+      increment() {
         this.localVersion.counter++;
-      }
-    }
-  }
+      },
+    },
+  };
 }
 
 function insertRandom(crdt, numberOfOperations) {
   const start = Date.now();
   let index;
 
-  for(let i = 0; i < numberOfOperations; i++) {
+  for (let i = 0; i < numberOfOperations; i++) {
     index = Math.floor(Math.random() * i);
     crdt.handleLocalInsert('a', index);
   }
@@ -43,7 +43,7 @@ function remoteInsertRandom(crdt, numberOfOperations) {
 function insertBeginning(crdt, numberOfOperations) {
   const start = Date.now();
 
-  for(let i = 0; i < numberOfOperations; i++) {
+  for (let i = 0; i < numberOfOperations; i++) {
     crdt.handleLocalInsert('a', 0);
   }
 
@@ -54,7 +54,7 @@ function insertBeginning(crdt, numberOfOperations) {
 function insertEnd(crdt, numberOfOperations) {
   const start = Date.now();
 
-  for(let i = 0; i < numberOfOperations; i++) {
+  for (let i = 0; i < numberOfOperations; i++) {
     crdt.handleLocalInsert('a', i);
   }
 
@@ -88,7 +88,7 @@ function deleteRandom(crdt) {
   const start = Date.now();
   let index;
 
-  for(let i = crdt.struct.length - 1; i >= 0; i--) {
+  for (let i = crdt.struct.length - 1; i >= 0; i--) {
     index = Math.floor(Math.random() * i);
     crdt.handleLocalDelete(index);
   }
@@ -98,7 +98,7 @@ function deleteRandom(crdt) {
 }
 
 function remoteDeleteRandom(crdt) {
-  let toDel = [];
+  const toDel = [];
   crdt.struct.forEach(char => toDel.push(char));
   const randomToDel = shuffle(toDel);
   return remoteDelete(crdt, randomToDel);
@@ -107,7 +107,7 @@ function remoteDeleteRandom(crdt) {
 function deleteBeginning(crdt) {
   const start = Date.now();
 
-  for(let i = crdt.struct.length - 1; i >= 0; i--) {
+  for (let i = crdt.struct.length - 1; i >= 0; i--) {
     crdt.handleLocalDelete(0);
   }
 
@@ -116,7 +116,7 @@ function deleteBeginning(crdt) {
 }
 
 function remoteDeleteBeginning(crdt) {
-  let toDel = [];
+  const toDel = [];
   crdt.struct.forEach(char => toDel.push(char));
   return remoteDelete(crdt, toDel);
 }
@@ -124,7 +124,7 @@ function remoteDeleteBeginning(crdt) {
 function deleteEnd(crdt) {
   const start = Date.now();
 
-  for(let i = crdt.struct.length - 1; i >= 0; i--) {
+  for (let i = crdt.struct.length - 1; i >= 0; i--) {
     crdt.handleLocalDelete(i);
   }
 
@@ -133,7 +133,7 @@ function deleteEnd(crdt) {
 }
 
 function remoteDeleteEnd(crdt) {
-  let toDel = [];
+  const toDel = [];
   crdt.struct.forEach(char => toDel.push(char));
   const reverseToDel = toDel.reverse();
   return remoteDelete(crdt, reverseToDel);
@@ -168,7 +168,7 @@ function generateRemoteStructs(numberOfOperations) {
 }
 
 function generateRemoteCRDTs(num) {
-  let CRDTs = [];
+  const CRDTs = [];
   let crdt;
   for (let i = 0; i < num; i++) {
     crdt = new CRDT(mockController());
@@ -187,14 +187,14 @@ function shuffle(a) {
 
 function avgIdLength(crdt) {
   const idArray = crdt.struct.map(char => char.position.map(id => id.digit).join(''));
-  const digitLengthSum = idArray.reduce((acc, id) => { return acc + id.length }, 0);
+  const digitLengthSum = idArray.reduce((acc, id) => acc + id.length, 0);
 
   return Math.floor(digitLengthSum / idArray.length);
 }
 
 function avgPosLength(crdt) {
   const posArray = crdt.struct.map(char => char.position.length);
-  const posLengthSum = posArray.reduce((acc, len) => { return acc + len }, 0);
+  const posLengthSum = posArray.reduce((acc, len) => acc + len, 0);
 
   return Math.floor(posLengthSum / posArray.length);
 }

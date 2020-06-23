@@ -22,7 +22,7 @@ export default class RemoteCursor {
     this.cursor = document.createElement('div');
     this.cursor.classList.add('remote-cursor');
     this.cursor.style.backgroundColor = color;
-    this.cursor.style.height = textHeight + 'px';
+    this.cursor.style.height = `${textHeight}px`;
   }
 
   createFlag(color, name) {
@@ -31,21 +31,21 @@ export default class RemoteCursor {
     this.flag = document.createElement('span');
     this.flag.classList.add('flag');
     this.flag.style.backgroundColor = color;
-    this.flag.appendChild(cursorName)
+    this.flag.appendChild(cursorName);
   }
 
   set(position) {
     this.detach();
 
     const coords = this.mde.codemirror.cursorCoords(position, 'local');
-    this.cursor.style.left = (coords.left >= 0 ? coords.left : 0) + 'px';
+    this.cursor.style.left = `${coords.left >= 0 ? coords.left : 0}px`;
     this.mde.codemirror.getDoc().setBookmark(position, { widget: this.cursor });
     this.lastPosition = position;
   }
 
   detach() {
     if (this.cursor.parentElement) {
-        this.cursor.parentElement.remove();
+      this.cursor.parentElement.remove();
     }
   }
 }

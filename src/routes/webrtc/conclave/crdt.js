@@ -2,7 +2,7 @@ import Identifier from './identifier';
 import Char from './char';
 
 class CRDT {
-  constructor(controller, base=32, boundary=10, strategy='random') {
+  constructor(controller, base = 32, boundary = 10, strategy = 'random') {
     this.controller = controller;
     this.vector = controller.vector;
     this.struct = [[]];
@@ -32,7 +32,7 @@ class CRDT {
     }
 
     // if inserting a newline, split line into two lines
-    if (char.value === "\n") {
+    if (char.value === '\n') {
       const lineAfter = this.struct[pos.line].splice(pos.ch);
 
       if (lineAfter.length === 0) {
@@ -54,11 +54,11 @@ class CRDT {
     if (startPos.line !== endPos.line) {
       // delete chars on first line from startPos.ch to end of line
       newlineRemoved = true;
-      chars = this.deleteMultipleLines(startPos, endPos)
+      chars = this.deleteMultipleLines(startPos, endPos);
 
       // single-line deletes
     } else {
-      chars = this.deleteSingleLine(startPos, endPos)
+      chars = this.deleteSingleLine(startPos, endPos);
 
       if (chars.find(char => char.value === '\n')) newlineRemoved = true;
     }
@@ -95,8 +95,8 @@ class CRDT {
   }
 
   deleteSingleLine(startPos, endPos) {
-    let charNum = endPos.ch - startPos.ch;
-    let chars = this.struct[startPos.line].splice(startPos.ch, charNum);
+    const charNum = endPos.ch - startPos.ch;
+    const chars = this.struct[startPos.line].splice(startPos.ch, charNum);
 
     return chars;
   }
@@ -127,7 +127,7 @@ class CRDT {
 
     this.struct[pos.line].splice(pos.ch, 1);
 
-    if (char.value === "\n" && this.struct[pos.line + 1]) {
+    if (char.value === '\n' && this.struct[pos.line + 1]) {
       this.mergeLines(pos.line);
     }
 
@@ -141,11 +141,17 @@ class CRDT {
 
   findPosition(char) {
     let minLine = 0;
-    let totalLines = this.struct.length;
+    const totalLines = this.struct.length;
     let maxLine = totalLines - 1;
-    let lastLine = this.struct[maxLine];
-    let currentLine, midLine, charIdx, minCurrentLine, lastChar,
-          maxCurrentLine, minLastChar, maxLastChar;
+    const lastLine = this.struct[maxLine];
+    let currentLine;
+    let midLine;
+    let charIdx;
+    let minCurrentLine;
+    let lastChar;
+    let maxCurrentLine;
+    let minLastChar;
+    let maxLastChar;
 
     // check if struct is empty or char is less than first char
     if (this.isEmpty() || char.compareTo(this.struct[0][0]) < 0) {
@@ -166,7 +172,7 @@ class CRDT {
       lastChar = currentLine[currentLine.length - 1];
 
       if (char.compareTo(lastChar) === 0) {
-        return {line: midLine, ch: currentLine.length - 1}
+        return { line: midLine, ch: currentLine.length - 1 };
       } else if (char.compareTo(lastChar) < 0) {
         maxLine = midLine;
       } else {
@@ -192,7 +198,8 @@ class CRDT {
   findIndexInLine(char, line) {
     let left = 0;
     let right = line.length - 1;
-    let mid, compareNum;
+    let mid;
+    let compareNum;
 
     if (line.length === 0 || char.compareTo(line[left]) < 0) {
       return left;
@@ -225,15 +232,21 @@ class CRDT {
   // could be refactored to look prettier
   findInsertPosition(char) {
     let minLine = 0;
-    let totalLines = this.struct.length;
+    const totalLines = this.struct.length;
     let maxLine = totalLines - 1;
-    let lastLine = this.struct[maxLine];
-    let currentLine, midLine, charIdx, minCurrentLine, lastChar,
-          maxCurrentLine, minLastChar, maxLastChar;
+    const lastLine = this.struct[maxLine];
+    let currentLine;
+    let midLine;
+    let charIdx;
+    let minCurrentLine;
+    let lastChar;
+    let maxCurrentLine;
+    let minLastChar;
+    let maxLastChar;
 
     // check if struct is empty or char is less than first char
     if (this.isEmpty() || char.compareTo(this.struct[0][0]) <= 0) {
-      return { line: 0, ch: 0 }
+      return { line: 0, ch: 0 };
     }
 
     lastChar = lastLine[lastLine.length - 1];
@@ -250,7 +263,7 @@ class CRDT {
       lastChar = currentLine[currentLine.length - 1];
 
       if (char.compareTo(lastChar) === 0) {
-        return {line: midLine, ch: currentLine.length - 1}
+        return { line: midLine, ch: currentLine.length - 1 };
       } else if (char.compareTo(lastChar) < 0) {
         maxLine = midLine;
       } else {
@@ -274,10 +287,10 @@ class CRDT {
   }
 
   findEndPosition(lastChar, lastLine, totalLines) {
-    if (lastChar.value === "\n") {
+    if (lastChar.value === '\n') {
       return { line: totalLines, ch: 0 };
     } else {
-      return { line: totalLines - 1, ch: lastLine.length}
+      return { line: totalLines - 1, ch: lastLine.length };
     }
   }
 
@@ -285,7 +298,8 @@ class CRDT {
   findInsertIndexInLine(char, line) {
     let left = 0;
     let right = line.length - 1;
-    let mid, compareNum;
+    let mid;
+    let compareNum;
 
     if (line.length === 0 || char.compareTo(line[left]) < 0) {
       return left;
@@ -314,13 +328,13 @@ class CRDT {
   }
 
   findPosBefore(pos) {
-    let ch = pos.ch;
-    let line = pos.line;
+    let { ch } = pos;
+    let { line } = pos;
 
     if (ch === 0 && line === 0) {
       return [];
     } else if (ch === 0 && line !== 0) {
-      line = line - 1;
+      line -= 1;
       ch = this.struct[line].length;
     }
 
@@ -328,18 +342,18 @@ class CRDT {
   }
 
   findPosAfter(pos) {
-    let ch = pos.ch;
-    let line = pos.line;
+    let { ch } = pos;
+    let { line } = pos;
 
-    let numLines = this.struct.length;
-    let numChars = (this.struct[line] && this.struct[line].length) || 0;
+    const numLines = this.struct.length;
+    const numChars = (this.struct[line] && this.struct[line].length) || 0;
 
-    if ((line === numLines - 1) && (ch === numChars)) {
+    if (line === numLines - 1 && ch === numChars) {
       return [];
-    } else if ((line < numLines - 1) && (ch === numChars)) {
-      line = line + 1;
+    } else if (line < numLines - 1 && ch === numChars) {
+      line += 1;
       ch = 0;
-    } else if ((line > numLines - 1) && ch === 0) {
+    } else if (line > numLines - 1 && ch === 0) {
       return [];
     }
 
@@ -366,45 +380,41 @@ class CRDT {
       case 'random':
         strategy = Math.round(Math.random()) === 0 ? '+' : '-';
       default:
-        strategy = (level % 2) === 0 ? '+' : '-';
+        strategy = level % 2 === 0 ? '+' : '-';
     }
 
     this.strategyCache[level] = strategy;
     return strategy;
   }
 
-  generatePosBetween(pos1, pos2, newPos=[], level=0) {
+  generatePosBetween(pos1, pos2, newPos = [], level = 0) {
     // change 2 to any other number to change base multiplication
-    let base = Math.pow(2, level) * this.base;
-    let boundaryStrategy = this.retrieveStrategy(level);
+    const base = Math.pow(2, level) * this.base;
+    const boundaryStrategy = this.retrieveStrategy(level);
 
-    let id1 = pos1[0] || new Identifier(0, this.siteId);
-    let id2 = pos2[0] || new Identifier(base, this.siteId);
+    const id1 = pos1[0] || new Identifier(0, this.siteId);
+    const id2 = pos2[0] || new Identifier(base, this.siteId);
 
     if (id2.digit - id1.digit > 1) {
-
-      let newDigit = this.generateIdBetween(id1.digit, id2.digit, boundaryStrategy);
+      const newDigit = this.generateIdBetween(id1.digit, id2.digit, boundaryStrategy);
       newPos.push(new Identifier(newDigit, this.siteId));
       return newPos;
-
     } else if (id2.digit - id1.digit === 1) {
-
       newPos.push(id1);
-      return this.generatePosBetween(pos1.slice(1), [], newPos, level+1);
-
+      return this.generatePosBetween(pos1.slice(1), [], newPos, level + 1);
     } else if (id1.digit === id2.digit) {
       if (id1.siteId < id2.siteId) {
         newPos.push(id1);
-        return this.generatePosBetween(pos1.slice(1), [], newPos, level+1);
+        return this.generatePosBetween(pos1.slice(1), [], newPos, level + 1);
       } else if (id1.siteId === id2.siteId) {
         newPos.push(id1);
-        return this.generatePosBetween(pos1.slice(1), pos2.slice(1), newPos, level+1);
+        return this.generatePosBetween(pos1.slice(1), pos2.slice(1), newPos, level + 1);
       } else {
-        throw new Error("Fix Position Sorting");
+        throw new Error('Fix Position Sorting');
       }
     }
   }
-/*
+  /*
 Math.random gives you a range that is inclusive of the min and exclusive of the max
 so have to add and subtract ones to get them all into that format
 
@@ -425,15 +435,13 @@ if max - min > boundary and the boundary is positive
 now all are (min...max)
 */
   generateIdBetween(min, max, boundaryStrategy) {
-    if ((max - min) < this.boundary) {
-      min = min + 1;
+    if (max - min < this.boundary) {
+      min += 1;
+    } else if (boundaryStrategy === '-') {
+      min = max - this.boundary;
     } else {
-      if (boundaryStrategy === '-') {
-        min = max - this.boundary;
-      } else {
-        min = min + 1;
-        max = min + this.boundary;
-      }
+      min += 1;
+      max = min + this.boundary;
     }
     return Math.floor(Math.random() * (max - min)) + min;
   }

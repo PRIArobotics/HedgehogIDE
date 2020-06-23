@@ -1,3 +1,5 @@
+import UUID from 'uuid/v1';
+import Feather from 'feather-icons';
 import Editor from './editor';
 import CRDT from './crdt';
 import Char from './char';
@@ -5,14 +7,12 @@ import Identifier from './identifier';
 import VersionVector from './versionVector';
 import Version from './version';
 import Broadcast from './broadcast';
-import UUID from 'uuid/v1';
 import { generateItemFromHash } from './hashAlgo';
 import CSS_COLORS from './cssColors';
 import { ANIMALS } from './cursorNames';
-import Feather from 'feather-icons';
 
 class Controller {
-  constructor(targetPeerId, host, peer, broadcast, editor, doc=document, win=window) {
+  constructor(targetPeerId, host, peer, broadcast, editor, doc = document, win = window) {
     this.siteId = UUID();
     this.host = host;
     this.buffer = [];
@@ -41,18 +41,18 @@ class Controller {
     // this.attachEvents(doc, win);
   }
 
-  bindCopyEvent(doc=document) {
+  bindCopyEvent(doc = document) {
     doc.querySelector('.copy-container').onclick = () => {
       this.copyToClipboard(doc.querySelector('#myLinkInput'));
     };
   }
 
   copyToClipboard(element) {
-    const temp = document.createElement("input");
-    document.querySelector("body").appendChild(temp);
+    const temp = document.createElement('input');
+    document.querySelector('body').appendChild(temp);
     temp.value = element.textContent;
     temp.select();
-    document.execCommand("copy");
+    document.execCommand('copy');
     temp.remove();
 
     this.showCopiedStatus();
@@ -64,7 +64,7 @@ class Controller {
     setTimeout(() => document.querySelector('.copy-status').classList.remove('copied'), 1000);
   }
 
-  attachEvents(doc=document, win=window) {
+  attachEvents(doc = document, win = window) {
     let xPos = 0;
     let yPos = 0;
     const modal = doc.querySelector('.video-modal');
@@ -72,12 +72,14 @@ class Controller {
       xPos = e.clientX - modal.offsetLeft;
       yPos = e.clientY - modal.offsetTop;
       win.addEventListener('mousemove', modalMove, true);
-    }
-    const setModal = () => { win.removeEventListener('mousemove', modalMove, true); }
+    };
+    const setModal = () => {
+      win.removeEventListener('mousemove', modalMove, true);
+    };
     const modalMove = e => {
       modal.style.position = 'absolute';
-      modal.style.top = (e.clientY - yPos) + 'px';
-      modal.style.left = (e.clientX - xPos) + 'px';
+      modal.style.top = `${e.clientY - yPos}px`;
+      modal.style.left = `${e.clientX - xPos}px`;
     };
 
     doc.querySelector('.video-modal').addEventListener('mousedown', dragModal, false);
@@ -90,8 +92,8 @@ class Controller {
     console.log('disconnected');
   }
 
-  updateShareLink(id, doc=document) {
-    const shareLink = this.host + '?' + id;
+  updateShareLink(id, doc = document) {
+    const shareLink = `${this.host}?${id}`;
     const aTag = doc.querySelector('#myLink');
     const pTag = doc.querySelector('#myLinkInput');
 
@@ -99,31 +101,35 @@ class Controller {
     aTag.setAttribute('href', shareLink);
   }
 
-  updatePageURL(id, win=window) {
+  updatePageURL(id, win = window) {
     this.urlId = id;
 
-    const newURL = this.host + '?' + id;
+    const newURL = `${this.host}?${id}`;
     win.history.pushState({}, '', newURL);
   }
 
-  updateRootUrl(id, win=window) {
+  updateRootUrl(id, win = window) {
     if (this.urlId == 0) {
       this.updatePageURL(id, win);
     }
   }
 
-  enableEditor(doc=document) {
+  enableEditor(doc = document) {
     doc.getElementById('conclave').classList.remove('hide');
   }
 
   populateCRDT(initialStruct) {
-    const struct = initialStruct.map(line => {
-      return line.map(ch => {
-        return new Char(ch.value, ch.counter, ch.siteId, ch.position.map(id => {
-          return new Identifier(id.digit, id.siteId);
-        }));
-      });
-    });
+    const struct = initialStruct.map(line =>
+      line.map(
+        ch =>
+          new Char(
+            ch.value,
+            ch.counter,
+            ch.siteId,
+            ch.position.map(id => new Identifier(id.digit, id.siteId)),
+          ),
+      ),
+    );
 
     this.crdt.struct = struct;
     this.editor.replaceText(this.crdt.toText());
@@ -131,7 +137,7 @@ class Controller {
 
   populateVersionVector(initialVersions) {
     const versions = initialVersions.map(ver => {
-      let version = new Version(ver.siteId);
+      const version = new Version(ver.siteId);
       version.counter = ver.counter;
       ver.exceptions.forEach(ex => version.exceptions.push(ex));
       return version;
@@ -140,7 +146,7 @@ class Controller {
     versions.forEach(version => this.vector.versions.push(version));
   }
 
-  addToNetwork(peerId, siteId, doc=document) {
+  addToNetwork(peerId, siteId, doc = document) {
     if (!this.network.find(obj => obj.siteId === siteId)) {
       this.network.push({ peerId, siteId });
       if (siteId !== this.siteId) {
@@ -151,7 +157,7 @@ class Controller {
     }
   }
 
-  removeFromNetwork(peerId, doc=document) {
+  removeFromNetwork(peerId, doc = document) {
     const peerObj = this.network.find(obj => obj.peerId === peerId);
     const idx = this.network.indexOf(peerObj);
     if (idx >= 0) {
@@ -162,10 +168,10 @@ class Controller {
     }
   }
 
-  makeOwnName(doc=document) {
+  makeOwnName(doc = document) {
     const listItem = doc.createElement('li');
     const node = doc.createElement('span');
-    const textnode = doc.createTextNode("(You)")
+    const textnode = doc.createTextNode('(You)');
     const color = generateItemFromHash(this.siteId, CSS_COLORS);
     const name = generateItemFromHash(this.siteId, ANIMALS);
 
@@ -178,21 +184,21 @@ class Controller {
     doc.querySelector('#peerId').appendChild(listItem);
   }
 
-  addToListOfPeers(siteId, peerId, doc=document) {
+  addToListOfPeers(siteId, peerId, doc = document) {
     const listItem = doc.createElement('li');
     const node = doc.createElement('span');
 
-// // purely for mock testing purposes
-  //   let parser;
-  //   if (typeof DOMParser === 'object') {
-  //     parser = new DOMParser();
-  //   } else {
-  //     parser = {
-  //       parseFromString: function() {
-  //         return { firstChild: doc.createElement('div') }
-  //       }
-  //     }
-  //   }
+    // // purely for mock testing purposes
+    //   let parser;
+    //   if (typeof DOMParser === 'object') {
+    //     parser = new DOMParser();
+    //   } else {
+    //     parser = {
+    //       parseFromString: function() {
+    //         return { firstChild: doc.createElement('div') }
+    //       }
+    //     }
+    //   }
 
     const parser = new DOMParser();
 
@@ -220,41 +226,40 @@ class Controller {
     doc.querySelector('#peerId').appendChild(listItem);
   }
 
-  getPeerElemById(peerId, doc=document) {
+  getPeerElemById(peerId, doc = document) {
     return doc.getElementById(peerId);
   }
 
-  beingCalled(callObj, doc=document) {
+  beingCalled(callObj, doc = document) {
     const peerFlag = this.getPeerElemById(callObj.peer);
 
     this.addBeingCalledClass(callObj.peer);
 
-    navigator.mediaDevices.getUserMedia({audio: true, video: true})
-    .then(ms => {
+    navigator.mediaDevices.getUserMedia({ audio: true, video: true }).then(ms => {
       peerFlag.onclick = () => {
         this.broadcast.answerCall(callObj, ms);
       };
     });
   }
 
-  getPeerFlagById(peerId, doc=document) {
+  getPeerFlagById(peerId, doc = document) {
     const peerLi = doc.getElementById(peerId);
     return peerLi.children[0];
   }
 
-  addBeingCalledClass(peerId, doc=document) {
+  addBeingCalledClass(peerId, doc = document) {
     const peerLi = doc.getElementById(peerId);
 
     peerLi.classList.add('beingCalled');
   }
 
-  addCallingClass(peerId, doc=document) {
+  addCallingClass(peerId, doc = document) {
     const peerLi = doc.getElementById(peerId);
 
     peerLi.classList.add('calling');
   }
 
-  streamVideo(stream, callObj, doc=document) {
+  streamVideo(stream, callObj, doc = document) {
     const peerFlag = this.getPeerFlagById(callObj.peer, doc);
     const color = peerFlag.style.backgroundColor;
     const modal = doc.querySelector('.video-modal');
@@ -271,7 +276,7 @@ class Controller {
     this.bindVideoEvents(callObj, doc);
   }
 
-  bindVideoEvents(callObj, doc=document) {
+  bindVideoEvents(callObj, doc = document) {
     const exit = doc.querySelector('.exit');
     const minimize = doc.querySelector('.minimize');
     const modal = doc.querySelector('.video-modal');
@@ -284,11 +289,11 @@ class Controller {
     };
     exit.onclick = () => {
       modal.classList.add('hide');
-      callObj.close()
+      callObj.close();
     };
   }
 
-  answerCall(peerId, doc=document) {
+  answerCall(peerId, doc = document) {
     const peerLi = doc.getElementById(peerId);
 
     if (peerLi) {
@@ -298,7 +303,7 @@ class Controller {
     }
   }
 
-  closeVideo(peerId, doc=document) {
+  closeVideo(peerId, doc = document) {
     const modal = doc.querySelector('.video-modal');
     const peerLi = this.getPeerElemById(peerId, doc);
 
@@ -312,29 +317,24 @@ class Controller {
   attachVideoEvent(peerId, node) {
     node.onclick = () => {
       if (!this.calling.includes(peerId)) {
-        navigator.mediaDevices.getUserMedia({audio: true, video: true})
-        .then(ms => {
+        navigator.mediaDevices.getUserMedia({ audio: true, video: true }).then(ms => {
           this.addCallingClass(peerId);
           this.calling.push(peerId);
           this.broadcast.videoCall(peerId, ms);
         });
       }
-    }
+    };
   }
 
-  removeFromListOfPeers(peerId, doc=document) {
+  removeFromListOfPeers(peerId, doc = document) {
     doc.getElementById(peerId).remove();
   }
 
   findNewTarget() {
     const connected = this.broadcast.outConns.map(conn => conn.peer);
-    const unconnected = this.network.filter(obj => {
-      return connected.indexOf(obj.peerId) === -1;
-    });
+    const unconnected = this.network.filter(obj => connected.indexOf(obj.peerId) === -1);
 
-    const possibleTargets = unconnected.filter(obj => {
-      return obj.peerId !== this.broadcast.peer.id
-    });
+    const possibleTargets = unconnected.filter(obj => obj.peerId !== this.broadcast.peer.id);
 
     if (possibleTargets.length === 0) {
       this.broadcast.peer.on('connection', conn => this.updatePageURL(conn.peer));
@@ -345,8 +345,10 @@ class Controller {
     }
   }
 
-  handleSync(syncObj, doc=document, win=window) {
-    if (syncObj.peerId != this.urlId) { this.updatePageURL(syncObj.peerId, win); }
+  handleSync(syncObj, doc = document, win = window) {
+    if (syncObj.peerId != this.urlId) {
+      this.updatePageURL(syncObj.peerId, win);
+    }
 
     syncObj.network.forEach(obj => this.addToNetwork(obj.peerId, obj.siteId, doc));
 
@@ -362,7 +364,7 @@ class Controller {
   syncCompleted(peerId) {
     const completedMessage = JSON.stringify({
       type: 'syncCompleted',
-      peerId: this.broadcast.peer.id
+      peerId: this.broadcast.peer.id,
     });
 
     let connection = this.broadcast.outConns.find(conn => conn.peer === peerId);
@@ -413,7 +415,7 @@ class Controller {
   }
 
   applyOperation(operation) {
-    const char = operation.char;
+    const { char } = operation;
     const identifiers = char.position.map(pos => new Identifier(pos.digit, pos.siteId));
     const newChar = new Char(char.value, char.counter, char.siteId, identifiers);
 
@@ -444,8 +446,8 @@ class Controller {
   broadcastInsertion(char) {
     const operation = {
       type: 'insert',
-      char: char,
-      version: this.vector.getLocalVersion()
+      char,
+      version: this.vector.getLocalVersion(),
     };
 
     this.broadcast.send(operation);
@@ -454,8 +456,8 @@ class Controller {
   broadcastDeletion(char, version) {
     const operation = {
       type: 'delete',
-      char: char,
-      version: version
+      char,
+      version,
     };
 
     this.broadcast.send(operation);
@@ -470,8 +472,8 @@ class Controller {
       to: {
         line: pos.line,
         ch: pos.ch,
-      }
-    }
+      },
+    };
 
     this.editor.insertText(value, positions, siteId);
   }
@@ -479,7 +481,7 @@ class Controller {
   deleteFromEditor(value, pos, siteId) {
     let positions;
 
-    if (value === "\n") {
+    if (value === '\n') {
       positions = {
         from: {
           line: pos.line,
@@ -488,8 +490,8 @@ class Controller {
         to: {
           line: pos.line + 1,
           ch: 0,
-        }
-      }
+        },
+      };
     } else {
       positions = {
         from: {
@@ -499,8 +501,8 @@ class Controller {
         to: {
           line: pos.line,
           ch: pos.ch + 1,
-        }
-      }
+        },
+      };
     }
 
     this.editor.deleteText(value, positions, siteId);

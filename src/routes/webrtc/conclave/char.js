@@ -7,7 +7,9 @@ class Char {
   }
 
   compareTo(otherChar) {
-    let comp, id1, id2;
+    let comp;
+    let id1;
+    let id2;
     const pos1 = this.position;
     const pos2 = otherChar.position;
 

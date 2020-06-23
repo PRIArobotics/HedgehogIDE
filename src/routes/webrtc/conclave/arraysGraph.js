@@ -1,30 +1,39 @@
+import UUID from 'uuid/v1';
 import CRDTLinear from './crdtLinear';
 import * as UtilLinear from './utilLinear';
 import CRDT from './crdt';
 import * as Util from './util';
-import UUID from 'uuid/v1';
-
 
 function mockController() {
   return {
     siteId: UUID(),
-    broadcastInsertion: function() {},
-    broadcastDeletion: function() {},
-    insertIntoEditor: function() {},
-    deleteFromEditor: function() {},
+    broadcastInsertion() {},
+    broadcastDeletion() {},
+    insertIntoEditor() {},
+    deleteFromEditor() {},
     vector: {
       getLocalVersion: () => {},
       localVersion: {
-        counter: 0
+        counter: 0,
       },
-      increment: function() {
+      increment() {
         this.localVersion.counter++;
-      }
-    }
-  }
+      },
+    },
+  };
 }
 
-let func, base, boundary, mult, boundaryStrategy, crdt, xs, ys, data, name, title;
+let func;
+let base;
+let boundary;
+let mult;
+let boundaryStrategy;
+let crdt;
+let xs;
+let ys;
+let data;
+let name;
+let title;
 const ops = [1000, 10000, 20000, 40000, 60000, 80000, 100000];
 base = 32;
 boundary = 10;
@@ -50,7 +59,7 @@ ops.forEach(op => {
 });
 
 name = 'Linear';
-data.push({x: xs, y: ys, type: 'scatter', name: name});
+data.push({ x: xs, y: ys, type: 'scatter', name });
 
 // array-of-arrays
 func = Util.insertBeginning;
@@ -65,9 +74,9 @@ ops.forEach(op => {
 });
 
 name = 'Array-of-Arrays';
-data.push({x: xs, y: ys, type: 'scatter', name: name});
+data.push({ x: xs, y: ys, type: 'scatter', name });
 
-Plotly.newPlot('g0', data, {title: title, height: 600});
+Plotly.newPlot('g0', data, { title, height: 600 });
 
 // Local Deletions
 title = 'Local Deletions';
@@ -89,7 +98,7 @@ ops.forEach(op => {
 });
 
 name = 'Linear';
-data.push({x: xs, y: ys, type: 'scatter', name: name});
+data.push({ x: xs, y: ys, type: 'scatter', name });
 
 // array-of-arrays
 func = Util.deleteBeginning;
@@ -105,12 +114,12 @@ ops.forEach(op => {
 });
 
 name = 'Array-of-Arrays';
-data.push({x: xs, y: ys, type: 'scatter', name: name});
+data.push({ x: xs, y: ys, type: 'scatter', name });
 
-Plotly.newPlot('g1', data, {title: title, height: 600});
+Plotly.newPlot('g1', data, { title, height: 600 });
 
 // Remote Insertions
-title = "Remote Insertions";
+title = 'Remote Insertions';
 data = [];
 
 // linear
@@ -127,7 +136,7 @@ ops.forEach(op => {
 });
 
 name = 'Linear';
-data.push({x: xs, y: ys, type: 'scatter', name: name});
+data.push({ x: xs, y: ys, type: 'scatter', name });
 
 // array-of-arrays
 func = Util.insertBeginning;
@@ -142,9 +151,9 @@ ops.forEach(op => {
 });
 
 name = 'Array-of-Arrays';
-data.push({x: xs, y: ys, type: 'scatter', name: name});
+data.push({ x: xs, y: ys, type: 'scatter', name });
 
-Plotly.newPlot('g2', data, {title: title, height: 600});
+Plotly.newPlot('g2', data, { title, height: 600 });
 
 // Remote Deletions
 title = 'Remote Deletions';
@@ -165,7 +174,7 @@ ops.forEach(op => {
 });
 
 name = 'Linear';
-data.push({x: xs, y: ys, type: 'scatter', name: name});
+data.push({ x: xs, y: ys, type: 'scatter', name });
 
 // array-of-arrays
 func = Util.deleteBeginning;
@@ -181,6 +190,6 @@ ops.forEach(op => {
 });
 
 name = 'Array-of-Arrays';
-data.push({x: xs, y: ys, type: 'scatter', name: name});
+data.push({ x: xs, y: ys, type: 'scatter', name });
 
-Plotly.newPlot('g3', data, {title: title, height: 600});
+Plotly.newPlot('g3', data, { title, height: 600 });
