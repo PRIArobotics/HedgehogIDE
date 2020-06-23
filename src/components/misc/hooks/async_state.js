@@ -50,7 +50,7 @@ function asyncStateReducer<T>(state: AsyncState<T>, action: AsyncStateAction<T>)
 // i.e. only the last promise will go through to the actual state.
 // While a setState promise is pending, the previous state will remain.
 export function useAsyncState<T>(initialState: T): [T, (T | Promise<T>) => void] {
-  const [promise, setPromise] = React.useState<T | Promise<T>>(initialState);
+  const [promise, setPromise] = React.useState<Promise<T> | null>(null);
   const [state, dispatch] = React.useReducer(asyncStateReducer, {
     value: initialState,
     isLoading: false,
@@ -58,41 +58,50 @@ export function useAsyncState<T>(initialState: T): [T, (T | Promise<T>) => void]
   });
 
   React.useEffect(() => {
-    if (promise && typeof promise.then === 'function') {
+    if (promise === null) return;
+
+    let cancelled = false;
+
+    dispatch({ type: 'START' });
+    promise.then(
+      value => {
+        if (!cancelled) {
+          dispatch({ type: 'RESOLVE', value });
+        }
+      },
+      _error => {
+        if (!cancelled) {
+          dispatch({ type: 'REJECT' });
+        }
+      },
+    );
+
+    return () => {
+      cancelled = true;
+    };
+  }, [promise]);
+
+  function setState(newPromise: T | Promise<T>) {
+    if (newPromise && typeof newPromise.then === 'function') {
       // technically we have not checked this is a promise but a thenable.
       // In practice this *should* not matter but who knows.
       // $FlowExpectError
-      const realPromise: Promise<T> = promise;
-
-      let cancelled = false;
-
-      dispatch({ type: 'START' });
-      realPromise.then(
-        value => {
-          if (!cancelled) {
-            dispatch({ type: 'RESOLVE', value });
-          }
-        },
-        _error => {
-          if (!cancelled) {
-            dispatch({ type: 'REJECT' });
-          }
-        },
-      );
-
-      return () => {
-        cancelled = true;
-      };
+      const realPromise: Promise<T> = newPromise;
+      setPromise(realPromise);
     } else {
       // $FlowExpectError
-      const value: T = promise;
+      const value: T = newPromise;
+
+      setPromise(null);
       dispatch({ type: 'RESOLVE', value });
 
       return undefined;
     }
-  }, [promise]);
+  }
 
-  return [state.value, setPromise];
+  // useCallback: React.useState guarantees stability of setState,
+  // mirror that here
+  return [state.value, React.useCallback(setState, [])];
 }
 
 type StoreState<T> = {| value: T |};
