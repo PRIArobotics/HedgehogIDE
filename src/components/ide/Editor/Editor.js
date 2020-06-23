@@ -4,9 +4,9 @@ import * as React from 'react';
 import useStyles from 'isomorphic-style-loader/useStyles';
 
 import AceEditor from 'react-ace';
-import 'brace/mode/javascript';
-import 'brace/ext/language_tools';
-import 'brace/theme/github';
+import 'ace-builds/src-noconflict/mode-javascript';
+import 'ace-builds/src-noconflict/ext-language_tools';
+import 'ace-builds/src-noconflict/theme-github';
 
 import { ExecuteIcon, TerminateIcon, ResetIcon, TerminateAndResetIcon } from '../../misc/palette';
 import * as hooks from '../../misc/hooks';
