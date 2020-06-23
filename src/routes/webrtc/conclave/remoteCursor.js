@@ -1,9 +1,20 @@
+import SimpleMDE from 'simplemde';
+
 import CSS_COLORS from './cssColors';
 import { generateItemFromHash } from './hashAlgo';
 import { ANIMALS } from './cursorNames';
 
+type Position = {|
+  line: number,
+  ch: number,
+|};
+
 export default class RemoteCursor {
-  constructor(mde, siteId, position) {
+  mde: SimpleMDE;
+  siteId: string;
+  lastPosition: Position;
+
+  constructor(mde: SimpleMDE, siteId: string, position) {
     this.mde = mde;
 
     const color = generateItemFromHash(siteId, CSS_COLORS);

@@ -8,7 +8,7 @@ import Editor from './editor';
 if (/^((?!chrome|android).)*safari/i.test(navigator.userAgent)) {
 } else {
   new Controller(
-    location.search.slice(1) || '0',
+    location.search.slice(1) || null,
     location.origin,
     new Peer({
       host: location.hostname,

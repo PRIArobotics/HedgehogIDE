@@ -1,8 +1,19 @@
+import SimpleMDE from 'simplemde';
+
+import Controller from './controller';
 import CRDT from './crdt';
 import RemoteCursor from './remoteCursor';
 
+type RemoteCursors = {|
+  [siteId: string]: RemoteCursor,
+|};
+
 class Editor {
-  constructor(mde) {
+  controller: Controller;
+  mde: SimpleMDE;
+  remoteCursors: RemoteCursors;
+
+  constructor(mde: SimpleMDE) {
     this.controller = null;
     this.mde = mde;
     this.remoteCursors = {};

@@ -1,5 +1,7 @@
+import Peer from 'peerjs';
 import UUID from 'uuid/v1';
 import Feather from 'feather-icons';
+
 import Editor from './editor';
 import CRDT from './crdt';
 import Char from './char';
@@ -11,8 +13,31 @@ import { generateItemFromHash } from './hashAlgo';
 import CSS_COLORS from './cssColors';
 import { ANIMALS } from './cursorNames';
 
+type NetworkEntry = {|
+  peerId: string,
+  siteId: string,
+|};
+
 class Controller {
-  constructor(targetPeerId, host, peer, broadcast, editor, doc = document, win = window) {
+  siteId: UUID;
+  host: string;
+  buffer: any[];
+  calling: string[];
+  network: NetworkEntry[];
+  urlId: string | null;
+
+  broadcast: Broadcast;
+  editor: Editor;
+  vector: VersionVector;
+  crdt: CRDT;
+
+  constructor(
+    targetPeerId: string | null,
+    host: string,
+    peer: Peer,
+    broadcast: Broadcast,
+    editor: Editor,
+  ) {
     this.siteId = UUID();
     this.host = host;
     this.buffer = [];
@@ -21,7 +46,7 @@ class Controller {
     this.urlId = targetPeerId;
     this.makeOwnName(doc);
 
-    if (targetPeerId == 0) this.enableEditor();
+    if (targetPeerId == null) this.enableEditor();
 
     this.broadcast = broadcast;
     this.broadcast.controller = this;
@@ -109,7 +134,7 @@ class Controller {
   }
 
   updateRootUrl(id, win = window) {
-    if (this.urlId == 0) {
+    if (this.urlId === null) {
       this.updatePageURL(id, win);
     }
   }
