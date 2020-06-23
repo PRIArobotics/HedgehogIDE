@@ -15,14 +15,16 @@ import 'ace-builds/src-noconflict/theme-github';
 
 import s from './WebRTC.scss';
 
-const peerOptions = __DEV__ ? {
-  host: 'localhost',
-  port: 3010,
-  path: '/peerjs',
-} : {
-  host: '/',
-  path: '/peerjs',
-};
+const peerOptions = __DEV__
+  ? {
+      host: 'localhost',
+      port: 3010,
+      path: '/peerjs',
+    }
+  : {
+      host: '/',
+      path: '/peerjs',
+    };
 
 type Message = {|
   type: 'IN' | 'OUT',
@@ -82,7 +84,7 @@ function Chat({ connection, sendText }: ChatProps) {
 
 type EditorProps = {||};
 
-function Editor(_props: Props) {
+function Editor(_props: EditorProps) {
   const [content, setContent] = React.useState<string | null>(null);
 
   React.useEffect(() => {
@@ -97,65 +99,66 @@ function Editor(_props: Props) {
     return `(${positionToString(start)}, ${positionToString(end)})`;
   }
 
-  return content !== null && (
-    <AceEditor
-      mode="javascript"
-      theme="github"
-      name="editor"
-      width={'800px'}
-      height={'600px'}
-      // onLoad={onLoad}
-      onChange={(value, event) => {
-        console.log(event);
-        setContent(value);
-      }}
-      fontSize={16}
-      onSelectionChange={(selection, _event) => {
-        const ranges = selection.getAllRanges();
-        console.log(ranges.map(rangeToString).join(', '));
-      }}
-      onCursorChange={(selection, _event) => {
-        const cursor = selection.getCursor();
-        console.log(positionToString(cursor));
-      }}
-      markers={[
-        {
-          startRow: 0,
-          startCol: 1,
-          endRow: 0,
-          endCol: 3,
-          className: s['remote-selection'],
-          type: 'text',
-        },
-        {
-          startRow: 0,
-          startCol: 3,
-          endRow: 0,
-          endCol: 4,
-          className: s['remote-cursor'],
-          type: 'text',
-        },
-      ]}
-      // onValidate={onValidate}
-      value={content}
-      showGutter
-      highlightActiveLine
-      autoScrollEditorIntoView
-      style={{
-        position: 'absolute',
-      }}
-      editorProps={{
-        // $blockScrolling: Infinity,
-      }}
-      setOptions={{
-        // useWorker: false,
-        enableBasicAutocompletion: true,
-        enableLiveAutocompletion: true,
-        // enableSnippets: enableSnippets,
-        showLineNumbers: true,
-        tabSize: 2,
-      }}
-    />
+  return (
+    content !== null && (
+      <AceEditor
+        mode="javascript"
+        theme="github"
+        name="editor"
+        width="800px"
+        height="600px"
+        // onLoad={onLoad}
+        onChange={(value, event) => {
+          // eslint-disable-next-line no-console
+          console.log(event);
+          setContent(value);
+        }}
+        fontSize={16}
+        onSelectionChange={(selection, _event) => {
+          const ranges = selection.getAllRanges();
+          // eslint-disable-next-line no-console
+          console.log(ranges.map(rangeToString).join(', '));
+        }}
+        onCursorChange={(selection, _event) => {
+          const cursor = selection.getCursor();
+          // eslint-disable-next-line no-console
+          console.log(positionToString(cursor));
+        }}
+        markers={[
+          {
+            startRow: 0,
+            startCol: 1,
+            endRow: 0,
+            endCol: 3,
+            className: s['remote-selection'],
+            type: 'text',
+          },
+          {
+            startRow: 0,
+            startCol: 3,
+            endRow: 0,
+            endCol: 4,
+            className: s['remote-cursor'],
+            type: 'text',
+          },
+        ]}
+        // onValidate={onValidate}
+        value={content}
+        showGutter
+        highlightActiveLine
+        autoScrollEditorIntoView
+        style={{
+          position: 'absolute',
+        }}
+        setOptions={{
+          enableBasicAutocompletion: true,
+          enableLiveAutocompletion: true,
+          // enableSnippets: enableSnippets,
+          showLineNumbers: true,
+          tabSize: 2,
+        }}
+      />
+    )
   );
 }
 
