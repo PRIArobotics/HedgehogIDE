@@ -2,10 +2,14 @@ import SimpleMDE from 'simplemde';
 
 import Controller from './controller';
 import CRDT from './crdt';
-import RemoteCursor from './remoteCursor';
+
+type Position = {|
+  line: number,
+  ch: number,
+|};
 
 type RemoteCursors = {|
-  [siteId: string]: RemoteCursor,
+  [siteId: string]: Position,
 |};
 
 class Editor {
@@ -123,20 +127,16 @@ class Editor {
   }
 
   removeCursor(siteId) {
-    const remoteCursor = this.remoteCursors[siteId];
-
-    if (remoteCursor) {
-      delete this.remoteCursors[siteId];
-    }
+    delete this.remoteCursors[siteId];
   }
 
   updateRemoteCursorsInsert(chars, position, siteId) {
     const positionDelta = this.generateDeltaFromChars(chars);
 
-    for (const cursorSiteId in this.remoteCursors) {
+    for (const [cursorSiteId, cursorPosition] of Object.entries(this.remoteCursors)) {
       if (cursorSiteId === siteId) continue;
-      const remoteCursor = this.remoteCursors[cursorSiteId];
-      const newPosition = Object.assign({}, remoteCursor.lastPosition);
+      // $FlowExpectError
+      const newPosition: Position = { ...cursorPosition };
 
       if (newPosition.line > position.line) {
         newPosition.line += positionDelta.line;
@@ -149,17 +149,17 @@ class Editor {
         newPosition.ch += positionDelta.ch;
       }
 
-      remoteCursor.position = newPosition;
+      this.remoteCursors[cursorSiteId] = newPosition;
     }
   }
 
   updateRemoteCursorsDelete(chars, to, from, siteId) {
     const positionDelta = this.generateDeltaFromChars(chars);
 
-    for (const cursorSiteId in this.remoteCursors) {
+    for (const [cursorSiteId, cursorPosition] of Object.entries(this.remoteCursors)) {
       if (cursorSiteId === siteId) continue;
-      const remoteCursor = this.remoteCursors[cursorSiteId];
-      const newPosition = Object.assign({}, remoteCursor.lastPosition);
+      // $FlowExpectError
+      const newPosition: Position = { ...cursorPosition };
 
       if (newPosition.line > to.line) {
         newPosition.line -= positionDelta.line;
@@ -172,30 +172,25 @@ class Editor {
         newPosition.ch -= positionDelta.ch;
       }
 
-      remoteCursor.position = newPosition;
+      this.remoteCursors[cursorSiteId] = newPosition;
     }
   }
 
   updateRemoteCursor(position, siteId, opType, value) {
-    const remoteCursor = this.remoteCursors[siteId];
-    const clonedPosition = { ...position };
+    const newPosition = { ...position };
 
     if (opType === 'insert') {
       if (value === '\n') {
-        clonedPosition.line += 1;
-        clonedPosition.ch = 0;
+        newPosition.line += 1;
+        newPosition.ch = 0;
       } else {
-        clonedPosition.ch += 1;
+        newPosition.ch += 1;
       }
     } else {
-      clonedPosition.ch -= 1;
+      newPosition.ch -= 1;
     }
 
-    if (remoteCursor) {
-      remoteCursor.position = clonedPosition;
-    } else {
-      this.remoteCursors[siteId] = new RemoteCursor(siteId, clonedPosition);
-    }
+    this.remoteCursors[siteId] = newPosition;
   }
 
   deleteText(value, positions, siteId) {
