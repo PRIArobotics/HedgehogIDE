@@ -1,6 +1,5 @@
 import Peer from 'peerjs';
 import UUID from 'uuid/v1';
-import Feather from 'feather-icons';
 
 import Editor from './editor';
 import CRDT from './crdt';
@@ -230,24 +229,12 @@ class Controller {
     const color = generateItemFromHash(siteId, CSS_COLORS);
     const name = generateItemFromHash(siteId, ANIMALS);
 
-    // COMMENTED OUT: Video editor does not work
-    // const phone = parser.parseFromString(Feather.icons.phone.toSvg({ class: 'phone' }), "image/svg+xml");
-    // const phoneIn = parser.parseFromString(Feather.icons['phone-incoming'].toSvg({ class: 'phone-in' }), "image/svg+xml");
-    // const phoneOut = parser.parseFromString(Feather.icons['phone-outgoing'].toSvg({ class: 'phone-out' }), "image/svg+xml");
-    // const phoneCall = parser.parseFromString(Feather.icons['phone-call'].toSvg({ class: 'phone-call' }), "image/svg+xml");
-
     node.textContent = name;
     node.style.backgroundColor = color;
     node.classList.add('peer');
 
-    // this.attachVideoEvent(peerId, listItem);
-
     listItem.id = peerId;
     listItem.appendChild(node);
-    // listItem.appendChild(phone.firstChild);
-    // listItem.appendChild(phoneIn.firstChild);
-    // listItem.appendChild(phoneOut.firstChild);
-    // listItem.appendChild(phoneCall.firstChild);
     doc.querySelector('#peerId').appendChild(listItem);
   }
 
