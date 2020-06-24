@@ -1,9 +1,5 @@
 import SimpleMDE from 'simplemde';
 
-import CSS_COLORS from './cssColors';
-import { generateItemFromHash } from './hashAlgo';
-import { ANIMALS } from './cursorNames';
-
 type Position = {|
   line: number,
   ch: number,

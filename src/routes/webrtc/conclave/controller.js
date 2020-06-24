@@ -8,9 +8,6 @@ import Identifier from './identifier';
 import VersionVector from './versionVector';
 import Version from './version';
 import Broadcast from './broadcast';
-import { generateItemFromHash } from './hashAlgo';
-import CSS_COLORS from './cssColors';
-import { ANIMALS } from './cursorNames';
 
 type NetworkEntry = {|
   peerId: string,
@@ -18,7 +15,7 @@ type NetworkEntry = {|
 |};
 
 class Controller {
-  siteId: UUID;
+  siteId: string;
   host: string;
   buffer: any[];
   network: NetworkEntry[];
