@@ -149,7 +149,7 @@ class Editor {
         newPosition.ch += positionDelta.ch;
       }
 
-      remoteCursor.set(newPosition);
+      remoteCursor.position = newPosition;
     }
   }
 
@@ -172,29 +172,29 @@ class Editor {
         newPosition.ch -= positionDelta.ch;
       }
 
-      remoteCursor.set(newPosition);
+      remoteCursor.position = newPosition;
     }
   }
 
   updateRemoteCursor(position, siteId, opType, value) {
     const remoteCursor = this.remoteCursors[siteId];
-    const clonedPosition = Object.assign({}, position);
+    const clonedPosition = { ...position };
 
     if (opType === 'insert') {
       if (value === '\n') {
-        clonedPosition.line++;
+        clonedPosition.line += 1;
         clonedPosition.ch = 0;
       } else {
-        clonedPosition.ch++;
+        clonedPosition.ch += 1;
       }
     } else {
-      clonedPosition.ch--;
+      clonedPosition.ch -= 1;
     }
 
     if (remoteCursor) {
-      remoteCursor.set(clonedPosition);
+      remoteCursor.position = clonedPosition;
     } else {
-      this.remoteCursors[siteId] = new RemoteCursor(this.mde, siteId, clonedPosition);
+      this.remoteCursors[siteId] = new RemoteCursor(siteId, clonedPosition);
     }
   }
 

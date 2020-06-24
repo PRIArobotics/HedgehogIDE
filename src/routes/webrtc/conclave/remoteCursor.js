@@ -1,4 +1,4 @@
-import SimpleMDE from 'simplemde';
+// @flow
 
 type Position = {|
   line: number,
@@ -6,18 +6,10 @@ type Position = {|
 |};
 
 export default class RemoteCursor {
-  mde: SimpleMDE;
   siteId: string;
-  lastPosition: Position;
+  position: Position;
 
-  constructor(mde: SimpleMDE, siteId: string, position) {
-    this.mde = mde;
-    this.set(position);
-  }
-
-  set(position) {
-    const coords = this.mde.codemirror.cursorCoords(position, 'local');
-    this.mde.codemirror.getDoc().setBookmark(position, { widget: this.cursor });
-    this.lastPosition = position;
+  constructor(siteId: string, position: Position) {
+    this.position = position;
   }
 }
