@@ -28,63 +28,6 @@ class Editor {
     });
   }
 
-  bindButtons() {
-    if (this.controller.urlId == 0) {
-      this.bindUploadButton();
-    } else {
-      this.hideUploadButton();
-    }
-
-    this.bindDownloadButton();
-  }
-
-  bindDownloadButton() {
-    const dlButton = document.querySelector('#download');
-
-    dlButton.onclick = () => {
-      const textToSave = this.mde.value();
-      const textAsBlob = new Blob([textToSave], { type: 'text/plain' });
-      const textAsURL = window.URL.createObjectURL(textAsBlob);
-      const fileName = `Conclave-${Date.now()}`;
-      const downloadLink = document.createElement('a');
-
-      downloadLink.download = fileName;
-      downloadLink.innerHTML = 'Download File';
-      downloadLink.href = textAsURL;
-      downloadLink.onclick = this.afterDownload;
-      downloadLink.style.display = 'none';
-
-      document.body.appendChild(downloadLink);
-      downloadLink.click();
-    };
-  }
-
-  afterDownload(e, doc = document) {
-    doc.body.removeChild(e.target);
-  }
-
-  hideUploadButton(doc = document) {
-    const ulButton = doc.querySelector('#upload');
-    const fileInput = doc.querySelector('#file');
-    ulButton.style.display = 'none';
-    fileInput.style.display = 'none';
-  }
-
-  bindUploadButton(doc = document) {
-    const fileSelect = doc.querySelector('#file');
-    fileSelect.onchange = () => {
-      const file = doc.querySelector('#file').files[0];
-      const fileReader = new FileReader();
-      fileReader.onload = e => {
-        const fileText = e.target.result;
-        this.controller.localInsert(fileText, { line: 0, ch: 0 });
-        this.replaceText(this.controller.crdt.toText());
-        this.hideUploadButton();
-      };
-      fileReader.readAsText(file, 'UTF-8');
-    };
-  }
-
   bindChangeEvent() {
     this.mde.codemirror.on('change', (_, changeObj) => {
       if (changeObj.origin === 'setValue') return;
@@ -183,8 +126,6 @@ class Editor {
     const remoteCursor = this.remoteCursors[siteId];
 
     if (remoteCursor) {
-      remoteCursor.detach();
-
       delete this.remoteCursors[siteId];
     }
   }

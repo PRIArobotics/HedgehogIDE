@@ -83,7 +83,6 @@ class Broadcast {
       if (!this.peer.disconnected) {
         this.controller.findNewTarget();
       }
-      this.controller.enableEditor();
     });
   }
 
