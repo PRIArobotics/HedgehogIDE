@@ -1,4 +1,3 @@
-import SortedArray from './sortedArray';
 import Version from './version';
 
 // vector/list of versions of sites in the distributed system
@@ -6,9 +5,8 @@ import Version from './version';
 // prevents duplicate operations from being applied to our CRDT
 class VersionVector {
   // initialize empty vector to be sorted by siteId
-  // initialize Version/Clock for local site and insert into SortedArray vector object
+  // initialize Version/Clock for local site and insert into versions vector object
   constructor(siteId) {
-    // this.versions = new SortedArray(this.siteIdComparator);
     this.versions = [];
     this.localVersion = new Version(siteId);
     this.versions.push(this.localVersion);
