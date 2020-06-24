@@ -21,7 +21,6 @@ class Controller {
   siteId: UUID;
   host: string;
   buffer: any[];
-  calling: string[];
   network: NetworkEntry[];
   urlId: string | null;
 
@@ -40,7 +39,6 @@ class Controller {
     this.siteId = UUID();
     this.host = host;
     this.buffer = [];
-    this.calling = [];
     this.network = [];
     this.urlId = targetPeerId;
     this.makeOwnName(doc);
@@ -59,10 +57,6 @@ class Controller {
     this.crdt = new CRDT(this);
     this.editor.bindButtons();
     this.bindCopyEvent(doc);
-
-    // Commented out because video editor is not working on newest version of Chrome
-    // IF POSSIBLE: fix editor bug and uncomment
-    // this.attachEvents(doc, win);
   }
 
   bindCopyEvent(doc = document) {
@@ -86,30 +80,6 @@ class Controller {
     document.querySelector('.copy-status').classList.add('copied');
 
     setTimeout(() => document.querySelector('.copy-status').classList.remove('copied'), 1000);
-  }
-
-  attachEvents(doc = document, win = window) {
-    let xPos = 0;
-    let yPos = 0;
-    const modal = doc.querySelector('.video-modal');
-    const dragModal = e => {
-      xPos = e.clientX - modal.offsetLeft;
-      yPos = e.clientY - modal.offsetTop;
-      win.addEventListener('mousemove', modalMove, true);
-    };
-    const setModal = () => {
-      win.removeEventListener('mousemove', modalMove, true);
-    };
-    const modalMove = e => {
-      modal.style.position = 'absolute';
-      modal.style.top = `${e.clientY - yPos}px`;
-      modal.style.left = `${e.clientX - xPos}px`;
-    };
-
-    doc.querySelector('.video-modal').addEventListener('mousedown', dragModal, false);
-    win.addEventListener('mouseup', setModal, false);
-
-    this.bindCopyEvent(doc);
   }
 
   lostConnection() {
@@ -242,100 +212,9 @@ class Controller {
     return doc.getElementById(peerId);
   }
 
-  beingCalled(callObj, doc = document) {
-    const peerFlag = this.getPeerElemById(callObj.peer);
-
-    this.addBeingCalledClass(callObj.peer);
-
-    navigator.mediaDevices.getUserMedia({ audio: true, video: true }).then(ms => {
-      peerFlag.onclick = () => {
-        this.broadcast.answerCall(callObj, ms);
-      };
-    });
-  }
-
   getPeerFlagById(peerId, doc = document) {
     const peerLi = doc.getElementById(peerId);
     return peerLi.children[0];
-  }
-
-  addBeingCalledClass(peerId, doc = document) {
-    const peerLi = doc.getElementById(peerId);
-
-    peerLi.classList.add('beingCalled');
-  }
-
-  addCallingClass(peerId, doc = document) {
-    const peerLi = doc.getElementById(peerId);
-
-    peerLi.classList.add('calling');
-  }
-
-  streamVideo(stream, callObj, doc = document) {
-    const peerFlag = this.getPeerFlagById(callObj.peer, doc);
-    const color = peerFlag.style.backgroundColor;
-    const modal = doc.querySelector('.video-modal');
-    const bar = doc.querySelector('.video-bar');
-    const vid = doc.querySelector('.video-modal video');
-
-    this.answerCall(callObj.peer, doc);
-
-    modal.classList.remove('hide');
-    bar.style.backgroundColor = color;
-    vid.srcObject = stream;
-    vid.play();
-
-    this.bindVideoEvents(callObj, doc);
-  }
-
-  bindVideoEvents(callObj, doc = document) {
-    const exit = doc.querySelector('.exit');
-    const minimize = doc.querySelector('.minimize');
-    const modal = doc.querySelector('.video-modal');
-    const bar = doc.querySelector('.video-bar');
-    const vid = doc.querySelector('.video-modal video');
-
-    minimize.onclick = () => {
-      bar.classList.toggle('mini');
-      vid.classList.toggle('hide');
-    };
-    exit.onclick = () => {
-      modal.classList.add('hide');
-      callObj.close();
-    };
-  }
-
-  answerCall(peerId, doc = document) {
-    const peerLi = doc.getElementById(peerId);
-
-    if (peerLi) {
-      peerLi.classList.remove('calling');
-      peerLi.classList.remove('beingCalled');
-      peerLi.classList.add('answered');
-    }
-  }
-
-  closeVideo(peerId, doc = document) {
-    const modal = doc.querySelector('.video-modal');
-    const peerLi = this.getPeerElemById(peerId, doc);
-
-    modal.classList.add('hide');
-    peerLi.classList.remove('answered', 'calling', 'beingCalled');
-    this.calling = this.calling.filter(id => id !== peerId);
-
-    this.attachVideoEvent(peerId, peerLi);
-  }
-
-  attachVideoEvent(peerId, node) {
-    node.onclick = () => {
-      if (!this.calling.includes(peerId)) {
-        navigator.mediaDevices.getUserMedia({ audio: true, video: true }).then(ms => {
-          this.addCallingClass(peerId);
-          this.calling.push(peerId);
-          this.broadcast.videoCall(peerId, ms);
-        });
-      }
-    };
   }
 
   removeFromListOfPeers(peerId, doc = document) {

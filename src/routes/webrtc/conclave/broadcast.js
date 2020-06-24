@@ -6,7 +6,6 @@ class Broadcast {
     this.inConns = [];
     this.outgoingBuffer = [];
     this.MAX_BUFFER_SIZE = 40;
-    this.currentStream = null;
   }
 
   send(operation) {
@@ -189,7 +188,6 @@ class Broadcast {
   onPeerConnection() {
     this.peer.on('connection', connection => {
       this.onConnection(connection);
-      this.onVideoCall(connection);
       this.onData(connection);
       this.onConnClose(connection);
     });
@@ -218,50 +216,9 @@ class Broadcast {
     }
   }
 
-  videoCall(id, ms) {
-    if (!this.currentStream) {
-      const callObj = this.peer.call(id, ms);
-      this.onStream(callObj);
-    }
-  }
-
   onConnection(connection) {
     this.controller.updateRootUrl(connection.peer);
     this.addToInConns(connection);
-  }
-
-  onVideoCall() {
-    this.peer.on('call', callObj => {
-      this.controller.beingCalled(callObj);
-    });
-  }
-
-  answerCall(callObj, ms) {
-    if (!this.currentStream) {
-      callObj.answer(ms);
-      this.controller.answerCall(callObj.peer);
-      this.onStream(callObj);
-    }
-  }
-
-  onStream(callObj) {
-    callObj.on('stream', stream => {
-      if (this.currentStream) {
-        this.currentStream.close();
-      }
-      this.currentStream = callObj;
-
-      this.controller.streamVideo(stream, callObj);
-
-      callObj.on('close', () => this.onStreamClose(callObj.peer));
-    });
-  }
-
-  onStreamClose(peerId) {
-    this.currentStream.localStream.getTracks().forEach(track => track.stop());
-    this.currentStream = null;
-
-    this.controller.closeVideo(peerId);
   }
 
   onData(connection) {
