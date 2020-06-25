@@ -15,7 +15,7 @@ import 'ace-builds/src-noconflict/theme-github';
 
 import ConclaveController from './conclave/controller';
 import ConclaveBroadcast from './conclave/broadcast';
-import ConclaveEditor from './conclave/editor';
+import ConclaveEditor, { type AcePosition, type AceChangeEvent } from './conclave/editor';
 
 import s from './WebRTC.scss';
 
@@ -97,14 +97,21 @@ function Editor({ controller }: EditorProps) {
   React.useEffect(() => {
     if (controller === null) return;
 
+    const { editor } = controller;
+
     setContent(controller.crdt.toText());
 
     setListeners({
       // onLoad
-      onChange(value, event) {
+      onChange(_value: string, event: AceChangeEvent) {
         // eslint-disable-next-line no-console
         console.log(event);
-        setContent(value);
+        editor.onChange(event);
+
+        const text = controller.crdt.toText();
+        // eslint-disable-next-line no-console
+        console.log(text);
+        setContent(text);
       },
       onSelectionChange(selection, _event) {
         const ranges = selection.getAllRanges();

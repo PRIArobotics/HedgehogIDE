@@ -2,6 +2,11 @@
 
 import Controller from './controller';
 
+export type AcePosition = {| row: number, column: number |};
+export type AceChangeEvent =
+  | {| action: 'insert', lines: string[], start: AcePosition, end: AcePosition |}
+  | {| action: 'remove', lines: string[], start: AcePosition, end: AcePosition |};
+
 export type Position = {|
   line: number,
   ch: number,
@@ -16,6 +21,10 @@ type RemoteCursors = {|
   [siteId: string]: Position,
 |};
 
+function toConclavePosition({ row, column }: AcePosition) {
+  return { line: row, ch: column };
+}
+
 class Editor {
   controller: Controller;
   remoteCursors: RemoteCursors;
@@ -25,60 +34,34 @@ class Editor {
     this.remoteCursors = {};
   }
 
-  onChange(changeObj) {
-    if (changeObj.origin === 'setValue') return;
-    if (changeObj.origin === 'insertText') return;
-    if (changeObj.origin === 'deleteText') return;
+  onChange({ action, lines, start, end }: AceChangeEvent) {
+    const chars = this.extractChars(lines);
+    const startPos = toConclavePosition(start);
+    const endPos = toConclavePosition(end);
 
-    switch (changeObj.origin) {
-      case 'redo':
-      case 'undo':
-        this.processUndoRedo(changeObj);
+    switch (action) {
+      case 'insert': {
+        this.processInsert(chars, startPos, endPos);
         break;
-      case '*compose':
-      case '+input':
-      //          this.processInsert(changeObj);    // uncomment this line for palindromes!
-      case 'paste':
-        this.processInsert(changeObj);
+      }
+      case 'remove': {
+        this.processDelete(chars, startPos, endPos);
+        this.controller.localDelete(toConclavePosition(start), toConclavePosition(end));
         break;
-      case '+delete':
-      case 'cut':
-        this.processDelete(changeObj);
-        break;
+      }
       default:
-        throw new Error('Unknown operation attempted in editor.');
+        throw 'unreachable';
     }
   }
 
-  processInsert(changeObj) {
-    this.processDelete(changeObj);
-    const chars = this.extractChars(changeObj.text);
-    const startPos = changeObj.from;
-
-    this.updateRemoteCursorsInsert(chars, changeObj.to);
+  processInsert(chars: string, startPos: Position, endPos: Position) {
+    this.updateRemoteCursorsInsert(chars, endPos);
     this.controller.localInsert(chars, startPos);
   }
 
-  isEmpty(textArr: string[]) {
-    return textArr.length === 1 && textArr[0].length === 0;
-  }
-
-  processDelete(changeObj) {
-    if (this.isEmpty(changeObj.removed)) return;
-    const startPos = changeObj.from;
-    const endPos = changeObj.to;
-    const chars = this.extractChars(changeObj.removed);
-
-    this.updateRemoteCursorsDelete(chars, changeObj.to, changeObj.from);
+  processDelete(chars: string, startPos: Position, endPos: Position) {
+    this.updateRemoteCursorsDelete(chars, endPos, startPos);
     this.controller.localDelete(startPos, endPos);
-  }
-
-  processUndoRedo(changeObj) {
-    if (changeObj.removed[0].length > 0) {
-      this.processDelete(changeObj);
-    } else {
-      this.processInsert(changeObj);
-    }
   }
 
   extractChars(text: string[]): string {
