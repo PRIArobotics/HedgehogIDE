@@ -44,6 +44,16 @@
   }
 }
 
+.editor {
+  flex: 1 0 0;
+  margin: 10px;
+  padding: 5px;
+
+  & .editor-wrapper {
+    position: relative;
+    height: 300px;
+  }
+}
 .remote-cursor {
   position: absolute;
   z-index: 4;

@@ -100,65 +100,69 @@ function Editor(_props: EditorProps) {
   }
 
   return (
-    content !== null && (
-      <AceEditor
-        mode="javascript"
-        theme="github"
-        name="editor"
-        width="800px"
-        height="600px"
-        // onLoad={onLoad}
-        onChange={(value, event) => {
-          // eslint-disable-next-line no-console
-          console.log(event);
-          setContent(value);
-        }}
-        fontSize={16}
-        onSelectionChange={(selection, _event) => {
-          const ranges = selection.getAllRanges();
-          // eslint-disable-next-line no-console
-          console.log(ranges.map(rangeToString).join(', '));
-        }}
-        onCursorChange={(selection, _event) => {
-          const cursor = selection.getCursor();
-          // eslint-disable-next-line no-console
-          console.log(positionToString(cursor));
-        }}
-        markers={[
-          {
-            startRow: 0,
-            startCol: 1,
-            endRow: 0,
-            endCol: 3,
-            className: s['remote-selection'],
-            type: 'text',
-          },
-          {
-            startRow: 0,
-            startCol: 3,
-            endRow: 0,
-            endCol: 4,
-            className: s['remote-cursor'],
-            type: 'text',
-          },
-        ]}
-        // onValidate={onValidate}
-        value={content}
-        showGutter
-        highlightActiveLine
-        autoScrollEditorIntoView
-        style={{
-          position: 'absolute',
-        }}
-        setOptions={{
-          enableBasicAutocompletion: true,
-          enableLiveAutocompletion: true,
-          // enableSnippets: enableSnippets,
-          showLineNumbers: true,
-          tabSize: 2,
-        }}
-      />
-    )
+    <Paper className={s.editor} square>
+      {content !== null && (
+        <div className={s['editor-wrapper']}>
+          <AceEditor
+            mode="javascript"
+            theme="github"
+            name="editor"
+            width="100%"
+            height="100%"
+            // onLoad={onLoad}
+            onChange={(value, event) => {
+              // eslint-disable-next-line no-console
+              console.log(event);
+              setContent(value);
+            }}
+            fontSize={16}
+            onSelectionChange={(selection, _event) => {
+              const ranges = selection.getAllRanges();
+              // eslint-disable-next-line no-console
+              console.log(ranges.map(rangeToString).join(', '));
+            }}
+            onCursorChange={(selection, _event) => {
+              const cursor = selection.getCursor();
+              // eslint-disable-next-line no-console
+              console.log(positionToString(cursor));
+            }}
+            markers={[
+              {
+                startRow: 0,
+                startCol: 1,
+                endRow: 0,
+                endCol: 3,
+                className: s['remote-selection'],
+                type: 'text',
+              },
+              {
+                startRow: 0,
+                startCol: 3,
+                endRow: 0,
+                endCol: 4,
+                className: s['remote-cursor'],
+                type: 'text',
+              },
+            ]}
+            // onValidate={onValidate}
+            value={content}
+            showGutter
+            highlightActiveLine
+            autoScrollEditorIntoView
+            style={{
+              position: 'absolute',
+            }}
+            setOptions={{
+              enableBasicAutocompletion: true,
+              enableLiveAutocompletion: true,
+              // enableSnippets: enableSnippets,
+              showLineNumbers: true,
+              tabSize: 2,
+            }}
+          />
+        </div>
+      )}
+    </Paper>
   );
 }
 
@@ -203,7 +207,10 @@ function WebRTC(_props: Props) {
         <Chat connection={left} sendText="Hello" />
         <Chat connection={right} sendText="There" />
       </div>
-      <Editor />
+      <div className={s.container}>
+        <Editor />
+        <Editor />
+      </div>
     </div>
   );
 }
