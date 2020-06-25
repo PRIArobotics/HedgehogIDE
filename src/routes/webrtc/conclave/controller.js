@@ -106,9 +106,7 @@ class Controller {
 
     const possibleTargets = unconnected.filter(obj => obj.peerId !== this.broadcast.peer.id);
 
-    if (possibleTargets.length === 0) {
-      this.broadcast.peer.on('connection', conn => this.updatePageURL(conn.peer));
-    } else {
+    if (possibleTargets.length > 0) {
       const randomIdx = Math.floor(Math.random() * possibleTargets.length);
       const newTarget = possibleTargets[randomIdx].peerId;
       this.broadcast.requestConnection(newTarget, this.broadcast.peer.id, this.siteId);

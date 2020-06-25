@@ -93,7 +93,6 @@ class Broadcast {
 
   onOpen(targetPeerId: string | null) {
     this.peer.on('open', id => {
-      this.controller.updateShareLink(id);
       this.onPeerConnection();
       this.onError();
       this.onDisconnect();
@@ -289,12 +288,6 @@ class Broadcast {
   onConnClose(connection: DataConnection) {
     connection.on('close', () => {
       this.removeFromConnections(connection.peer);
-      if (connection.peer == this.controller.urlId) {
-        const id = this.randomId();
-        if (id) {
-          this.controller.updatePageURL(id);
-        }
-      }
       if (!this.hasReachedMax()) {
         this.controller.findNewTarget();
       }
