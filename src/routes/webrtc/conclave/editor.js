@@ -1,3 +1,5 @@
+// @flow
+
 import SimpleMDE from 'simplemde';
 
 import Controller from './controller';
@@ -6,6 +8,11 @@ import CRDT from './crdt';
 type Position = {|
   line: number,
   ch: number,
+|};
+
+type Positions = {|
+  from: Position,
+  to: Position,
 |};
 
 type RemoteCursors = {|
@@ -68,7 +75,7 @@ class Editor {
     this.controller.localInsert(chars, startPos);
   }
 
-  isEmpty(textArr) {
+  isEmpty(textArr: string[]) {
     return textArr.length === 1 && textArr[0].length === 0;
   }
 
@@ -90,7 +97,7 @@ class Editor {
     }
   }
 
-  extractChars(text) {
+  extractChars(text: string[]): string {
     if (text[0] === '' && text[1] === '' && text.length === 2) {
       return '\n';
     } else {
@@ -98,14 +105,14 @@ class Editor {
     }
   }
 
-  replaceText(text) {
+  replaceText(text: string) {
     const cursor = this.mde.codemirror.getCursor();
     this.mde.value(text);
     this.mde.codemirror.setCursor(cursor);
   }
 
-  insertText(value, positions, siteId) {
-    const localCursor = this.mde.codemirror.getCursor();
+  insertText(value: string, positions: Positions, siteId: string) {
+    const localCursor: Position = this.mde.codemirror.getCursor();
     const delta = this.generateDeltaFromChars(value);
 
     this.mde.codemirror.replaceRange(value, positions.from, positions.to, 'insertText');
@@ -126,11 +133,11 @@ class Editor {
     this.mde.codemirror.setCursor(localCursor);
   }
 
-  removeCursor(siteId) {
+  removeCursor(siteId: string) {
     delete this.remoteCursors[siteId];
   }
 
-  updateRemoteCursorsInsert(chars, position, siteId) {
+  updateRemoteCursorsInsert(chars: string, position: Position, siteId: string) {
     const positionDelta = this.generateDeltaFromChars(chars);
 
     for (const [cursorSiteId, cursorPosition] of Object.entries(this.remoteCursors)) {
@@ -153,7 +160,7 @@ class Editor {
     }
   }
 
-  updateRemoteCursorsDelete(chars, to, from, siteId) {
+  updateRemoteCursorsDelete(chars: string, to: Position, from: Position, siteId: string) {
     const positionDelta = this.generateDeltaFromChars(chars);
 
     for (const [cursorSiteId, cursorPosition] of Object.entries(this.remoteCursors)) {
@@ -176,7 +183,7 @@ class Editor {
     }
   }
 
-  updateRemoteCursor(position, siteId, opType, value) {
+  updateRemoteCursor(position: Position, siteId: string, opType, value: string) {
     const newPosition = { ...position };
 
     if (opType === 'insert') {
@@ -193,7 +200,7 @@ class Editor {
     this.remoteCursors[siteId] = newPosition;
   }
 
-  deleteText(value, positions, siteId) {
+  deleteText(value: string, positions: Positions, siteId: string) {
     const localCursor = this.mde.codemirror.getCursor();
     const delta = this.generateDeltaFromChars(value);
 
@@ -215,7 +222,7 @@ class Editor {
     this.mde.codemirror.setCursor(localCursor);
   }
 
-  findLinearIdx(lineIdx, chIdx) {
+  findLinearIdx(lineIdx: number, chIdx: number): number {
     const linesOfText = this.controller.crdt.text.split('\n');
 
     let index = 0;
@@ -226,7 +233,7 @@ class Editor {
     return index + chIdx;
   }
 
-  generateDeltaFromChars(chars) {
+  generateDeltaFromChars(chars: string) {
     const delta = { line: 0, ch: 0 };
     let counter = 0;
 
