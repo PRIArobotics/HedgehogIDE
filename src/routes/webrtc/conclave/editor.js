@@ -1,7 +1,5 @@
 // @flow
 
-import SimpleMDE from 'simplemde';
-
 import Controller from './controller';
 
 export type Position = {|
@@ -20,49 +18,36 @@ type RemoteCursors = {|
 
 class Editor {
   controller: Controller;
-  mde: SimpleMDE;
   remoteCursors: RemoteCursors;
 
-  constructor(mde: SimpleMDE) {
+  constructor() {
     this.controller = null;
-    this.mde = mde;
     this.remoteCursors = {};
-    this.customTabBehavior();
   }
 
-  customTabBehavior() {
-    this.mde.codemirror.setOption('extraKeys', {
-      Tab(codemirror) {
-        codemirror.replaceSelection('\t');
-      },
-    });
-  }
+  onChange(changeObj) {
+    if (changeObj.origin === 'setValue') return;
+    if (changeObj.origin === 'insertText') return;
+    if (changeObj.origin === 'deleteText') return;
 
-  bindChangeEvent() {
-    this.mde.codemirror.on('change', (_, changeObj) => {
-      if (changeObj.origin === 'setValue') return;
-      if (changeObj.origin === 'insertText') return;
-      if (changeObj.origin === 'deleteText') return;
-
-      switch (changeObj.origin) {
-        case 'redo':
-        case 'undo':
-          this.processUndoRedo(changeObj);
-          break;
-        case '*compose':
-        case '+input':
-        //          this.processInsert(changeObj);    // uncomment this line for palindromes!
-        case 'paste':
-          this.processInsert(changeObj);
-          break;
-        case '+delete':
-        case 'cut':
-          this.processDelete(changeObj);
-          break;
-        default:
-          throw new Error('Unknown operation attempted in editor.');
-      }
-    });
+    switch (changeObj.origin) {
+      case 'redo':
+      case 'undo':
+        this.processUndoRedo(changeObj);
+        break;
+      case '*compose':
+      case '+input':
+      //          this.processInsert(changeObj);    // uncomment this line for palindromes!
+      case 'paste':
+        this.processInsert(changeObj);
+        break;
+      case '+delete':
+      case 'cut':
+        this.processDelete(changeObj);
+        break;
+      default:
+        throw new Error('Unknown operation attempted in editor.');
+    }
   }
 
   processInsert(changeObj) {
@@ -102,12 +87,6 @@ class Editor {
     } else {
       return text.join('\n');
     }
-  }
-
-  replaceText(text: string) {
-    const cursor = this.mde.codemirror.getCursor();
-    this.mde.value(text);
-    this.mde.codemirror.setCursor(cursor);
   }
 
   insertText(value: string, positions: Positions, siteId: string) {

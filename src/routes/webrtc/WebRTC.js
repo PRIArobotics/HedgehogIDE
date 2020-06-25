@@ -13,6 +13,10 @@ import 'ace-builds/src-noconflict/mode-javascript';
 import 'ace-builds/src-noconflict/ext-language_tools';
 import 'ace-builds/src-noconflict/theme-github';
 
+import ConclaveController from './conclave/controller';
+import ConclaveBroadcast from './conclave/broadcast';
+import ConclaveEditor from './conclave/editor';
+
 import s from './WebRTC.scss';
 
 const peerOptions = __DEV__
@@ -82,14 +86,39 @@ function Chat({ connection, sendText }: ChatProps) {
   );
 }
 
-type EditorProps = {||};
+type EditorProps = {|
+  controller: ConclaveController | null,
+|};
 
-function Editor(_props: EditorProps) {
+function Editor({ controller }: EditorProps) {
   const [content, setContent] = React.useState<string | null>(null);
+  const [listeners, setListeners] = React.useState<any>(null);
 
   React.useEffect(() => {
-    setContent('foo');
-  }, []);
+    if (controller === null) return;
+
+    setContent(controller.crdt.toText());
+
+    setListeners({
+      // onLoad
+      onChange(value, event) {
+        // eslint-disable-next-line no-console
+        console.log(event);
+        setContent(value);
+      },
+      onSelectionChange(selection, _event) {
+        const ranges = selection.getAllRanges();
+        // eslint-disable-next-line no-console
+        console.log(ranges.map(rangeToString).join(', '));
+      },
+      onCursorChange(selection, _event) {
+        const cursor = selection.getCursor();
+        // eslint-disable-next-line no-console
+        console.log(positionToString(cursor));
+      },
+      // onValidate
+    });
+  }, [controller]);
 
   function positionToString({ row, column }) {
     return `${row}:${column}`;
@@ -109,23 +138,8 @@ function Editor(_props: EditorProps) {
             name="editor"
             width="100%"
             height="100%"
-            // onLoad={onLoad}
-            onChange={(value, event) => {
-              // eslint-disable-next-line no-console
-              console.log(event);
-              setContent(value);
-            }}
             fontSize={16}
-            onSelectionChange={(selection, _event) => {
-              const ranges = selection.getAllRanges();
-              // eslint-disable-next-line no-console
-              console.log(ranges.map(rangeToString).join(', '));
-            }}
-            onCursorChange={(selection, _event) => {
-              const cursor = selection.getCursor();
-              // eslint-disable-next-line no-console
-              console.log(positionToString(cursor));
-            }}
+            {...listeners}
             markers={[
               {
                 startRow: 0,
@@ -144,7 +158,6 @@ function Editor(_props: EditorProps) {
                 type: 'text',
               },
             ]}
-            // onValidate={onValidate}
             value={content}
             showGutter
             highlightActiveLine
@@ -199,6 +212,25 @@ function WebRTC(_props: Props) {
     })();
   }, []);
 
+  const [leftController, setLeftController] = React.useState<DataConnection | null>(null);
+  const [rightController, setRightController] = React.useState<DataConnection | null>(null);
+
+  React.useEffect(() => {
+    function createController(siteId: string, targetPeerId: string | null) {
+      return new ConclaveController(
+        siteId,
+        targetPeerId,
+        location.origin,
+        new Peer(peerOptions),
+        new ConclaveBroadcast(),
+        new ConclaveEditor(),
+      );
+    }
+
+    setLeftController(createController('left', null));
+    setLeftController(createController('right', 'left'));
+  }, []);
+
   useStyles(s);
 
   return (
@@ -208,8 +240,8 @@ function WebRTC(_props: Props) {
         <Chat connection={right} sendText="There" />
       </div>
       <div className={s.container}>
-        <Editor />
-        <Editor />
+        <Editor controller={leftController} />
+        <Editor controller={rightController} />
       </div>
     </div>
   );

@@ -47,7 +47,6 @@ class Controller {
 
     this.editor = editor;
     this.editor.controller = this;
-    this.editor.bindChangeEvent();
 
     this.vector = new VersionVector(this.siteId);
     this.crdt = new CRDT(this);
@@ -71,7 +70,6 @@ class Controller {
     );
 
     this.crdt.struct = struct;
-    this.editor.replaceText(this.crdt.toText());
   }
 
   populateVersionVector(initialVersions: Version[]) {
