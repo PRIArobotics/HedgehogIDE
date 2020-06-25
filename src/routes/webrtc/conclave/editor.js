@@ -3,7 +3,6 @@
 import SimpleMDE from 'simplemde';
 
 import Controller from './controller';
-import CRDT from './crdt';
 
 type Position = {|
   line: number,
@@ -226,7 +225,7 @@ class Editor {
     const linesOfText = this.controller.crdt.text.split('\n');
 
     let index = 0;
-    for (let i = 0; i < lineIdx; i++) {
+    for (let i = 0; i < lineIdx; i += 1) {
       index += linesOfText[i].length + 1;
     }
 
@@ -239,13 +238,13 @@ class Editor {
 
     while (counter < chars.length) {
       if (chars[counter] === '\n') {
-        delta.line++;
+        delta.line += 1;
         delta.ch = 0;
       } else {
-        delta.ch++;
+        delta.ch += 1;
       }
 
-      counter++;
+      counter += 1;
     }
 
     return delta;
