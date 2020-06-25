@@ -1,5 +1,6 @@
 import Peer from 'peerjs';
 import SimpleMDE from 'simplemde';
+import UUID from 'uuid/v1';
 
 import Controller from './controller';
 import Broadcast from './broadcast';
@@ -7,6 +8,7 @@ import Editor from './editor';
 
 if (!/^((?!chrome|android).)*safari/i.test(navigator.userAgent)) {
   new Controller(
+    UUID(),
     location.search.slice(1) || null,
     location.origin,
     new Peer({

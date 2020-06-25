@@ -1,7 +1,6 @@
 // @flow
 
 import Peer from 'peerjs';
-import UUID from 'uuid/v1';
 
 import Editor, { type Position } from './editor';
 import CRDT from './crdt';
@@ -29,13 +28,14 @@ class Controller {
   crdt: CRDT;
 
   constructor(
+    siteId: string,
     targetPeerId: string | null,
     host: string,
     peer: Peer,
     broadcast: Broadcast,
     editor: Editor,
   ) {
-    this.siteId = UUID();
+    this.siteId = siteId;
     this.host = host;
     this.buffer = [];
     this.network = [];
