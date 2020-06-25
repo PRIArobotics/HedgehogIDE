@@ -4,7 +4,7 @@ import SimpleMDE from 'simplemde';
 
 import Controller from './controller';
 
-type Position = {|
+export type Position = {|
   line: number,
   ch: number,
 |};
@@ -182,7 +182,12 @@ class Editor {
     }
   }
 
-  updateRemoteCursor(position: Position, siteId: string, opType, value: string) {
+  updateRemoteCursor(
+    position: Position,
+    siteId: string,
+    opType: 'insert' | 'delete',
+    value: string,
+  ) {
     const newPosition = { ...position };
 
     if (opType === 'insert') {

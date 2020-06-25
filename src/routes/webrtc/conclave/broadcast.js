@@ -3,16 +3,30 @@
 import Peer from 'peerjs';
 
 import Controller from './controller';
+import Char from './char';
+import { type VersionData } from './version';
 
 type DataConnection = Peer.DataConnection;
 
-type Operation =
-  | {| type: 'insert' |}
-  | {| type: 'delete' |}
+export type SyncOperation = {|
+  type: 'syncResponse',
+  siteId: string,
+  peerId: string,
+  initialStruct: any,
+  initialVersions: any,
+  network: any,
+|};
+
+export type EditOperation =
+  | {| type: 'insert', char: Char, version: VersionData |}
+  | {| type: 'delete', char: Char, version: VersionData |};
+
+export type Operation =
+  | EditOperation
   | {| type: 'add to network', newPeer: string, newSite: string |}
   | {| type: 'remove from network', oldPeer: string |}
   | {| type: 'connRequest', peerId: string, siteId: string |}
-  | {| type: 'syncResponse', peerId: string |}
+  | SyncOperation
   | {| type: 'syncCompleted', peerId: string |};
 
 type Heartbeat = {|

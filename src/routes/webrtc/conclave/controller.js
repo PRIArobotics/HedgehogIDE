@@ -1,13 +1,15 @@
+// @flow
+
 import Peer from 'peerjs';
 import UUID from 'uuid/v1';
 
-import Editor from './editor';
+import Editor, { type Position } from './editor';
 import CRDT from './crdt';
 import Char from './char';
 import Identifier from './identifier';
 import VersionVector from './versionVector';
-import Version from './version';
-import Broadcast from './broadcast';
+import Version, { type VersionData } from './version';
+import Broadcast, { type EditOperation, type SyncOperation } from './broadcast';
 
 type NetworkEntry = {|
   peerId: string,
@@ -72,7 +74,7 @@ class Controller {
     this.editor.replaceText(this.crdt.toText());
   }
 
-  populateVersionVector(initialVersions) {
+  populateVersionVector(initialVersions: Version[]) {
     const versions = initialVersions.map(ver => {
       const version = new Version(ver.siteId);
       version.counter = ver.counter;
@@ -83,14 +85,14 @@ class Controller {
     versions.forEach(version => this.vector.versions.push(version));
   }
 
-  addToNetwork(peerId, siteId) {
+  addToNetwork(peerId: string, siteId: string) {
     if (!this.network.find(obj => obj.siteId === siteId)) {
       this.network.push({ peerId, siteId });
       this.broadcast.addToNetwork(peerId, siteId);
     }
   }
 
-  removeFromNetwork(peerId) {
+  removeFromNetwork(peerId: string) {
     const peerObj = this.network.find(obj => obj.peerId === peerId);
     const idx = this.network.indexOf(peerObj);
     if (idx >= 0) {
@@ -113,7 +115,7 @@ class Controller {
     }
   }
 
-  handleSync(syncObj) {
+  handleSync(syncObj: SyncOperation) {
     syncObj.network.forEach(obj => this.addToNetwork(obj.peerId, obj.siteId));
 
     if (this.crdt.totalChars() === 0) {
@@ -124,7 +126,7 @@ class Controller {
     this.syncCompleted(syncObj.peerId);
   }
 
-  syncCompleted(peerId) {
+  syncCompleted(peerId: string) {
     const completedMessage = JSON.stringify({
       type: 'syncCompleted',
       peerId: this.broadcast.peer.id,
@@ -143,7 +145,7 @@ class Controller {
     }
   }
 
-  handleRemoteOperation(operation) {
+  handleRemoteOperation(operation: EditOperation) {
     if (this.vector.hasBeenApplied(operation.version)) return;
 
     if (operation.type === 'insert') {
@@ -172,12 +174,12 @@ class Controller {
     }
   }
 
-  hasInsertionBeenApplied(operation) {
+  hasInsertionBeenApplied(operation: EditOperation) {
     const charVersion = { siteId: operation.char.siteId, counter: operation.char.counter };
     return this.vector.hasBeenApplied(charVersion);
   }
 
-  applyOperation(operation) {
+  applyOperation(operation: EditOperation) {
     const { char } = operation;
     const identifiers = char.position.map(pos => new Identifier(pos.digit, pos.siteId));
     const newChar = new Char(char.value, char.counter, char.siteId, identifiers);
@@ -191,11 +193,11 @@ class Controller {
     this.vector.update(operation.version);
   }
 
-  localDelete(startPos, endPos) {
+  localDelete(startPos: Position, endPos: Position) {
     this.crdt.handleLocalDelete(startPos, endPos);
   }
 
-  localInsert(chars, startPos) {
+  localInsert(chars: string, startPos: Position) {
     for (let i = 0; i < chars.length; i += 1) {
       if (chars[i - 1] === '\n') {
         startPos.line += 1;
@@ -206,7 +208,7 @@ class Controller {
     }
   }
 
-  broadcastInsertion(char) {
+  broadcastInsertion(char: Char) {
     const operation = {
       type: 'insert',
       char,
@@ -216,7 +218,7 @@ class Controller {
     this.broadcast.send(operation);
   }
 
-  broadcastDeletion(char, version) {
+  broadcastDeletion(char: Char, version: VersionData) {
     const operation = {
       type: 'delete',
       char,
@@ -226,7 +228,7 @@ class Controller {
     this.broadcast.send(operation);
   }
 
-  insertIntoEditor(value, pos, siteId) {
+  insertIntoEditor(value: string, pos: Position, siteId: string) {
     const positions = {
       from: {
         line: pos.line,
@@ -241,7 +243,7 @@ class Controller {
     this.editor.insertText(value, positions, siteId);
   }
 
-  deleteFromEditor(value, pos, siteId) {
+  deleteFromEditor(value: string, pos: Position, siteId: string) {
     let positions;
 
     if (value === '\n') {
