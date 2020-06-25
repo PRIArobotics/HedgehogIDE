@@ -1,6 +1,6 @@
 // @flow
 
-import Version from './version';
+import Version, { type VersionData } from './version';
 
 // vector/list of versions of sites in the distributed system
 // keeps track of the latest operation received from each site (i.e. version)
@@ -23,7 +23,7 @@ class VersionVector {
   // updates vector with new version received from another site
   // if vector doesn't contain version, it's created and added to vector
   // create exceptions if need be.
-  update(incomingVersion: Version) {
+  update(incomingVersion: VersionData) {
     const existingVersion = this.versions.find(
       version => incomingVersion.siteId === version.siteId,
     );
@@ -39,7 +39,7 @@ class VersionVector {
   }
 
   // check if incoming remote operation has already been applied to our crdt
-  hasBeenApplied(incomingVersion: Version): boolean {
+  hasBeenApplied(incomingVersion: VersionData): boolean {
     const localIncomingVersion = this.getVersionFromVector(incomingVersion);
 
     if (!localIncomingVersion) return false;
@@ -50,11 +50,11 @@ class VersionVector {
     return isIncomingLower && !isInExceptions;
   }
 
-  getVersionFromVector(incomingVersion: Version): Version | void {
+  getVersionFromVector(incomingVersion: VersionData): Version | void {
     return this.versions.find(version => version.siteId === incomingVersion.siteId);
   }
 
-  getLocalVersion() {
+  getLocalVersion(): VersionData {
     const { siteId, counter } = this.localVersion;
     return { siteId, counter };
   }
