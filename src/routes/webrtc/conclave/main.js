@@ -5,8 +5,7 @@ import Controller from './controller';
 import Broadcast from './broadcast';
 import Editor from './editor';
 
-if (/^((?!chrome|android).)*safari/i.test(navigator.userAgent)) {
-} else {
+if (!/^((?!chrome|android).)*safari/i.test(navigator.userAgent)) {
   new Controller(
     location.search.slice(1) || null,
     location.origin,
