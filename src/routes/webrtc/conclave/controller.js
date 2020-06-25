@@ -167,7 +167,7 @@ class Controller {
         this.applyOperation(deleteOperation);
         this.buffer.splice(i, 1);
       } else {
-        i++;
+        i += 1;
       }
     }
   }
@@ -196,13 +196,13 @@ class Controller {
   }
 
   localInsert(chars, startPos) {
-    for (let i = 0; i < chars.length; i++) {
+    for (let i = 0; i < chars.length; i += 1) {
       if (chars[i - 1] === '\n') {
-        startPos.line++;
+        startPos.line += 1;
         startPos.ch = 0;
       }
       this.crdt.handleLocalInsert(chars[i], startPos);
-      startPos.ch++;
+      startPos.ch += 1;
     }
   }
 
