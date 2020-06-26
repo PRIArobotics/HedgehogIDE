@@ -17,38 +17,38 @@ type Props = {|
 |};
 type Instance = React.ElementRef<typeof AceEditor>;
 
-const AcePeerEditor = React.forwardRef<Props, Instance>(({ connectionConfig, ...props }: Props, ref: ?Ref<Instance>) => {
-  const [ace, setAce] = React.useState<Instance | null>(null);
-  React.useEffect(() => {
-    if (typeof ref === 'function') ref(ace);
-    else if (ref) ref.current = ace;
-  }, [ref, ace]);
+const AcePeerEditor = React.forwardRef<Props, Instance>(
+  ({ connectionConfig, ...props }: Props, ref: ?Ref<Instance>) => {
+    const [ace, setAce] = React.useState<Instance | null>(null);
+    React.useEffect(() => {
+      if (typeof ref === 'function') ref(ace);
+      else if (ref) ref.current = ace;
+    }, [ref, ace]);
 
-  React.useEffect(() => {
-    if (ace === null) return;
+    React.useEffect(() => {
+      if (ace === null) return;
 
-    const { peerOptions, siteId, targetPeerId } = connectionConfig;
+      const { peerOptions, siteId, targetPeerId } = connectionConfig;
 
-    const controller = new Controller(
-      siteId,
-      targetPeerId,
-      location.origin,
-      new Peer({
-        ...peerOptions,
-        debug: 1,
-      }),
-      ace,
-    );
+      const controller = new Controller(
+        siteId,
+        targetPeerId,
+        location.origin,
+        new Peer({
+          ...peerOptions,
+          debug: 1,
+        }),
+        ace,
+      );
 
-    return () => {
-      // TODO discard controller
-    };
-  }, [ace]);
+      return () => {
+        // TODO discard controller
+      };
+    }, [ace]);
 
-  return (
-    <AceEditor ref={setAce} {...props} />
-  );
-});
+    return <AceEditor ref={setAce} {...props} />;
+  },
+);
 
 export type AcePeerEditorType = React.ElementRef<typeof AcePeerEditor>;
 export default AcePeerEditor;

@@ -183,8 +183,8 @@ function WebRTC(_props: Props) {
         <Chat connection={right} sendText="There" />
       </div>
       <div className={s.container}>
-        <Editor connectionConfig={{siteId: 'left', targetPeerId: null }} />
-        <Editor connectionConfig={{siteId: 'right', targetPeerId: null }} />
+        <Editor connectionConfig={{ siteId: 'left', targetPeerId: null }} />
+        <Editor connectionConfig={{ siteId: 'right', targetPeerId: null }} />
       </div>
     </div>
   );

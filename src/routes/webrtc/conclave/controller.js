@@ -27,13 +27,7 @@ class Controller {
   vector: VersionVector;
   crdt: CRDT;
 
-  constructor(
-    siteId: string,
-    targetPeerId: string | null,
-    host: string,
-    peer: Peer,
-    ace: AceRef,
-  ) {
+  constructor(siteId: string, targetPeerId: string | null, host: string, peer: Peer, ace: AceRef) {
     this.siteId = siteId;
     this.host = host;
     this.buffer = [];
