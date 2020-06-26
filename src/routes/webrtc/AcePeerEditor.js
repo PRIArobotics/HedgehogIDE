@@ -7,6 +7,10 @@ import Peer from 'peerjs';
 
 import Controller from './conclave/controller';
 
+import useRemoteCursors from './useRemoteCursors';
+
+import s from './WebRTC.scss';
+
 type Props = {|
   connectionConfig: {|
     peerOptions: any,
@@ -18,7 +22,7 @@ type Props = {|
 type Instance = React.ElementRef<typeof AceEditor>;
 
 const AcePeerEditor = React.forwardRef<Props, Instance>(
-  ({ connectionConfig, ...props }: Props, ref: ?Ref<Instance>) => {
+  ({ connectionConfig, markers, ...props }: Props, ref: ?Ref<Instance>) => {
     const [ace, setAce] = React.useState<Instance | null>(null);
     React.useEffect(() => {
       if (typeof ref === 'function') ref(ace);
@@ -46,7 +50,19 @@ const AcePeerEditor = React.forwardRef<Props, Instance>(
       };
     }, [ace]);
 
-    return <AceEditor ref={setAce} {...props} />;
+    const remoteCursors = useRemoteCursors();
+
+    function getMarkerClassName(_siteId: string, type: 'selection' | 'cursor') {
+      return s[`remote-${type}`];
+    }
+
+    return (
+      <AceEditor
+        ref={setAce}
+        markers={[...(markers ?? []), ...remoteCursors.getAceMarkers(getMarkerClassName)]}
+        {...props}
+      />
+    );
   },
 );
 

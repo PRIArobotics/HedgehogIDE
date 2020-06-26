@@ -104,24 +104,6 @@ function Editor({ connectionConfig }: EditorProps) {
           width="100%"
           height="100%"
           fontSize={16}
-          markers={[
-            {
-              startRow: 0,
-              startCol: 1,
-              endRow: 0,
-              endCol: 3,
-              className: s['remote-selection'],
-              type: 'text',
-            },
-            {
-              startRow: 0,
-              startCol: 3,
-              endRow: 0,
-              endCol: 4,
-              className: s['remote-cursor'],
-              type: 'text',
-            },
-          ]}
           showGutter
           highlightActiveLine
           autoScrollEditorIntoView
