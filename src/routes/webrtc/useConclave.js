@@ -30,7 +30,7 @@ export default function useConclave(
 ): ConclaveHook {
   const [ace, setAce] = React.useState<AceRef | null>(null);
 
-  const remoteCursors = useRemoteCursors();
+  const remoteCursors = useRemoteCursors(getMarkerClassName);
 
   React.useEffect(() => {
     if (ace === null) return;
@@ -74,7 +74,7 @@ export default function useConclave(
       return {
         ref: setAce,
         ...props,
-        markers: [...(markers ?? []), ...remoteCursors.getAceMarkers(getMarkerClassName)],
+        markers: [...(markers ?? []), ...remoteCursors.getAceMarkers()],
         value: '',
       };
     },

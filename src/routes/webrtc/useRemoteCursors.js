@@ -84,12 +84,12 @@ function remoteCursorsReducer(state: RemoteCursors, action: RemoteCursorsAction)
 
 type RemoteCursorsHook = {|
   dispatch(action: RemoteCursorsAction): void,
-  getAceMarkers(
-    getClassName: (siteId: string, type: 'selection' | 'cursor') => string,
-  ): AceMarker[],
+  getAceMarkers(): AceMarker[],
 |};
 
-export default function useRemoteCursors(): RemoteCursorsHook {
+export default function useRemoteCursors(
+  getClassName: (siteId: string, type: 'selection' | 'cursor') => string,
+): RemoteCursorsHook {
   const [cursors, dispatch] = React.useReducer<RemoteCursors, RemoteCursorsAction>(
     remoteCursorsReducer,
     {
@@ -105,7 +105,7 @@ export default function useRemoteCursors(): RemoteCursorsHook {
 
   return {
     dispatch,
-    getAceMarkers(getClassName: (siteId: string, type: 'selection' | 'cursor') => string) {
+    getAceMarkers() {
       const markers = [];
 
       for (const [siteId, remoteCursor] of Object.entries(cursors)) {
