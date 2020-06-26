@@ -7,6 +7,7 @@ import Peer from 'peerjs';
 import type { AceRef, AceConfig, AceMarker } from './aceTypes';
 
 import useRemoteCursors from './useRemoteCursors';
+import useContent from './useContent';
 import Controller from './conclave/controller';
 
 type ConnectionConfig = {|
@@ -31,6 +32,7 @@ export default function useConclave(
   const [ace, setAce] = React.useState<AceRef | null>(null);
 
   const remoteCursors = useRemoteCursors(getMarkerClassName);
+  const content = useContent(remoteCursors.dispatch);
 
   React.useEffect(() => {
     if (ace === null) return;
@@ -54,10 +56,10 @@ export default function useConclave(
         siteId: 'foo',
         remoteCursor: {
           selection: {
-            start: { row: 0, column: 1 },
-            end: { row: 0, column: 3 },
+            start: { row: 1, column: 1 },
+            end: { row: 1, column: 3 },
           },
-          cursor: { row: 0, column: 3 },
+          cursor: { row: 1, column: 3 },
         },
       });
     }, 5000);
@@ -75,7 +77,8 @@ export default function useConclave(
         ref: setAce,
         ...props,
         markers: [...(markers ?? []), ...remoteCursors.getAceMarkers()],
-        value: '',
+        onChange: content.onChange,
+        value: content.value,
       };
     },
   }

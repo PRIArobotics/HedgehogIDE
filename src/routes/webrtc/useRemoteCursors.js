@@ -26,7 +26,7 @@ type RemoteCursors = {|
   [siteId: string]: RemoteCursor,
 |};
 
-type RemoteCursorsAction =
+export type RemoteCursorsAction =
   | {| type: 'SET', siteId: string, remoteCursor: RemoteCursor |}
   | {| type: 'REMOVE', siteId: string |}
   | {| type: 'INSERT', start: AcePosition, end: AcePosition |};
@@ -56,8 +56,9 @@ function remoteCursorsReducer(state: RemoteCursors, action: RemoteCursorsAction)
           return { row: row + rowDelta, column };
         } else if (row === start.row && column > start.column) {
           if (rowDelta > 0) {
-            // the position was shifted to a new line, the old column is obsolete
-            return { row: row + rowDelta, column: columnDelta };
+            // the position was shifted to a new line,
+            // shift left the number of characters remaining on the old line
+            return { row: row + rowDelta, column: column - start.column };
           } else {
             // the position was shifted within the line
             return { row, column: column + columnDelta };
