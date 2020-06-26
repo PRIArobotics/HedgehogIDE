@@ -37,26 +37,29 @@ class Editor {
     this.controller = controller;
     this.ace = ace;
     this.remoteCursors = {};
+    this.bindChangeEvent();
   }
 
-  onChange({ action, lines, start, end }: AceChangeEvent) {
-    const chars = this.extractChars(lines);
-    const startPos = toConclavePosition(start);
-    const endPos = toConclavePosition(end);
+  bindChangeEvent() {
+    this.ace.editor.on('change', ({ action, lines, start, end }: AceChangeEvent) => {
+      const chars = this.extractChars(lines);
+      const startPos = toConclavePosition(start);
+      const endPos = toConclavePosition(end);
 
-    switch (action) {
-      case 'insert': {
-        this.processInsert(chars, startPos, endPos);
-        break;
+      switch (action) {
+        case 'insert': {
+          this.processInsert(chars, startPos, endPos);
+          break;
+        }
+        case 'remove': {
+          this.processDelete(chars, startPos, endPos);
+          this.controller.localDelete(toConclavePosition(start), toConclavePosition(end));
+          break;
+        }
+        default:
+          throw 'unreachable';
       }
-      case 'remove': {
-        this.processDelete(chars, startPos, endPos);
-        this.controller.localDelete(toConclavePosition(start), toConclavePosition(end));
-        break;
-      }
-      default:
-        throw 'unreachable';
-    }
+    });
   }
 
   processInsert(chars: string, startPos: Position, endPos: Position) {
