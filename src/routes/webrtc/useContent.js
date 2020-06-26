@@ -5,6 +5,8 @@ import * as React from 'react';
 import type { AcePosition, AceChangeEvent } from './aceTypes';
 import { type RemoteCursorsAction } from './useRemoteCursors';
 
+import Controller from './conclave/controller';
+
 type ContentHook = {|
   value: string,
   onChange(value: string, event: AceChangeEvent): void,
@@ -12,24 +14,29 @@ type ContentHook = {|
 
 export default function useContent(
   remoteCursorsDispatch: RemoteCursorsAction => void,
+  controller: Controller,
 ): ContentHook {
   const [value, setValue] = React.useState<string>('');
 
   return {
     value,
-    onChange(newValue: string, { action, lines, start, end }: AceChangeEvent) {
-      setValue(newValue);
+    onChange(_value: string, { action, lines, start, end }: AceChangeEvent) {
       console.log(action, start, end);
 
       switch (action) {
         case 'insert': {
-          // this.processInsert(chars, startPos, endPos);
           remoteCursorsDispatch({ type: 'INSERT', start, end });
+          controller.localInsert(lines, { line: start.row, ch: start.column });
+          setValue(controller.crdt.toText());
           break;
         }
         case 'remove': {
-          // this.processDelete(chars, startPos, endPos);
           remoteCursorsDispatch({ type: 'DELETE', start, end });
+          controller.localDelete(
+            { line: start.row, ch: start.column },
+            { line: end.row, ch: end.column },
+          );
+          setValue(controller.crdt.toText());
           break;
         }
         default:

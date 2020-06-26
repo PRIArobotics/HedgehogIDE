@@ -39,8 +39,6 @@ export default function useConclave(
   const remoteCursors = useRemoteCursors(getMarkerClassName);
   const remoteCursorsDispatch = remoteCursors.dispatch;
 
-  const content = useContent(remoteCursorsDispatch);
-
   const controller = hooks.useValue(() => {
     const { peerOptions, siteId, targetPeerId } = connectionConfig;
 
@@ -92,6 +90,8 @@ export default function useConclave(
 
     return controller;
   });
+
+  const content = useContent(remoteCursorsDispatch, controller);
 
   return {
     mountAceEditor(config: AceConfig | void) {

@@ -184,14 +184,18 @@ class Controller {
     this.crdt.handleLocalDelete(startPos, endPos);
   }
 
-  localInsert(chars: string, startPos: Position) {
-    for (let i = 0; i < chars.length; i += 1) {
-      if (chars[i - 1] === '\n') {
-        startPos.line += 1;
-        startPos.ch = 0;
+  localInsert(lines: string[], startPos: Position) {
+    for (const [i, line] of lines.entries()) {
+      for (const char of line) {
+        this.crdt.handleLocalInsert(char, startPos);
+        startPos.ch += 1;
       }
-      this.crdt.handleLocalInsert(chars[i], startPos);
-      startPos.ch += 1;
+      if (i !== lines.length - 1) {
+        // after each line, insert a newline
+        this.crdt.handleLocalInsert('\n', startPos);
+      }
+      startPos.line += 1;
+      startPos.ch = 0;
     }
   }
 
