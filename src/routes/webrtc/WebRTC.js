@@ -93,50 +93,17 @@ type EditorProps = {|
 |};
 
 function Editor({ connectionConfig }: EditorProps) {
-  const [ace, setAce] = React.useState<AcePeerEditorType | null>(null);
-  const [listeners, setListeners] = React.useState<any>(null);
-
-  React.useEffect(() => {
-    if (ace === null) return;
-
-    const { siteId, targetPeerId } = connectionConfig;
-
-    const controller = new ConclaveController(
-      siteId,
-      targetPeerId,
-      location.origin,
-      new Peer({
-        ...peerOptions,
-        debug: 1,
-      }),
-      ace,
-    );
-
-    return () => {
-      // TODO discard controller
-    };
-  }, [ace]);
-
-  function positionToString({ row, column }) {
-    return `${row}:${column}`;
-  }
-
-  function rangeToString({ start, end }) {
-    return `(${positionToString(start)}, ${positionToString(end)})`;
-  }
-
   return (
     <Paper className={s.editor} square>
       <div className={s['editor-wrapper']}>
         <AcePeerEditor
-          ref={setAce}
+          connectionConfig={{ peerOptions, ...connectionConfig }}
           mode="javascript"
           theme="github"
           name="editor"
           width="100%"
           height="100%"
           fontSize={16}
-          {...listeners}
           markers={[
             {
               startRow: 0,
