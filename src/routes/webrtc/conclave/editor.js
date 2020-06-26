@@ -190,17 +190,6 @@ class Editor {
     this.mde.codemirror.setCursor(localCursor);
   }
 
-  findLinearIdx(lineIdx: number, chIdx: number): number {
-    const linesOfText = this.controller.crdt.text.split('\n');
-
-    let index = 0;
-    for (let i = 0; i < lineIdx; i += 1) {
-      index += linesOfText[i].length + 1;
-    }
-
-    return index + chIdx;
-  }
-
   generateDeltaFromChars(chars: string) {
     const delta = { line: 0, ch: 0 };
     let counter = 0;
