@@ -7,6 +7,7 @@ import Peer from 'peerjs';
 
 import Controller from './conclave/controller';
 
+import type { AceRef, AceConfig } from './aceTypes';
 import useRemoteCursors from './useRemoteCursors';
 
 import s from './WebRTC.scss';
@@ -17,9 +18,9 @@ type Props = {|
     siteId: string,
     targetPeerId: string | null,
   |},
-  ...React.ElementConfig<typeof AceEditor>,
+  ...AceConfig,
 |};
-type Instance = React.ElementRef<typeof AceEditor>;
+type Instance = AceRef;
 
 const AcePeerEditor = React.forwardRef<Props, Instance>(
   ({ connectionConfig, markers, ...props }: Props, ref: ?Ref<Instance>) => {

@@ -3,6 +3,7 @@
 import AceEditor from 'react-ace';
 
 export type AceRef = React.ElementRef<typeof AceEditor>;
+export type AceConfig = React.ElementConfig<typeof AceEditor>;
 
 export type AceMarker = {|
   startRow: number,
