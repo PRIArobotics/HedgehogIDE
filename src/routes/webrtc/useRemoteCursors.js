@@ -36,6 +36,20 @@ export type RemoteCursorsAction =
   | {| type: 'DELETE', start: AcePosition, end: AcePosition |};
 
 function remoteCursorsReducer(state: RemoteCursors, action: RemoteCursorsAction): RemoteCursors {
+  function mapRemoteCursor(fn: AcePosition => AcePosition): RemoteCursor => RemoteCursor {
+    return ({ selection, cursor }) => {
+      if (selection !== null) {
+        // eslint-disable-next-line no-param-reassign
+        selection = { start: fn(selection.start), end: fn(selection.end) };
+      }
+      if (cursor !== null) {
+        // eslint-disable-next-line no-param-reassign
+        cursor = fn(cursor);
+      }
+      return { selection, cursor };
+    };
+  }
+
   switch (action.type) {
     case 'SET': {
       const { siteId, remoteCursor } = action;
@@ -73,13 +87,7 @@ function remoteCursorsReducer(state: RemoteCursors, action: RemoteCursorsAction)
         }
       }
 
-      return mapObject(state, ({ selection, cursor }, siteId) => ({
-        selection: selection === null ? null : {
-          start: mapPosition(selection.start),
-          end: mapPosition(selection.end),
-        },
-        cursor: cursor === null ? null : mapPosition(cursor),
-      }));
+      return mapObject(state, mapRemoteCursor(mapPosition));
     }
     case 'DELETE': {
       const { start, end } = action;
@@ -106,13 +114,7 @@ function remoteCursorsReducer(state: RemoteCursors, action: RemoteCursorsAction)
         }
       }
 
-      return mapObject(state, ({ selection, cursor }, siteId) => ({
-        selection: selection === null ? null : {
-          start: mapPosition(selection.start),
-          end: mapPosition(selection.end),
-        },
-        cursor: cursor === null ? null : mapPosition(cursor),
-      }));
+      return mapObject(state, mapRemoteCursor(mapPosition));
     }
     default:
       // eslint-disable-next-line no-throw-literal
