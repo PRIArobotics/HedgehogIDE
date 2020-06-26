@@ -22,7 +22,9 @@ type ControllerAction =
   | {| type: 'DELETE', siteId: string, value: string, start: AcePosition, end: AcePosition |};
 
 type ConclaveHook = {|
-  mountAceEditor(props: AceConfig | null): {|
+  mountAceEditor(
+    props: AceConfig | null,
+  ): {|
     ref: (AceRef | null) => void,
     value: string,
     markers: AceMarker[],
@@ -107,5 +109,5 @@ export default function useConclave(
         value: content.value,
       };
     },
-  }
+  };
 }

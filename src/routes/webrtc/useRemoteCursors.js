@@ -4,7 +4,10 @@ import * as React from 'react';
 
 import type { AceMarker, AcePosition } from './aceTypes';
 
-function mapObject<T, U>(obj: {| [key: string]: T |}, fn: (value: T, key: string) => U): {| [key: string]: U |} {
+function mapObject<T, U>(
+  obj: {| [key: string]: T |},
+  fn: (value: T, key: string) => U,
+): {| [key: string]: U |} {
   const entries = Object.entries(obj);
   const newEntries = entries.map(([key, value0]) => {
     // $FlowExpectError
