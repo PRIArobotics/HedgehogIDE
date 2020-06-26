@@ -4,7 +4,8 @@ import * as React from 'react';
 
 import Peer from 'peerjs';
 
-import type { AceRef, AceConfig, AceMarker, AcePosition } from './aceTypes';
+import * as hooks from '../../components/misc/hooks';
+import type { AceConfig, AceMarker, AcePosition } from './aceTypes';
 
 import useRemoteCursors from './useRemoteCursors';
 import useContent from './useContent';
@@ -25,7 +26,6 @@ type ConclaveHook = {|
   mountAceEditor(
     props: AceConfig | null,
   ): {|
-    ref: (AceRef | null) => void,
     value: string,
     markers: AceMarker[],
     ...AceConfig,
@@ -36,14 +36,12 @@ export default function useConclave(
   connectionConfig: ConnectionConfig,
   getMarkerClassName: (siteId: string, type: 'selection' | 'cursor') => string,
 ): ConclaveHook {
-  const [ace, setAce] = React.useState<AceRef | null>(null);
-
   const remoteCursors = useRemoteCursors(getMarkerClassName);
-  const content = useContent(remoteCursors.dispatch);
+  const remoteCursorsDispatch = remoteCursors.dispatch;
 
-  React.useEffect(() => {
-    if (ace === null) return;
+  const content = useContent(remoteCursorsDispatch);
 
+  const controller = hooks.useValue(() => {
     const { peerOptions, siteId, targetPeerId } = connectionConfig;
 
     function dispatch(action: ControllerAction) {
@@ -51,7 +49,7 @@ export default function useConclave(
         case 'REMOVE_CURSOR': {
           const { siteId } = action;
 
-          remoteCursors.dispatch({ type: 'REMOVE', siteId });
+          remoteCursorsDispatch({ type: 'REMOVE', siteId });
           return;
         }
         case 'INSERT': {
@@ -92,17 +90,14 @@ export default function useConclave(
       });
     }, 5000);
 
-    return () => {
-      // TODO discard controller
-    };
-  }, [ace]);
+    return controller;
+  });
 
   return {
     mountAceEditor(config: AceConfig | void) {
       const { ref, markers, ...props } = config ?? {};
 
       return {
-        ref: setAce,
         ...props,
         markers: [...(markers ?? []), ...remoteCursors.getAceMarkers()],
         onChange: content.onChange,
