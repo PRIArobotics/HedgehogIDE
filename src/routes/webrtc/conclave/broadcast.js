@@ -43,13 +43,16 @@ class Broadcast {
   MAX_BUFFER_SIZE: number;
   heartbeat: Heartbeat;
 
-  constructor() {
-    this.controller = null;
-    this.peer = null;
+  constructor(controller: Controller, peer: Peer, targetPeerId: string | null) {
+    this.controller = controller;
+    this.peer = peer;
     this.outConns = [];
     this.inConns = [];
     this.outgoingBuffer = [];
     this.MAX_BUFFER_SIZE = 40;
+
+    this.heartbeat = this.startPeerHeartBeat(peer);
+    this.onOpen(targetPeerId);
   }
 
   send(operation: Operation) {
@@ -73,12 +76,6 @@ class Broadcast {
     this.outgoingBuffer.forEach(op => {
       connection.send(op);
     });
-  }
-
-  bindServerEvents(targetPeerId: string | null, peer: Peer) {
-    this.peer = peer;
-    this.onOpen(targetPeerId);
-    this.heartbeat = this.startPeerHeartBeat(peer);
   }
 
   startPeerHeartBeat(peer: Peer): Heartbeat {

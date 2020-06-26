@@ -32,8 +32,6 @@ class Controller {
     targetPeerId: string | null,
     host: string,
     peer: Peer,
-    broadcast: Broadcast,
-    editor: Editor,
   ) {
     this.siteId = siteId;
     this.host = host;
@@ -41,13 +39,10 @@ class Controller {
     this.network = [];
     this.urlId = targetPeerId;
 
-    this.broadcast = broadcast;
-    this.broadcast.controller = this;
-    this.broadcast.bindServerEvents(targetPeerId, peer);
-
-    this.editor = editor;
-    this.editor.controller = this;
-
+    // $FlowExpectError - passing not fully initialized object
+    this.broadcast = new Broadcast(this, peer, targetPeerId);
+    // $FlowExpectError - passing not fully initialized object
+    this.editor = new Editor(this);
     this.vector = new VersionVector(this.siteId);
     this.crdt = new CRDT(this);
   }

@@ -14,8 +14,6 @@ import 'ace-builds/src-noconflict/ext-language_tools';
 import 'ace-builds/src-noconflict/theme-github';
 
 import ConclaveController from './conclave/controller';
-import ConclaveBroadcast from './conclave/broadcast';
-import ConclaveEditor, { type AcePosition, type AceChangeEvent } from './conclave/editor';
 
 import s from './WebRTC.scss';
 
@@ -229,8 +227,6 @@ function WebRTC(_props: Props) {
         targetPeerId,
         location.origin,
         new Peer(peerOptions),
-        new ConclaveBroadcast(),
-        new ConclaveEditor(),
       );
     }
 

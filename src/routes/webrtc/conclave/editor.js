@@ -29,8 +29,8 @@ class Editor {
   controller: Controller;
   remoteCursors: RemoteCursors;
 
-  constructor() {
-    this.controller = null;
+  constructor(controller: Controller) {
+    this.controller = controller;
     this.remoteCursors = {};
   }
 
