@@ -29,6 +29,8 @@ const AcePeerEditor = React.forwardRef<Props, Instance>(
       else if (ref) ref.current = ace;
     }, [ref, ace]);
 
+    const remoteCursors = useRemoteCursors();
+
     React.useEffect(() => {
       if (ace === null) return;
 
@@ -49,8 +51,6 @@ const AcePeerEditor = React.forwardRef<Props, Instance>(
         // TODO discard controller
       };
     }, [ace]);
-
-    const remoteCursors = useRemoteCursors();
 
     function getMarkerClassName(_siteId: string, type: 'selection' | 'cursor') {
       return s[`remote-${type}`];

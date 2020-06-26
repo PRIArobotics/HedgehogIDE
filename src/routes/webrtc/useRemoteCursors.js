@@ -4,6 +4,16 @@ import * as React from 'react';
 
 import type { AceMarker, AcePosition } from './aceTypes';
 
+function mapObject<T, U>(obj: {| [key: string]: T |}, fn: (value: T, key: string) => U): {| [key: string]: U |} {
+  const entries = Object.entries(obj);
+  const newEntries = entries.map(([key, value0]) => {
+    // $FlowExpectError
+    const value: T = value0;
+    return [key, fn(value, key)];
+  });
+  return Object.fromEntries(newEntries);
+}
+
 type RemoteCursor = {|
   selection: {|
     start: AcePosition,
@@ -16,24 +26,85 @@ type RemoteCursors = {|
   [siteId: string]: RemoteCursor,
 |};
 
+type RemoteCursorsAction =
+  | {| type: 'SET', siteId: string, remoteCursor: RemoteCursor |}
+  | {| type: 'REMOVE', siteId: string |}
+  | {| type: 'INSERT', start: AcePosition, end: AcePosition |};
+
+function remoteCursorsReducer(state: RemoteCursors, action: RemoteCursorsAction): RemoteCursors {
+  switch (action.type) {
+    case 'SET': {
+      const { siteId, remoteCursor } = action;
+
+      return { ...state, [siteId]: remoteCursor };
+    }
+    case 'REMOVE': {
+      const { siteId } = action;
+
+      const { [siteId]: _, ...newState } = state;
+      return newState;
+    }
+    case 'INSERT': {
+      const { start, end } = action;
+
+      const rowDelta = end.row - start.row;
+      const columnDelta = rowDelta === 0 ? end.column - start.column : end.column;
+
+      function mapPosition({ row, column }: AcePosition): AcePosition {
+        if (row > start.row) {
+          // the position was shifted down a number of lines
+          return { row: row + rowDelta, column };
+        } else if (row === start.row && column > start.column) {
+          if (rowDelta > 0) {
+            // the position was shifted to a new line, the old column is obsolete
+            return { row: row + rowDelta, column: columnDelta };
+          } else {
+            // the position was shifted within the line
+            return { row, column: column + columnDelta };
+          }
+        } else {
+          // the position was not shifted
+          return { row, column };
+        }
+      }
+
+      return mapObject(state, ({ selection, cursor }, siteId) => ({
+        selection: selection === null ? null : {
+          start: mapPosition(selection.start),
+          end: mapPosition(selection.end),
+        },
+        cursor: cursor === null ? null : mapPosition(cursor),
+      }));
+    }
+    default:
+      // eslint-disable-next-line no-throw-literal
+      throw 'unreachable';
+  }
+}
+
 type RemoteCursorsHook = {|
+  dispatch(action: RemoteCursorsAction): void,
   getAceMarkers(
     getClassName: (siteId: string, type: 'selection' | 'cursor') => string,
   ): AceMarker[],
 |};
 
 export default function useRemoteCursors(): RemoteCursorsHook {
-  const [cursors, setCursors] = React.useState<RemoteCursors>({
-    'foo': {
-      selection: {
-        start: { row: 0, column: 1 },
-        end: { row: 0, column: 3 },
+  const [cursors, dispatch] = React.useReducer<RemoteCursors, RemoteCursorsAction>(
+    remoteCursorsReducer,
+    {
+      foo: {
+        selection: {
+          start: { row: 0, column: 1 },
+          end: { row: 0, column: 3 },
+        },
+        cursor: { row: 0, column: 3 },
       },
-      cursor: { row: 0, column: 3 },
-    }
-  });
+    },
+  );
 
   return {
+    dispatch,
     getAceMarkers(getClassName: (siteId: string, type: 'selection' | 'cursor') => string) {
       const markers = [];
 
@@ -64,6 +135,6 @@ export default function useRemoteCursors(): RemoteCursorsHook {
       }
 
       return markers;
-    }
+    },
   };
 }
