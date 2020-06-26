@@ -29,7 +29,7 @@ export default function useContent(
         }
         case 'remove': {
           // this.processDelete(chars, startPos, endPos);
-          // remoteCursorsDispatch({ type: 'DELETE', start, end });
+          remoteCursorsDispatch({ type: 'DELETE', start, end });
           break;
         }
         default:

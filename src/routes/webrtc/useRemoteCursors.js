@@ -29,7 +29,8 @@ type RemoteCursors = {|
 export type RemoteCursorsAction =
   | {| type: 'SET', siteId: string, remoteCursor: RemoteCursor |}
   | {| type: 'REMOVE', siteId: string |}
-  | {| type: 'INSERT', start: AcePosition, end: AcePosition |};
+  | {| type: 'INSERT', start: AcePosition, end: AcePosition |}
+  | {| type: 'DELETE', start: AcePosition, end: AcePosition |};
 
 function remoteCursorsReducer(state: RemoteCursors, action: RemoteCursorsAction): RemoteCursors {
   switch (action.type) {
@@ -62,6 +63,39 @@ function remoteCursorsReducer(state: RemoteCursors, action: RemoteCursorsAction)
           } else {
             // the position was shifted within the line
             return { row, column: column + columnDelta };
+          }
+        } else {
+          // the position was not shifted
+          return { row, column };
+        }
+      }
+
+      return mapObject(state, ({ selection, cursor }, siteId) => ({
+        selection: selection === null ? null : {
+          start: mapPosition(selection.start),
+          end: mapPosition(selection.end),
+        },
+        cursor: cursor === null ? null : mapPosition(cursor),
+      }));
+    }
+    case 'DELETE': {
+      const { start, end } = action;
+
+      const rowDelta = end.row - start.row;
+      const columnDelta = rowDelta === 0 ? end.column - start.column : end.column;
+
+      function mapPosition({ row, column }: AcePosition): AcePosition {
+        if (row > end.row) {
+          // the position was shifted up a number of lines
+          return { row: row - rowDelta, column };
+        } else if (row === end.row && column > end.column) {
+          if (rowDelta > 0) {
+            // the position was shifted to a new line,
+            // shift right the number of characters remaining on the new line
+            return { row: row - rowDelta, column: column + start.column };
+          } else {
+            // the position was shifted within the line
+            return { row, column: column - columnDelta };
           }
         } else {
           // the position was not shifted
