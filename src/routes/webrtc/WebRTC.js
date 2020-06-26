@@ -234,8 +234,12 @@ function WebRTC(_props: Props) {
       );
     }
 
-    setLeftController(createController('left', null));
-    setRightController(createController('right', 'left'));
+    const left = createController('left', null);
+    setLeftController(left);
+    left.broadcast.peer.on('open', id => {
+      const right = createController('right', id);
+      setRightController(right);
+    });
   }, []);
 
   useStyles(s);
