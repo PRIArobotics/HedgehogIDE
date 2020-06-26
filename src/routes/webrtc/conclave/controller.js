@@ -2,7 +2,9 @@
 
 import Peer from 'peerjs';
 
-import Editor, { type AceRef, type Position } from './editor';
+import type { AceRef } from '../aceTypes';
+
+import Editor, { type Position } from './editor';
 import CRDT from './crdt';
 import Char from './char';
 import Identifier from './identifier';

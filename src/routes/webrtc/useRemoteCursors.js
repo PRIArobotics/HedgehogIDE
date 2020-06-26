@@ -2,16 +2,7 @@
 
 import * as React from 'react';
 
-import { type AcePosition } from './conclave/editor';
-
-type AceMarker = {|
-  startRow: number,
-  startCol: number,
-  endRow: number,
-  endCol: number,
-  className: string,
-  type: string,
-|};
+import type { AceMarker, AcePosition } from './aceTypes';
 
 type RemoteCursor = {|
   selection: {|
