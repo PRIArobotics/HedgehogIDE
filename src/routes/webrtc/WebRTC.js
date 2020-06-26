@@ -7,14 +7,14 @@ import Paper from '@material-ui/core/Paper';
 
 import Peer, { DataConnection } from 'peerjs';
 
-import AceEditor from 'react-ace';
+import 'react-ace';
 import 'ace-builds/webpack-resolver';
 import 'ace-builds/src-noconflict/mode-javascript';
 import 'ace-builds/src-noconflict/ext-language_tools';
 import 'ace-builds/src-noconflict/theme-github';
 
 import ConclaveController from './conclave/controller';
-import { type AceRef } from './conclave/editor';
+import AcePeerEditor, { type AcePeerEditorType } from './AcePeerEditor';
 
 import s from './WebRTC.scss';
 
@@ -93,7 +93,7 @@ type EditorProps = {|
 |};
 
 function Editor({ connectionConfig }: EditorProps) {
-  const [ace, setAce] = React.useState<AceRef | null>(null);
+  const [ace, setAce] = React.useState<AcePeerEditorType | null>(null);
   const [listeners, setListeners] = React.useState<any>(null);
 
   React.useEffect(() => {
@@ -128,7 +128,7 @@ function Editor({ connectionConfig }: EditorProps) {
   return (
     <Paper className={s.editor} square>
       <div className={s['editor-wrapper']}>
-        <AceEditor
+        <AcePeerEditor
           ref={setAce}
           mode="javascript"
           theme="github"
