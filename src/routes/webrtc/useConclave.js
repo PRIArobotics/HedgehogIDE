@@ -4,7 +4,7 @@ import * as React from 'react';
 
 import Peer from 'peerjs';
 
-import type { AceRef, AceConfig, AceMarker } from './aceTypes';
+import type { AceRef, AceConfig, AceMarker, AcePosition } from './aceTypes';
 
 import useRemoteCursors from './useRemoteCursors';
 import useContent from './useContent';
@@ -15,6 +15,11 @@ type ConnectionConfig = {|
   siteId: string,
   targetPeerId: string | null,
 |};
+
+type ControllerAction =
+  | {| type: 'REMOVE_CURSOR', siteId: string |}
+  | {| type: 'INSERT', siteId: string, value: string, start: AcePosition, end: AcePosition |}
+  | {| type: 'DELETE', siteId: string, value: string, start: AcePosition, end: AcePosition |};
 
 type ConclaveHook = {|
   mountAceEditor(props: AceConfig | null): {|
@@ -39,6 +44,27 @@ export default function useConclave(
 
     const { peerOptions, siteId, targetPeerId } = connectionConfig;
 
+    function dispatch(action: ControllerAction) {
+      switch (action.type) {
+        case 'REMOVE_CURSOR': {
+          const { siteId } = action;
+
+          remoteCursors.dispatch({ type: 'REMOVE', siteId });
+          return;
+        }
+        case 'INSERT': {
+          const { siteId, value, start, end } = action;
+          console.log(action);
+          return;
+        }
+        case 'DELETE': {
+          const { siteId, value, start, end } = action;
+          console.log(action);
+          return;
+        }
+      }
+    }
+
     const controller = new Controller(
       siteId,
       targetPeerId,
@@ -47,7 +73,7 @@ export default function useConclave(
         ...peerOptions,
         debug: 1,
       }),
-      ace,
+      dispatch,
     );
 
     setTimeout(() => {

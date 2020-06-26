@@ -2,9 +2,7 @@
 
 import Peer from 'peerjs';
 
-import type { AceRef } from '../aceTypes';
-
-import Editor, { type Position } from './editor';
+import { type Position } from './editor';
 import CRDT from './crdt';
 import Char from './char';
 import Identifier from './identifier';
@@ -23,23 +21,22 @@ class Controller {
   buffer: any[];
   network: NetworkEntry[];
   urlId: string | null;
+  dispatch;
 
   broadcast: Broadcast;
-  editor: Editor;
   vector: VersionVector;
   crdt: CRDT;
 
-  constructor(siteId: string, targetPeerId: string | null, host: string, peer: Peer, ace: AceRef) {
+  constructor(siteId: string, targetPeerId: string | null, host: string, peer: Peer, dispatch) {
     this.siteId = siteId;
     this.host = host;
     this.buffer = [];
     this.network = [];
     this.urlId = targetPeerId;
+    this.dispatch = dispatch;
 
     // $FlowExpectError - passing not fully initialized object
     this.broadcast = new Broadcast(this, peer, targetPeerId);
-    // $FlowExpectError - passing not fully initialized object
-    this.editor = new Editor(this, ace);
     this.vector = new VersionVector(this.siteId);
     this.crdt = new CRDT(this);
   }
@@ -86,8 +83,8 @@ class Controller {
     const peerObj = this.network.find(obj => obj.peerId === peerId);
     const idx = this.network.indexOf(peerObj);
     if (idx >= 0) {
-      const deletedObj = this.network.splice(idx, 1)[0];
-      this.editor.removeCursor(deletedObj.siteId);
+      const [{ siteId }] = this.network.splice(idx, 1);
+      this.dispatch({ type: 'REMOVE_CURSOR', siteId });
       this.broadcast.removeFromNetwork(peerId);
     }
   }
@@ -219,48 +216,18 @@ class Controller {
   }
 
   insertIntoEditor(value: string, pos: Position, siteId: string) {
-    const positions = {
-      from: {
-        line: pos.line,
-        ch: pos.ch,
-      },
-      to: {
-        line: pos.line,
-        ch: pos.ch,
-      },
-    };
+    const start = { row: pos.line, column: pos.ch };
+    const end = { row: pos.line, column: pos.ch };
 
-    this.editor.insertText(value, positions, siteId);
+    this.dispatch({ type: 'INSERT', siteId, value, start, end });
   }
 
   deleteFromEditor(value: string, pos: Position, siteId: string) {
-    let positions;
+    const start = { row: pos.line, column: pos.ch };
+    const end =
+      value === '\n' ? { row: pos.line + 1, column: 0 } : { row: pos.line, column: pos.ch + 1 };
 
-    if (value === '\n') {
-      positions = {
-        from: {
-          line: pos.line,
-          ch: pos.ch,
-        },
-        to: {
-          line: pos.line + 1,
-          ch: 0,
-        },
-      };
-    } else {
-      positions = {
-        from: {
-          line: pos.line,
-          ch: pos.ch,
-        },
-        to: {
-          line: pos.line,
-          ch: pos.ch + 1,
-        },
-      };
-    }
-
-    this.editor.deleteText(value, positions, siteId);
+    this.dispatch({ type: 'DELETE', siteId, value, start, end });
   }
 }
 
