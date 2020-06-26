@@ -235,7 +235,7 @@ function WebRTC(_props: Props) {
     }
 
     setLeftController(createController('left', null));
-    setLeftController(createController('right', 'left'));
+    setRightController(createController('right', 'left'));
   }, []);
 
   useStyles(s);
