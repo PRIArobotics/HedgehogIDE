@@ -2,7 +2,7 @@
 
 import Peer from 'peerjs';
 
-import Editor, { type Position } from './editor';
+import Editor, { type AceRef, type Position } from './editor';
 import CRDT from './crdt';
 import Char from './char';
 import Identifier from './identifier';
@@ -32,6 +32,7 @@ class Controller {
     targetPeerId: string | null,
     host: string,
     peer: Peer,
+    ace: AceRef,
   ) {
     this.siteId = siteId;
     this.host = host;
@@ -42,7 +43,7 @@ class Controller {
     // $FlowExpectError - passing not fully initialized object
     this.broadcast = new Broadcast(this, peer, targetPeerId);
     // $FlowExpectError - passing not fully initialized object
-    this.editor = new Editor(this);
+    this.editor = new Editor(this, ace);
     this.vector = new VersionVector(this.siteId);
     this.crdt = new CRDT(this);
   }

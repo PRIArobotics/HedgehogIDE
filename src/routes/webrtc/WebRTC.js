@@ -14,6 +14,7 @@ import 'ace-builds/src-noconflict/ext-language_tools';
 import 'ace-builds/src-noconflict/theme-github';
 
 import ConclaveController from './conclave/controller';
+import { type AceRef } from './conclave/editor';
 
 import s from './WebRTC.scss';
 
@@ -85,45 +86,36 @@ function Chat({ connection, sendText }: ChatProps) {
 }
 
 type EditorProps = {|
-  controller: ConclaveController | null,
+  connectionConfig: {|
+    siteId: string,
+    targetPeerId: string | null,
+  |},
 |};
 
-function Editor({ controller }: EditorProps) {
-  const [content, setContent] = React.useState<string | null>(null);
+function Editor({ connectionConfig }: EditorProps) {
+  const [ace, setAce] = React.useState<AceRef | null>(null);
   const [listeners, setListeners] = React.useState<any>(null);
 
   React.useEffect(() => {
-    if (controller === null) return;
+    if (ace === null) return;
 
-    const { editor } = controller;
+    const { siteId, targetPeerId } = connectionConfig;
 
-    setContent(controller.crdt.toText());
+    const controller = new ConclaveController(
+      siteId,
+      targetPeerId,
+      location.origin,
+      new Peer({
+        ...peerOptions,
+        debug: 1,
+      }),
+      ace,
+    );
 
-    setListeners({
-      // onLoad
-      onChange(_value: string, event: AceChangeEvent) {
-        // eslint-disable-next-line no-console
-        console.log(event);
-        editor.onChange(event);
-
-        const text = controller.crdt.toText();
-        // eslint-disable-next-line no-console
-        console.log(text);
-        setContent(text);
-      },
-      onSelectionChange(selection, _event) {
-        const ranges = selection.getAllRanges();
-        // eslint-disable-next-line no-console
-        console.log(ranges.map(rangeToString).join(', '));
-      },
-      onCursorChange(selection, _event) {
-        const cursor = selection.getCursor();
-        // eslint-disable-next-line no-console
-        console.log(positionToString(cursor));
-      },
-      // onValidate
-    });
-  }, [controller]);
+    return () => {
+      // TODO discard controller
+    };
+  }, [ace]);
 
   function positionToString({ row, column }) {
     return `${row}:${column}`;
@@ -135,51 +127,49 @@ function Editor({ controller }: EditorProps) {
 
   return (
     <Paper className={s.editor} square>
-      {content !== null && (
-        <div className={s['editor-wrapper']}>
-          <AceEditor
-            mode="javascript"
-            theme="github"
-            name="editor"
-            width="100%"
-            height="100%"
-            fontSize={16}
-            {...listeners}
-            markers={[
-              {
-                startRow: 0,
-                startCol: 1,
-                endRow: 0,
-                endCol: 3,
-                className: s['remote-selection'],
-                type: 'text',
-              },
-              {
-                startRow: 0,
-                startCol: 3,
-                endRow: 0,
-                endCol: 4,
-                className: s['remote-cursor'],
-                type: 'text',
-              },
-            ]}
-            value={content}
-            showGutter
-            highlightActiveLine
-            autoScrollEditorIntoView
-            style={{
-              position: 'absolute',
-            }}
-            setOptions={{
-              enableBasicAutocompletion: true,
-              enableLiveAutocompletion: true,
-              // enableSnippets: enableSnippets,
-              showLineNumbers: true,
-              tabSize: 2,
-            }}
-          />
-        </div>
-      )}
+      <div className={s['editor-wrapper']}>
+        <AceEditor
+          ref={setAce}
+          mode="javascript"
+          theme="github"
+          name="editor"
+          width="100%"
+          height="100%"
+          fontSize={16}
+          {...listeners}
+          markers={[
+            {
+              startRow: 0,
+              startCol: 1,
+              endRow: 0,
+              endCol: 3,
+              className: s['remote-selection'],
+              type: 'text',
+            },
+            {
+              startRow: 0,
+              startCol: 3,
+              endRow: 0,
+              endCol: 4,
+              className: s['remote-cursor'],
+              type: 'text',
+            },
+          ]}
+          showGutter
+          highlightActiveLine
+          autoScrollEditorIntoView
+          style={{
+            position: 'absolute',
+          }}
+          setOptions={{
+            enableBasicAutocompletion: true,
+            enableLiveAutocompletion: true,
+            // enableSnippets: enableSnippets,
+            showLineNumbers: true,
+            tabSize: 2,
+          }}
+        />
+      </div>
     </Paper>
   );
 }
@@ -217,27 +207,6 @@ function WebRTC(_props: Props) {
     })();
   }, []);
 
-  const [leftController, setLeftController] = React.useState<DataConnection | null>(null);
-  const [rightController, setRightController] = React.useState<DataConnection | null>(null);
-
-  React.useEffect(() => {
-    function createController(siteId: string, targetPeerId: string | null) {
-      return new ConclaveController(
-        siteId,
-        targetPeerId,
-        location.origin,
-        new Peer(peerOptions),
-      );
-    }
-
-    const left = createController('left', null);
-    setLeftController(left);
-    left.broadcast.peer.on('open', id => {
-      const right = createController('right', id);
-      setRightController(right);
-    });
-  }, []);
-
   useStyles(s);
 
   return (
@@ -247,8 +216,8 @@ function WebRTC(_props: Props) {
         <Chat connection={right} sendText="There" />
       </div>
       <div className={s.container}>
-        <Editor controller={leftController} />
-        <Editor controller={rightController} />
+        <Editor connectionConfig={{siteId: 'left', targetPeerId: null }} />
+        <Editor connectionConfig={{siteId: 'right', targetPeerId: null }} />
       </div>
     </div>
   );
