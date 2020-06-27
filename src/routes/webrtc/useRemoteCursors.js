@@ -2,20 +2,9 @@
 
 import * as React from 'react';
 
-import type { AceMarker, AcePosition } from './aceTypes';
+import { mapObject } from '../../util';
 
-function mapObject<T, U>(
-  obj: {| [key: string]: T |},
-  fn: (value: T, key: string) => U,
-): {| [key: string]: U |} {
-  const entries = Object.entries(obj);
-  const newEntries = entries.map(([key, value0]) => {
-    // $FlowExpectError
-    const value: T = value0;
-    return [key, fn(value, key)];
-  });
-  return Object.fromEntries(newEntries);
-}
+import type { AceMarker, AcePosition } from './aceTypes';
 
 type RemoteCursor = {|
   selection: {|
