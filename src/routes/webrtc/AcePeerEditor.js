@@ -28,7 +28,7 @@ const AcePeerEditor = React.forwardRef<Props, Instance>(
 
     const conclave = useConclave(connectionConfig, getMarkerClassName);
 
-    return <AceEditor {...conclave.mountAceEditor(props)} />;
+    return <AceEditor ref={ref} {...conclave.mountAceEditor(props)} />;
   },
 );
 
