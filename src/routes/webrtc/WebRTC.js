@@ -155,6 +155,8 @@ function WebRTC(_props: Props) {
 
   useStyles(s);
 
+  const [leftPeerId, setLeftPeerId] = React.useState<string | null>(null);
+
   return (
     <div className={s.root}>
       <div className={s.container}>
@@ -166,20 +168,17 @@ function WebRTC(_props: Props) {
           connectionConfig={{
             siteId: 'left',
             targetPeerId: null,
-            onOpen(id) {
-              console.log('left', id);
-            },
+            onOpen: setLeftPeerId,
           }}
         />
-        <Editor
-          connectionConfig={{
-            siteId: 'right',
-            targetPeerId: null,
-            onOpen(id) {
-              console.log('right', id);
-            },
-          }}
-        />
+        {leftPeerId && (
+          <Editor
+            connectionConfig={{
+              siteId: 'right',
+              targetPeerId: leftPeerId,
+            }}
+          />
+        )}
       </div>
     </div>
   );
