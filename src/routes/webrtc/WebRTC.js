@@ -14,7 +14,7 @@ import 'ace-builds/src-noconflict/ext-language_tools';
 import 'ace-builds/src-noconflict/theme-github';
 
 import ConclaveController from './conclave/controller';
-import AcePeerEditor, { type AcePeerEditorType } from './AcePeerEditor';
+import AcePeerEditor, { type AcePeerEditorType, type ConnectionConfig } from './AcePeerEditor';
 
 import s from './WebRTC.scss';
 
@@ -86,10 +86,7 @@ function Chat({ connection, sendText }: ChatProps) {
 }
 
 type EditorProps = {|
-  connectionConfig: {|
-    siteId: string,
-    targetPeerId: string | null,
-  |},
+  connectionConfig: ConnectionConfig,
 |};
 
 function Editor({ connectionConfig }: EditorProps) {
@@ -165,8 +162,24 @@ function WebRTC(_props: Props) {
         <Chat connection={right} sendText="There" />
       </div>
       <div className={s.container}>
-        <Editor connectionConfig={{ siteId: 'left', targetPeerId: null }} />
-        <Editor connectionConfig={{ siteId: 'right', targetPeerId: null }} />
+        <Editor
+          connectionConfig={{
+            siteId: 'left',
+            targetPeerId: null,
+            onOpen(id) {
+              console.log('left', id);
+            },
+          }}
+        />
+        <Editor
+          connectionConfig={{
+            siteId: 'right',
+            targetPeerId: null,
+            onOpen(id) {
+              console.log('right', id);
+            },
+          }}
+        />
       </div>
     </div>
   );

@@ -8,16 +8,14 @@ import Peer from 'peerjs';
 import Controller from './conclave/controller';
 
 import type { AceRef, AceConfig } from './aceTypes';
-import useConclave from './useConclave';
+import useConclave, { type ConnectionConfig } from './useConclave';
 
 import s from './WebRTC.scss';
 
+export type { ConnectionConfig };
+
 type Props = {|
-  connectionConfig: {|
-    peerOptions: any,
-    siteId: string,
-    targetPeerId: string | null,
-  |},
+  connectionConfig: ConnectionConfig,
   ...AceConfig,
 |};
 type Instance = AceRef;

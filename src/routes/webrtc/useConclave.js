@@ -11,10 +11,11 @@ import useRemoteCursors from './useRemoteCursors';
 import useContent from './useContent';
 import Controller from './conclave/controller';
 
-type ConnectionConfig = {|
-  peerOptions: any,
+export type ConnectionConfig = {|
   siteId: string,
   targetPeerId: string | null,
+  peerOptions?: any,
+  onOpen?: (id: string) => void,
 |};
 
 type ControllerAction =
@@ -40,7 +41,7 @@ export default function useConclave(
   const remoteCursorsDispatch = remoteCursors.dispatch;
 
   const controller = hooks.useValue(() => {
-    const { peerOptions, siteId, targetPeerId } = connectionConfig;
+    const { peerOptions, onOpen, siteId, targetPeerId } = connectionConfig;
 
     function dispatch(action: ControllerAction) {
       switch (action.type) {
@@ -73,6 +74,8 @@ export default function useConclave(
       }),
       dispatch,
     );
+
+    if (onOpen) controller.broadcast.peer.on('open', onOpen);
 
     setTimeout(() => {
       remoteCursors.dispatch({
