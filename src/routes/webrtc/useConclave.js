@@ -80,15 +80,15 @@ export default function useConclave(
           const { siteId } = action;
 
           remoteCursors.dispatch({ type: 'REMOVE', siteId });
-          return;
+          break;
         }
         case 'INSERT': {
           content.refreshValue();
-          return;
+          break;
         }
         case 'DELETE': {
           content.refreshValue();
-          return;
+          break;
         }
       }
     }
