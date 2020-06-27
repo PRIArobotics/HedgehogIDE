@@ -38,10 +38,12 @@ export default function useConclave(
   getMarkerClassName: (siteId: string, type: 'selection' | 'cursor') => string,
 ): ConclaveHook {
   const remoteCursors = useRemoteCursors(getMarkerClassName);
+  const remoteCursorsDispatch = remoteCursors.dispatch;
 
   const controller = hooks.useValue(() => {
     const { peerOptions, onOpen, siteId, targetPeerId } = connectionConfig;
 
+    // eslint-disable-next-line no-shadow
     const controller = new Controller(
       siteId,
       targetPeerId,
@@ -71,7 +73,8 @@ export default function useConclave(
     return controller;
   });
 
-  const content = useContent(remoteCursors.dispatch, controller);
+  const content = useContent(remoteCursorsDispatch, controller);
+  const contentRefresh = content.refreshValue;
 
   React.useEffect(() => {
     function dispatch(action: ControllerAction) {
@@ -79,26 +82,29 @@ export default function useConclave(
         case 'REMOVE_CURSOR': {
           const { siteId } = action;
 
-          remoteCursors.dispatch({ type: 'REMOVE', siteId });
+          remoteCursorsDispatch({ type: 'REMOVE', siteId });
           break;
         }
         case 'INSERT': {
-          content.refreshValue();
+          contentRefresh();
           break;
         }
         case 'DELETE': {
-          content.refreshValue();
+          contentRefresh();
           break;
         }
+        default:
+          // eslint-disable-next-line no-throw-literal
+          throw 'unreachable';
       }
     }
 
     controller.dispatch = dispatch;
-  }, [controller, remoteCursors.dispatch]);
+  }, [controller, remoteCursorsDispatch, contentRefresh]);
 
   return {
     mountAceEditor(config: AceConfig | void) {
-      const { ref, markers, ...props } = config ?? {};
+      const { markers, ...props } = config ?? {};
 
       return {
         ...props,

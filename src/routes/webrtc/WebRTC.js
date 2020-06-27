@@ -13,9 +13,9 @@ import 'ace-builds/src-noconflict/mode-javascript';
 import 'ace-builds/src-noconflict/ext-language_tools';
 import 'ace-builds/src-noconflict/theme-github';
 
-import ConclaveController from './conclave/controller';
-import AcePeerEditor, { type AcePeerEditorType, type ConnectionConfig } from './AcePeerEditor';
+import AcePeerEditor, { type ConnectionConfig } from './AcePeerEditor';
 
+// eslint-disable-next-line css-modules/no-unused-class
 import s from './WebRTC.scss';
 
 const peerOptions = __DEV__

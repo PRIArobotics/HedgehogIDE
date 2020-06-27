@@ -3,13 +3,11 @@
 import * as React from 'react';
 
 import AceEditor from 'react-ace';
-import Peer from 'peerjs';
-
-import Controller from './conclave/controller';
 
 import type { AceRef, AceConfig } from './aceTypes';
 import useConclave, { type ConnectionConfig } from './useConclave';
 
+// eslint-disable-next-line css-modules/no-unused-class
 import s from './WebRTC.scss';
 
 export type { ConnectionConfig };

@@ -2,13 +2,17 @@
 
 import Peer from 'peerjs';
 
-import { type Position } from './editor';
 import CRDT from './crdt';
 import Char from './char';
 import Identifier from './identifier';
 import VersionVector from './versionVector';
 import Version, { type VersionData } from './version';
 import Broadcast, { type EditOperation, type SyncOperation } from './broadcast';
+
+export type Position = {|
+  line: number,
+  ch: number,
+|};
 
 type NetworkEntry = {|
   peerId: string,

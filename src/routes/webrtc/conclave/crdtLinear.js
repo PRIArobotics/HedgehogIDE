@@ -1,3 +1,5 @@
+/* eslint-disable */
+
 import Identifier from './identifier';
 import Char from './char';
 

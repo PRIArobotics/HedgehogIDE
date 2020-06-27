@@ -2,7 +2,7 @@
 
 import * as React from 'react';
 
-import type { AcePosition, AceChangeEvent } from './aceTypes';
+import type { AceChangeEvent } from './aceTypes';
 import { type RemoteCursorsAction } from './useRemoteCursors';
 
 import Controller from './conclave/controller';
@@ -27,8 +27,6 @@ export default function useContent(
     value,
     refreshValue,
     onChange(_value: string, { action, lines, start, end }: AceChangeEvent) {
-      console.log(action, start, end);
-
       switch (action) {
         case 'insert': {
           remoteCursorsDispatch({ type: 'INSERT', start, end });
@@ -46,6 +44,7 @@ export default function useContent(
           break;
         }
         default:
+          // eslint-disable-next-line no-throw-literal
           throw 'unreachable';
       }
     },
