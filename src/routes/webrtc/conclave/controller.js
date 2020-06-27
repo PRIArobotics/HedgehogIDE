@@ -27,13 +27,12 @@ class Controller {
   vector: VersionVector;
   crdt: CRDT;
 
-  constructor(siteId: string, targetPeerId: string | null, host: string, peer: Peer, dispatch) {
+  constructor(siteId: string, targetPeerId: string | null, host: string, peer: Peer) {
     this.siteId = siteId;
     this.host = host;
     this.buffer = [];
     this.network = [];
     this.urlId = targetPeerId;
-    this.dispatch = dispatch;
 
     // $FlowExpectError - passing not fully initialized object
     this.broadcast = new Broadcast(this, peer, targetPeerId);

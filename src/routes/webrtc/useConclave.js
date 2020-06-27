@@ -38,31 +38,9 @@ export default function useConclave(
   getMarkerClassName: (siteId: string, type: 'selection' | 'cursor') => string,
 ): ConclaveHook {
   const remoteCursors = useRemoteCursors(getMarkerClassName);
-  const remoteCursorsDispatch = remoteCursors.dispatch;
 
   const controller = hooks.useValue(() => {
     const { peerOptions, onOpen, siteId, targetPeerId } = connectionConfig;
-
-    function dispatch(action: ControllerAction) {
-      switch (action.type) {
-        case 'REMOVE_CURSOR': {
-          const { siteId } = action;
-
-          remoteCursorsDispatch({ type: 'REMOVE', siteId });
-          return;
-        }
-        case 'INSERT': {
-          const { siteId, value, start, end } = action;
-          console.log(action);
-          return;
-        }
-        case 'DELETE': {
-          const { siteId, value, start, end } = action;
-          console.log(action);
-          return;
-        }
-      }
-    }
 
     const controller = new Controller(
       siteId,
@@ -72,7 +50,6 @@ export default function useConclave(
         ...peerOptions,
         debug: 1,
       }),
-      dispatch,
     );
 
     if (onOpen) controller.broadcast.peer.on('open', onOpen);
@@ -94,7 +71,30 @@ export default function useConclave(
     return controller;
   });
 
-  const content = useContent(remoteCursorsDispatch, controller);
+  const content = useContent(remoteCursors.dispatch, controller);
+
+  React.useEffect(() => {
+    function dispatch(action: ControllerAction) {
+      switch (action.type) {
+        case 'REMOVE_CURSOR': {
+          const { siteId } = action;
+
+          remoteCursors.dispatch({ type: 'REMOVE', siteId });
+          return;
+        }
+        case 'INSERT': {
+          content.refreshValue();
+          return;
+        }
+        case 'DELETE': {
+          content.refreshValue();
+          return;
+        }
+      }
+    }
+
+    controller.dispatch = dispatch;
+  }, [controller, remoteCursors.dispatch]);
 
   return {
     mountAceEditor(config: AceConfig | void) {
