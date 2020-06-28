@@ -11,6 +11,7 @@ import cp from 'child_process';
 import run from './run';
 import clean from './clean';
 // import copy from './copy';
+import { copyFile } from './lib/fs';
 import bundle from './bundle';
 import render from './render';
 import pkg from '../package.json';
@@ -23,6 +24,10 @@ async function build() {
   await run(clean);
   // await run(copy);
   await run(bundle);
+  await Promise.all([
+    copyFile('package.json', 'build/server/package.json'),
+    copyFile('yarn.lock', 'build/server/yarn.lock'),
+  ]);
 
   if (process.argv.includes('--static')) {
     await run(render);
