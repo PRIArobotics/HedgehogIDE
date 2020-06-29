@@ -74,6 +74,13 @@ type Props = {|
   layoutNode: any,
 |};
 
+/**
+ * The Visual editor allows creation of programs using a Blockly-based visual language.
+ * Visual programs are translated into JavaScript code for execution,
+ * and that code can also be viewed (read-only) side-by-side with the visual code.
+ *
+ * Besides the editor surface, the toolbar allows running and terminating programs, and resetting the simulation.
+ */
 function VisualEditor({
   layoutNode,
   project,

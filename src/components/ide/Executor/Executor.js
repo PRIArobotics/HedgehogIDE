@@ -19,6 +19,12 @@ type PropTypes = {||};
 type StateTypes = {|
   tasks: Task[],
 |};
+
+/**
+ * The executor manages tasks that are running in sandboxed iframes.
+ * The most common kind of task is a user program,
+ * others are plugins that can interact with those programs, the simulation environment, etc. via the SDK.
+ */
 class Executor extends React.Component<PropTypes, StateTypes> {
   taskExecutorRefs: Map<Task, RefObject<typeof ExecutorTask>> = new Map();
   eventRegistry: Map<string, ExecutorTask[]> = new Map();

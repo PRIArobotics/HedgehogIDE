@@ -51,6 +51,11 @@ type Instance = {|
   clear(): void,
 |};
 
+/**
+ * The Console displays program outputs, but also accepts inputs.
+ * That second capability is currently not used, except for a demo "/clear" command,
+ * but may be hooked up to program execution to get inputs passed into user programs or plugins.
+ */
 const Console = React.forwardRef<Props, Instance>((_props: Props, ref: Ref<Instance>) => {
   const [{ items }, dispatch] = React.useReducer(consoleReducer, {
     nextKey: 0,
@@ -80,10 +85,10 @@ const Console = React.forwardRef<Props, Instance>((_props: Props, ref: Ref<Insta
     print(`${input}`, 'stdin');
     if (input.startsWith('/')) {
       switch (input) {
-        case '/help':
-        case '/h':
-          print('1st Line\n2nd Line', 'stdout');
-          break;
+        // case '/help':
+        // case '/h':
+        //   print('1st Line\n2nd Line', 'stdout');
+        //   break;
 
         case '/clear':
         case '/c':

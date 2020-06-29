@@ -15,6 +15,10 @@ type Props = {|
   ...React.ElementConfig<typeof StyledIconButton>,
 |};
 
+/**
+ * An icon button for the vertical toolbar.
+ * This component handles color for disabled buttons correctly.
+ */
 function ToolBarIconButton({ icon: Icon, color, ...props }: Props, ref: Ref<StyledIconButton>) {
   return (
     <StyledIconButton ref={ref} {...props}>

@@ -25,6 +25,11 @@ type Instance = {|
   simulation: Simulation,
 |};
 
+/**
+ * The simulator displays a 2D environment containing a simulated robot.
+ *
+ * Besides the simulation itself, the toolbar allows terminating programs and resetting the simulation.
+ */
 const Simulator = React.forwardRef<Props, Instance>(
   ({ width, height, onExecutionAction, running }: Props, ref: Ref<Instance>) => {
     const simulation = hooks.useValue(() => {

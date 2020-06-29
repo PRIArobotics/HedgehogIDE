@@ -29,6 +29,13 @@ type Props = {|
   running: boolean,
 |};
 
+/**
+ * Wraps an `AceEditor` for display in a `FlexLayout` tab,
+ * and for editing the contents of a project file.
+ *
+ * Besides the editor surface, the editor's toolbar allows running and terminating programs,
+ * and resetting the simulation.
+ */
 function Editor({ layoutNode, project, path, onExecutionAction, running }: Props) {
   const [[width, height], setDimension] = React.useState<[string, string]>(['0', '0']);
   const containerRef = hooks.useElementRef<'div'>();

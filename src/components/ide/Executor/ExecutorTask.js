@@ -31,6 +31,11 @@ type StateTypes = {|
 
 const fetchExecutorDoc = fetch('/executor').then(response => response.text());
 
+/**
+ * An ExecutorTask encapsulates a hidden, sandboxed iframe containing the `/executor` document.
+ *
+ * The component sets up communication facilities for communication between the iframe and the IDE.
+ */
 class ExecutorTask extends React.Component<PropTypes, StateTypes> {
   frameRef: RefObject<'iframe'> = React.createRef();
 
