@@ -7,8 +7,9 @@ This document gives an overview on the directory structure, used third party too
 as well as on basic development and deployment.
 There are more pages on
 
-- [React code style](./function-components.md)
-- [concrete components & hooks of the Hedgehog IDE]()
+- [React code style](./code-style/react.md)
+- [Concrete components & hooks of the Hedgehog IDE](./components.md)
+- [Customizing a project's behavior](./plugins.md)
 
 ## Project structure
 
