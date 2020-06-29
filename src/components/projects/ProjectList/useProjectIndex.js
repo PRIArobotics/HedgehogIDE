@@ -30,6 +30,10 @@ const useLocalToRemoteIdMap = hooks.makeLocalStorage<LocalToRemoteIdMap>(
   state => JSON.stringify(state),
 );
 
+/**
+ * A curried function remoteProjects => oldMap => newMap that filters out those map entries
+ * that do not refer to an existent remote project.
+ */
 function removeNonexistentMapEntries(remoteProjects: RemoteProject[]) {
   return (oldMap: LocalToRemoteIdMap) => {
     // $FlowExpectError
@@ -67,6 +71,18 @@ type ProjectIndexAction =
   | {| type: 'ADD_MAPPING', projectUid: string, remoteId: string |}
   | {| type: 'REMOVE_MAPPING', projectUid: string |};
 
+/**
+ * The project index provides all local and remote projects accessible to the IDE,
+ * as well as mappings between those.
+ * A local (stored in the browser) project can be edited,
+ * and such a project can be associated with zero or one remote project.
+ * Multiple local projects can refer to the same remote project,
+ * such as when attempting an exercise multiple times.
+ *
+ * This hook allows all relevant project lists and mappings,
+ * allows refreshing these lists and editing the mappings,
+ * and removes stale mappings in the light of changes to remote projects.
+ */
 export default function useProjectIndex(): [ProjectIndex, (ProjectIndexAction) => void] {
   const [localToRemoteIdMap, setLocalToRemoteIdMap] = useLocalToRemoteIdMap('Project-Index');
   const remoteProjectsQuery = useRemoteProjectsQuery();

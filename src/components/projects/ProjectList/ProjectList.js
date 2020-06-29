@@ -131,6 +131,12 @@ const messages = defineMessages({
 
 type Props = {||};
 
+/**
+ * The ProjectList component has two purposes:
+ * show a list of local projects (stored in the "filer" browser file system),
+ * and show a list of remote projects (accessed via GraphQL).
+ * The component allows managing local projects and, for logged in users, remote projects as well.
+ */
 function ProjectList(_props: Props) {
   const auth = useAuth();
   const intl = useIntl();

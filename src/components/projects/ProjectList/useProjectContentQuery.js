@@ -43,6 +43,9 @@ const useRemoteProjectContentQuery = hooks.makeLazyQuery<
   }
 `);
 
+/**
+ * Saves all remote project contents in the given local project.
+ */
 export async function populateProject(project: Project, contents: RemoteProjectContents) {
   // prettier-ignore
   // eslint-disable-next-line no-shadow
@@ -75,6 +78,9 @@ export async function populateProject(project: Project, contents: RemoteProjectC
   await visitChildren(fileTrees[contents.fileTreeRootId], []);
 }
 
+/**
+ * Query to get the contents of a given remote project identified by its projectId.
+ */
 export default function useProjectContentQuery(): (
   projectId: string,
 ) => Promise<RemoteProjectContents> {
