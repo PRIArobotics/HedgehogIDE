@@ -44,6 +44,13 @@ type Props = {|
   contentFill: boolean,
 |};
 
+/**
+ * The Layout component pulls together Header, Sidebar, Footer and content.
+ *
+ * Content can be styled as `contentFill`, meaning the main area of the page should fill the viewport exactly,
+ * the main component handles sizing the content to the page size;
+ * or regular scrolling, meaning the content can overflow the viewport and will be scrolled as usual.
+ */
 function Layout({ children, contentFill }: Props) {
   const classes = useStyles();
   return (

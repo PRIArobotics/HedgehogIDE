@@ -18,12 +18,6 @@ import commonMessages from '../misc/commonMessages';
 
 import { useAuth } from './AuthProvider';
 
-type LoginProps = {|
-  open: boolean,
-  onSuccess: () => void | Promise<void>,
-  onError: (err: any) => void | Promise<void>,
-|};
-
 const messages = {
   ...defineMessages({
     loginFailed: {
@@ -45,6 +39,15 @@ const messages = {
   ...commonMessages,
 };
 
+type LoginProps = {|
+  open: boolean,
+  onSuccess: () => void | Promise<void>,
+  onError: (err: any) => void | Promise<void>,
+|};
+
+/**
+ * Dialog for entering login credentials and performing authentication.
+ */
 function Login({ open, onSuccess, onError }: LoginProps) {
   const auth = useAuth();
   const intl = useIntl();

@@ -64,6 +64,9 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
+/**
+ * The Header component displays the home button along with a language chooser and login/logout UI.
+ */
 function Header() {
   const classes = useStyles();
   const auth = useAuth();

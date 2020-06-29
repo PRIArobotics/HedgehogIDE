@@ -3,6 +3,13 @@
 This directory contains developer documentation for the Hedgehog IDE.
 It covers general information on the architecture, code style recommendations and APIs.
 
+This document gives an overview on the directory structure, used third party tools,
+as well as on basic development and deployment.
+There are more pages on
+
+- [React code style](./function-components.md)
+- [concrete components & hooks of the Hedgehog IDE]()
+
 ## Project structure
 
 Hedgehog IDE is originally based on [React Starter Kit](https://github.com/kriasoft/react-starter-kit/) but has departed from its structure in places.

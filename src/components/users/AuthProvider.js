@@ -42,6 +42,11 @@ type AuthProviderPropTypes = {|
   children: React.Node,
 |};
 
+
+/**
+ * `AuthProvider` provides a context with the currently logged in user
+ * as well as login and logout functions.
+ */
 export function AuthProvider({ children }: AuthProviderPropTypes) {
   const [performLogin, _loginResponse] = useLoginMutation();
   const [authData, setAuthData] = React.useState<AuthData | null>(null);
@@ -76,6 +81,9 @@ export function AuthProvider({ children }: AuthProviderPropTypes) {
   );
 }
 
+/**
+ * React hook for accessing the auth context.
+ */
 export function useAuth(): Auth {
   return React.useContext(AuthContext);
 }
