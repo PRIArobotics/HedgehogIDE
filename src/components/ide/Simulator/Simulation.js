@@ -28,6 +28,9 @@ export type Pose = {|
 //   };
 // }
 
+/**
+ * A simulated robot, capable of moving through and sensing the simulation.
+ */
 export class Robot {
   leftWheel: Matter.Body;
   rightWheel: Matter.Body;
@@ -393,6 +396,12 @@ type ExternalSensorHandler = (
   other: Matter.Body | Matter.Composite,
 ) => void | Promise<void>;
 
+/**
+ * Manages a robot simulation.
+ * The simulation can contain multiple robots, and objects representing the environment.
+ * This class is responsible for managing the Matter.js simulation lifecycle
+ * and triggering robot behavior (accelerating the robots, setting values for their sensors).
+ */
 export class Simulation {
   world: Matter.World;
   engine: Matter.Engine;

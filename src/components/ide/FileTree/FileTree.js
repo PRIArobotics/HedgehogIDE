@@ -87,6 +87,10 @@ type Props = {|
   onUpdate: (state: ControlledState) => void | Promise<void>,
 |};
 
+/**
+ * Displays all files and directories in a tree,
+ * and provides actions to open, create, rename, move, delete files etc.
+ */
 function FileTree({ files, expandedKeys, filter, onFileAction, onUpdate }: Props) {
   const [selectedKeys, setSelectedKeys] = React.useState<string[]>([]);
 

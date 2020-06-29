@@ -116,6 +116,14 @@ type Props = {|
   projectName: string,
 |};
 
+/**
+ * The main view of the Hedgehog IDE.
+ *
+ * This component combines managing of transient (what programs are running etc.)
+ * and persisted (what files are open etc.) state
+ * with UI for all the usual parts of an IDE: a file tree, a surface for file tabs,
+ * and in this case a console along with a simulation environment.
+ */
 function Ide({ projectName }: Props) {
   const project = useProjectInfo(projectName);
   const [pluginsLoaded, setPluginsLoaded] = React.useState<boolean>(false);
