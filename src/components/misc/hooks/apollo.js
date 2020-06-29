@@ -1,5 +1,52 @@
 // @flow
 
+/**
+ * The `makeFoo` hook factories in this module wrap Apollo's `useFoo` hooks for more convenient typing.
+ *
+ * Using the Apollo hooks directly leads to code like this:
+ *
+ *    import { useMutation } from '@apollo/react-hooks';
+ *    import gql from 'graphql-tag';
+ *
+ *    import {
+ *      type Mutate,
+ *      type MutateVariables,
+ *    } from './__generated__/Mutate';
+ *
+ *    const SomeMutation = gql`
+ *      mutation Mutate() {
+ *        mutate()
+ *      }
+ *    `;
+ *
+ *    function Component({ key }) {
+ *      const [mutate, response] = useMutation<Mutate, MutateVariables>(SomeMutation, options);
+ *    }
+ *
+ * even though the type information is actually connected to the `SomeConnection` constant,
+ * not the hook call.
+ *
+ * The factories here shift that typing (and passing of the query constant)
+ * from the call site to the query declaration site:
+ *
+ *    import gql from 'graphql-tag';
+ *
+ *    import {
+ *      type Mutate,
+ *      type MutateVariables,
+ *    } from './__generated__/Mutate';
+ *
+ *    const useSomeMutation = makeMutation<Mutate, MutateVariables>(gql`
+ *      mutation Mutate() {
+ *        mutate()
+ *      }
+ *    `);
+ *
+ *    function Component({ key }) {
+ *      const [mutate, response] = useSomeMutation(options);
+ *    }
+ */
+
 import {
   useQuery,
   useLazyQuery,

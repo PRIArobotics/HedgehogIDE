@@ -11,6 +11,38 @@ type LocalStorageValue<T> =
   | {| key: null |}
   | {| key: string, value: T |};
 
+/**
+ * Creates a hook for using a value from local storage. Example usage:
+ *
+ *    const useLocalStorage = makeLocalStorageOpt(
+ *      // deserialization function
+ *      json => ({ ...(json !== null ? JSON.parse(json) : null) }),
+ *      // serialization function
+ *      state => (state !== null ? JSON.stringify(state) : null),
+ *    );
+ *
+ *    function Component({ key }) {
+ *      const [value, setValue] = useLocalStorage(key);
+ *      // ...
+ *    }
+ *
+ * The key may change at runtime and may not be known at all times;
+ * parsing and serialization are fixed though, and are therefore passed to the factory.
+ * There is no default serialization/deserialization logic, because that logic is required
+ * to handle non-existent localStorage keys:
+ *
+ * - Deserialization will be passed a string, or null value if the key does not exist.
+ *   It will not be called at all if there is no key.
+ * - Serialization returns a string, or null to delete the item.
+ *   It will not be called at all if there is no key.
+ *
+ * If there's no key, the hook's value will be undefined.
+ * It the key does not exist in localStorage,
+ * the hook's value will be  the result of deserializing null;
+ * in the example that value would be null.
+ *
+ * Setting the value is ignored if there is no key.
+ */
 export function makeLocalStorageOpt<T>(
   deserialize: (string | null) => T,
   serialize: T => string | null,
@@ -72,6 +104,26 @@ export function makeLocalStorageOpt<T>(
   return useLocalStorage;
 }
 
+/**
+ * Creates a hook for using a value from local storage. Example usage:
+ *
+ *    const useLocalStorage = makeLocalStorageOpt(
+ *      // deserialization function
+ *      json => ({ ...(json !== null ? JSON.parse(json) : null) }),
+ *      // serialization function
+ *      state => (state !== null ? JSON.stringify(state) : null),
+ *    );
+ *
+ *    function Component({ key }) {
+ *      const [value, setValue] = useLocalStorage(key);
+ *      // ...
+ *    }
+ *
+ * This function is equivalent to makeLocalStorageOpt except for its type:
+ * the key may change at runtime but must be non-null at all times;
+ * this means the hook's value will not be undefined,
+ * unless that is a value the deserialization function could return.
+ */
 export function makeLocalStorage<T>(
   deserialize: (string | null) => T,
   serialize: T => string | null,

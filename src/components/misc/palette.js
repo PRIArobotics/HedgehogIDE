@@ -1,6 +1,16 @@
 // @flow
 /* eslint-disable import/no-duplicates, import/first */
 
+/**
+ * Icons (and potentially other UI elements) are associated with more semantic names here and re-exported.
+ * For example, instead of using `ArrowLeftIcon` for a "back" navigation action,
+ * a "BackIcon" export should be added here so that
+ * an icon for the "back" navigation action is only defined once, here,
+ * and can be changed in a single place.
+ *
+ * Icons can be found at https://materialdesignicons.com/
+ */
+
 import * as React from 'react';
 import { withStyles } from '@material-ui/styles';
 import Badge from '@material-ui/core/Badge';

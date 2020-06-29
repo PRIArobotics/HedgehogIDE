@@ -25,6 +25,15 @@ type SimpleDialogProps = {|
   children?: React.Node,
 |};
 
+/**
+ * A wrapper for the material-ui `Dialog` component for easy display of dialogs
+ * with title, main content, and actions.
+ * The component takes care of basic ARIA attributes for title and description,
+ * and dispatches close and submit events to the calling code.
+ *
+ * One of the `ActionConstant`s can be used to display OK/Cancel buttons,
+ * or a custom list/fragment of buttons can be passed.
+ */
 function SimpleDialog({
   id,
   open,

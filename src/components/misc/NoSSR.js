@@ -9,6 +9,9 @@ type StateTypes = {|
   children: React.Node | null,
 |};
 
+/**
+ * Prevents the render function passed as `children` from being rendered on the server.
+ */
 class NoSSR extends React.Component<PropTypes, StateTypes> {
   state = {
     children: null,

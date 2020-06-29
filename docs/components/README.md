@@ -41,3 +41,8 @@ the directory name is the name of that component.
   Context hooks and components for language selection and localization.
 - `users`:
   Context hooks and components for authentication.
+- `misc`:
+  Reusable helper components and hooks.
+
+The `projects` and `ide` directories contain the two main views of the Hedgehog IDE.
+As such they are more complicated and are described in more detail below.

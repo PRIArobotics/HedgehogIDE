@@ -45,10 +45,12 @@ function asyncStateReducer<T>(state: AsyncState<T>, action: AsyncStateAction<T>)
   }
 }
 
-// Implements state that can be set via a promise.
-// This hook makes sure that multiple setState calls can not race,
-// i.e. only the last promise will go through to the actual state.
-// While a setState promise is pending, the previous state will remain.
+/**
+ * Implements state that can be set via a promise.
+ * This hook makes sure that multiple setState calls can not race,
+ * i.e. only the last promise will go through to the actual state.
+ * While a setState promise is pending, the previous state will remain.
+ */
 export function useAsyncState<T>(initialState: T): [T, (T | Promise<T>) => void] {
   const [promise, setPromise] = React.useState<Promise<T> | null>(null);
   const [state, dispatch] = React.useReducer(asyncStateReducer, {
@@ -106,22 +108,24 @@ export function useAsyncState<T>(initialState: T): [T, (T | Promise<T>) => void]
 
 type StoreState<T> = {| value: T |};
 
-// Accesses data in a store and puts it into a state variable.
-// A store here is anything that can be read/written using (optionally async)
-// load/store functions.
-// Whenever the load & store functions change the store value is reloaded,
-// and whenever the value is changed using the returned setter, it is stored.
-// Until a load is finished (i.e. initially and after changing the store),
-// the state is reset to null and any attempts to set it is ignored:
-// only a loaded value can be overwritten.
-// Possibly pending loads from a previous store are also ignored.
-//
-// As any change to load/store results in a reload and thus a re-render,
-// it would not be possible to pass inline functions to `useStore` without
-// wrapping them in `useCallback`.
-// For convenience, a `deps` array can be passed in that must be set to the
-// dependencies of the passed load/store functions.
-// If omitted, this hook uses load & store themselves as the deps.
+/**
+ * Accesses data in a store and puts it into a state variable.
+ * A store here is anything that can be read/written using (optionally async)
+ * load/store functions.
+ * Whenever the load & store functions change the store value is reloaded,
+ * and whenever the value is changed using the returned setter, it is stored.
+ * Until a load is finished (i.e. initially and after changing the store),
+ * the state is reset to null and any attempts to set it is ignored:
+ * only a loaded value can be overwritten.
+ * Possibly pending loads from a previous store are also ignored.
+ *
+ * As any change to load/store results in a reload and thus a re-render,
+ * it would not be possible to pass inline functions to `useStore` without
+ * wrapping them in `useCallback`.
+ * For convenience, a `deps` array can be passed in that must be set to the
+ * dependencies of the passed load/store functions.
+ * If omitted, this hook uses load & store themselves as the deps.
+ */
 export function useStore<T>(
   load: () => T | Promise<T>,
   store: T => void | Promise<void>,
