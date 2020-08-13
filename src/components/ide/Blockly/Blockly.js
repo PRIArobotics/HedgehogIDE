@@ -30,9 +30,29 @@ type PropTypes = {|
 |};
 type StateTypes = {||};
 
+/**
+ * `BlocklyComponent` wraps the `Blockly` npm distribution to make it easily usable within Hedgehog
+ * Cloud's requirements. In particular, Blockly editors are shown inside a flex layout, which may
+ * resize and hide its tabs. Blockly needs to be told to resize its canvas to the container when a
+ * resize happens, and to hide its "chaff" (pop-ups etc.) when it becomes invisible. The consumer of
+ * this component is responsible for listening to the relevant events, and call the display update
+ * methods of this component accordingly.
+ *
+ * This component also dynamically handles the localization of Blockly. While `rtl` (right-to-left
+ * orientation) is a property of the workspace, localization messages are set globally and applied
+ * to a workspace on creation. To dynamically change of the locale, this component will re-inject a
+ * new Blockly workspace after setting the translation globally. This has the side effect of
+ * clearing any undo history up to that point.
+ *
+ * Finally, this component allows listening to Blockly's zoom and scroll state, and can restore zoom
+ * and scroll state on load.
+ */
 class BlocklyComponent extends React.Component<PropTypes, StateTypes> {
+  // the container is layed out normally by the browser, and is the reference for sizing Blockly
   containerRef: RefObject<'div'> = React.createRef();
+  // the blockly div is not layed out and is sized manually
   blocklyRef: RefObject<'div'> = React.createRef();
+  // the actual Blockly workspace
   workspace: Blockly.Workspace | null = null;
 
   componentDidMount() {
@@ -67,6 +87,7 @@ class BlocklyComponent extends React.Component<PropTypes, StateTypes> {
     const { workspace } = this;
 
     if (rtl !== prevRtl || msg !== prevMsg) {
+      // re-inject workspace. this clears the undo-history, but should work otherwise
       const dom = Blockly.Xml.workspaceToDom(workspace);
       workspace.dispose();
       this.injectWorkspace(dom);
@@ -128,6 +149,9 @@ class BlocklyComponent extends React.Component<PropTypes, StateTypes> {
     this.workspace = workspace;
   }
 
+  /**
+   * Resizes the workspace to the dimensions of the component's container div
+   */
   refreshSize() {
     const container = this.containerRef.current;
     const blockly = this.blocklyRef.current;
@@ -138,10 +162,17 @@ class BlocklyComponent extends React.Component<PropTypes, StateTypes> {
     Blockly.svgResize(this.workspace);
   }
 
+  /**
+   * Refreshes the workspace size on the next tick of the event loop
+   */
   refreshSizeDeferred() {
     setTimeout(() => this.refreshSize(), 0);
   }
 
+  /**
+   * Handles a visibility change of the workspace. When hiding, hides the "chaff"; when showing,
+   * refreshes the workspace size.
+   */
   updateVisibility(visible: boolean) {
     if (visible) {
       this.refreshSizeDeferred();
