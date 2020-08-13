@@ -47,6 +47,7 @@
   "app.ide.rename_file_dialog.description": "Bitte gib einen neuen Namen für {type, select, FILE {die Datei} DIRECTORY {den Ordner}} ein.",
   "app.ide.rename_file_dialog.title": "{type, select, FILE {Datei} DIRECTORY {Ordner}} umbenennen",
   "app.ide.toolbar.console_tooltip": "Konsole",
+  "app.ide.toolbar.project_settings.create_metadata": "Metadaten-Ordner anlegen",
   "app.ide.toolbar.project_settings.show_hide_metadata": "Metadaten {action, select, SHOW {anzeigen} HIDE {verbergen}}",
   "app.ide.toolbar.project_settings_tooltip": "Projecteinstellungen",
   "app.ide.toolbar.simulator_tooltip": "Simulator",

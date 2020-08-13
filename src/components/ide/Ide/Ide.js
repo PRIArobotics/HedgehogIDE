@@ -78,6 +78,11 @@ const messages = defineMessages({
     description: 'Menu item text for showing/hiding the .metadata folder',
     defaultMessage: '{action, select, SHOW {Show} HIDE {Hide}} Metadata',
   },
+  createMetadata: {
+    id: 'app.ide.toolbar.project_settings.create_metadata',
+    description: 'Menu item text for creating the .metadata folder',
+    defaultMessage: 'Create Metadata folder',
+  },
 });
 
 const sh = new fs.Shell();
@@ -204,6 +209,10 @@ function Ide({ projectName }: Props) {
   function getFile(path: string): FileReference {
     // eslint-disable-next-line no-throw-literal
     if (projectCache === null) throw 'unreachable';
+
+    // the root path is the one path where a trailing slash is correct.
+    // however, this confuses our use of `split`, so handle it as a special case
+    if (path === './') return { path, file: projectCache.files };
 
     const [_root, ...fragments] = path.split('/');
 
@@ -531,7 +540,7 @@ function Ide({ projectName }: Props) {
 
       // TODO select the file in the file tree
 
-      // // open the new file
+      // open the new file
       setCreatedPath(`${parentDir.path}/${name}`);
       return true;
     } catch (ex) {
@@ -782,6 +791,14 @@ function Ide({ projectName }: Props) {
 
   const { fileTreeState, showMetadataFolder } = state;
 
+  let hasMetadataFolder;
+  try {
+    getFile('./.metadata');
+    hasMetadataFolder = true;
+  } catch (_ex) {
+    hasMetadataFolder = false;
+  }
+
   function factory(node: any): React.Node {
     function bindEditorProps(path: string, editorType: string) {
       return {
@@ -898,14 +915,30 @@ function Ide({ projectName }: Props) {
               size="small"
               onClick={() => {
                 projectSettingsPopupState.close();
-                dispatch({ type: 'TOGGLE_METADATA_FOLDER' });
+                if (hasMetadataFolder) {
+                  dispatch({ type: 'TOGGLE_METADATA_FOLDER' });
+                } else {
+                  // $FlowExpectError
+                  const parentDir: DirReference = getFile('./');
+
+                  handleFileAction({
+                    action: 'CREATE',
+                    parentDir,
+                    desc: {
+                      type: 'METADATA',
+                      name: '.metadata',
+                      fileType: 'DIRECTORY',
+                    },
+                  });
+                  dispatch({ type: 'SHOW_METADATA_FOLDER', value: true });
+                }
               }}
             >
               <M
-                {...messages.showHideMetadata}
-                values={{
+                {...(hasMetadataFolder ? messages.showHideMetadata : messages.createMetadata)}
+                values={hasMetadataFolder ? {
                   action: showMetadataFolder ? 'HIDE' : 'SHOW',
-                }}
+                } : {}}
               />
             </Button>
           </Menu>

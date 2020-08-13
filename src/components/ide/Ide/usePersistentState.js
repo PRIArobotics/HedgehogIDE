@@ -23,6 +23,7 @@ type IdeAction =
   | {| type: 'SET_EDITOR_STATE', path: string, editorStates: EditorStates |}
   | {| type: 'EXPAND_DIRECTORY', path: string |}
   | {| type: 'TOGGLE_METADATA_FOLDER' |}
+  | {| type: 'SHOW_METADATA_FOLDER', value: boolean |}
   | {| type: 'UPDATE_FILE_TREE', fileTreeState: FileTreeState |}
   | {| type: 'LAYOUT', layoutState: LayoutState |};
 
@@ -61,6 +62,13 @@ function ideState(state: PersistentState, action: IdeAction): PersistentState {
       return {
         ...state,
         showMetadataFolder: !state.showMetadataFolder,
+      };
+    }
+    case 'SHOW_METADATA_FOLDER': {
+      const { value } = action;
+      return {
+        ...state,
+        showMetadataFolder: value,
       };
     }
     case 'UPDATE_FILE_TREE': {
