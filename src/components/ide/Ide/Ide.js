@@ -936,9 +936,13 @@ function Ide({ projectName }: Props) {
             >
               <M
                 {...(hasMetadataFolder ? messages.showHideMetadata : messages.createMetadata)}
-                values={hasMetadataFolder ? {
-                  action: showMetadataFolder ? 'HIDE' : 'SHOW',
-                } : {}}
+                values={
+                  hasMetadataFolder
+                    ? {
+                        action: showMetadataFolder ? 'HIDE' : 'SHOW',
+                      }
+                    : {}
+                }
               />
             </Button>
           </Menu>

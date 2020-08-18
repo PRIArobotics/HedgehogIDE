@@ -42,7 +42,6 @@ type AuthProviderPropTypes = {|
   children: React.Node,
 |};
 
-
 /**
  * `AuthProvider` provides a context with the currently logged in user
  * as well as login and logout functions.
