@@ -11,6 +11,7 @@ import { useAsyncState } from '../../misc/hooks';
 type ProjectCache = {|
   files: FilerRecursiveStatInfo,
   simulatorXml: string | null,
+  layoutJson: string | null,
 |};
 
 export default function useProjectCache(
@@ -38,12 +39,26 @@ export default function useProjectCache(
       }
     }
 
+    async function loadLayoutJson(): Promise<string | null> {
+      const absolutePath = project.resolve('./.metadata/layout');
+      try {
+        const layoutJson = await fs.promises.readFile(absolutePath, 'utf8');
+        return layoutJson;
+      } catch (ex) {
+        if (!(ex instanceof filer.Errors.ENOENT)) {
+          throw ex;
+        }
+        return null;
+      }
+    }
+
     async function loadProjectCache() {
       // load project from the file system
       const files = await project.getFiles();
       const simulatorXml = await loadSimulatorXml();
+      const layoutJson = await loadLayoutJson();
 
-      return { files, simulatorXml };
+      return { files, simulatorXml, layoutJson };
     }
 
     setState(loadProjectCache());
