@@ -40,6 +40,7 @@ import LanguagePythonIcon from 'mdi-material-ui/LanguagePython';
 
 // files: metadata
 import MetadataPluginsIcon from 'mdi-material-ui/ToyBrick';
+import MetadataLayoutIcon from 'mdi-material-ui/ViewCompactOutline';
 import MetadataSimulatorIcon from 'mdi-material-ui/AxisArrow';
 import MetadataToolboxIcon from 'mdi-material-ui/ToolboxOutline';
 
@@ -105,6 +106,7 @@ export {
   LanguageJavascriptIcon,
   LanguagePythonIcon,
   MetadataPluginsIcon,
+  MetadataLayoutIcon,
   MetadataSimulatorIcon,
   MetadataToolboxIcon,
   LocalProjectIcon,

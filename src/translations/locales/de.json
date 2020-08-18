@@ -37,6 +37,7 @@
   "app.ide.file_menu.create_blockly_file": "Neue Blockly-Datei",
   "app.ide.file_menu.create_folder": "Neuer Ordner",
   "app.ide.file_menu.create_js_file": "Neue Javascript-Datei",
+  "app.ide.file_menu.create_layout_configuration": "Layout-Konfiguration anlegen",
   "app.ide.file_menu.create_plugins_directory": "Plugin-Ordner anlegen",
   "app.ide.file_menu.create_simulator_configuration": "Simulator-Konfiguration anlegen",
   "app.ide.file_menu.create_toolbox_configuration": "Toolbox-Konfiguration anlegen",

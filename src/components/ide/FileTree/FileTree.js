@@ -14,6 +14,7 @@ import {
   LanguageBlocklyIcon,
   LanguageJavascriptIcon,
   MetadataPluginsIcon,
+  MetadataLayoutIcon,
   MetadataSimulatorIcon,
   MetadataToolboxIcon,
 } from '../../misc/palette';
@@ -203,6 +204,7 @@ function FileTree({ files, expandedKeys, filter, onFileAction, onUpdate }: Props
 
     const TheIcon = (() => {
       if (isLeaf) {
+        if (path === './.metadata/layout') return MetadataLayoutIcon;
         if (path === './.metadata/simulator') return MetadataSimulatorIcon;
         if (path === './.metadata/toolbox') return MetadataToolboxIcon;
         if (path.startsWith('./.metadata/plugins/') && file.name.endsWith('.js'))

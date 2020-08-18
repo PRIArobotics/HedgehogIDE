@@ -13,6 +13,7 @@ import {
   LanguageBlocklyIcon,
   LanguageJavascriptIcon,
   MetadataPluginsIcon,
+  MetadataLayoutIcon,
   MetadataSimulatorIcon,
   MetadataToolboxIcon,
   RenameIcon,
@@ -48,6 +49,11 @@ const messages = defineMessages({
     id: 'app.ide.file_menu.create_simulator_configuration',
     description: 'Menu item text for creating a simulator configuration',
     defaultMessage: 'Create Simulator Configuration',
+  },
+  createLayoutConfiguration: {
+    id: 'app.ide.file_menu.create_layout_configuration',
+    description: 'Menu item text for creating a workspace layout configuration',
+    defaultMessage: 'Create Workspace Layout Configuration',
   },
   createToolboxConfiguration: {
     id: 'app.ide.file_menu.create_toolbox_configuration',
@@ -213,6 +219,18 @@ class FileMenu extends React.Component<PropTypes, StateTypes> {
                           })
                         }
                         icon={MetadataPluginsIcon}
+                      />,
+                      <FileMenuItem
+                        key="create_layout_config"
+                        titleMsg={messages.createLayoutConfiguration}
+                        onClick={() =>
+                          this.handleCreate({
+                            type: 'METADATA',
+                            name: 'layout',
+                            fileType: 'FILE',
+                          })
+                        }
+                        icon={MetadataLayoutIcon}
                       />,
                       <FileMenuItem
                         key="create_simulator_config"
