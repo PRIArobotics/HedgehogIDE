@@ -54,9 +54,11 @@ export default function useProjectCache(
 
     async function loadProjectCache() {
       // load project from the file system
-      const files = await project.getFiles();
-      const simulatorXml = await loadSimulatorXml();
-      const layoutJson = await loadLayoutJson();
+      const [files, simulatorXml, layoutJson] = await Promise.all([
+        project.getFiles(),
+        loadSimulatorXml(),
+        loadLayoutJson(),
+      ]);
 
       return { files, simulatorXml, layoutJson };
     }
