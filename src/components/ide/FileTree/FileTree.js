@@ -13,6 +13,7 @@ import {
   FolderOpenIcon,
   LanguageBlocklyIcon,
   LanguageJavascriptIcon,
+  MetadataPluginsIcon,
   MetadataSimulatorIcon,
   MetadataToolboxIcon,
 } from '../../misc/palette';
@@ -204,6 +205,8 @@ function FileTree({ files, expandedKeys, filter, onFileAction, onUpdate }: Props
       if (isLeaf) {
         if (path === './.metadata/simulator') return MetadataSimulatorIcon;
         if (path === './.metadata/toolbox') return MetadataToolboxIcon;
+        if (path.startsWith('./.metadata/plugins/') && file.name.endsWith('.js'))
+          return MetadataPluginsIcon;
         if (file.name.endsWith('.blockly')) return LanguageBlocklyIcon;
         if (file.name.endsWith('.js')) return LanguageJavascriptIcon;
         return FileIcon;

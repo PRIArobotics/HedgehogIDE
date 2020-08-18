@@ -39,9 +39,9 @@ import LanguageJavascriptIcon from 'mdi-material-ui/LanguageJavascript';
 import LanguagePythonIcon from 'mdi-material-ui/LanguagePython';
 
 // files: metadata
-import MetadataPluginsIcon from 'mdi-material-ui/Folder';
-import MetadataSimulatorIcon from 'mdi-material-ui/Cogs';
-import MetadataToolboxIcon from 'mdi-material-ui/Cogs';
+import MetadataPluginsIcon from 'mdi-material-ui/ToyBrick';
+import MetadataSimulatorIcon from 'mdi-material-ui/AxisArrow';
+import MetadataToolboxIcon from 'mdi-material-ui/ToolboxOutline';
 
 // projects
 import LocalProjectIcon from 'mdi-material-ui/Folder';
