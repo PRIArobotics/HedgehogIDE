@@ -6,6 +6,15 @@ import FlexLayout from 'flexlayout-react';
 
 export type LayoutState = { ... };
 
+export const DEFAULT_LAYOUT_STATE: LayoutState = {
+  global: {},
+  borders: [],
+  layout: {
+    type: 'tabset',
+    children: [],
+  },
+};
+
 type LayoutProps = {|
   model: FlexLayout.Model,
   onModelChange: () => void,

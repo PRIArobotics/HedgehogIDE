@@ -2,7 +2,7 @@
 
 import { makeLocalStorageOpt } from '../../misc/hooks';
 
-import { type LayoutState } from './useLayoutModel';
+import { type LayoutState, DEFAULT_LAYOUT_STATE } from './useLayoutModel';
 import { type ControlledState as FileTreeState } from '../FileTree';
 import { type ControlledState as VisualEditorState } from '../VisualEditor';
 import { type ControlledState as SimulatorEditorState } from '../SimulatorEditor';
@@ -96,14 +96,7 @@ const useStorage = makeLocalStorageOpt<PersistentState>(
     // default state
     fileTreeState: { expandedKeys: [] },
     showMetadataFolder: false,
-    layoutState: {
-      global: {},
-      borders: [],
-      layout: {
-        type: 'tabset',
-        children: [],
-      },
-    },
+    layoutState: DEFAULT_LAYOUT_STATE,
     editorStates: {},
     // persisted state
     ...(json !== null ? JSON.parse(json) : null),

@@ -55,7 +55,7 @@ import PluginManager from '../../../sdk/PluginManager';
 import useProjectInfo from './useProjectInfo';
 import useProjectCache from './useProjectCache';
 import usePersistentState from './usePersistentState';
-import useLayoutModel from './useLayoutModel';
+import useLayoutModel, { DEFAULT_LAYOUT_STATE } from './useLayoutModel';
 
 const messages = defineMessages({
   simulatorTooltip: {
@@ -144,7 +144,18 @@ function Ide({ projectName }: Props) {
 
   const pluginManagerRef = React.useRef<PluginManager | null>(null);
 
-  const [layoutModel, layoutProps] = useLayoutModel(state?.layoutState ?? null, layoutState => {
+  let initialLayoutState = state?.layoutState ?? null;
+  if (initialLayoutState === DEFAULT_LAYOUT_STATE) {
+    if (projectCache === null) {
+      // delay creation of the layout model until the cache is ready
+      initialLayoutState = null;
+    } else if (projectCache.layoutJson !== null) {
+      // use the stored layout instead of the default layout
+      initialLayoutState = JSON.parse(projectCache.layoutJson);
+    }
+    // fallthrough: no stored layout, just use the default layout
+  }
+  const [layoutModel, layoutProps] = useLayoutModel(initialLayoutState, layoutState => {
     dispatch({ type: 'LAYOUT', layoutState });
   });
 
