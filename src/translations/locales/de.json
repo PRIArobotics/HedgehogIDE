@@ -50,7 +50,7 @@
   "app.ide.toolbar.console_tooltip": "Konsole",
   "app.ide.toolbar.project_settings.create_metadata": "Metadaten-Ordner anlegen",
   "app.ide.toolbar.project_settings.show_hide_metadata": "Metadaten {action, select, SHOW {anzeigen} HIDE {verbergen}}",
-  "app.ide.toolbar.project_settings_tooltip": "Projecteinstellungen",
+  "app.ide.toolbar.project_settings_tooltip": "Projekteinstellungen",
   "app.ide.toolbar.simulator_tooltip": "Simulator",
   "app.login": "Einloggen",
   "app.login.failed": "Einloggen Fehlgeschlagen",
