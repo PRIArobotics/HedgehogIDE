@@ -51,6 +51,7 @@
   "app.ide.toolbar.project_settings.create_metadata": "Create Metadata folder",
   "app.ide.toolbar.project_settings.show_hide_metadata": "{action, select, SHOW {Show} HIDE {Hide}} Metadata",
   "app.ide.toolbar.project_settings_tooltip": "Project settings",
+  "app.ide.toolbar.restore_layout_tooltip": "Restore layout",
   "app.ide.toolbar.simulator_tooltip": "Simulator",
   "app.login": "Log In",
   "app.login.failed": "Log In Failed",

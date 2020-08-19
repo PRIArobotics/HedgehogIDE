@@ -40,8 +40,8 @@ type LayoutProps = {|
 //    return model && <FlexLayout.Layout {...layoutProps} />;
 export default function useLayoutModel(
   layoutState: LayoutState | null,
-  setLayoutState: LayoutState => void,
-): [FlexLayout.Model | null, LayoutProps] {
+  onLayoutStateChange: LayoutState => void,
+): [FlexLayout.Model | null, (LayoutState) => void, LayoutProps] {
   const [model, setModel] = React.useState<FlexLayout.Model | null>(null);
 
   React.useEffect(() => {
@@ -51,15 +51,20 @@ export default function useLayoutModel(
     setModel(FlexLayout.Model.fromJson(layoutState));
   }, [layoutState, model]);
 
+  function setLayoutState(newLayoutState: LayoutState) {
+    setModel(FlexLayout.Model.fromJson(newLayoutState));
+  }
+
   return [
     model,
+    setLayoutState,
     {
       model,
       onModelChange() {
         // eslint-disable-next-line no-throw-literal
         if (model === null) throw 'onModelChange when model is null';
 
-        setLayoutState(model.toJson());
+        onLayoutStateChange(model.toJson());
       },
     },
   ];

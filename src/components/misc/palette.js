@@ -49,6 +49,7 @@ import LocalProjectIcon from 'mdi-material-ui/Folder';
 import UploadExerciseIcon from 'mdi-material-ui/CloudUpload';
 
 // project actions
+import RestoreLayoutIcon from 'mdi-material-ui/ViewCompactOutline';
 import SettingsIcon from 'mdi-material-ui/Cogs';
 
 // IDE navigation
@@ -111,6 +112,7 @@ export {
   MetadataToolboxIcon,
   LocalProjectIcon,
   UploadExerciseIcon,
+  RestoreLayoutIcon,
   SettingsIcon,
   SelectLanguageIcon,
   IdeIcon,

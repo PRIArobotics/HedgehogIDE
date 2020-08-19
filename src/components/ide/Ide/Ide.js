@@ -20,7 +20,7 @@ import FlexLayout from 'flexlayout-react';
 // eslint-disable-next-line css-modules/no-unused-class
 import FlexLayoutTheme from './flex_layout_ide.css';
 
-import { SettingsIcon, ConsoleIcon, SimulatorIcon } from '../../misc/palette';
+import { RestoreLayoutIcon, SettingsIcon, ConsoleIcon, SimulatorIcon } from '../../misc/palette';
 import * as hooks from '../../misc/hooks';
 import SimpleDialog from '../../misc/SimpleDialog';
 
@@ -67,6 +67,11 @@ const messages = defineMessages({
     id: 'app.ide.toolbar.console_tooltip',
     description: 'Tooltip for the Console toolbar button',
     defaultMessage: 'Console',
+  },
+  restoreLayoutTooltip: {
+    id: 'app.ide.toolbar.restore_layout_tooltip',
+    description: 'Tooltip for the Restore Layout toolbar button',
+    defaultMessage: 'Restore layout',
   },
   projectSettingsTooltip: {
     id: 'app.ide.toolbar.project_settings_tooltip',
@@ -155,9 +160,12 @@ function Ide({ projectName }: Props) {
     }
     // fallthrough: no stored layout, just use the default layout
   }
-  const [layoutModel, layoutProps] = useLayoutModel(initialLayoutState, layoutState => {
-    dispatch({ type: 'LAYOUT', layoutState });
-  });
+  const [layoutModel, setLayoutState, layoutProps] = useLayoutModel(
+    initialLayoutState,
+    layoutState => {
+      dispatch({ type: 'LAYOUT', layoutState });
+    },
+  );
 
   // create new plugin manager when ready, but only once
   async function initializePluginManager() {
@@ -937,6 +945,23 @@ function Ide({ projectName }: Props) {
           <Tooltip title={<M {...messages.consoleTooltip} />}>
             <IconButton variant="contained" color="primary" size="small" onClick={addConsole}>
               <ConsoleIcon />
+            </IconButton>
+          </Tooltip>
+          <Tooltip title={<M {...messages.restoreLayoutTooltip} />}>
+            <IconButton
+              variant="contained"
+              color="primary"
+              size="small"
+              disabled={(projectCache?.layoutJson ?? null) === null}
+              onClick={() => {
+                const layoutJson = projectCache?.layoutJson ?? null;
+                // eslint-disable-next-line no-throw-literal
+                if (layoutJson === null) throw 'unreachable';
+
+                setLayoutState(JSON.parse(layoutJson));
+              }}
+            >
+              <RestoreLayoutIcon />
             </IconButton>
           </Tooltip>
           <Tooltip title={<M {...messages.projectSettingsTooltip} />}>
