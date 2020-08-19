@@ -37,7 +37,7 @@
   "app.ide.file_menu.create_blockly_file": "New Blockly File",
   "app.ide.file_menu.create_folder": "New Folder",
   "app.ide.file_menu.create_js_file": "New Javascript File",
-  "app.ide.file_menu.create_layout_configuration": "Create Workspace Layout Configuration",
+  "app.ide.file_menu.create_layout_configuration": "Create/Update Workspace Layout Configuration",
   "app.ide.file_menu.create_plugins_directory": "Create Plugin Directory",
   "app.ide.file_menu.create_simulator_configuration": "Create Simulator Configuration",
   "app.ide.file_menu.create_toolbox_configuration": "Create Toolbox Configuration",

@@ -510,6 +510,8 @@ function Ide({ projectName }: Props) {
     parentDir: DirReference,
     name: string,
     type: FileType,
+    content: string = '',
+    overwriteIfExists: boolean = false,
   ): Promise<boolean> {
     // eslint-disable-next-line no-throw-literal
     if (project === null) throw 'unreachable';
@@ -544,9 +546,11 @@ function Ide({ projectName }: Props) {
 
     try {
       // directory was already created above, file needs to be created here
-      if (isNew && type === 'FILE') {
-        // create the file
-        await fs.promises.writeFile(path, '');
+      if (type === 'FILE') {
+        if (isNew || overwriteIfExists) {
+          // create/update the file
+          await fs.promises.writeFile(path, content, 'utf8');
+        }
       }
 
       // no matter whether we actually created the file/directory, we want to
@@ -738,7 +742,16 @@ function Ide({ projectName }: Props) {
       case 'CREATE': {
         const { parentDir, desc } = action;
         if (desc.type === 'METADATA') {
-          confirmCreateFile(parentDir, desc.name, desc.fileType);
+          if (parentDir.path === './.metadata' && desc.name === 'layout') {
+            // eslint-disable-next-line no-throw-literal
+            if (state === null) throw 'unreachable';
+
+            const layoutJson = JSON.stringify(state.layoutState);
+            // TODO this will not show the content in an already open file tab
+            confirmCreateFile(parentDir, desc.name, desc.fileType, layoutJson, true);
+          } else {
+            confirmCreateFile(parentDir, desc.name, desc.fileType);
+          }
         } else {
           createFile.show(parentDir, desc);
         }

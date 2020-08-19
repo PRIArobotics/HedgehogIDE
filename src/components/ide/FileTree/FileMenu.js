@@ -53,7 +53,7 @@ const messages = defineMessages({
   createLayoutConfiguration: {
     id: 'app.ide.file_menu.create_layout_configuration',
     description: 'Menu item text for creating a workspace layout configuration',
-    defaultMessage: 'Create Workspace Layout Configuration',
+    defaultMessage: 'Create/Update Workspace Layout Configuration',
   },
   createToolboxConfiguration: {
     id: 'app.ide.file_menu.create_toolbox_configuration',
