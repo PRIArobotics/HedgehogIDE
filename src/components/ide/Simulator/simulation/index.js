@@ -1,2 +1,3 @@
 export { Point, Pose } from './misc';
-export { Robot, Simulation } from './Simulation';
+export { Robot } from './Robot';
+export { Simulation } from './Simulation';
