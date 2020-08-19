@@ -7,7 +7,7 @@ import { Point, Pose } from '.';
 /**
  * A simulated robot, capable of moving through and sensing the simulation.
  */
-export class Robot {
+export default class Robot {
   leftWheel: Matter.Body;
   rightWheel: Matter.Body;
   // leftGrabberControl: Matter.Constraint;

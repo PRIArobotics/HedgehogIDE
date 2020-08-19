@@ -20,7 +20,7 @@ type ExternalSensorHandler = (
  * This class is responsible for managing the Matter.js simulation lifecycle
  * and triggering robot behavior (accelerating the robots, setting values for their sensors).
  */
-export class Simulation {
+export default class Simulation {
   world: Matter.World;
   engine: Matter.Engine;
   runner: Matter.Runner;
