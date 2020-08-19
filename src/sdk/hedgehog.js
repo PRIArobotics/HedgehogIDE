@@ -46,26 +46,26 @@ export default async function init(getSimulator: () => Promise<SimulatorType>) {
 
   async function moveMotor(robot: string, port: number, power: number) {
     // <GSL customizable: hedgehog-body-moveMotor>
-    (await getRobot(robot)).moveMotor(port, power);
+    (await getRobot(robot)).controller.moveMotor(port, power);
     // </GSL customizable: hedgehog-body-moveMotor>
   }
 
   async function setServo(robot: string, port: number, position: number) {
     // <GSL customizable: hedgehog-body-setServo>
     // Your function code goes here
-    (await getRobot(robot)).setServo(port, position);
+    (await getRobot(robot)).controller.setServo(port, position);
     // </GSL customizable: hedgehog-body-setServo>
   }
 
   async function getAnalog(robot: string, port: number) {
     // <GSL customizable: hedgehog-body-getAnalog>
-    return (await getRobot(robot)).getAnalog(port);
+    return (await getRobot(robot)).controller.getAnalog(port);
     // </GSL customizable: hedgehog-body-getAnalog>
   }
 
   async function getDigital(robot: string, port: number) {
     // <GSL customizable: hedgehog-body-getDigital>
-    return (await getRobot(robot)).getDigital(port);
+    return (await getRobot(robot)).controller.getDigital(port);
     // </GSL customizable: hedgehog-body-getDigital>
   }
 

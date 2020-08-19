@@ -2,12 +2,14 @@
 
 import Matter from 'matter-js';
 
-import { Point, Pose } from '.';
+import { Point, Pose, Hedgehog } from '.';
 
 /**
  * A simulated robot, capable of moving through and sensing the simulation.
  */
 export default class Robot {
+  controller = new Hedgehog();
+
   leftWheel: Matter.Body;
   rightWheel: Matter.Body;
   // leftGrabberControl: Matter.Constraint;
@@ -17,19 +19,6 @@ export default class Robot {
   body: Matter.Body;
 
   bodies: Matter.Body[];
-
-  // Array.from({ length: n }, (v, i) => ...):
-  // first parameter is array-like, so `length` is an array length
-  // all values (`v`) are `undefined`, map them to something else.
-
-  // motor (port = 0..4) power, -100..=100
-  motors: number[] = Array.from({ length: 4 }, () => 0);
-  // servo (port = 0..6) positions, 0..=1000 or null
-  servos: (number | null)[] = Array.from({ length: 6 }, () => null);
-  // sensor (port = 0..16) value inferred from the simulation
-  // the value here is "exact"; an analog value read by a user program should
-  // have some noise applied to it
-  sensors: number[] = Array.from({ length: 16 }, () => 4095);
 
   constructor() {
     this.initBody();
@@ -236,10 +225,10 @@ export default class Robot {
     this.bodies = [bot, ...bot.parts];
 
     // line sensors are not collided by default!
-    this.sensors[0] = 100;
-    this.sensors[1] = 100;
-    this.sensors[2] = 100;
-    this.sensors[3] = 100;
+    this.controller.setSensor(0, 100);
+    this.controller.setSensor(1, 100);
+    this.controller.setSensor(2, 100);
+    this.controller.setSensor(3, 100);
   }
 
   // setGrabberControls(
@@ -283,11 +272,6 @@ export default class Robot {
     });
   }
 
-  setSpeed(left: number, right: number) {
-    this.moveMotor(0, left);
-    this.moveMotor(1, right);
-  }
-
   beforeUpdate() {
     const lPos = this.leftWheel.position;
     const rPos = this.rightWheel.position;
@@ -300,8 +284,8 @@ export default class Robot {
     const cos = -dy / hypot;
     const sin = dx / hypot;
 
-    this.applyForce(lPos, this.motors[0] / 800, cos, sin);
-    this.applyForce(rPos, this.motors[1] / 800, cos, sin);
+    this.applyForce(lPos, this.controller.getMotor(0) / 800, cos, sin);
+    this.applyForce(rPos, this.controller.getMotor(1) / 800, cos, sin);
   }
 
   handleLineSensor(eventName: 'collisionStart' | 'collisionEnd', sensor: Matter.Body) {
@@ -317,7 +301,7 @@ export default class Robot {
         // eslint-disable-next-line no-throw-literal
         throw 'unreachable';
     }
-    this.sensors[plugin.sensorPort] = plugin.collisionCount > 0 ? 4000 : 100;
+    this.controller.setSensor(plugin.sensorPort, plugin.collisionCount > 0 ? 4000 : 100);
   }
 
   handleTouchSensor(eventName: 'collisionStart' | 'collisionEnd', sensor: Matter.Body) {
@@ -333,32 +317,6 @@ export default class Robot {
         // eslint-disable-next-line no-throw-literal
         throw 'unreachable';
     }
-    this.sensors[plugin.sensorPort] = plugin.collisionCount === 0 ? 4095 : 0;
-  }
-
-  moveMotor(port: number, power: number) {
-    this.motors[port] = power;
-  }
-
-  setServo(port: number, position: number | null) {
-    this.servos[port] = position;
-
-    // if (port === 0 || port === 1) {
-    //   this.setGrabberControls(this.servos[0], this.servos[1]);
-    // }
-  }
-
-  getAnalog(port: number): number {
-    // TODO noise
-    const noise = 0;
-    const result = this.sensors[port] + noise;
-
-    if (result > 4095) return 4095;
-    if (result < 0) return 0;
-    return result;
-  }
-
-  getDigital(port: number): boolean {
-    return this.getAnalog(port) > 2047;
+    this.controller.setSensor(plugin.sensorPort, plugin.collisionCount === 0 ? 4095 : 0);
   }
 }
