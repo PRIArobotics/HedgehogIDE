@@ -2,18 +2,8 @@
 
 import Matter from 'matter-js';
 
+import { Point, Pose } from '.';
 import * as SimulationSchema from '../../SimulatorEditor/SimulationSchema';
-
-export type Point = {|
-  x: number,
-  y: number,
-|};
-
-export type Pose = {|
-  x: number,
-  y: number,
-  angle: number,
-|};
 
 // function transform(
 //   { x, y, angle }: Pose,
