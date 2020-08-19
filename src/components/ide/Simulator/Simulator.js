@@ -13,7 +13,7 @@ import ToolBarItem from '../ToolBar/ToolBarItem';
 
 import s from './Simulator.scss';
 
-import { Simulation } from './Simulation';
+import { Simulation } from './simulation';
 
 type Props = {|
   width: number,

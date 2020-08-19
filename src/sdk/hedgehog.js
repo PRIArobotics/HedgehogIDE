@@ -6,7 +6,7 @@ import ExecutorTask from '../components/ide/Executor/ExecutorTask';
 import baseEmit from './base';
 // <GSL customizable: hedgehog-imports>
 import { type SimulatorType } from '../components/ide/Simulator';
-import { Robot } from '../components/ide/Simulator/Simulation';
+import { Robot } from '../components/ide/Simulator/simulation';
 import { type Command } from '../executor/Hedgehog';
 // </GSL customizable: hedgehog-imports>
 

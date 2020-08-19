@@ -2,7 +2,7 @@
 
 import Matter from 'matter-js';
 
-import * as SimulationSchema from '../SimulatorEditor/SimulationSchema';
+import * as SimulationSchema from '../../SimulatorEditor/SimulationSchema';
 
 export type Point = {|
   x: number,

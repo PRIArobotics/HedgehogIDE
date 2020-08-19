@@ -1,6 +1,6 @@
 // @flow
 
-import { type Point } from '../Simulator/Simulation';
+import { type Point } from '../Simulator/simulation';
 
 type Translation = {|
   position: Point,
