@@ -514,40 +514,57 @@ function Ide({ projectName }: Props) {
     // eslint-disable-next-line no-throw-literal
     if (project === null) throw 'unreachable';
 
-    try {
-      const path = project.resolve(parentDir.path, name);
+    const path = project.resolve(parentDir.path, name);
 
-      if (type === 'FILE') {
-        try {
-          await fs.promises.stat(path);
-        } catch (ex) {
-          if (!(ex instanceof filer.Errors.ENOENT)) {
-            throw ex;
-          }
-
-          await fs.promises.writeFile(path, '');
+    // check existence of the file/try creating the directory
+    let isNew;
+    if (type === 'FILE') {
+      try {
+        await fs.promises.stat(path);
+        isNew = false;
+      } catch (ex) {
+        if (!(ex instanceof filer.Errors.ENOENT)) {
+          console.error(ex);
+          throw ex;
         }
-      } else {
+        isNew = true;
+      }
+    } else {
+      try {
         await fs.promises.mkdir(path);
+        isNew = true;
+      } catch (ex) {
+        if (!(ex instanceof filer.Errors.EEXIST)) {
+          console.error(ex);
+          throw ex;
+        }
+        isNew = false;
+      }
+    }
+
+    try {
+      // directory was already created above, file needs to be created here
+      if (isNew && type === 'FILE') {
+        // create the file
+        await fs.promises.writeFile(path, '');
       }
 
-      await refreshProject();
-      // TODO after this has finished, the project's files have not yet been refreshed
-      // and opening the new file will fail!
+      // no matter whether we actually created the file/directory, we want to
+      // - refresh the project
+      // - reveal the file
+      // - TODO select the file in the file tree
+      // - open the file
 
-      // reveal the new file
+      await refreshProject();
+
       dispatch({ type: 'EXPAND_DIRECTORY', path: parentDir.path });
 
       // TODO select the file in the file tree
 
-      // open the new file
       setCreatedPath(`${parentDir.path}/${name}`);
-      return true;
+
+      return isNew;
     } catch (ex) {
-      if (ex instanceof filer.Errors.EEXIST) {
-        await refreshProject();
-        return false;
-      }
       console.error(ex);
       throw ex;
     }
