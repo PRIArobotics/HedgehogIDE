@@ -111,8 +111,10 @@ export default class Simulation {
 
         // handle collision according to the type
         if (type === 'lineSensors' && this.lines.includes(other)) {
+          // collision with a line
           sensor.plugin.hedgehog.sensor.handleCollision(name);
-        } else if (type === 'touchSensors' && !this.lines.includes(other)) {
+        } else if (type === 'touchSensors' && !other.isSensor) {
+          // collision with a tangible object
           sensor.plugin.hedgehog.sensor.handleCollision(name);
         }
       });
@@ -147,9 +149,7 @@ export default class Simulation {
           const body = Matter.Bodies.rectangle(0, 0, width, height, options);
 
           this.add([body]);
-          // TODO with this, being a sensor (non-colliding)
-          // and being a line (dark surface) re the same thing
-          if (options.isSensor) this.lines.push(body);
+          if (options.plugin?.hedgehog.isLine ?? false) this.lines.push(body);
           break;
         }
         case 'circle': {
@@ -157,9 +157,7 @@ export default class Simulation {
           const body = Matter.Bodies.circle(0, 0, radius, options);
 
           this.add([body]);
-          // TODO with this, being a sensor (non-colliding)
-          // and being a line (dark surface) re the same thing
-          if (options.isSensor) this.lines.push(body);
+          if (options.plugin?.hedgehog.isLine ?? false) this.lines.push(body);
           break;
         }
         case 'robot': {
