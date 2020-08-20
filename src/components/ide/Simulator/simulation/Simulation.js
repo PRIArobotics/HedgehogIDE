@@ -111,9 +111,9 @@ export default class Simulation {
 
         // handle collision according to the type
         if (type === 'lineSensors' && this.lines.includes(other)) {
-          sensor.plugin.hedgehog.robot.handleLineSensor(name, sensor);
+          sensor.plugin.hedgehog.sensor.handleCollision(name);
         } else if (type === 'touchSensors' && !this.lines.includes(other)) {
-          sensor.plugin.hedgehog.robot.handleTouchSensor(name, sensor);
+          sensor.plugin.hedgehog.sensor.handleCollision(name);
         }
       });
     };
@@ -244,8 +244,9 @@ export default class Simulation {
   updateSensorCache() {
     const robots = [...this.robots.values()];
     Object.keys(this.sensorsCache).forEach(key => {
+      // collect the bodies of all sensors of the correct types from all the robots
       // $FlowExpectError
-      this.sensorsCache[key] = robots.flatMap(robot => robot[key]);
+      this.sensorsCache[key] = robots.flatMap(robot => robot[key].map(sensor => sensor.sensorBody));
     });
   }
 

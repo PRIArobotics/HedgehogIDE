@@ -47,6 +47,49 @@ class DifferentialDrive {
   }
 }
 
+class CollisionSensor {
+  controller: Hedgehog;
+
+  sensorBody: Matter.Body;
+  port: number;
+  // the sensor value when the sensor body is not collided or collided, respectively
+  values: [number, number];
+  collisionCount = 0;
+
+  constructor(
+    controller: Hedgehog,
+    sensorBody: Matter.Body,
+    port: number,
+    values: [number, number],
+  ) {
+    this.controller = controller;
+    this.sensorBody = sensorBody;
+    this.port = port;
+    this.values = values;
+
+    controller.setSensor(port, values[0]);
+    sensorBody.plugin.hedgehog = {
+      sensor: this,
+    };
+  }
+
+  handleCollision(eventName: 'collisionStart' | 'collisionEnd') {
+    switch (eventName) {
+      case 'collisionStart':
+        this.collisionCount += 1;
+        break;
+      case 'collisionEnd':
+        this.collisionCount -= 1;
+        break;
+      default:
+        // eslint-disable-next-line no-throw-literal
+        throw 'unreachable';
+    }
+    const value = this.collisionCount === 0 ? this.values[0] : this.values[1];
+    this.controller.setSensor(this.port, value);
+  }
+}
+
 /**
  * A simulated robot, capable of moving through and sensing the simulation.
  */
@@ -55,8 +98,8 @@ export default class Robot {
 
   // leftGrabberControl: Matter.Constraint;
   // rightGrabberControl: Matter.Constraint;
-  lineSensors: Matter.Body[];
-  touchSensors: Matter.Body[];
+  lineSensors: CollisionSensor[];
+  touchSensors: CollisionSensor[];
   body: Matter.Body;
 
   drive: DifferentialDrive;
@@ -67,15 +110,6 @@ export default class Robot {
   }
 
   initBody() {
-    const pluginData = (data: { robot?: Robot }) => ({
-      plugin: {
-        hedgehog: {
-          robot: this,
-          ...data,
-        },
-      },
-    });
-
     const material = {
       density: 1,
       frictionAir: 0.4,
@@ -128,42 +162,37 @@ export default class Robot {
       ...styleBody,
       label: 'bodyPart',
     });
-    this.lineSensors = [
+    const lineSensors = [
       Matter.Bodies.circle(22, -22, 2, {
         ...material,
         ...styleLineSensor,
-        ...pluginData({ sensorPort: 0, collisionCount: 0 }),
         label: 'leftLineSensor',
       }),
       Matter.Bodies.circle(22, -8, 2, {
         ...material,
         ...styleLineSensor,
-        ...pluginData({ sensorPort: 1, collisionCount: 0 }),
         label: 'centerLeftLineSensor',
       }),
       Matter.Bodies.circle(22, 8, 2, {
         ...material,
         ...styleLineSensor,
-        ...pluginData({ sensorPort: 2, collisionCount: 0 }),
         label: 'centerRightLineSensor',
       }),
       Matter.Bodies.circle(22, 22, 2, {
         ...material,
         ...styleLineSensor,
-        ...pluginData({ sensorPort: 3, collisionCount: 0 }),
         label: 'rightLineSensor',
       }),
     ];
-    this.touchSensors = [
+    const touchSensors = [
       Matter.Bodies.rectangle(24, 0, 3, 32, {
         ...material,
         ...styleTouchSensor,
-        ...pluginData({ sensorPort: 8, collisionCount: 0 }),
         label: 'frontTouchSensor',
       }),
     ];
     this.body = Matter.Body.create({
-      parts: [leftWheel, rightWheel, ...this.lineSensors, ...this.touchSensors, body],
+      parts: [leftWheel, rightWheel, ...lineSensors, ...touchSensors, body],
       ...material,
       label: 'body',
       plugin: {},
@@ -265,13 +294,13 @@ export default class Robot {
     });
 
     this.drive = new DifferentialDrive(this.controller, leftWheel, rightWheel, this.body);
+    this.lineSensors = lineSensors.map(
+      (sensor, index) => new CollisionSensor(this.controller, sensor, 0 + index, [100, 4000]),
+    );
+    this.touchSensors = touchSensors.map(
+      (sensor, index) => new CollisionSensor(this.controller, sensor, 8 + index, [4095, 0]),
+    );
     this.bodies = [bot, ...bot.parts];
-
-    // line sensors are not collided by default!
-    this.controller.setSensor(0, 100);
-    this.controller.setSensor(1, 100);
-    this.controller.setSensor(2, 100);
-    this.controller.setSensor(3, 100);
   }
 
   // setGrabberControls(
@@ -310,37 +339,5 @@ export default class Robot {
 
   beforeUpdate() {
     this.drive.beforeUpdate();
-  }
-
-  handleLineSensor(eventName: 'collisionStart' | 'collisionEnd', sensor: Matter.Body) {
-    const plugin = sensor.plugin.hedgehog;
-    switch (eventName) {
-      case 'collisionStart':
-        plugin.collisionCount += 1;
-        break;
-      case 'collisionEnd':
-        plugin.collisionCount -= 1;
-        break;
-      default:
-        // eslint-disable-next-line no-throw-literal
-        throw 'unreachable';
-    }
-    this.controller.setSensor(plugin.sensorPort, plugin.collisionCount > 0 ? 4000 : 100);
-  }
-
-  handleTouchSensor(eventName: 'collisionStart' | 'collisionEnd', sensor: Matter.Body) {
-    const plugin = sensor.plugin.hedgehog;
-    switch (eventName) {
-      case 'collisionStart':
-        plugin.collisionCount += 1;
-        break;
-      case 'collisionEnd':
-        plugin.collisionCount -= 1;
-        break;
-      default:
-        // eslint-disable-next-line no-throw-literal
-        throw 'unreachable';
-    }
-    this.controller.setSensor(plugin.sensorPort, plugin.collisionCount === 0 ? 4095 : 0);
   }
 }
