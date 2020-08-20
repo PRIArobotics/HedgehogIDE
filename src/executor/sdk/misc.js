@@ -9,7 +9,7 @@ import eventHandler from '../event';
 
 // </GSL customizable: misc-executor-imports>
 
-export function print(text: string) {
+export function print(text: any) {
   connection.send('misc_print', { text });
 }
 

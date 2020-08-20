@@ -19,9 +19,9 @@ export default async function init(getConsole: () => Promise<ConsoleType>, onExi
 
   const emit = baseEmit.bind(null, 'misc');
 
-  async function print(text: string) {
+  async function print(text: any) {
     // <GSL customizable: misc-body-print>
-    (await getConsole()).print(text, 'stdout');
+    (await getConsole()).print(text.toString(), 'stdout');
     // </GSL customizable: misc-body-print>
   }
 
@@ -56,7 +56,7 @@ export default async function init(getConsole: () => Promise<ConsoleType>, onExi
     // </GSL customizable: misc-extra-return>
     emit,
     handlers: {
-      'misc_print': ({ text }: { text: string }) => print(text),
+      'misc_print': ({ text }: { text: any }) => print(text),
       'misc_exit': ({ error }: { error: string | void }) => exit(error),
       'misc_pluginReady': ({  }: {  }) => pluginReady(),
       'misc_emit': ({ prefix, event, payload }: { prefix: string, event: string, payload: any }) => handleEmit(prefix, event, payload),

@@ -16,6 +16,7 @@ export const PRINT_BLOCK: Block = {
         "name": "TEXT",
         "check": [
           "Number",
+          "Boolean",
           "String"
         ]
       }

@@ -5,7 +5,7 @@ modules:
       args:
       - type: input_value
         name: TEXT
-        check: [Number, String]
+        check: [Number, Boolean, String]
   hedgehog:
     hedgehog_move:
       requiresScope: hedgehog

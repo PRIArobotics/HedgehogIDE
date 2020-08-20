@@ -14,7 +14,7 @@ modules:
       print:
         args:
         - name: text
-          type: string
+          type: any
       exit:
         args:
         - name: error
