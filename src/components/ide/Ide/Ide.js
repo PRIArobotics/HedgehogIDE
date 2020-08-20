@@ -460,7 +460,7 @@ function Ide({ projectName }: Props) {
     }
     if (simulatorRef.current !== null) {
       simulatorRef.current.simulation.robots.forEach(robot => {
-        robot.setSpeed(0, 0);
+        robot.controller.off();
       });
     }
   }

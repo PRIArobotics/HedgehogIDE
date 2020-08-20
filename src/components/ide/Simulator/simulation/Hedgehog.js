@@ -65,6 +65,15 @@ export default class Hedgehog {
     return this.getAnalog(port) > 2047;
   }
 
+  off() {
+    for (let port = 0; port < 4; port++) {
+      this.moveMotor(port, 0);
+    }
+    for (let port = 0; port < 6; port++) {
+      this.setServo(port, null);
+    }
+  }
+
   // "private" APIs needed by the simulation
 
   getMotor(port: number): number {
