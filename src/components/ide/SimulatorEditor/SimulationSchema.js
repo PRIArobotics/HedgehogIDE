@@ -24,6 +24,14 @@ type Sensor = {|
   isSensor?: boolean,
 |};
 
+type Line = {|
+  plugin?: {
+    hedgehog: {
+      isLine?: boolean,
+    }
+  },
+|};
+
 type Density = {|
   density?: number,
 |};
@@ -46,6 +54,7 @@ type AllProps = {|
   ...RobotProps,
   ...Static,
   ...Sensor,
+  ...Line,
   ...Density,
   ...FrictionAir,
   ...Label,

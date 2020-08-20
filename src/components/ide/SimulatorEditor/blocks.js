@@ -461,7 +461,7 @@ export const SIMULATOR_SETTINGS_STATIC = {
     inputsInline: false,
     output: 'SimulatorObjectSettings',
     colour: 180,
-    tooltip: 'a static object can not be moved',
+    tooltip: 'a fixed object can not be moved',
     helpUrl: 'TODO',
   },
   blockExtras: {
@@ -509,6 +509,45 @@ export const SIMULATOR_SETTINGS_SENSOR = {
   },
   toolboxBlocks: {
     default: () => <block type="simulator_settings_sensor" />,
+  },
+};
+
+export const SIMULATOR_SETTINGS_LINE = {
+  blockJson: {
+    type: 'simulator_settings_line',
+    message0: 'line: %1 %2',
+    args0: [
+      {
+        type: 'field_checkbox',
+        name: 'LINE',
+        checked: true,
+      },
+      {
+        type: 'input_value',
+        name: 'MORE',
+        check: 'SimulatorObjectSettings',
+      },
+    ],
+    inputsInline: false,
+    output: 'SimulatorObjectSettings',
+    colour: 180,
+    tooltip: 'a line can be detected by line sensors; lines must also be set to passive',
+    helpUrl: 'TODO',
+  },
+  blockExtras: {
+    onchange: forbidsAncestor(['simulator_robot'], 'robots can not be lines'),
+    getSettings() {
+      return {
+        plugin: {
+          hedgehog: {
+            isLine: this.getField('LINE').getValueBoolean(),
+          },
+        },
+      };
+    },
+  },
+  toolboxBlocks: {
+    default: () => <block type="simulator_settings_line" />,
   },
 };
 
@@ -622,6 +661,7 @@ const blocks = [
   SIMULATOR_SETTINGS_COLOR,
   SIMULATOR_SETTINGS_STATIC,
   SIMULATOR_SETTINGS_SENSOR,
+  SIMULATOR_SETTINGS_LINE,
   SIMULATOR_SETTINGS_DENSITY,
   SIMULATOR_SETTINGS_FRICTION_AIR,
   SIMULATOR_SETTINGS_LABEL,

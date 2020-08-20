@@ -49,6 +49,7 @@ const workspaceOptions = {
         {blocks.SIMULATOR_SETTINGS_COLOR.toolboxBlocks.default()}
         {blocks.SIMULATOR_SETTINGS_STATIC.toolboxBlocks.default()}
         {blocks.SIMULATOR_SETTINGS_SENSOR.toolboxBlocks.default()}
+        {blocks.SIMULATOR_SETTINGS_LINE.toolboxBlocks.default()}
         {blocks.SIMULATOR_SETTINGS_DENSITY.toolboxBlocks.default()}
         {blocks.SIMULATOR_SETTINGS_FRICTION_AIR.toolboxBlocks.default()}
         {blocks.SIMULATOR_SETTINGS_LABEL.toolboxBlocks.default()}
