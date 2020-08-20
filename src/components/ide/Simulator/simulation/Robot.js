@@ -4,20 +4,62 @@ import Matter from 'matter-js';
 
 import { Point, Pose, Hedgehog } from '.';
 
+class DifferentialDrive {
+  controller: Hedgehog;
+
+  leftWheel: Matter.Body;
+  rightWheel: Matter.Body;
+  body: Matter.Body;
+
+  constructor(
+    controller: Hedgehog,
+    leftWheel: Matter.Body,
+    rightWheel: Matter.Body,
+    body: Matter.Body,
+  ) {
+    this.controller = controller;
+    this.leftWheel = leftWheel;
+    this.rightWheel = rightWheel;
+    this.body = body;
+  }
+
+  applyForce(pos: Point, force: number, cos: number, sin: number) {
+    Matter.Body.applyForce(this.body, pos, {
+      x: force * cos,
+      y: force * sin,
+    });
+  }
+
+  beforeUpdate() {
+    const lPos = this.leftWheel.position;
+    const rPos = this.rightWheel.position;
+    const dx = lPos.x - rPos.x;
+    const dy = lPos.y - rPos.y;
+    const hypot = Math.hypot(dx, dy);
+
+    // cosine and sine of the angle in which the forces are directed
+    // this is normal to the axis of the wheels, therefore [-dy, dx] instead of [dx, dy]
+    const cos = -dy / hypot;
+    const sin = dx / hypot;
+
+    this.applyForce(lPos, this.controller.getMotor(0) / 800, cos, sin);
+    this.applyForce(rPos, this.controller.getMotor(1) / 800, cos, sin);
+  }
+}
+
 /**
  * A simulated robot, capable of moving through and sensing the simulation.
  */
 export default class Robot {
   controller = new Hedgehog();
 
-  leftWheel: Matter.Body;
-  rightWheel: Matter.Body;
   // leftGrabberControl: Matter.Constraint;
   // rightGrabberControl: Matter.Constraint;
   lineSensors: Matter.Body[];
   touchSensors: Matter.Body[];
   body: Matter.Body;
 
+  drive: DifferentialDrive;
   bodies: Matter.Body[];
 
   constructor() {
@@ -71,12 +113,12 @@ export default class Robot {
     //   },
     // };
 
-    this.leftWheel = Matter.Bodies.rectangle(7, -21, 20, 4, {
+    const leftWheel = Matter.Bodies.rectangle(7, -21, 20, 4, {
       ...material,
       ...styleWheel,
       label: 'leftWheel',
     });
-    this.rightWheel = Matter.Bodies.rectangle(7, 21, 20, 4, {
+    const rightWheel = Matter.Bodies.rectangle(7, 21, 20, 4, {
       ...material,
       ...styleWheel,
       label: 'rightWheel',
@@ -121,7 +163,7 @@ export default class Robot {
       }),
     ];
     this.body = Matter.Body.create({
-      parts: [this.leftWheel, this.rightWheel, ...this.lineSensors, ...this.touchSensors, body],
+      parts: [leftWheel, rightWheel, ...this.lineSensors, ...this.touchSensors, body],
       ...material,
       label: 'body',
       plugin: {},
@@ -222,6 +264,7 @@ export default class Robot {
       label: 'bot',
     });
 
+    this.drive = new DifferentialDrive(this.controller, leftWheel, rightWheel, this.body);
     this.bodies = [bot, ...bot.parts];
 
     // line sensors are not collided by default!
@@ -265,27 +308,8 @@ export default class Robot {
     };
   }
 
-  applyForce(pos: Point, force: number, cos: number, sin: number) {
-    Matter.Body.applyForce(this.body, pos, {
-      x: force * cos,
-      y: force * sin,
-    });
-  }
-
   beforeUpdate() {
-    const lPos = this.leftWheel.position;
-    const rPos = this.rightWheel.position;
-    const dx = lPos.x - rPos.x;
-    const dy = lPos.y - rPos.y;
-    const hypot = Math.hypot(dx, dy);
-
-    // cosine and sine of the angle in which the forces are directed
-    // this is normal to the axis of the wheels, therefore [-dy, dx] instead of [dx, dy]
-    const cos = -dy / hypot;
-    const sin = dx / hypot;
-
-    this.applyForce(lPos, this.controller.getMotor(0) / 800, cos, sin);
-    this.applyForce(rPos, this.controller.getMotor(1) / 800, cos, sin);
+    this.drive.beforeUpdate();
   }
 
   handleLineSensor(eventName: 'collisionStart' | 'collisionEnd', sensor: Matter.Body) {
