@@ -289,10 +289,8 @@ export default class Robot {
   }
 
   setInitialPose(pose: Pose) {
-    this.body.plugin = {
-      hedgehog: {
-        initialPose: pose,
-      },
+    this.body.plugin.hedgehog = {
+      initialPose: pose,
     };
   }
 
