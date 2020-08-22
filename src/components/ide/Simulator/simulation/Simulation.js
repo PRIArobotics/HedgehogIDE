@@ -40,42 +40,40 @@ export default class Simulation {
 
     // robot update on simulation tick
     Matter.Events.on(this.runner, 'beforeUpdate', () => {
-      this.robots.forEach(robot => {
+      for (const robot of this.robots.values()) {
         robot.beforeUpdate();
-      });
+      }
     });
 
+    function extractBodyForSDK({
+      id,
+      label,
+      position,
+      speed,
+      velocity,
+      angle,
+      angularSpeed,
+      angularVelocity,
+      bounds,
+    }: Matter.Body) {
+      return {
+        id,
+        label,
+        position,
+        speed,
+        velocity,
+        angle,
+        angularSpeed,
+        angularVelocity,
+        bounds,
+      };
+    }
     // check for line detection
     const collisionHandler = ({ name, pairs }) => {
-      pairs.forEach(pair => {
-        const { bodyA, bodyB } = pair;
-
-        this.externalSensorHandlers.forEach(h =>
-          h(
-            {
-              id: bodyA.id,
-              label: bodyA.label,
-              position: bodyA.position,
-              speed: bodyA.speed,
-              velocity: bodyA.velocity,
-              angle: bodyA.angle,
-              angularSpeed: bodyA.angularSpeed,
-              angularVelocity: bodyA.angularVelocity,
-              bounds: bodyA.bounds,
-            },
-            {
-              id: bodyB.id,
-              label: bodyB.label,
-              position: bodyB.position,
-              speed: bodyB.speed,
-              velocity: bodyB.velocity,
-              angle: bodyB.angle,
-              angularSpeed: bodyB.angularSpeed,
-              angularVelocity: bodyB.angularVelocity,
-              bounds: bodyB.bounds,
-            },
-          ),
-        );
+      for (const { bodyA, bodyB } of pairs) {
+        for (const handler of this.externalSensorHandlers) {
+          handler(extractBodyForSDK(bodyA), extractBodyForSDK(bodyB));
+        }
 
         let sensor, other;
         if (this.sensorsCache.has(bodyA)) {
@@ -89,7 +87,7 @@ export default class Simulation {
         }
 
         sensor.plugin.hedgehog.sensor.handleCollision(name, other);
-      });
+      }
     };
 
     Matter.Events.on(this.engine, 'collisionStart', collisionHandler);
@@ -113,7 +111,7 @@ export default class Simulation {
       });
     }
 
-    schema.objects.forEach(object => {
+    for (const object of schema.objects) {
       switch (object.type) {
         case 'rectangle': {
           // eslint-disable-next-line no-shadow
@@ -149,7 +147,7 @@ export default class Simulation {
         default:
           console.warn('unknown simulation object:', object);
       }
-    });
+    }
 
     this.updateSensorCache();
   }
@@ -225,15 +223,15 @@ export default class Simulation {
   }
 
   reset() {
-    [
+    for (const composite of [
       ...Matter.Composite.allComposites(this.world),
       ...Matter.Composite.allBodies(this.world),
-    ].forEach(composite => {
-      if (composite.plugin?.hedgehog?.initialPose) {
+    ]) {
+      if (composite.plugin.hedgehog?.initialPose) {
         const { x, y, angle } = composite.plugin.hedgehog.initialPose;
         Matter.Body.setPosition(composite, { x, y });
         Matter.Body.setAngle(composite, angle);
       }
-    });
+    }
   }
 }
