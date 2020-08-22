@@ -30,7 +30,6 @@ export default class Simulation {
 
   // special bodies for simulation logic
   robots: Map<string, Robot> = new Map<string, Robot>();
-  lines: (Matter.Body | Matter.Composite)[] = [];
   sensorsCache: SensorCache = {
     lineSensors: [],
     touchSensors: [],
@@ -108,12 +107,14 @@ export default class Simulation {
         });
         if (collision === null) return;
         const { type, sensor, other } = collision;
+        const isLine = other.plugin.hedgehog?.isLine ?? false;
+        const isSensor = other.isSensor;
 
         // handle collision according to the type
-        if (type === 'lineSensors' && this.lines.includes(other)) {
+        if (type === 'lineSensors' && isLine) {
           // collision with a line
           sensor.plugin.hedgehog.sensor.handleCollision(name);
-        } else if (type === 'touchSensors' && !other.isSensor) {
+        } else if (type === 'touchSensors' && !isSensor) {
           // collision with a tangible object
           sensor.plugin.hedgehog.sensor.handleCollision(name);
         }
@@ -149,7 +150,6 @@ export default class Simulation {
           const body = Matter.Bodies.rectangle(0, 0, width, height, options);
 
           this.add([body]);
-          if (options.plugin?.hedgehog.isLine ?? false) this.lines.push(body);
           break;
         }
         case 'circle': {
@@ -157,7 +157,6 @@ export default class Simulation {
           const body = Matter.Bodies.circle(0, 0, radius, options);
 
           this.add([body]);
-          if (options.plugin?.hedgehog.isLine ?? false) this.lines.push(body);
           break;
         }
         case 'robot': {
@@ -251,7 +250,6 @@ export default class Simulation {
   clear(keepStatic: boolean) {
     Matter.Composite.clear(this.world, keepStatic);
     this.robots.clear();
-    this.lines = [];
     this.updateSensorCache();
   }
 
