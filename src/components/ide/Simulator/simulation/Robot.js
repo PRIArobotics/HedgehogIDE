@@ -3,7 +3,7 @@
 import Matter from 'matter-js';
 
 import { Point, Pose, Hedgehog } from '.';
-import { CollisionSensor } from './sensors';
+import { CollisionSensor, TouchSensor, LineSensor } from './sensors';
 
 class DifferentialDrive {
   controller: Hedgehog;
@@ -56,11 +56,10 @@ export default class Robot {
 
   // leftGrabberControl: Matter.Constraint;
   // rightGrabberControl: Matter.Constraint;
-  lineSensors: CollisionSensor[];
-  touchSensors: CollisionSensor[];
   body: Matter.Body;
-
+  collisionSensors: CollisionSensor[];
   drive: DifferentialDrive;
+
   bodies: Matter.Body[];
 
   constructor() {
@@ -252,12 +251,14 @@ export default class Robot {
     });
 
     this.drive = new DifferentialDrive(this.controller, leftWheel, rightWheel, this.body);
-    this.lineSensors = lineSensors.map(
-      (sensor, index) => new CollisionSensor(this.controller, sensor, 0 + index, [100, 4000]),
-    );
-    this.touchSensors = touchSensors.map(
-      (sensor, index) => new CollisionSensor(this.controller, sensor, 8 + index, [4095, 0]),
-    );
+    this.collisionSensors = [
+      ...lineSensors.map(
+        (sensor, index) => new LineSensor(this.controller, sensor, 0 + index, [100, 4000]),
+      ),
+      ...touchSensors.map(
+        (sensor, index) => new TouchSensor(this.controller, sensor, 8 + index, [4095, 0]),
+      ),
+    ];
     this.bodies = [bot, ...bot.parts];
   }
 

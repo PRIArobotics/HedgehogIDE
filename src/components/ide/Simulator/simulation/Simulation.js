@@ -5,10 +5,6 @@ import Matter from 'matter-js';
 import { Point, Pose, Robot } from '.';
 import * as SimulationSchema from '../../SimulatorEditor/SimulationSchema';
 
-type SensorCache = {|
-  lineSensors: Matter.Body[],
-  touchSensors: Matter.Body[],
-|};
 type ExternalSensorHandler = (
   sensor: Matter.Body | Matter.Composite,
   other: Matter.Body | Matter.Composite,
@@ -30,10 +26,7 @@ export default class Simulation {
 
   // special bodies for simulation logic
   robots: Map<string, Robot> = new Map<string, Robot>();
-  sensorsCache: SensorCache = {
-    lineSensors: [],
-    touchSensors: [],
-  };
+  sensorsCache: Set<Matter.Body> = new Set<Matter.Body>();
 
   externalSensorHandlers: ExternalSensorHandler[] = [];
 
@@ -84,40 +77,18 @@ export default class Simulation {
           ),
         );
 
-        let collision = null;
-        // go over all types of sensors in the cache,
-        // find out if the collision pair has that sensor.
-        // there's only one sensor in the collision pair,
-        // so there's no hazard of overwriting a collision through forEach
-        Object.keys(this.sensorsCache).forEach(key => {
-          const sensors = this.sensorsCache[key];
-          if (sensors.includes(bodyA)) {
-            collision = {
-              type: key,
-              sensor: bodyA,
-              other: bodyB,
-            };
-          } else if (sensors.includes(bodyB)) {
-            collision = {
-              type: key,
-              sensor: bodyB,
-              other: bodyA,
-            };
-          }
-        });
-        if (collision === null) return;
-        const { type, sensor, other } = collision;
-        const isLine = other.plugin.hedgehog?.isLine ?? false;
-        const isSensor = other.isSensor;
-
-        // handle collision according to the type
-        if (type === 'lineSensors' && isLine) {
-          // collision with a line
-          sensor.plugin.hedgehog.sensor.handleCollision(name);
-        } else if (type === 'touchSensors' && !isSensor) {
-          // collision with a tangible object
-          sensor.plugin.hedgehog.sensor.handleCollision(name);
+        let sensor, other;
+        if (this.sensorsCache.has(bodyA)) {
+          sensor = bodyA;
+          other = bodyB;
+        } else if (this.sensorsCache.has(bodyB)) {
+          sensor = bodyB;
+          other = bodyA;
+        } else {
+          return;
         }
+
+        sensor.plugin.hedgehog.sensor.handleCollision(name, other);
       });
     };
 
@@ -239,12 +210,12 @@ export default class Simulation {
   // this method has to be called after adding one or more robots to the
   // simulation, before using any new robot's sensors.
   updateSensorCache() {
-    const robots = [...this.robots.values()];
-    Object.keys(this.sensorsCache).forEach(key => {
-      // collect the bodies of all sensors of the correct types from all the robots
-      // $FlowExpectError
-      this.sensorsCache[key] = robots.flatMap(robot => robot[key].map(sensor => sensor.sensorBody));
-    });
+    this.sensorsCache.clear();
+    for (const robot of this.robots.values()) {
+      for (const sensor of robot.collisionSensors) {
+        this.sensorsCache.add(sensor.sensorBody);
+      }
+    }
   }
 
   clear(keepStatic: boolean) {
