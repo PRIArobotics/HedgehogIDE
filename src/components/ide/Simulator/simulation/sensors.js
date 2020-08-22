@@ -4,17 +4,17 @@ import Matter from 'matter-js';
 
 import { Hedgehog } from '.';
 
+/**
+ * A collision sensor senses its environment by keeping track of whether it currently collides with
+ * other simulation objects.
+ * A sensor can restrict the class of relevant collision bodies, and handle its collision state
+ * in any way, but usually by setting a sensor value on its controller instance.
+ */
 export class CollisionSensor {
-  controller: Hedgehog;
-
   sensorBody: Matter.Body;
   collisionCount = 0;
 
-  constructor(
-    controller: Hedgehog,
-    sensorBody: Matter.Body,
-  ) {
-    this.controller = controller;
+  constructor(sensorBody: Matter.Body) {
     this.sensorBody = sensorBody;
 
     sensorBody.plugin.hedgehog = {
@@ -55,7 +55,13 @@ export class CollisionSensor {
   }
 }
 
+/**
+ * Simple collision sensors are associated with a single sensor port and update that sensor with
+ * one of two values, depending on whether there is a collision or not.
+ */
 export class SimpleCollisionSensor extends CollisionSensor {
+  controller: Hedgehog;
+
   port: number;
   // the sensor value when the sensor body is not collided or collided, respectively
   values: [number, number];
@@ -66,11 +72,16 @@ export class SimpleCollisionSensor extends CollisionSensor {
     port: number,
     values: [number, number],
   ) {
-    super(controller, sensorBody);
+    super(sensorBody);
+
+    this.controller = controller;
     this.port = port;
     this.values = values;
 
+    // set initial value to not collided
     controller.setSensor(port, values[0]);
+
+    // TODO add noise source to sensor
   }
 
   update(colliding: boolean) {
@@ -79,13 +90,36 @@ export class SimpleCollisionSensor extends CollisionSensor {
   }
 }
 
+/**
+ * A touch sensor detects collisions with tangible bodies of the simulation
+ */
 export class TouchSensor extends SimpleCollisionSensor {
+  constructor(
+    controller: Hedgehog,
+    sensorBody: Matter.Body,
+    port: number,
+  ) {
+    super(controller, sensorBody, port, [4095, 0]);
+  }
+
   matches(other: Matter.Body): boolean {
     return !other.isSensor;
   }
 }
 
+/**
+ * A line sensor detects collisions with lines in the simulation, as indicated by the plugin
+ * propery `hedgehog.isLine`.
+ */
 export class LineSensor extends SimpleCollisionSensor {
+  constructor(
+    controller: Hedgehog,
+    sensorBody: Matter.Body,
+    port: number,
+  ) {
+    super(controller, sensorBody, port, [100, 4000]);
+  }
+
   matches(other: Matter.Body): boolean {
     return other.plugin.hedgehog?.isLine ?? false;
   }
