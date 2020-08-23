@@ -7,17 +7,24 @@ import { Point, Hedgehog } from '.';
 export class DifferentialDrive {
   controller: Hedgehog;
 
+  leftPort: number;
+  rightPort: number;
+
   leftWheel: Matter.Body;
   rightWheel: Matter.Body;
   body: Matter.Body;
 
   constructor(
     controller: Hedgehog,
+    leftPort: number,
+    rightPort: number,
     leftWheel: Matter.Body,
     rightWheel: Matter.Body,
     body: Matter.Body,
   ) {
     this.controller = controller;
+    this.leftPort = leftPort;
+    this.rightPort = rightPort;
     this.leftWheel = leftWheel;
     this.rightWheel = rightWheel;
     this.body = body;
@@ -42,7 +49,7 @@ export class DifferentialDrive {
     const cos = -dy / hypot;
     const sin = dx / hypot;
 
-    this.applyForce(lPos, this.controller.getMotor(0) / 800, cos, sin);
-    this.applyForce(rPos, this.controller.getMotor(1) / 800, cos, sin);
+    this.applyForce(lPos, this.controller.getMotor(this.leftPort) / 800, cos, sin);
+    this.applyForce(rPos, this.controller.getMotor(this.rightPort) / 800, cos, sin);
   }
 }

@@ -208,7 +208,7 @@ export default class Robot {
       label: 'bot',
     });
 
-    this.drive = new DifferentialDrive(this.controller, leftWheel, rightWheel, this.body);
+    this.drive = new DifferentialDrive(this.controller, 0, 1, leftWheel, rightWheel, this.body);
     this.collisionSensors = [
       ...lineSensors.map(
         (sensor, index) => new LineSensor(this.controller, sensor, 0 + index),
