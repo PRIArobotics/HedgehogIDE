@@ -72,10 +72,10 @@ export default class Robot {
       ...styleWheel,
       label: 'rightWheel',
     });
-    const body = Matter.Bodies.rectangle(0, 0, 40, 32, {
+    const mainBody = Matter.Bodies.rectangle(0, 0, 40, 32, {
       ...material,
       ...styleBody,
-      label: 'bodyPart',
+      label: 'mainBody',
     });
     const lineSensors = [
       Matter.Bodies.circle(22, -22, 2, {
@@ -107,7 +107,7 @@ export default class Robot {
       }),
     ];
     this.body = Matter.Body.create({
-      parts: [leftWheel, rightWheel, ...lineSensors, ...touchSensors, body],
+      parts: [leftWheel, rightWheel, ...lineSensors, ...touchSensors, mainBody],
       ...material,
       label: 'body',
       plugin: {},
