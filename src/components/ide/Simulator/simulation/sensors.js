@@ -35,8 +35,11 @@ export class CollisionSensor {
   /**
    * Updates the sensor state after handling a collision.
    */
-  // eslint-disable-next-line class-methods-use-this
-  update(_colliding: boolean) {}
+  update() {}
+
+  isColliding() {
+    return this.collisionCount > 0;
+  }
 
   handleCollision(eventName: 'collisionStart' | 'collisionEnd', other: Matter.Body) {
     if (!this.matches(other)) return;
@@ -53,7 +56,7 @@ export class CollisionSensor {
         throw 'unreachable';
     }
 
-    this.update(this.collisionCount > 0);
+    this.update();
   }
 }
 
@@ -86,8 +89,8 @@ export class SimpleCollisionSensor extends CollisionSensor {
     // TODO add noise source to sensor
   }
 
-  update(colliding: boolean) {
-    const value = colliding ? this.values[1] : this.values[0];
+  update() {
+    const value = this.isColliding() ? this.values[1] : this.values[0];
     this.controller.setSensor(this.port, value);
   }
 }
@@ -118,5 +121,61 @@ export class LineSensor extends SimpleCollisionSensor {
   // eslint-disable-next-line class-methods-use-this
   matches(other: Matter.Body): boolean {
     return other.plugin.hedgehog?.isLine ?? false;
+  }
+}
+
+class DistanceSensorSegment extends CollisionSensor {
+  sensor: DistanceSensor;
+
+  distance: number;
+
+  constructor(sensor: DistanceSensor, sensorBody: Matter.Body, distance: number) {
+    super(sensorBody);
+
+    this.sensor = sensor;
+    this.distance = distance;
+  }
+
+  // eslint-disable-next-line class-methods-use-this
+  matches(other: Matter.Body): boolean {
+    return !other.isSensor;
+  }
+
+  update() {
+    this.sensor.update();
+  }
+}
+
+export class DistanceSensor {
+  controller: Hedgehog;
+
+  port: number;
+  // segments are ordered near to far, so the first colliding segment determines the distance
+  segments: DistanceSensorSegment[];
+
+  constructor(controller: Hedgehog, port: number) {
+    this.controller = controller;
+    this.port = port;
+    // TODO initialize segments
+    this.segments = [];
+
+    // TODO set initial value to maximum distance
+
+    // TODO add noise source to sensor
+  }
+
+  update() {
+    // TODO take proper maximum distance
+    let distance = 1000;
+    for (const segment of this.segments) {
+      if (segment.isColliding()) {
+        distance = segment.distance;
+        break;
+      }
+    }
+
+    // TODO calculate sensor value from the distance
+    const value = distance;
+    this.controller.setSensor(this.port, value);
   }
 }
