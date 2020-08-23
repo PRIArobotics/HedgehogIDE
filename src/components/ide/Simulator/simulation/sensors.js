@@ -94,11 +94,7 @@ export class SimpleCollisionSensor extends CollisionSensor {
  * A touch sensor detects collisions with tangible bodies of the simulation
  */
 export class TouchSensor extends SimpleCollisionSensor {
-  constructor(
-    controller: Hedgehog,
-    sensorBody: Matter.Body,
-    port: number,
-  ) {
+  constructor(controller: Hedgehog, sensorBody: Matter.Body, port: number) {
     super(controller, sensorBody, port, [4095, 0]);
   }
 
@@ -112,11 +108,7 @@ export class TouchSensor extends SimpleCollisionSensor {
  * propery `hedgehog.isLine`.
  */
 export class LineSensor extends SimpleCollisionSensor {
-  constructor(
-    controller: Hedgehog,
-    sensorBody: Matter.Body,
-    port: number,
-  ) {
+  constructor(controller: Hedgehog, sensorBody: Matter.Body, port: number) {
     super(controller, sensorBody, port, [100, 4000]);
   }
 

@@ -75,7 +75,8 @@ export default class Simulation {
           handler(extractBodyForSDK(bodyA), extractBodyForSDK(bodyB));
         }
 
-        let sensor, other;
+        let sensor;
+        let other;
         if (this.sensorsCache.has(bodyA)) {
           sensor = bodyA;
           other = bodyB;

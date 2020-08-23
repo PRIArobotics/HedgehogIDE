@@ -28,7 +28,7 @@ type Line = {|
   plugin?: {
     hedgehog: {
       isLine?: boolean,
-    }
+    },
   },
 |};
 
