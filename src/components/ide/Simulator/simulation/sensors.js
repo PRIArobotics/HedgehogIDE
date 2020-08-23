@@ -17,7 +17,7 @@ export class CollisionSensor {
   constructor(sensorBody: Matter.Body) {
     this.sensorBody = sensorBody;
 
-    sensorBody.plugin.hedgehog = {
+    this.sensorBody.plugin.hedgehog = {
       sensor: this,
     };
   }
@@ -27,14 +27,16 @@ export class CollisionSensor {
    * For example, a touch sensor would not want to detect collisions with sensor bodies,
    * as they are intangible
    */
-  matches(other: Matter.Body): boolean {
+  // eslint-disable-next-line class-methods-use-this
+  matches(_other: Matter.Body): boolean {
     return true;
   }
 
   /**
    * Updates the sensor state after handling a collision.
    */
-  update(colliding: boolean) {}
+  // eslint-disable-next-line class-methods-use-this
+  update(_colliding: boolean) {}
 
   handleCollision(eventName: 'collisionStart' | 'collisionEnd', other: Matter.Body) {
     if (!this.matches(other)) return;
@@ -79,7 +81,7 @@ export class SimpleCollisionSensor extends CollisionSensor {
     this.values = values;
 
     // set initial value to not collided
-    controller.setSensor(port, values[0]);
+    this.controller.setSensor(port, values[0]);
 
     // TODO add noise source to sensor
   }
@@ -98,6 +100,7 @@ export class TouchSensor extends SimpleCollisionSensor {
     super(controller, sensorBody, port, [4095, 0]);
   }
 
+  // eslint-disable-next-line class-methods-use-this
   matches(other: Matter.Body): boolean {
     return !other.isSensor;
   }
@@ -112,6 +115,7 @@ export class LineSensor extends SimpleCollisionSensor {
     super(controller, sensorBody, port, [100, 4000]);
   }
 
+  // eslint-disable-next-line class-methods-use-this
   matches(other: Matter.Body): boolean {
     return other.plugin.hedgehog?.isLine ?? false;
   }

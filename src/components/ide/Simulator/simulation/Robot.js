@@ -2,7 +2,7 @@
 
 import Matter from 'matter-js';
 
-import { Point, Pose, Hedgehog } from '.';
+import { Pose, Hedgehog } from '.';
 import { DifferentialDrive } from './drives';
 import { CollisionSensor, TouchSensor, LineSensor } from './sensors';
 

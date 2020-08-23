@@ -4,6 +4,7 @@ import Matter from 'matter-js';
 
 import { Point, Hedgehog } from '.';
 
+// eslint-disable-next-line import/prefer-default-export
 export class DifferentialDrive {
   controller: Hedgehog;
 

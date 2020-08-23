@@ -2,7 +2,7 @@
 
 import Matter from 'matter-js';
 
-import { Point, Pose, Robot } from '.';
+import { Point, Robot } from '.';
 import * as SimulationSchema from '../../SimulatorEditor/SimulationSchema';
 
 type ExternalSensorHandler = (

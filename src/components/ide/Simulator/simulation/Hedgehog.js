@@ -20,7 +20,7 @@ function createArray<T>(length: number, cb: (index: number) => T): T[] {
   // first parameter is array-like, so `length` is an array length
   // all values (`v`) are `undefined`, map them to something else.
 
-  return Array.from({ length }, (elem, index) => cb(index));
+  return Array.from({ length }, (_elem, index) => cb(index));
 }
 
 /**
@@ -42,11 +42,13 @@ export default class Hedgehog {
 
   moveMotor(port: number, power: number) {
     this.motors[port].power = power;
+    // eslint-disable-next-line no-unused-expressions
     this.motors[port].onChange?.(port, power);
   }
 
   setServo(port: number, position: number | null) {
     this.servos[port].position = position;
+    // eslint-disable-next-line no-unused-expressions
     this.servos[port].onChange?.(port, position);
   }
 
@@ -66,10 +68,10 @@ export default class Hedgehog {
   }
 
   off() {
-    for (let port = 0; port < 4; port++) {
+    for (let port = 0; port < 4; port += 1) {
       this.moveMotor(port, 0);
     }
-    for (let port = 0; port < 6; port++) {
+    for (let port = 0; port < 6; port += 1) {
       this.setServo(port, null);
     }
   }
