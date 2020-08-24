@@ -75,7 +75,7 @@ export default class Robot {
       frictionAir: 0,
       render: {
         fillStyle: '#555555',
-        opacity: 0.1,
+        opacity: 0.2,
       },
     };
     // const styleGrabber = {

@@ -172,11 +172,11 @@ export class DistanceSensor {
     for (const segment of this.segments) {
       if (distance !== null) {
         // this is an obscured segment of the sensor ray
-        segment.sensorBody.render.opacity = 0.1;
+        segment.sensorBody.render.opacity = 0.05;
       } else if (segment.isColliding()) {
         // this is the colliding segment of the sensor ray
         distance = segment.distance;
-        segment.sensorBody.render.opacity = 0.5;
+        segment.sensorBody.render.opacity = 0.7;
       } else {
         // this is a non-obscured segment of the sensor ray
         segment.sensorBody.render.opacity = 0.2;
