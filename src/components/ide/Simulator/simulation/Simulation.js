@@ -75,8 +75,8 @@ export default class Simulation {
           handler(extractBodyForSDK(bodyA), extractBodyForSDK(bodyB));
         }
 
-        let sensor;
-        let other;
+        let sensor = null;
+        let other = null;
         if (this.sensorsCache.has(bodyA)) {
           sensor = bodyA;
           other = bodyB;
@@ -84,7 +84,7 @@ export default class Simulation {
           sensor = bodyB;
           other = bodyA;
         } else {
-          return;
+          continue;
         }
 
         sensor.plugin.hedgehog.sensor.handleCollision(name, other);
