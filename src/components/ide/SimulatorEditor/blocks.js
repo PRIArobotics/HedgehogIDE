@@ -32,7 +32,7 @@ function forbidsAncestor(types, warning) {
 // reads the SETTINGS input and recursively that block's MORE input
 // to get a settings object
 function getSettings() {
-  let settings = {
+  let settings: any = {
     position: { x: 0, y: 0 },
     angle: 0,
   };
@@ -41,9 +41,30 @@ function getSettings() {
     block !== null;
     block = block.getInputTargetBlock('MORE')
   ) {
+    const moreSettings = block.getSettings();
     settings = {
+      // overwrite settings with later settings
       ...settings,
-      ...block.getSettings(),
+      ...moreSettings,
+      // however merge some specific properties
+      ...(('render' in settings || 'render' in moreSettings
+        ? {
+            render: {
+              ...settings.render,
+              ...moreSettings.render,
+            },
+          }
+        : null): any),
+      ...(('plugin' in settings || 'plugin' in moreSettings
+        ? {
+            plugin: {
+              hedgehog: {
+                ...settings.plugin?.hedgehog,
+                ...moreSettings.plugin?.hedgehog,
+              },
+            },
+          }
+        : null): any),
     };
   }
   return settings;
@@ -73,6 +94,25 @@ function collectSettings(object) {
       // we're going from most to least specific, so don't override properties already present
       ...outerSettings,
       ...settings,
+      // however merge some specific properties
+      ...(('render' in outerSettings || 'render' in settings
+        ? {
+            render: {
+              ...outerSettings.render,
+              ...settings.render,
+            },
+          }
+        : null): any),
+      ...(('plugin' in outerSettings || 'plugin' in settings
+        ? {
+            plugin: {
+              hedgehog: {
+                ...outerSettings.plugin?.hedgehog,
+                ...settings.plugin?.hedgehog,
+              },
+            },
+          }
+        : null): any),
     };
   }
   return {
@@ -442,6 +482,51 @@ export const SIMULATOR_SETTINGS_COLOR = {
   },
 };
 
+export const SIMULATOR_SETTINGS_VISIBILITY = {
+  blockJson: {
+    type: 'simulator_settings_visibility',
+    message0: 'visible: %1 %2%% %3',
+    args0: [
+      {
+        type: 'field_checkbox',
+        name: 'VISIBILITY',
+        checked: true,
+      },
+      {
+        type: 'field_number',
+        name: 'OPACITY',
+        value: 100,
+        min: 0,
+        max: 100,
+        precision: 1,
+      },
+      {
+        type: 'input_value',
+        name: 'MORE',
+        check: 'SimulatorObjectSettings',
+      },
+    ],
+    inputsInline: false,
+    output: 'SimulatorObjectSettings',
+    colour: 180,
+    tooltip: 'sets the visibility of an object or group',
+    helpUrl: 'TODO',
+  },
+  blockExtras: {
+    getSettings() {
+      return {
+        render: {
+          opacity: this.getFieldValue('OPACITY') / 100,
+          visible: this.getField('VISIBILITY').getValueBoolean(),
+        },
+      };
+    },
+  },
+  toolboxBlocks: {
+    default: () => <block type="simulator_settings_visibility" />,
+  },
+};
+
 export const SIMULATOR_SETTINGS_STATIC = {
   blockJson: {
     type: 'simulator_settings_static',
@@ -659,6 +744,7 @@ const blocks = [
   SIMULATOR_SETTINGS_TRANSLATE,
   SIMULATOR_SETTINGS_ROTATE,
   SIMULATOR_SETTINGS_COLOR,
+  SIMULATOR_SETTINGS_VISIBILITY,
   SIMULATOR_SETTINGS_STATIC,
   SIMULATOR_SETTINGS_SENSOR,
   SIMULATOR_SETTINGS_LINE,

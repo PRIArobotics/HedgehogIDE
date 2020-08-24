@@ -16,6 +16,13 @@ type Color = {|
   },
 |};
 
+type Visibility = {|
+  render?: {
+    opacity?: number,
+    visible?: boolean,
+  },
+|};
+
 type Static = {|
   isStatic?: boolean,
 |};
@@ -52,6 +59,7 @@ type RobotProps = {|
 
 type AllProps = {|
   ...RobotProps,
+  ...Visibility,
   ...Static,
   ...Sensor,
   ...Line,

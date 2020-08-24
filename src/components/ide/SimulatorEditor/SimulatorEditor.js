@@ -47,6 +47,7 @@ const workspaceOptions = {
         {blocks.SIMULATOR_SETTINGS_TRANSLATE.toolboxBlocks.default()}
         {blocks.SIMULATOR_SETTINGS_ROTATE.toolboxBlocks.default()}
         {blocks.SIMULATOR_SETTINGS_COLOR.toolboxBlocks.default()}
+        {blocks.SIMULATOR_SETTINGS_VISIBILITY.toolboxBlocks.default()}
         {blocks.SIMULATOR_SETTINGS_STATIC.toolboxBlocks.default()}
         {blocks.SIMULATOR_SETTINGS_SENSOR.toolboxBlocks.default()}
         {blocks.SIMULATOR_SETTINGS_LINE.toolboxBlocks.default()}
