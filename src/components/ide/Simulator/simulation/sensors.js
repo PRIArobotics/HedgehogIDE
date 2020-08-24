@@ -152,12 +152,15 @@ export class DistanceSensor {
   port: number;
   // segments are ordered near to far, so the first colliding segment determines the distance
   segments: DistanceSensorSegment[];
+  maxDistance: number;
 
-  constructor(controller: Hedgehog, port: number) {
+  constructor(controller: Hedgehog, port: number, segments: [Matter.Body, number][]) {
     this.controller = controller;
     this.port = port;
-    // TODO initialize segments
-    this.segments = [];
+    this.segments = segments.map(
+      ([sensorBody, distance]) => new DistanceSensorSegment(this, sensorBody, distance),
+    );
+    this.maxDistance = this.segments[this.segments.length - 1].distance;
 
     // TODO set initial value to maximum distance
 
@@ -165,17 +168,35 @@ export class DistanceSensor {
   }
 
   update() {
-    // TODO take proper maximum distance
-    let distance = 1000;
+    let distance = null;
     for (const segment of this.segments) {
-      if (segment.isColliding()) {
+      if (distance !== null) {
+        // this is an obscured segment of the sensor ray
+        segment.sensorBody.render.opacity = 0.1;
+      } else if (segment.isColliding()) {
+        // this is the colliding segment of the sensor ray
         distance = segment.distance;
-        break;
+        segment.sensorBody.render.opacity = 0.5;
+      } else {
+        // this is a non-obscured segment of the sensor ray
+        segment.sensorBody.render.opacity = 0.2;
       }
     }
 
-    // TODO calculate sensor value from the distance
-    const value = distance;
+    // fill in maximum distance
+    if (distance === null) distance = this.maxDistance;
+
+    // this is modelled loosely after https://lucsmall.com/images/preview/20130507-voltage-vs-distance.png
+    // under a certain distance threshold, the value grows linearly with the distance to the max value
+    // over that threshold, the value falls off from the max value inversely with the distance
+    const maxValue = 4000;
+    const distanceThreshold = 20;
+    const bias = 20;
+    const value =
+      distance < distanceThreshold
+        ? maxValue * (distance / distanceThreshold)
+        : (maxValue * (distanceThreshold + bias)) / (distance + bias);
+
     this.controller.setSensor(this.port, value);
   }
 }
