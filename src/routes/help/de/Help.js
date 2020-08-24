@@ -138,12 +138,18 @@ function Help() {
           </li>
           <li>
             Mit <strong>Sensoren</strong> kann der Roboter seine Umgebung wahrnehmen. Sensorwerte
-            sind zwischen 0 und 4095. Vorne hat der simulierte Roboter fünf Sensoren:
+            sind zwischen 0 und 4095. Vorne hat der simulierte Roboter acht Sensoren:
             <ul>
               <li>
-                Vier Liniensensoren, die die schwarzen Linien auf dem Boden erkennen können. Das
-                sind von links nach rechts die Sensoren 0 bis 3. Wenn eine Linie erkannt wird, ist
-                der Sensorwert hoch.
+                Vier Liniensensoren, die schwarze Linien auf dem Boden erkennen können. Das sind von
+                links nach rechts die Sensoren 0 bis 3. Wenn eine Linie erkannt wird, ist der
+                Sensorwert hoch.
+              </li>
+              <li>
+                Drei Abstandssensoren, die seitlich und direkt nach vorne gerichtet sind und mit
+                denen der Abstand von Hindernissen gemessen werden kann. Das sind von links nach
+                rechts die Sensoren 4 bis 6. Wenn ein Hindernis näher kommt steigt der Wert zuerst
+                an, wenn es den Roboter fast berührt sinkt er wieder.
               </li>
               <li>
                 Ein Stoßsensor, der fast so breit ist wie der Roboter selbst, befindet sich vorne am

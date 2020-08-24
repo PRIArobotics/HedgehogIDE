@@ -132,11 +132,16 @@ function Help() {
           </li>
           <li>
             <strong>Sensors</strong> lets you observe the simulated environment. Sensor values are
-            between 0 and 4095. The simulated robot has five sensors at its front:
+            between 0 and 4095. The simulated robot has eight sensors at its front:
             <ul>
               <li>
-                Four line sensors that can detect the black lines on the ground; these are sensors 0
-                to 3, from left to right. The sensor value is high when a line is detected.
+                Four line sensors that can detect black lines on the ground; these are sensors 0 to
+                3, from left to right. The sensor value is high when a line is detected.
+              </li>
+              <li>
+                Three distance sensors looking forward and slightly to the sides; these are sensors
+                4 to 6, from left to right. The sensor value increases when getting closer to an
+                obstacle, then decreases again when the obstacle almost touches the robot.
               </li>
               <li>
                 One bump sensor that is almost as wide as the robot front; this is sensor 8. The
