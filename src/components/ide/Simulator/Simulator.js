@@ -111,6 +111,11 @@ const Simulator = React.forwardRef<Props, Instance>(
             angle: 0,
             isStatic: true,
             isSensor: true,
+            plugin: {
+              hedgehog: {
+                isLine: true,
+              },
+            },
             render: {
               fillStyle: '#000000',
             },
@@ -126,6 +131,11 @@ const Simulator = React.forwardRef<Props, Instance>(
             angle: 0,
             isStatic: true,
             isSensor: true,
+            plugin: {
+              hedgehog: {
+                isLine: true,
+              },
+            },
             render: {
               fillStyle: '#000000',
             },
@@ -141,6 +151,11 @@ const Simulator = React.forwardRef<Props, Instance>(
             angle: 0,
             isStatic: true,
             isSensor: true,
+            plugin: {
+              hedgehog: {
+                isLine: true,
+              },
+            },
             render: {
               fillStyle: '#000000',
             },
@@ -156,6 +171,11 @@ const Simulator = React.forwardRef<Props, Instance>(
             angle: 0,
             isStatic: true,
             isSensor: true,
+            plugin: {
+              hedgehog: {
+                isLine: true,
+              },
+            },
             render: {
               fillStyle: '#000000',
             },
@@ -171,6 +191,11 @@ const Simulator = React.forwardRef<Props, Instance>(
             angle: 0,
             isStatic: true,
             isSensor: true,
+            plugin: {
+              hedgehog: {
+                isLine: true,
+              },
+            },
             render: {
               fillStyle: '#000000',
             },
@@ -186,6 +211,11 @@ const Simulator = React.forwardRef<Props, Instance>(
             angle: 0,
             isStatic: true,
             isSensor: true,
+            plugin: {
+              hedgehog: {
+                isLine: true,
+              },
+            },
             render: {
               fillStyle: '#000000',
             },
@@ -201,6 +231,11 @@ const Simulator = React.forwardRef<Props, Instance>(
             angle: 0,
             isStatic: true,
             isSensor: true,
+            plugin: {
+              hedgehog: {
+                isLine: true,
+              },
+            },
             render: {
               fillStyle: '#000000',
             },
@@ -216,6 +251,11 @@ const Simulator = React.forwardRef<Props, Instance>(
             angle: 0,
             isStatic: true,
             isSensor: true,
+            plugin: {
+              hedgehog: {
+                isLine: true,
+              },
+            },
             render: {
               fillStyle: '#000000',
             },
@@ -231,6 +271,11 @@ const Simulator = React.forwardRef<Props, Instance>(
             angle: 0,
             isStatic: true,
             isSensor: true,
+            plugin: {
+              hedgehog: {
+                isLine: true,
+              },
+            },
             render: {
               fillStyle: '#000000',
             },
@@ -246,6 +291,11 @@ const Simulator = React.forwardRef<Props, Instance>(
             angle: 0,
             isStatic: true,
             isSensor: true,
+            plugin: {
+              hedgehog: {
+                isLine: true,
+              },
+            },
             render: {
               fillStyle: '#000000',
             },
@@ -261,6 +311,11 @@ const Simulator = React.forwardRef<Props, Instance>(
             angle: 0,
             isStatic: true,
             isSensor: true,
+            plugin: {
+              hedgehog: {
+                isLine: true,
+              },
+            },
             render: {
               fillStyle: '#000000',
             },
@@ -276,6 +331,11 @@ const Simulator = React.forwardRef<Props, Instance>(
             angle: 0,
             isStatic: true,
             isSensor: true,
+            plugin: {
+              hedgehog: {
+                isLine: true,
+              },
+            },
             render: {
               fillStyle: '#000000',
             },
@@ -291,6 +351,11 @@ const Simulator = React.forwardRef<Props, Instance>(
             angle: 0,
             isStatic: true,
             isSensor: true,
+            plugin: {
+              hedgehog: {
+                isLine: true,
+              },
+            },
             render: {
               fillStyle: '#000000',
             },
