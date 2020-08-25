@@ -164,7 +164,7 @@ export class DistanceSensor {
     this.segments = segments.map(
       ([sensorBody, distance]) => new DistanceSensorSegment(this, sensorBody, distance),
     );
-    this.maxDistance = this.segments[this.segments.length - 1].distance;
+    this.maxDistance = this.segments[this.segments.length - 1].distance + 1;
 
     // TODO add noise source to sensor
 
@@ -172,29 +172,27 @@ export class DistanceSensor {
     this.update(this.maxDistance);
   }
 
-  // TODO this has side effects
   getDistance() {
-    let distance = null;
     for (const segment of this.segments) {
-      if (distance !== null) {
-        // this is an obscured segment of the sensor ray
-        segment.sensorBody.render.opacity = 0.05;
-      } else if (segment.isColliding()) {
-        // this is the colliding segment of the sensor ray
-        distance = segment.distance;
-        segment.sensorBody.render.opacity = 0.7;
-      } else {
-        // this is a non-obscured segment of the sensor ray
-        segment.sensorBody.render.opacity = 0.2;
-      }
+      if (segment.isColliding()) return segment.distance;
     }
 
-    return distance ?? this.maxDistance;
+    return this.maxDistance;
   }
 
   update(distance: number | void) {
     if (distance === undefined) {
       distance = this.getDistance();
+    }
+
+    for (const segment of this.segments) {
+      if (segment.distance < distance) {
+        segment.sensorBody.render.opacity = 0.2;
+      } else if (segment.distance === distance) {
+        segment.sensorBody.render.opacity = 0.7;
+      } else {
+        segment.sensorBody.render.opacity = 0.05;
+      }
     }
 
     // this is modelled loosely after https://lucsmall.com/images/preview/20130507-voltage-vs-distance.png
