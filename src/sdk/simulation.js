@@ -16,7 +16,7 @@ export default async function init(executor: Executor) {
     simulator.simulation.addSensorHandler((bodyA, bodyB) => {
       emit(executor, 'collision', { bodyA, bodyB });
       emit(executor, `collision_${bodyA.label}`, { bodyA, bodyB });
-      emit(executor, `collision_${bodyB.label}`, { bodyB, bodyA });
+      emit(executor, `collision_${bodyB.label}`, { bodyA: bodyB, bodyB: bodyA });
     });
   }
   // </GSL customizable: simulation-init>
