@@ -70,6 +70,5 @@
   "app.projects.rename_project_dialog.title": "Rename project",
   "app.projects.rename_project_tooltip": "Rename Project \"{name}\"",
   "app.sidebar.contest_tooltip": "Contest",
-  "app.sidebar.help_tooltip": "Help",
-  "app.sidebar.ide_tooltip": "IDE"
+  "app.sidebar.help_tooltip": "Help"
 }

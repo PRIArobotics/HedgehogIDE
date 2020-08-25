@@ -11,7 +11,6 @@ import Divider from '@material-ui/core/Divider';
 import Tooltip from '@material-ui/core/Tooltip';
 
 import {
-  IdeIcon,
   HelpIcon,
   ContestIcon,
   // ControlsIcon,
@@ -22,11 +21,6 @@ import {
 import Link from '../../misc/Link';
 
 const messages = defineMessages({
-  ideTooltip: {
-    id: 'app.sidebar.ide_tooltip',
-    description: 'Tooltip for the IDE main page',
-    defaultMessage: 'IDE',
-  },
   helpTooltip: {
     id: 'app.sidebar.help_tooltip',
     description: 'Tooltip for the Help page',
@@ -68,7 +62,6 @@ function NavItem({ title, titleMsg, target, icon: TheIcon }: NavItemProps) {
 function Sidebar() {
   return (
     <List>
-      <NavItem titleMsg={messages.ideTooltip} target="/" icon={IdeIcon} />
       <NavItem titleMsg={messages.helpTooltip} target="/help" icon={HelpIcon} />
       <NavItem titleMsg={messages.contestTooltip} target="/contest" icon={ContestIcon} />
       {/* <NavItem titleMsg={messages.controlsTooltip} target="/control" icon={ControlsIcon} /> */}
