@@ -83,14 +83,18 @@ export class SimpleCollisionSensor extends CollisionSensor {
     this.port = port;
     this.values = values;
 
-    // set initial value to not collided
-    this.controller.setSensor(port, values[0]);
-
     // TODO add noise source to sensor
+
+    // set initial value to not collided
+    this.update(false);
   }
 
-  update() {
-    const value = this.isColliding() ? this.values[1] : this.values[0];
+  update(colliding: boolean | void) {
+    if (colliding === undefined) {
+      colliding = this.isColliding();
+    }
+
+    const value = colliding ? this.values[1] : this.values[0];
     this.controller.setSensor(this.port, value);
   }
 }
@@ -162,12 +166,14 @@ export class DistanceSensor {
     );
     this.maxDistance = this.segments[this.segments.length - 1].distance;
 
-    // TODO set initial value to maximum distance
-
     // TODO add noise source to sensor
+
+    // set initial value to maximum distance
+    this.update(this.maxDistance);
   }
 
-  update() {
+  // TODO this has side effects
+  getDistance() {
     let distance = null;
     for (const segment of this.segments) {
       if (distance !== null) {
@@ -183,8 +189,13 @@ export class DistanceSensor {
       }
     }
 
-    // fill in maximum distance
-    if (distance === null) distance = this.maxDistance;
+    return distance ?? this.maxDistance;
+  }
+
+  update(distance: number | void) {
+    if (distance === undefined) {
+      distance = this.getDistance();
+    }
 
     // this is modelled loosely after https://lucsmall.com/images/preview/20130507-voltage-vs-distance.png
     // under a certain distance threshold, the value grows linearly with the distance to the max value
