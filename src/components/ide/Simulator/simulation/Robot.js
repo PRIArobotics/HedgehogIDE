@@ -55,14 +55,10 @@ export default class Robot {
       },
     };
     const styleLineSensor = {
-      render: {
-        fillStyle: '#777777',
-      },
+      // fillStyle controlled by sensor
     };
     const styleTouchSensor = {
-      render: {
-        fillStyle: '#777777',
-      },
+      // fillStyle controlled by sensor
     };
     const styleDistanceSensor = {
       render: {
@@ -73,10 +69,7 @@ export default class Robot {
       isSensor: true,
       density: 0,
       frictionAir: 0,
-      render: {
-        fillStyle: '#555555',
-        opacity: 0.2,
-      },
+      // fillStyle & opacity controlled by sensor
     };
     // const styleGrabber = {
     //   render: {

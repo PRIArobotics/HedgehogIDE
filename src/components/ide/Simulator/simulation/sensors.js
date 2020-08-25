@@ -94,6 +94,9 @@ export class SimpleCollisionSensor extends CollisionSensor {
       colliding = this.isColliding();
     }
 
+    // update sensor body style
+    this.sensorBody.render.fillStyle = colliding ? '#ffa500' : '#777777';
+
     const value = colliding ? this.values[1] : this.values[0];
     this.controller.setSensor(this.port, value);
   }
@@ -185,12 +188,17 @@ export class DistanceSensor {
       distance = this.getDistance();
     }
 
+
+    // update sensor segment styles
     for (const segment of this.segments) {
       if (segment.distance < distance) {
-        segment.sensorBody.render.opacity = 0.2;
+        segment.sensorBody.render.fillStyle = '#555555';
+        segment.sensorBody.render.opacity = 0.4;
       } else if (segment.distance === distance) {
-        segment.sensorBody.render.opacity = 0.7;
+        segment.sensorBody.render.fillStyle = '#000000';
+        segment.sensorBody.render.opacity = 0.8;
       } else {
+        segment.sensorBody.render.fillStyle = '#555555';
         segment.sensorBody.render.opacity = 0.05;
       }
     }
