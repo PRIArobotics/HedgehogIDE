@@ -188,7 +188,6 @@ export class DistanceSensor {
       distance = this.getDistance();
     }
 
-
     // update sensor segment styles
     for (const segment of this.segments) {
       if (segment.distance < distance) {
