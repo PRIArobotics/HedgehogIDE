@@ -747,7 +747,7 @@ export const HEDGEHOG_READ_ANALOG: Block = {
     // <GSL customizable: hedgehog_read_analog-extra-toolbox>
     comparison: () => (
       <block type="logic_compare">
-        <field name="OP">LT</field>
+        <field name="OP">GT</field>
         <value name="A">
           <block type="hedgehog_read_analog" />
         </value>
