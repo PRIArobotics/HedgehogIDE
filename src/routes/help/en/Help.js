@@ -50,9 +50,9 @@ function Help() {
       </Typography>
       <Typography variant="body1" paragraph>
         A software project contains files that work together to create a program. Creating one is
-        the first thing you will have to do to get started. In your{' '}
-        <Link to="/projects">project list</Link>, click on the &quot;+&quot; icon and choose a name.
-        After you created the project, click on it to open it.
+        the first thing you will have to do to get started. In your <Link to="/">project list</Link>
+        , click on the &quot;+&quot; icon and choose a name. After you created the project, click on
+        it to open it.
       </Typography>
       <Typography variant="body1" component="div" paragraph>
         <Grid container spacing={1}>
@@ -73,9 +73,8 @@ function Help() {
       <Typography variant="body1" paragraph>
         After opening the project, right click the project root to create a file in it. In this
         example, let&apos;s choose &quot;New Blockly File&quot; &ndash; Blockly allows the visual
-        creation of programs. After naming the file, make sure it&apos;s shown in the project tree,
-        and open it by double-clicking. You will see a Blockly workspace where you can create your
-        program.
+        creation of programs. After creating the file, it is opened automatically and you should see
+        an empty Blockly workspace where you can create your program.
       </Typography>
       <Typography variant="body1" component="div" paragraph>
         <Grid container spacing={1}>
@@ -96,7 +95,7 @@ function Help() {
       <Typography variant="body1" paragraph>
         Before you start adding blocks to your program, let&apos;s look at the simulator. Click on
         the X,Y,Z axis icon above the project tree to open it in a new tab, then drag that tab to
-        the side to see Blockly and the simulator at the same time.
+        the bottom to see Blockly and the simulator at the same time.
       </Typography>
       <Typography variant="body1" component="div" paragraph>
         <Grid container spacing={1}>
@@ -111,7 +110,8 @@ function Help() {
       <Typography variant="body1" paragraph>
         The Simulator (and the console, which is opened with the second button above the project
         tree) opens automatically when a program gives commands to the robot (or outputs text,
-        respectively) if it is not already open.
+        respectively) if it is not already open. Nonetheless it is advisable to arrange these tabs
+        in advance.
       </Typography>
       <Typography variant="body1" paragraph>
         Blockly commands are organized by categories:
@@ -132,20 +132,53 @@ function Help() {
           </li>
           <li>
             <strong>Sensors</strong> lets you observe the simulated environment. Sensor values are
-            between 0 and 4095. The simulated robot has eight sensors at its front:
+            between 0 and 4095, the exact value ranges depend on the type of sensor though. The
+            simulated robot has eight sensors at its front:
             <ul>
               <li>
                 Four line sensors that can detect black lines on the ground; these are sensors 0 to
-                3, from left to right. The sensor value is high when a line is detected.
+                3, from left to right. These sensors change color to orange when a line is detected.
+                <br />
+                <strong>Values:</strong> The sensor value is high when a (dark) line is detected,
+                otherwise (on light surfaces) it is low.
               </li>
               <li>
-                Three distance sensors looking forward and slightly to the sides; these are sensors
-                4 to 6, from left to right. The sensor value increases when getting closer to an
-                obstacle, then decreases again when the obstacle almost touches the robot.
+                Three distance sensors looking forward and slightly to the sides can detect
+                obstacles without touching them; these are sensors 4 to 6, from left to right. The
+                rays coming out of the robot's front indicate the direction and range of these
+                sensors.
+                <br />
+                <strong>Values:</strong> The sensor value increases when getting closer to an
+                obstacle, then decreases again when the obstacle almost touches the robot. This
+                behavior models a distance sensor very popular in hobby robotics.
               </li>
               <li>
-                One bump sensor that is almost as wide as the robot front; this is sensor 8. The
-                sensor value is low when a collision is detected.
+                One bump sensor that is almost as wide as the robot front; this is sensor 8. This
+                sensor changes color to orange when a line is detected.
+                <br />
+                <strong>Values:</strong> The sensor value is low when a collision is detected. This
+                behavior models a &quot;pull-up&quot; circuit that is often used for touch sensors.
+              </li>
+            </ul>
+            Sensors come in two varieties, analog and digital:
+            <ul>
+              <li>
+                <strong>Analog</strong> sensors can take on many different values; a good example is
+                the distance sensor. To use an analog sensor, you have to work with the numeric
+                values between 0 and 4095.
+              </li>
+              <li>
+                <strong>Digital</strong> sensors only have two possible states, e.g.
+                &quot;collision&quot; and &quot;no collision&quot; or &quot;line&quot; or &quot;no
+                line&quot;. For these sensors, you can simplify your work by using digital values:
+                <ul>
+                  <li>
+                    Analog values 0 bis 2047: Digital value <code>false</code>
+                  </li>
+                  <li>
+                    Analog values 2048 bis 4095: Digital value <code>true</code>
+                  </li>
+                </ul>
               </li>
             </ul>
           </li>
@@ -174,12 +207,14 @@ function Help() {
         <ul>
           <li>The first block let the robot move forward.</li>
           <li>
-            The next block is a loop, running while the sensor on digital port 8 has a high value.
-            In other words, the loop repeats until a collision is detected.
+            The next block is a loop, running while the sensor on port 8 has a high digital value.
+            Sensor 8 is the bump sensor, and high values mean no collison. In other words, the loop
+            repeats until a collision is detected.
           </li>
           <li>
-            Inside the loop, the program simply sleeps. That means that the robot will continue
-            moving as long as there was no collision.
+            Inside the loop, the program simply sleeps. Even though the program pauses, the motors
+            are still moving. That means that the robot will continue moving as long as there was no
+            collision.
           </li>
           <li>
             After the loop, i.e. as soon as there was a collision, the robot is stopped. This is the
