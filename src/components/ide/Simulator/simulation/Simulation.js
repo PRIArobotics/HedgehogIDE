@@ -6,6 +6,7 @@ import { Point, Robot } from '.';
 import * as SimulationSchema from '../../SimulatorEditor/SimulationSchema';
 
 type ExternalSensorHandler = (
+  eventName: 'collisionStart' | 'collisionEnd',
   sensor: Matter.Body | Matter.Composite,
   other: Matter.Body | Matter.Composite,
 ) => void | Promise<void>;
@@ -72,7 +73,7 @@ export default class Simulation {
     const collisionHandler = ({ name, pairs }) => {
       for (const { bodyA, bodyB } of pairs) {
         for (const handler of this.externalSensorHandlers) {
-          handler(extractBodyForSDK(bodyA), extractBodyForSDK(bodyB));
+          handler(name, extractBodyForSDK(bodyA), extractBodyForSDK(bodyB));
         }
 
         let sensor = null;

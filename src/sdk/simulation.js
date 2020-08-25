@@ -13,7 +13,7 @@ export default async function init(executor: Executor) {
   // <GSL customizable: simulation-init>
   // Your module initialization code
   function simulatorAdded(simulator: SimulatorType) {
-    simulator.simulation.addSensorHandler((bodyA, bodyB) => {
+    simulator.simulation.addSensorHandler((eventName, bodyA, bodyB) => {
       emit(executor, 'collision', { bodyA, bodyB });
       emit(executor, `collision_${bodyA.label}`, { bodyA, bodyB });
       emit(executor, `collision_${bodyB.label}`, { bodyA: bodyB, bodyB: bodyA });
