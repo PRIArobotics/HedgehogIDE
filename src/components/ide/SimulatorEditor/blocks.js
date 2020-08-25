@@ -709,12 +709,17 @@ export const SIMULATOR_SETTINGS_FRICTION_AIR = {
 export const SIMULATOR_SETTINGS_LABEL = {
   blockJson: {
     type: 'simulator_settings_label',
-    message0: 'label: %1',
+    message0: 'label: %1 %2',
     args0: [
       {
         type: 'field_input',
         name: 'LABEL',
         value: '',
+      },
+      {
+        type: 'input_value',
+        name: 'MORE',
+        check: 'SimulatorObjectSettings',
       },
     ],
     inputsInline: false,
