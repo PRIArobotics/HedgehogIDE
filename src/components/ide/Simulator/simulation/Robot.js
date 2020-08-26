@@ -5,6 +5,7 @@ import Matter from 'matter-js';
 import { Pose, Hedgehog } from '.';
 import { DifferentialDrive } from './drives';
 import { CollisionSensor, TouchSensor, LineSensor, DistanceSensor } from './sensors';
+import { ServoArm } from './servo';
 
 function createArray<T>(length: number, cb: (index: number) => T): T[] {
   // Array.from({ length: n }, (v, i) => ...):
@@ -20,11 +21,10 @@ function createArray<T>(length: number, cb: (index: number) => T): T[] {
 export default class Robot {
   controller = new Hedgehog();
 
-  // leftGrabberControl: Matter.Constraint;
-  // rightGrabberControl: Matter.Constraint;
   body: Matter.Body;
   collisionSensors: CollisionSensor[];
   drive: DifferentialDrive;
+  servoArms: ServoArm[];
 
   bodies: Matter.Body[];
 
@@ -37,10 +37,10 @@ export default class Robot {
       density: 1,
       frictionAir: 0.4,
     };
-    // const materialGrabber = {
-    //   density: 0.02,
-    //   frictionAir: 0,
-    // };
+    const materialGrabber = {
+      density: 0.02,
+      frictionAir: 0,
+    };
     const styleWheel = {
       render: {
         fillStyle: '#777777',
@@ -71,11 +71,11 @@ export default class Robot {
       frictionAir: 0,
       // fillStyle & opacity controlled by sensor
     };
-    // const styleGrabber = {
-    //   render: {
-    //     fillStyle: '#777777',
-    //   },
-    // };
+    const styleGrabber = {
+      render: {
+        fillStyle: '#777777',
+      },
+    };
 
     const leftWheel = Matter.Bodies.rectangle(7, -21, 20, 4, {
       ...material,
@@ -179,101 +179,6 @@ export default class Robot {
       plugin: {},
     });
 
-    // const pivotProperties = (
-    //   anchor: Matter.Body,
-    //   pivotAnchor: Pose,
-    //   arm: Matter.Body,
-    //   pivotArm: Pose,
-    //   length: number,
-    // ) => {
-    //   return {
-    //     bodyA: anchor,
-    //     pointA: { x: pivotAnchor.x, y: pivotAnchor.y },
-    //     bodyB: arm,
-    //     pointB: { x: pivotArm.x, y: pivotArm.y },
-    //     length: 0,
-    //   };
-    // };
-
-    // const controlProperties = (
-    //   anchor: Matter.Body,
-    //   pivotAnchor: Pose,
-    //   arm: Matter.Body,
-    //   pivotArm: Pose,
-    //   length: number,
-    // ) => {
-    //   const translation = { x: length, y: 0, angle: 0 };
-    //   const controlAnchor = transform(pivotAnchor, translation);
-    //   const controlArm = transform(pivotArm, translation);
-
-    //   return {
-    //     bodyA: anchor,
-    //     pointA: { x: controlAnchor.x, y: controlAnchor.y },
-    //     bodyB: arm,
-    //     pointB: { x: controlArm.x, y: controlArm.y },
-    //     length: 0,
-    //     // TODO this does nothing, see https://github.com/liabru/matter-js/issues/817
-    //     ...pluginData({ pivot: leftGrabberPivot, length: length }),
-    //   };
-    // };
-
-    // // pivot pose in body coords
-    // const leftGrabberPivot = { x: 55, y: -35, angle: 0 };
-    // const rightGrabberPivot = { x: 55, y: 35, angle: 0 };
-    // // pivot pose in arm coords
-    // const grabberPivotArm = { x: -30, y: 0, angle: 0 };
-
-    // const leftGrabber = Matter.Bodies.rectangle(185, 65, 60, 5, {
-    //   ...materialGrabber,
-    //   ...styleGrabber,
-    // });
-
-    // const rightGrabber = Matter.Bodies.rectangle(185, 135, 60, 5, {
-    //   ...materialGrabber,
-    //   ...styleGrabber,
-    // });
-
-    // this.leftGrabberControl = Matter.Constraint.create({
-    //   ...controlProperties(this.body, leftGrabberPivot, leftGrabber, grabberPivotArm, 30),
-    //   stiffness: 0.1,
-    //   damping: 0.9,
-    //   render: { visible: false },
-    // });
-    // this.rightGrabberControl = Matter.Constraint.create({
-    //   ...controlProperties(this.body, rightGrabberPivot, rightGrabber, grabberPivotArm, 30),
-    //   stiffness: 0.1,
-    //   damping: 0.9,
-    //   render: { visible: false },
-    // });
-    // // TODO workaround for https://github.com/liabru/matter-js/issues/817
-    // this.leftGrabberControl.plugin.hedgehog = pluginData({ pivot: leftGrabberPivot, length: 30 }).plugin.hedgehog;
-    // this.rightGrabberControl.plugin.hedgehog = pluginData({ pivot: rightGrabberPivot, length: 30 }).plugin.hedgehog;
-
-    // this.setGrabberControls(500, 500);
-
-    const bot = Matter.Composite.create({
-      parts: [this.body /* , leftGrabber, rightGrabber */],
-      constraints: [
-        // // left grabber pivot
-        // Matter.Constraint.create({
-        //   ...pivotProperties(this.body, leftGrabberPivot, leftGrabber, grabberPivotArm, 30),
-        //   stiffness: 0.7,
-        //   damping: 0.9,
-        //   render: { visible: false },
-        // }),
-        // this.leftGrabberControl,
-        // // right grabber pivot
-        // Matter.Constraint.create({
-        //   ...pivotProperties(this.body, rightGrabberPivot, rightGrabber, grabberPivotArm, 30),
-        //   stiffness: 0.7,
-        //   damping: 0.9,
-        //   render: { visible: false },
-        // }),
-        // this.rightGrabberControl,
-      ],
-      label: 'bot',
-    });
-
     this.drive = new DifferentialDrive(this.controller, 0, 1, leftWheel, rightWheel, this.body);
     this.collisionSensors = [
       ...lineSensors.map((sensor, index) => new LineSensor(this.controller, sensor, 0 + index)),
@@ -283,29 +188,37 @@ export default class Robot {
         return sensor.segments;
       }),
     ];
+
+    // pivot pose in body coords
+    const pivotAnchorLeft = { x: 27, y: -19, angle: 0 };
+    const pivotAnchorRight = { x: 27, y: 19, angle: 0 };
+    // pivot pose in arm coords
+    const pivotArm = { x: -17, y: 0, angle: 0 };
+
+    const leftGrabber = Matter.Bodies.rectangle(35, -15, 35, 3, {
+      ...materialGrabber,
+      ...styleGrabber,
+    });
+    const rightGrabber = Matter.Bodies.rectangle(35, 15, 35, 3, {
+      ...materialGrabber,
+      ...styleGrabber,
+    });
+
+    this.servoArms = [
+      new ServoArm(this.controller, 0, mainBody, pivotAnchorLeft, leftGrabber, pivotArm, 30),
+      new ServoArm(this.controller, 1, mainBody, pivotAnchorRight, rightGrabber, pivotArm, 30),
+    ];
+
+    const bot = Matter.Composite.create({
+      parts: [this.body, leftGrabber, rightGrabber],
+      constraints: [
+        ...this.servoArms.flatMap(arm => [arm.pivotConstraint, arm.controlConstraint]),
+      ],
+      label: 'bot',
+    });
+
     this.bodies = [bot, ...bot.parts];
   }
-
-  // setGrabberControls(
-  //   leftPosition: number | null,
-  //   rightPosition: number | null,
-  // ) {
-  //   const applyTransform = (control: Matter.Constraint, position: number) => {
-  //     const { pivot, length } = control.plugin.hedgehog;
-  //     // position 0..=1000 should be translated into angle -90°..=90°
-  //     // 0..=1000 -> -500..=500 -> -1/2..=1/2 -> PI/2..=PI/2
-  //     const dAngle = ((position - 500) / 1000) * Math.PI;
-  //     const { x, y } = transform({ ...pivot, angle: pivot.angle+dAngle }, { x: length, y: 0, angle: 0 });
-
-  //     // eslint-disable-next-line no-param-reassign
-  //     control.pointA = { x, y };
-  //   };
-
-  //   if (leftPosition !== null)
-  //     applyTransform(this.leftGrabberControl, leftPosition);
-  //   if (rightPosition !== null)
-  //     applyTransform(this.rightGrabberControl, rightPosition);
-  // }
 
   setPose({ x, y, angle }: Pose) {
     Matter.Body.setPosition(this.body, { x, y });
@@ -320,5 +233,8 @@ export default class Robot {
 
   beforeUpdate() {
     this.drive.beforeUpdate();
+    for (const servoArm of this.servoArms) {
+      servoArm.beforeUpdate();
+    }
   }
 }
