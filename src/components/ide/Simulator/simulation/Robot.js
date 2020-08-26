@@ -189,28 +189,28 @@ export default class Robot {
       }),
     ];
 
-    // pivot pose in body coords
-    const pivotAnchorLeft = { x: 27, y: -19, angle: 0 };
-    const pivotAnchorRight = { x: 27, y: 19, angle: 0 };
-    // pivot pose in arm coords
-    const pivotArm = { x: -17, y: 0, angle: 0 };
+    // // pivot pose in body coords
+    // const pivotAnchorLeft = { x: 27, y: -19, angle: 0 };
+    // const pivotAnchorRight = { x: 27, y: 19, angle: 0 };
+    // // pivot pose in arm coords
+    // const pivotArm = { x: -17, y: 0, angle: 0 };
 
-    const leftGrabber = Matter.Bodies.rectangle(35, -15, 35, 3, {
-      ...materialGrabber,
-      ...styleGrabber,
-    });
-    const rightGrabber = Matter.Bodies.rectangle(35, 15, 35, 3, {
-      ...materialGrabber,
-      ...styleGrabber,
-    });
+    // const leftGrabber = Matter.Bodies.rectangle(35, -15, 35, 3, {
+    //   ...materialGrabber,
+    //   ...styleGrabber,
+    // });
+    // const rightGrabber = Matter.Bodies.rectangle(35, 15, 35, 3, {
+    //   ...materialGrabber,
+    //   ...styleGrabber,
+    // });
 
     this.servoArms = [
-      new ServoArm(this.controller, 0, mainBody, pivotAnchorLeft, leftGrabber, pivotArm, 30),
-      new ServoArm(this.controller, 1, mainBody, pivotAnchorRight, rightGrabber, pivotArm, 30),
+      // new ServoArm(this.controller, 0, mainBody, pivotAnchorLeft, leftGrabber, pivotArm, 30),
+      // new ServoArm(this.controller, 1, mainBody, pivotAnchorRight, rightGrabber, pivotArm, 30),
     ];
 
     const bot = Matter.Composite.create({
-      parts: [this.body, leftGrabber, rightGrabber],
+      parts: [this.body /* , leftGrabber, rightGrabber */ ],
       constraints: [
         ...this.servoArms.flatMap(arm => [arm.pivotConstraint, arm.controlConstraint]),
       ],
