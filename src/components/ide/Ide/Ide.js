@@ -948,21 +948,23 @@ function Ide({ projectName }: Props) {
             </IconButton>
           </Tooltip>
           <Tooltip title={<M {...messages.restoreLayoutTooltip} />}>
-            <IconButton
-              variant="contained"
-              color="primary"
-              size="small"
-              disabled={(projectCache?.layoutJson ?? null) === null}
-              onClick={() => {
-                const layoutJson = projectCache?.layoutJson ?? null;
-                // eslint-disable-next-line no-throw-literal
-                if (layoutJson === null) throw 'unreachable';
+            <span>
+              <IconButton
+                variant="contained"
+                color="primary"
+                size="small"
+                disabled={(projectCache?.layoutJson ?? null) === null}
+                onClick={() => {
+                  const layoutJson = projectCache?.layoutJson ?? null;
+                  // eslint-disable-next-line no-throw-literal
+                  if (layoutJson === null) throw 'unreachable';
 
-                setLayoutState(JSON.parse(layoutJson));
-              }}
-            >
-              <RestoreLayoutIcon />
-            </IconButton>
+                  setLayoutState(JSON.parse(layoutJson));
+                }}
+              >
+                <RestoreLayoutIcon />
+              </IconButton>
+            </span>
           </Tooltip>
           <Tooltip title={<M {...messages.projectSettingsTooltip} />}>
             <IconButton
