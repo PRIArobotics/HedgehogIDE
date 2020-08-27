@@ -210,7 +210,8 @@ export default class Robot {
     ];
 
     const bot = Matter.Composite.create({
-      parts: [this.body /* , leftGrabber, rightGrabber */ ],
+      parts: [this.body],
+      // parts: [this.body, leftGrabber, rightGrabber],
       constraints: [
         ...this.servoArms.flatMap(arm => [arm.pivotConstraint, arm.controlConstraint]),
       ],
