@@ -2,7 +2,7 @@
 
 import Matter from 'matter-js';
 
-import { Point, Robot } from '.';
+import { Point, Pose, Robot } from '.';
 import * as SimulationSchema from '../../SimulatorEditor/SimulationSchema';
 
 type ExternalSensorHandler = (
@@ -10,6 +10,11 @@ type ExternalSensorHandler = (
   sensor: Matter.Body | Matter.Composite,
   other: Matter.Body | Matter.Composite,
 ) => void | Promise<void>;
+
+function setInitialPose(body: Matter.Body, pose: Pose | void) {
+  if (!body.plugin.hedgehog) body.plugin.hedgehog = {};
+  body.plugin.hedgehog.initialPose = pose ?? { ...body.position, angle: body.angle };
+}
 
 /**
  * Manages a robot simulation.
@@ -119,6 +124,7 @@ export default class Simulation {
           // eslint-disable-next-line no-shadow
           const { type: _type, width, height, ...options } = object;
           const body = Matter.Bodies.rectangle(0, 0, width, height, options);
+          setInitialPose(body);
 
           this.add([body]);
           break;
@@ -126,6 +132,7 @@ export default class Simulation {
         case 'circle': {
           const { type: _type, radius, ...options } = object;
           const body = Matter.Bodies.circle(0, 0, radius, options);
+          setInitialPose(body);
 
           this.add([body]);
           break;
@@ -140,7 +147,7 @@ export default class Simulation {
           const robot = new Robot();
           const pose = { x, y, angle };
           robot.setPose(pose);
-          robot.setInitialPose(pose);
+          setInitialPose(robot.body);
           // TODO color
 
           this.addRobot(name, robot);
@@ -233,6 +240,8 @@ export default class Simulation {
         const { x, y, angle } = composite.plugin.hedgehog.initialPose;
         Matter.Body.setPosition(composite, { x, y });
         Matter.Body.setAngle(composite, angle);
+        Matter.Body.setVelocity(composite, { x: 0, y: 0 });
+        Matter.Body.setAngularVelocity(composite, 0);
       }
     }
   }

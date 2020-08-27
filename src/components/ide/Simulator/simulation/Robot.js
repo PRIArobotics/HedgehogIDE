@@ -176,7 +176,6 @@ export default class Robot {
       ],
       ...material,
       label: 'body',
-      plugin: {},
     });
 
     this.drive = new DifferentialDrive(this.controller, 0, 1, leftWheel, rightWheel, this.body);
@@ -224,12 +223,6 @@ export default class Robot {
   setPose({ x, y, angle }: Pose) {
     Matter.Body.setPosition(this.body, { x, y });
     Matter.Body.setAngle(this.body, angle);
-  }
-
-  setInitialPose(pose: Pose) {
-    this.body.plugin.hedgehog = {
-      initialPose: pose,
-    };
   }
 
   beforeUpdate() {
