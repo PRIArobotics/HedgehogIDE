@@ -1,7 +1,7 @@
 // @flow
 
 import * as React from 'react';
-import ExecutorTask from './ExecutorTask';
+import TaskExecutor from './TaskExecutor';
 
 export type Task = {
   code: string,
@@ -9,7 +9,7 @@ export type Task = {
     [command: string]: (
       payload: any,
       // eslint-disable-next-line no-use-before-define
-      executor: ExecutorTask,
+      executor: TaskExecutor,
       source: window,
     ) => void | Promise<void>,
   },
@@ -24,10 +24,13 @@ type StateTypes = {|
  * The executor manages tasks that are running in sandboxed iframes.
  * The most common kind of task is a user program,
  * others are plugins that can interact with those programs, the simulation environment, etc. via the SDK.
+ *
+ * The `Task` type exported here represents a workload to be run by the Executor.
+ * The executor then creates a `TaskExecutor` that runs that workload.
  */
 class Executor extends React.Component<PropTypes, StateTypes> {
-  taskExecutorRefs: Map<Task, RefObject<typeof ExecutorTask>> = new Map();
-  eventRegistry: Map<string, ExecutorTask[]> = new Map();
+  taskExecutorRefs: Map<Task, RefObject<typeof TaskExecutor>> = new Map();
+  eventRegistry: Map<string, Set<TaskExecutor>> = new Map();
 
   state = {
     tasks: [],
@@ -46,35 +49,41 @@ class Executor extends React.Component<PropTypes, StateTypes> {
   }
 
   removeTask(task: Task) {
+    const taskExecutor = this.getTaskExecutor(task);
+    if (taskExecutor === null) throw 'unreachable';
+
     this.setState(state => ({
-      tasks: state.tasks.filter(currentTask => currentTask !== task),
+      tasks: state.tasks.filter(t => t !== task),
     }));
     task.api.misc_exit({});
     this.taskExecutorRefs.delete(task);
-    this.eventRegistry.forEach((tasks, event) => {
-      this.eventRegistry.set(event, tasks.filter(t => t !== this));
-    });
-  }
-
-  getTaskExecutorRef(task: Task): RefObject<typeof ExecutorTask> {
-    return this.taskExecutorRefs.get(task);
-  }
-
-  registerForEvents(event, taskExecutor) {
-    if (!this.eventRegistry.has(event)) {
-      this.eventRegistry.set(event, [taskExecutor]);
-    } else {
-      const listeners = this.eventRegistry.get(event);
-      if (!listeners.includes(this)) {
-        listeners.push(this);
-      }
+    for (const listeners of this.eventRegistry.values()) {
+      listeners.delete(taskExecutor);
     }
   }
 
+  getTaskExecutor(task: Task): TaskExecutor | null {
+    return this.taskExecutorRefs.get(task)?.current ?? null;
+  }
+
+  registerForEvents(event: string, taskExecutor: TaskExecutor) {
+    let listeners = this.eventRegistry.get(event);
+
+    // create listeners array if necessary
+    if (listeners === undefined) {
+      listeners = new Set();
+      this.eventRegistry.set(event, listeners);
+    }
+
+    listeners.add(taskExecutor);
+  }
+
   sendEvent(event: string, payload: any) {
-    const tasks = this.eventRegistry.get(event);
-    if (tasks) {
-      tasks.forEach(task => task.sendEvent(event, payload));
+    const listeners = this.eventRegistry.get(event);
+    if (listeners !== undefined) {
+      for (const listener of listeners) {
+        listener.sendEvent(event, payload);
+      }
     }
   }
 
@@ -84,7 +93,7 @@ class Executor extends React.Component<PropTypes, StateTypes> {
     return (
       <>
         {tasks.map((task: Task, index) => (
-          <ExecutorTask
+          <TaskExecutor
             key={index}
             ref={this.taskExecutorRefs.get(task)}
             code={`return (async () => {${task.code}\n})();`}

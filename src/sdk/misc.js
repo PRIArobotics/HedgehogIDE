@@ -2,7 +2,7 @@
 /* eslint-disable */
 // DO NOT DELETE GSL TAGS
 
-import ExecutorTask from '../components/ide/Executor/ExecutorTask';
+import TaskExecutor from '../components/ide/Executor/TaskExecutor';
 import baseEmit from './base';
 // <GSL customizable: misc-imports>
 import PluginManager from './PluginManager';

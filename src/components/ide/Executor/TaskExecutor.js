@@ -21,7 +21,7 @@ type PropTypes = {|
     [command: string]: (
       payload: any,
       // eslint-disable-next-line no-use-before-define
-      executor: ExecutorTask,
+      executor: TaskExecutor,
     ) => void | Promise<void>,
   },
 |};
@@ -32,11 +32,12 @@ type StateTypes = {|
 const fetchExecutorDoc = fetch('/executor').then(response => response.text());
 
 /**
- * An ExecutorTask encapsulates a hidden, sandboxed iframe containing the `/executor` document.
+ * A TaskExecutor encapsulates a single hidden, sandboxed iframe containing the `/executor` document.
+ * TaskExecutors are managed by an executor.
  *
  * The component sets up communication facilities for communication between the iframe and the IDE.
  */
-class ExecutorTask extends React.Component<PropTypes, StateTypes> {
+class TaskExecutor extends React.Component<PropTypes, StateTypes> {
   frameRef: RefObject<'iframe'> = React.createRef();
 
   state = {
@@ -125,4 +126,4 @@ class ExecutorTask extends React.Component<PropTypes, StateTypes> {
   }
 }
 
-export default ExecutorTask;
+export default TaskExecutor;
