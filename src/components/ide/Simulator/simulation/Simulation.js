@@ -31,8 +31,8 @@ export default class Simulation {
   bounds: { min: Point, max: Point } | null = null;
 
   // special bodies for simulation logic
-  robots: Map<string, Robot> = new Map<string, Robot>();
-  sensorsCache: Set<Matter.Body> = new Set<Matter.Body>();
+  robots: Map<string, Robot> = new Map();
+  sensorsCache: Set<Matter.Body> = new Set();
 
   externalSensorHandlers: ExternalSensorHandler[] = [];
 
