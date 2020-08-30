@@ -8,10 +8,7 @@ function poseToPoint({ x, y }: Pose): Point {
   return { x, y };
 }
 
-function transform(
-  { x, y, angle }: Pose,
-  { x: dx, y: dy, angle: dangle }: Pose,
-): Pose {
+function transform({ x, y, angle }: Pose, { x: dx, y: dy, angle: dangle }: Pose): Pose {
   const cos = Math.cos(angle);
   const sin = Math.sin(angle);
   return {
