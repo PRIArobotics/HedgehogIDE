@@ -79,6 +79,11 @@ modules:
             type: string
           - name: port
             type: number
+      sleep:
+        hasReply: true
+        args:
+        - name: millis
+          type: number
   blockly:
     init:
       args: []

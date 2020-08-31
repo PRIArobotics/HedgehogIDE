@@ -34,6 +34,9 @@ export default class Simulation {
   robots: Map<string, Robot> = new Map();
   sensorsCache: Set<Matter.Body> = new Set();
 
+  // timers waiting for simulated time to pass
+  timers: [number, () => void][] = [];
+
   externalSensorHandlers: ExternalSensorHandler[] = [];
 
   constructor() {
@@ -45,10 +48,19 @@ export default class Simulation {
     this.runner = Matter.Runner.create();
 
     // robot update on simulation tick
-    Matter.Events.on(this.runner, 'beforeUpdate', () => {
+    Matter.Events.on(this.runner, 'beforeUpdate', ({ timestamp }) => {
       for (const robot of this.robots.values()) {
         robot.beforeUpdate();
       }
+
+      this.timers = this.timers.filter(([deadline, resolve]) => {
+        // keep timers that have not yet expired
+        if (deadline > timestamp) return true;
+
+        // process the timer and remove
+        resolve();
+        return false;
+      });
     });
 
     function extractBodyForSDK({
@@ -99,6 +111,12 @@ export default class Simulation {
 
     Matter.Events.on(this.engine, 'collisionStart', collisionHandler);
     Matter.Events.on(this.engine, 'collisionEnd', collisionHandler);
+  }
+
+  async sleep(millis: number): Promise<void> {
+    return /* await */ new Promise(resolve => {
+      this.timers.push([this.engine.timing.timestamp + millis, resolve]);
+    });
   }
 
   jsonInit(schema: SimulationSchema.SimulatorJson) {

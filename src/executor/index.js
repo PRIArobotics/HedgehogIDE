@@ -63,5 +63,6 @@ global.commands = async (...cmds: Promise<any>[]) => {
   await Promise.all(cmds);
 };
 global.sleep = async (ms: number) => {
-  await new Promise(resolve => setTimeout(resolve, ms));
+  await sdk.hedgehog.sleep(ms);
+  // await new Promise(resolve => setTimeout(resolve, ms));
 };

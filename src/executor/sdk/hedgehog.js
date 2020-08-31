@@ -35,4 +35,9 @@ export async function getDigital(robot: string, port: number) {
   return connection.recv();
 }
 
+export async function sleep(millis: number) {
+  connection.send('hedgehog_sleep', { millis });
+  return connection.recv();
+}
+
 export const on = eventHandler.on.bind(eventHandler, 'hedgehog');

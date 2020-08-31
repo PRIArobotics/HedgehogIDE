@@ -27,6 +27,7 @@ export default async function init(getSimulator: () => Promise<SimulatorType>) {
     'setServo': ({ robot, port, position }) => setServo(robot, port, position),
     'getAnalog': ({ robot, port }) => getAnalog(robot, port),
     'getDigital': ({ robot, port }) => getDigital(robot, port),
+    'sleep': ({ millis }) => sleep(millis),
   };
 
   async function commands(robot: string, cmds: Command[]) {
@@ -69,6 +70,13 @@ export default async function init(getSimulator: () => Promise<SimulatorType>) {
     // </GSL customizable: hedgehog-body-getDigital>
   }
 
+  async function sleep(millis: number) {
+    // <GSL customizable: hedgehog-body-sleep>
+    const simulation = (await getSimulator()).simulation;
+    await simulation.sleep(millis);
+    // </GSL customizable: hedgehog-body-sleep>
+  }
+
   return {
     // <default GSL customizable: hedgehog-extra-return>
     // Space for extra exports
@@ -90,6 +98,9 @@ export default async function init(getSimulator: () => Promise<SimulatorType>) {
       },
       'hedgehog_getDigital': async ({ robot, port }: { robot: string, port: number }, taskExecutor: TaskExecutor) => {
         return taskExecutor.withReply(getDigital.bind(null, robot, port));
+      },
+      'hedgehog_sleep': async ({ millis }: { millis: number }, taskExecutor: TaskExecutor) => {
+        return taskExecutor.withReply(sleep.bind(null, millis));
       },
     },
   };
