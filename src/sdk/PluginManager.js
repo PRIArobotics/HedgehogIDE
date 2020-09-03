@@ -101,6 +101,7 @@ class PluginManager {
     this.sdk.simulation.simulatorAdded(simulator);
   }
 
+  // TODO this simply resolves one loading plugin, not the correct one
   onPluginReady = () => this.pluginReadyResolvers.shift()();
 
   getSdk() {
