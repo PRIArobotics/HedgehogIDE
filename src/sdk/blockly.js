@@ -13,12 +13,10 @@ import { type Block, registerBlocklyBlock } from '../components/ide/VisualEditor
 
 export type Input = {
   valueType: string,
-  fields: [
-    {
-      name: string,
-      value: any,
-    },
-  ],
+  fields: {
+    name: string,
+    value: any,
+  }[],
 };
 export type DynamicBlock = {
   blockJson: Object,
