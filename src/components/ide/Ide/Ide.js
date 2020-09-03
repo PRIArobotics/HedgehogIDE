@@ -439,6 +439,9 @@ function Ide({ projectName }: Props) {
     };
 
     const task = {
+      // just some key that is unlikely to collide with a plugin
+      // plugins are looked up by the .js file extension, so this should be safe
+      name: '$user-program',
       code,
       api: {
         ...sdk.misc.handlers,

@@ -19,7 +19,7 @@ type StateTypes = {|
  * The executor then creates a `TaskExecutor` that runs that workload.
  */
 class Executor extends React.Component<PropTypes, StateTypes> {
-  taskExecutorRefs: Map<Task, RefObject<typeof TaskExecutor>> = new Map();
+  taskExecutorRefs: Map<string, RefObject<typeof TaskExecutor>> = new Map();
   eventRegistry: Map<string, Set<TaskExecutor>> = new Map();
 
   state = {
@@ -30,8 +30,8 @@ class Executor extends React.Component<PropTypes, StateTypes> {
     return this.state.tasks;
   }
 
-  addTask(task: Task) {
-    this.taskExecutorRefs.set(task, React.createRef());
+  addTask(task: Task): Task {
+    this.taskExecutorRefs.set(task.name, React.createRef());
     this.setState(state => ({
       tasks: [...state.tasks, task],
     }));
@@ -39,21 +39,21 @@ class Executor extends React.Component<PropTypes, StateTypes> {
   }
 
   removeTask(task: Task) {
-    const taskExecutor = this.getTaskExecutor(task);
+    const taskExecutor = this.getTaskExecutor(task.name);
     if (taskExecutor === null) throw 'unreachable';
 
     this.setState(state => ({
-      tasks: state.tasks.filter(t => t !== task),
+      tasks: state.tasks.filter(t => t.name !== task.name),
     }));
     task.api.misc_exit({});
-    this.taskExecutorRefs.delete(task);
+    this.taskExecutorRefs.delete(task.name);
     for (const listeners of this.eventRegistry.values()) {
       listeners.delete(taskExecutor);
     }
   }
 
-  getTaskExecutor(task: Task): TaskExecutor | null {
-    return this.taskExecutorRefs.get(task)?.current ?? null;
+  getTaskExecutor(taskName: string): TaskExecutor | null {
+    return this.taskExecutorRefs.get(taskName)?.current ?? null;
   }
 
   registerForEvents(event: string, taskExecutor: TaskExecutor) {
@@ -82,10 +82,10 @@ class Executor extends React.Component<PropTypes, StateTypes> {
 
     return (
       <>
-        {tasks.map((task: Task, index) => (
+        {tasks.map(task => (
           <TaskExecutor
-            key={index}
-            ref={this.taskExecutorRefs.get(task)}
+            key={task.name}
+            ref={this.taskExecutorRefs.get(task.name)}
             code={`return (async () => {${task.code}\n})();`}
             handlers={{
               ...task.api,

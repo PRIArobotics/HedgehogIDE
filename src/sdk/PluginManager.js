@@ -11,14 +11,9 @@ import initHedgehogSdk from './hedgehog';
 import initBlocklySdk from './blockly';
 import initSimulationSdk from './simulation';
 
-type Plugin = {
-  name: string,
-  task: Task,
-};
-
 class PluginManager {
   executor: Executor;
-  plugins: Plugin[] = [];
+  plugins: Task[] = [];
   pluginReadyResolvers: (() => void)[] = [];
 
   getConsole: () => Promise<ConsoleType>;
@@ -77,23 +72,21 @@ class PluginManager {
     );
   }
 
-  async addPlugin(name: string, code: string) {
+  async addPlugin(name: string, code: string): Promise<Task> {
     const readyPromise = new Promise(resolve => {
       this.pluginReadyResolvers.push(resolve);
     });
-    const plugin = {
+    const task = this.executor.addTask({
       name,
-      task: this.executor.addTask({
-        code,
-        api: {
-          ...this.sdk.misc.handlers,
-          ...this.sdk.hedgehog.handlers,
-          ...this.sdk.blockly.handlers,
-        },
-      }),
-    };
+      code,
+      api: {
+        ...this.sdk.misc.handlers,
+        ...this.sdk.hedgehog.handlers,
+        ...this.sdk.blockly.handlers,
+      },
+    });
     await readyPromise;
-    return plugin;
+    return task;
   }
 
   simulatorAdded(simulator: SimulatorType) {

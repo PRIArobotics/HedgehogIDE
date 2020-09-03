@@ -21,6 +21,7 @@ export type CommandHandler = (
 ) => void | Promise<void>;
 
 export type Task = {|
+  name: string,
   code: string,
   api: {
     [command: string]: CommandHandler,
