@@ -65,7 +65,6 @@ export default async function init() {
     // <GSL customizable: blockly-body-addBlock>
     // Your function code goes here
     const { type } = dynamicBlock.blockJson;
-    console.log('adding block');
     if (Blockly.Blocks[type]) {
       throw 'block with given type already exists';
     }
