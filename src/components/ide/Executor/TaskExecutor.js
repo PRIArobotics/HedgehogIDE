@@ -1,7 +1,6 @@
 // @flow
 
 import * as React from 'react';
-import Executor from './Executor';
 
 type ReceiveMessageEvent = {
   data: any,
@@ -16,7 +15,6 @@ type ExecutorMessage = {
 
 type PropTypes = {|
   code: string,
-  executor: Executor,
   handlers: {
     [command: string]: (
       payload: any,
@@ -69,9 +67,6 @@ class TaskExecutor extends React.Component<PropTypes, StateTypes> {
     if (origin !== 'null' || source !== this.frameRef.current.contentWindow) return;
 
     const { command, payload } = (data: ExecutorMessage);
-    if (command === 'eventRegister') {
-      this.props.executor.registerForEvents(payload.event, this);
-    }
 
     const handler = this.props.handlers[command];
     if (handler) {
