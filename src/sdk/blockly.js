@@ -73,18 +73,28 @@ export default async function init() {
       blockJson: dynamicBlock.blockJson,
       generators: {
         JavaScript: block => {
-          let code = `const payload = {};\n`;
-          dynamicBlock.blockJson.args0.forEach(arg => {
-            // Hope this actually works
-            const res =
-              Blockly.JavaScript.valueToCode(
-                block,
-                arg.name,
-                Blockly.JavaScript.ORDER_NONE,
-              ) ?? block.getFieldValue(arg.name);
-            code += `payload['${arg.name}'] = ${res};\n`;
-          });
-          code += `await sdk.misc.emit('blockly', 'blk_${type}_called', payload);\n`;
+          let code = '';
+          code += `await sdk.misc.emit('blockly', 'blk_${type}_called', {\n`;
+          for (const { name, type } of dynamicBlock.blockJson.args0) {
+            let res;
+            if (type === 'input_value') {
+              res = Blockly.JavaScript.valueToCode(block, name, Blockly.JavaScript.ORDER_NONE);
+            } else if (type === 'input_statement') {
+              // TODO input_statement unsupported for now
+              res = undefined;
+            } else if (type === 'input_dummy') {
+              // nothing to do
+              res = undefined;
+            } else if (type.startsWith('field_')) {
+              res = block.getFieldValue(name);
+            } else {
+              // hopefully unreachable
+              res = undefined;
+            }
+
+            if (res !== undefined) code += `  ${name}: ${res},\n`;
+          }
+          code += `});\n`;
           return code;
         },
         Python: block => {
