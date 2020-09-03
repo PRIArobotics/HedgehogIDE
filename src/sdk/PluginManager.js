@@ -2,8 +2,7 @@
 
 import { fs } from 'filer';
 
-import type { Task } from '../components/ide/Executor';
-import Executor from '../components/ide/Executor';
+import Executor, { type Task } from '../components/ide/Executor';
 import { Project } from '../core/store/projects';
 import { type ConsoleType } from '../components/ide/Console';
 import { type SimulatorType } from '../components/ide/Simulator';

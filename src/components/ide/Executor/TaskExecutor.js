@@ -13,15 +13,23 @@ type ExecutorMessage = {
   payload: any,
 };
 
-type PropTypes = {|
+export type CommandHandler = (
+  payload: any,
+  // eslint-disable-next-line no-use-before-define
+  executor: TaskExecutor,
+  source: window,
+) => void | Promise<void>;
+
+export type Task = {|
   code: string,
-  handlers: {
-    [command: string]: (
-      payload: any,
-      // eslint-disable-next-line no-use-before-define
-      executor: TaskExecutor,
-    ) => void | Promise<void>,
+  api: {
+    [command: string]: CommandHandler,
   },
+|};
+
+type PropTypes = {|
+  code: $PropertyType<Task, 'code'>,
+  handlers: $PropertyType<Task, 'api'>,
 |};
 type StateTypes = {|
   executorDoc: string | null,
@@ -70,7 +78,7 @@ class TaskExecutor extends React.Component<PropTypes, StateTypes> {
 
     const handler = this.props.handlers[command];
     if (handler) {
-      handler(payload, this);
+      handler(payload, this, source);
     }
   };
 

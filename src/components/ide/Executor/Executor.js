@@ -1,19 +1,9 @@
 // @flow
 
 import * as React from 'react';
-import TaskExecutor from './TaskExecutor';
+import TaskExecutor, { type Task } from './TaskExecutor';
 
-export type Task = {
-  code: string,
-  api: {
-    [command: string]: (
-      payload: any,
-      // eslint-disable-next-line no-use-before-define
-      executor: TaskExecutor,
-      source: window,
-    ) => void | Promise<void>,
-  },
-};
+export type { Task };
 
 type PropTypes = {||};
 type StateTypes = {|
@@ -99,7 +89,7 @@ class Executor extends React.Component<PropTypes, StateTypes> {
             code={`return (async () => {${task.code}\n})();`}
             handlers={{
               ...task.api,
-              eventRegister: ({ event }, taskExecutor) => {
+              eventRegister: ({ event }, taskExecutor, _source) => {
                 this.registerForEvents(event, taskExecutor);
               },
             }}
