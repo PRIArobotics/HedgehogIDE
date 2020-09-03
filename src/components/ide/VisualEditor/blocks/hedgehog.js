@@ -4,7 +4,7 @@
 import * as React from 'react';
 import Blockly from 'blockly/core';
 
-import { type Block } from '.';
+import { type Block, registerBlocklyBlock } from '.';
 
 export const HEDGEHOG_MOVE: Block = {
   blockJson: {
@@ -877,16 +877,6 @@ const blocks = [
   HEDGEHOG_SLEEP,
 ];
 
-blocks.forEach(block => {
-  const { type } = block.blockJson;
-
-  Blockly.Blocks[type] = {
-    init() {
-      this.jsonInit(block.blockJson);
-    },
-  };
-  Blockly.JavaScript[type] = block.generators.JavaScript;
-  Blockly.Python[type] = block.generators.Python;
-});
+blocks.forEach(registerBlocklyBlock);
 
 export default blocks;

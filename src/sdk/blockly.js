@@ -9,7 +9,7 @@ import * as React from 'react';
 import Blockly from 'blockly';
 import VisualEditor from '../components/ide/VisualEditor';
 
-import { type Block } from '../components/ide/VisualEditor/blocks';
+import { type Block, registerBlocklyBlock } from '../components/ide/VisualEditor/blocks';
 
 export type Input = {
   valueType: string,
@@ -96,14 +96,7 @@ export default async function init() {
       },
     };
     dynamicBlocks.push(block);
-
-    Blockly.Blocks[type] = {
-      init() {
-        this.jsonInit(dynamicBlock.blockJson);
-      },
-    };
-    Blockly.JavaScript[type] = block.generators.JavaScript;
-    Blockly.Python[type] = block.generators.Python;
+    registerBlocklyBlock(block);
     // </GSL customizable: blockly-body-addBlock>
   }
 
