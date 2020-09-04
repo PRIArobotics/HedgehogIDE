@@ -74,10 +74,7 @@ class TaskExecutor extends React.Component<PropTypes, StateTypes> {
       // $FlowExpectError
       (data: ExecutorMessage);
 
-    const handler = this.props.handlers[command];
-    if (handler) {
-      handler(payload, this, source);
-    }
+    this.props.handlers[command]?.(payload, this, source);
   };
 
   sendMessage(command: string, payload: any) {

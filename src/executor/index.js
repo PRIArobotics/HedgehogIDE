@@ -5,9 +5,18 @@ import connection, { ORIGIN, type IdeMessage } from './connection';
 import sdk from './sdk';
 import eventHandler from './event';
 
+type IdeEvent = {
+  event: string,
+  payload: any,
+};
+
+type HandlerMap = {
+  [command: string]: (payload: any, source: WindowProxy) => void,
+};
+
 // message listener & handlers
-const handlers = {
-  execute(source, code: string) {
+const handlers: HandlerMap = {
+  execute(code: string, source: WindowProxy) {
     connection.setSource(source);
 
     (async () => {
@@ -23,13 +32,13 @@ const handlers = {
       }
     })();
   },
-  reply(_source, value: any) {
+  reply(value: any) {
     connection.handleReply(value);
   },
-  errorReply(_source, error: any) {
+  errorReply(error: any) {
     connection.handleErrorReply(error);
   },
-  event(_source, { event, payload }: { event: string, payload: any }) {
+  event({ event, payload }: IdeEvent) {
     eventHandler.handleEvent(event, payload);
   },
 };
@@ -44,10 +53,7 @@ window.addEventListener(
       // $FlowExpectError
       (data: IdeMessage);
 
-    const handler = handlers[command];
-    if (handler) {
-      handler(source, payload);
-    }
+    handlers[command]?.(payload, source);
   },
   false,
 );
