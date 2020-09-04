@@ -77,25 +77,25 @@ class TaskExecutor extends React.Component<PropTypes, StateTypes> {
     this.props.handlers[command]?.(payload, this, source);
   };
 
-  sendMessage(command: string, payload: any) {
+  sendMessage(sender: string | null, command: string, payload: any) {
     if (this.frameRef.current === null) return;
-    this.frameRef.current.contentWindow.postMessage({ command, payload }, '*');
+    this.frameRef.current.contentWindow.postMessage({ sender, command, payload }, '*');
   }
 
   sendExecute(code: string) {
-    this.sendMessage('execute', code);
+    this.sendMessage(null, 'execute', code);
   }
 
   sendReply(value: any) {
-    this.sendMessage('reply', value);
+    this.sendMessage(null, 'reply', value);
   }
 
   sendErrorReply(error: any) {
-    this.sendMessage('errorReply', error);
+    this.sendMessage(null, 'errorReply', error);
   }
 
   sendEvent(event: string, payload: any) {
-    this.sendMessage('event', { event, payload });
+    this.sendMessage(null, 'event', { event, payload });
   }
 
   async withReply(cb: () => any | Promise<any>) {

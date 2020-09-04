@@ -11,12 +11,12 @@ type IdeEvent = {
 };
 
 type HandlerMap = {
-  [command: string]: (payload: any, source: WindowProxy) => void,
+  [command: string]: (payload: any, sender: string | null, source: WindowProxy) => void,
 };
 
 // message listener & handlers
 const handlers: HandlerMap = {
-  execute(code: string, source: WindowProxy) {
+  execute(code: string, _sender, source: WindowProxy) {
     connection.setSource(source);
 
     (async () => {
@@ -46,12 +46,12 @@ const handlers: HandlerMap = {
 function receiveMessage({ data, origin, source }: MessageEvent) {
   if (origin !== ORIGIN) return;
 
-  const { command, payload } =
+  const { sender, command, payload } =
     // if the source is what we expected, we assume the data is valid
     // $FlowExpectError
     (data: IdeMessage);
 
-  handlers[command]?.(payload, source);
+  handlers[command]?.(payload, sender, source);
 }
 
 window.addEventListener('message', receiveMessage, false);

@@ -4,6 +4,9 @@
 export const ORIGIN = __DEV__ ? 'http://localhost:3000' : 'https://ide.pria.at';
 
 export type IdeMessage = {
+  // if the incoming message originated with the IDE, the sender will be null
+  // otherwise it will be the name of the sending task, e.g. a plugin name
+  sender: string | null,
   command: string,
   payload: any,
 };
