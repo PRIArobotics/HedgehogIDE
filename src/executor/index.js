@@ -43,20 +43,18 @@ const handlers: HandlerMap = {
   },
 };
 
-window.addEventListener(
-  'message',
-  ({ data, origin, source }: MessageEvent) => {
-    if (origin !== ORIGIN) return;
+function receiveMessage({ data, origin, source }: MessageEvent) {
+  if (origin !== ORIGIN) return;
 
-    const { command, payload } =
-      // if the source is what we expected, we assume the data is valid
-      // $FlowExpectError
-      (data: IdeMessage);
+  const { command, payload } =
+    // if the source is what we expected, we assume the data is valid
+    // $FlowExpectError
+    (data: IdeMessage);
 
-    handlers[command]?.(payload, source);
-  },
-  false,
-);
+  handlers[command]?.(payload, source);
+}
+
+window.addEventListener('message', receiveMessage, false);
 
 // global APIs for the client function
 
