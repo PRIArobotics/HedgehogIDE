@@ -3,6 +3,11 @@
 // TODO hardcoded domain name
 export const ORIGIN = __DEV__ ? 'http://localhost:3000' : 'https://ide.pria.at';
 
+export type IdeMessage = {
+  command: string,
+  payload: any,
+};
+
 export interface Connection {
   send(command: string, payload: any): void;
   recv(): Promise<any>;

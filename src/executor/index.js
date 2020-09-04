@@ -1,7 +1,7 @@
 // @flow
 
 import Hedgehog from './Hedgehog';
-import connection, { ORIGIN } from './connection';
+import connection, { ORIGIN, type IdeMessage } from './connection';
 import sdk from './sdk';
 import eventHandler from './event';
 
@@ -36,10 +36,13 @@ const handlers = {
 
 window.addEventListener(
   'message',
-  ({ data, origin, source }) => {
+  ({ data, origin, source }: MessageEvent) => {
     if (origin !== ORIGIN) return;
 
-    const { command, payload } = data;
+    const { command, payload } =
+      // if the source is what we expected, we assume the data is valid
+      // $FlowExpectError
+      (data: IdeMessage);
 
     const handler = handlers[command];
     if (handler) {

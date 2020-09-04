@@ -2,12 +2,6 @@
 
 import * as React from 'react';
 
-type ReceiveMessageEvent = {
-  data: any,
-  origin: string,
-  source: window,
-};
-
 type ExecutorMessage = {
   command: string,
   payload: any,
@@ -71,11 +65,14 @@ class TaskExecutor extends React.Component<PropTypes, StateTypes> {
     window.removeEventListener('message', this.receiveMessage);
   }
 
-  receiveMessage = ({ data, origin, source }: ReceiveMessageEvent) => {
+  receiveMessage = ({ data, origin, source }: MessageEvent) => {
     if (this.frameRef.current === null) return;
     if (origin !== 'null' || source !== this.frameRef.current.contentWindow) return;
 
-    const { command, payload } = (data: ExecutorMessage);
+    const { command, payload } =
+      // if the source is what we expected, we assume the data is valid
+      // $FlowExpectError
+      (data: ExecutorMessage);
 
     const handler = this.props.handlers[command];
     if (handler) {
