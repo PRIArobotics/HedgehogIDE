@@ -32,7 +32,7 @@ export default async function init(getSimulator: () => Promise<SimulatorType>) {
 
   async function commands(robot: string, cmds: Command[]) {
     // <GSL customizable: hedgehog-body-commands>
-    return Promise.all(
+    return /* await */ Promise.all(
       cmds.map(([command, payload]) => {
         if (Object.prototype.hasOwnProperty.call(moduleFunctions, command)) {
           // $FlowExpectError

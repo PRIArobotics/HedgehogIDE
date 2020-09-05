@@ -31,7 +31,7 @@ export default async function init(getConsole: () => Promise<ConsoleType>, onExi
     if (error) {
       (await getConsole()).print(error, 'stderr');
     }
-    return onExit(error);
+    await onExit(error);
     // </GSL customizable: misc-body-exit>
   }
 
@@ -45,7 +45,7 @@ export default async function init(getConsole: () => Promise<ConsoleType>, onExi
   async function handleEmit(prefix: string, event: string, payload: any) {
     // <GSL customizable: misc-body-emit>
     // Your function code goes here
-    return baseEmit(prefix, executor, event, payload);
+    baseEmit(prefix, executor, event, payload);
     // </GSL customizable: misc-body-emit>
   }
 
