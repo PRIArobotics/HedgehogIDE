@@ -83,6 +83,7 @@ class PluginManager {
         ...this.sdk.misc.handlers,
         ...this.sdk.hedgehog.handlers,
         ...this.sdk.blockly.handlers,
+        ...this.sdk.simulation.handlers,
       },
     });
     await readyPromise;
