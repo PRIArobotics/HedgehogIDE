@@ -428,6 +428,10 @@ function Ide({ projectName }: Props) {
       misc: await initMiscSdk(
         getConsole,
         error => {
+          // TODO this does not remove the task from the executor
+          // it also doesn't do some other cleanup stuff, e.g. turn off the robot,
+          // as handleTerminate would
+          // problem is, handleTerminate captures runningTask, so calling it here doesn't have the desired effect.
           setRunningTask(null);
 
           pluginManager.getSdk().misc.emit(executor, 'programTerminate', { error });
