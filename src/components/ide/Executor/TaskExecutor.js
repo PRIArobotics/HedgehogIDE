@@ -11,7 +11,6 @@ export type CommandHandler = (
   payload: any,
   // eslint-disable-next-line no-use-before-define
   executor: TaskExecutor,
-  source: window,
 ) => void | Promise<void>;
 
 export type Task = {|
@@ -23,8 +22,11 @@ export type Task = {|
 |};
 
 type PropTypes = {|
-  code: $PropertyType<Task, 'code'>,
-  handlers: $PropertyType<Task, 'api'>,
+  name: string,
+  code: string,
+  handlers: {
+    [command: string]: CommandHandler,
+  },
 |};
 type StateTypes = {|
   executorDoc: string | null,
@@ -74,7 +76,7 @@ class TaskExecutor extends React.Component<PropTypes, StateTypes> {
       // $FlowExpectError
       (data: ExecutorMessage);
 
-    this.props.handlers[command]?.(payload, this, source);
+    this.props.handlers[command]?.(payload, this);
   };
 
   sendMessage(sender: string | null, command: string, payload: any) {

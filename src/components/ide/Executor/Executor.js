@@ -86,10 +86,11 @@ class Executor extends React.Component<PropTypes, StateTypes> {
           <TaskExecutor
             key={task.name}
             ref={this.taskExecutorRefs.get(task.name)}
+            name={task.name}
             code={`return (async () => {${task.code}\n})();`}
             handlers={{
               ...task.api,
-              eventRegister: ({ event }, taskExecutor, _source) => {
+              eventRegister: ({ event }, taskExecutor) => {
                 this.registerForEvents(event, taskExecutor);
               },
             }}
