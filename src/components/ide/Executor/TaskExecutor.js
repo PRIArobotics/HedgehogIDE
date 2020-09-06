@@ -2,6 +2,8 @@
 
 import * as React from 'react';
 
+import { type Handler as SdkCommandHandler } from '../../../sdk/base';
+
 type ExecutorMessage = {
   command: string,
   payload: any,
@@ -17,7 +19,7 @@ export type Task = {|
   name: string,
   code: string,
   api: {
-    [command: string]: CommandHandler,
+    [command: string]: SdkCommandHandler<>,
   },
 |};
 
