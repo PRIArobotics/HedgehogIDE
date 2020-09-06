@@ -2,7 +2,7 @@
 /* eslint-disable */
 // DO NOT DELETE GSL TAGS
 
-import TaskExecutor from '../components/ide/Executor/TaskExecutor';
+import { type TaskExecutorType } from '../components/ide/Executor/TaskExecutor';
 import baseEmit from './base';
 // <GSL customizable: simulation-imports>
 import { type SimulatorType } from '../components/ide/Simulator';

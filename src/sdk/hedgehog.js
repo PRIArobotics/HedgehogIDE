@@ -2,7 +2,7 @@
 /* eslint-disable */
 // DO NOT DELETE GSL TAGS
 
-import TaskExecutor from '../components/ide/Executor/TaskExecutor';
+import { type TaskExecutorType } from '../components/ide/Executor/TaskExecutor';
 import baseEmit from './base';
 // <GSL customizable: hedgehog-imports>
 import { type SimulatorType } from '../components/ide/Simulator';
@@ -84,22 +84,22 @@ export default async function init(getSimulator: () => Promise<SimulatorType>) {
     // </GSL customizable: hedgehog-extra-return>
     emit,
     handlers: {
-      'hedgehog_commands': async ({ robot, cmds }: { robot: string, cmds: Command[] }, taskExecutor: TaskExecutor) => {
+      'hedgehog_commands': async ({ robot, cmds }: { robot: string, cmds: Command[] }, taskExecutor: TaskExecutorType) => {
         return taskExecutor.withReply(commands.bind(null, robot, cmds));
       },
-      'hedgehog_moveMotor': async ({ robot, port, power }: { robot: string, port: number, power: number }, taskExecutor: TaskExecutor) => {
+      'hedgehog_moveMotor': async ({ robot, port, power }: { robot: string, port: number, power: number }, taskExecutor: TaskExecutorType) => {
         return taskExecutor.withReply(moveMotor.bind(null, robot, port, power));
       },
-      'hedgehog_setServo': async ({ robot, port, position }: { robot: string, port: number, position: number }, taskExecutor: TaskExecutor) => {
+      'hedgehog_setServo': async ({ robot, port, position }: { robot: string, port: number, position: number }, taskExecutor: TaskExecutorType) => {
         return taskExecutor.withReply(setServo.bind(null, robot, port, position));
       },
-      'hedgehog_getAnalog': async ({ robot, port }: { robot: string, port: number }, taskExecutor: TaskExecutor) => {
+      'hedgehog_getAnalog': async ({ robot, port }: { robot: string, port: number }, taskExecutor: TaskExecutorType) => {
         return taskExecutor.withReply(getAnalog.bind(null, robot, port));
       },
-      'hedgehog_getDigital': async ({ robot, port }: { robot: string, port: number }, taskExecutor: TaskExecutor) => {
+      'hedgehog_getDigital': async ({ robot, port }: { robot: string, port: number }, taskExecutor: TaskExecutorType) => {
         return taskExecutor.withReply(getDigital.bind(null, robot, port));
       },
-      'hedgehog_sleep': async ({ millis }: { millis: number }, taskExecutor: TaskExecutor) => {
+      'hedgehog_sleep': async ({ millis }: { millis: number }, taskExecutor: TaskExecutorType) => {
         return taskExecutor.withReply(sleep.bind(null, millis));
       },
     },

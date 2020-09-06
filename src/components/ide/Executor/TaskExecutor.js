@@ -2,6 +2,8 @@
 
 import * as React from 'react';
 
+import * as hooks from '../../misc/hooks';
+
 import { type Handler as SdkCommandHandler } from '../../../sdk/base';
 
 type ExecutorMessage = {
@@ -11,8 +13,7 @@ type ExecutorMessage = {
 
 export type CommandHandler = (
   payload: any,
-  // eslint-disable-next-line no-use-before-define
-  executor: TaskExecutor,
+  taskName: string,
 ) => void | Promise<void>;
 
 export type Task = {|
@@ -23,15 +24,18 @@ export type Task = {|
   },
 |};
 
-type PropTypes = {|
+type Props = {|
   name: string,
   code: string,
   handlers: {
     [command: string]: CommandHandler,
   },
 |};
-type StateTypes = {|
-  executorDoc: string | null,
+type Instance = {|
+  sendEvent(event: string, payload: any): void,
+  sendReply(value: any): void,
+  sendErrorReply(error: any): void,
+  withReply(cb: () => any | Promise<any>): Promise<void>,
 |};
 
 const fetchExecutorDoc = fetch('/executor').then(response => response.text());
@@ -42,90 +46,113 @@ const fetchExecutorDoc = fetch('/executor').then(response => response.text());
  *
  * The component sets up communication facilities for communication between the iframe and the IDE.
  */
-class TaskExecutor extends React.Component<PropTypes, StateTypes> {
-  frameRef: RefObject<'iframe'> = React.createRef();
+const TaskExecutor = React.forwardRef<Props, Instance>(
+  ({ name, code, handlers }: Props, ref: Ref<Instance>) => {
+    // load the executorDoc in the beginning
+    const [executorDoc, setExecutorDoc] = React.useState<string | null>(null);
+    React.useEffect(() => {
+      fetchExecutorDoc.then(setExecutorDoc);
+    }, []);
 
-  state = {
-    executorDoc: null,
-  };
+    // the frame ref, and a state variable signifying when it was set
+    const frameRef = hooks.useElementRef<'iframe'>();
+    const [loaded, setLoaded] = React.useState<boolean>(false);
+    // uses useCallback because otherwise each render resets the ref.
+    // (the ref could be registered with a new callback,
+    // so the callback needs to be stable)
+    const attachFrame = React.useCallback(
+      frame => {
+        frameRef.current = frame;
+        setLoaded(true);
+      },
+      [frameRef],
+    );
 
-  componentDidMount() {
-    fetchExecutorDoc.then(executorDoc => {
-      this.setState({ executorDoc }, () => {
-        if (this.frameRef.current === null) {
-          // eslint-disable-next-line no-throw-literal
-          throw 'ref is null in componentDidMount';
-        }
+    // register message listener
+    React.useEffect(() => {
+      function receiveMessage({ data, origin, source }: MessageEvent) {
+        if (frameRef.current === null) return;
+        if (origin !== 'null' || source !== frameRef.current.contentWindow) return;
 
-        this.frameRef.current.onload = () => {
-          this.sendExecute(this.props.code);
-        };
-        window.addEventListener('message', this.receiveMessage, false);
-      });
-    });
-  }
+        const { command, payload } =
+          // if the source is what we expected, we assume the data is valid
+          // $FlowExpectError
+          (data: ExecutorMessage);
 
-  componentWillUnmount() {
-    window.removeEventListener('message', this.receiveMessage);
-  }
+        handlers[command]?.(payload, name);
+      }
 
-  receiveMessage = ({ data, origin, source }: MessageEvent) => {
-    if (this.frameRef.current === null) return;
-    if (origin !== 'null' || source !== this.frameRef.current.contentWindow) return;
+      window.addEventListener('message', receiveMessage, false);
+      return () => {
+        window.removeEventListener('message', receiveMessage);
+      };
+    }, [frameRef, name, handlers]);
 
-    const { command, payload } =
-      // if the source is what we expected, we assume the data is valid
-      // $FlowExpectError
-      (data: ExecutorMessage);
+    // send execute command to iframe
+    React.useEffect(() => {
+      if (!loaded) return;
+      if (frameRef.current === null) throw 'ref is null';
 
-    this.props.handlers[command]?.(payload, this);
-  };
+      const frame = frameRef.current;
 
-  sendMessage(sender: string | null, command: string, payload: any) {
-    if (this.frameRef.current === null) return;
-    this.frameRef.current.contentWindow.postMessage({ sender, command, payload }, '*');
-  }
+      frame.onload = () => {
+        const sender = null;
+        const command = 'execute';
+        const payload = code;
+        frame.contentWindow.postMessage({ sender, command, payload }, '*');
+      };
+    }, [frameRef, loaded]);
 
-  sendExecute(code: string) {
-    this.sendMessage(null, 'execute', code);
-  }
-
-  sendReply(value: any) {
-    this.sendMessage(null, 'reply', value);
-  }
-
-  sendErrorReply(error: any) {
-    this.sendMessage(null, 'errorReply', error);
-  }
-
-  sendEvent(event: string, payload: any) {
-    this.sendMessage(null, 'event', { event, payload });
-  }
-
-  async withReply(cb: () => any | Promise<any>) {
-    try {
-      const value = await cb();
-      this.sendReply(value);
-    } catch (error) {
-      console.error(error);
-      this.sendErrorReply(error.toString());
+    //imperative API
+    function sendMessage(sender: string | null, command: string, payload: any) {
+      if (frameRef.current === null) return;
+      frameRef.current.contentWindow.postMessage({ sender, command, payload }, '*');
     }
-  }
 
-  render() {
-    const { executorDoc } = this.state;
+    function sendEvent(event: string, payload: any) {
+      sendMessage(null, 'event', { event, payload });
+    }
 
-    return (
+    function sendReply(value: any) {
+      sendMessage(null, 'reply', value);
+    }
+
+    function sendErrorReply(error: any) {
+      sendMessage(null, 'errorReply', error);
+    }
+
+    async function withReply(cb: () => any | Promise<any>) {
+      try {
+        const value = await cb();
+        sendReply(value);
+      } catch (error) {
+        console.error(error);
+        sendErrorReply(error.toString());
+      }
+    }
+
+    React.useImperativeHandle(ref, () => ({
+      sendEvent,
+      sendReply,
+      sendErrorReply,
+      withReply,
+    }), [frameRef]);
+
+    // only render the iframe after loading the executorDoc
+    if (executorDoc === null) return null;
+
+    return(
       // eslint-disable-next-line jsx-a11y/iframe-has-title
       <iframe
-        ref={this.frameRef}
+        ref={attachFrame}
         sandbox="allow-scripts"
         // src="/executor"
         srcDoc={executorDoc}
         style={{ display: 'none' }}
       />
     );
-  }
-}
+  },
+);
 
+export type TaskExecutorType = React.ElementRef<typeof TaskExecutor>;
 export default TaskExecutor;

@@ -22,7 +22,7 @@ def generate_ide_code(model, module, root):
 
     if function.hasReply:
       yield from lines(f"""\
-      '{command_for(module, function.name)}': async ({payloadArg}, taskExecutor: TaskExecutor) => {{
+      '{command_for(module, function.name)}': async ({payloadArg}, taskExecutor: TaskExecutorType) => {{
         return taskExecutor.withReply({function.handlerName}.bind(null, {', '.join([arg.name for arg in function.args])}));
       }},
 """)
@@ -79,7 +79,7 @@ def generate_ide_code(model, module, root):
 /* eslint-disable */
 // DO NOT DELETE GSL TAGS
 
-import TaskExecutor from '../components/ide/Executor/TaskExecutor';
+import {{ type TaskExecutorType }} from '../components/ide/Executor/TaskExecutor';
 import baseEmit from './base';
 // <default GSL customizable: {module.name}-imports>
 // Put your imports tags here

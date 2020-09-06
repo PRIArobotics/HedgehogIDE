@@ -1,7 +1,10 @@
 // @flow
 
 import * as React from 'react';
-import TaskExecutor, { type Task } from './TaskExecutor';
+import TaskExecutor, { type TaskExecutorType, type Task, type CommandHandler } from './TaskExecutor';
+import { type Handler as SdkCommandHandler } from '../../../sdk/base';
+
+import { mapObject } from '../../../util';
 
 export type { Task };
 
@@ -20,7 +23,7 @@ type StateTypes = {|
  */
 class Executor extends React.Component<PropTypes, StateTypes> {
   taskExecutorRefs: Map<string, RefObject<typeof TaskExecutor>> = new Map();
-  eventRegistry: Map<string, Set<TaskExecutor>> = new Map();
+  eventRegistry: Map<string, Set<TaskExecutorType>> = new Map();
 
   state = {
     tasks: [],
@@ -52,11 +55,11 @@ class Executor extends React.Component<PropTypes, StateTypes> {
     }
   }
 
-  getTaskExecutor(taskName: string): TaskExecutor | null {
+  getTaskExecutor(taskName: string): TaskExecutorType | null {
     return this.taskExecutorRefs.get(taskName)?.current ?? null;
   }
 
-  registerForEvents(event: string, taskExecutor: TaskExecutor) {
+  registerForEvents(event: string, taskExecutor: TaskExecutorType) {
     let listeners = this.eventRegistry.get(event);
 
     // create listeners array if necessary
@@ -77,25 +80,39 @@ class Executor extends React.Component<PropTypes, StateTypes> {
     }
   }
 
+  makeHandlerWithTaskName(handler: SdkCommandHandler<>): CommandHandler {
+    return (payload, taskName) => {
+      const taskExecutor = this.getTaskExecutor(taskName);
+      // eslint-disable-next-line no-throw-literal
+      if (taskExecutor === null) throw 'unreachable';
+
+      return handler(payload, taskExecutor);
+    };
+  }
+
   render() {
     const { tasks } = this.state;
 
     return (
       <>
-        {tasks.map(task => (
-          <TaskExecutor
-            key={task.name}
-            ref={this.taskExecutorRefs.get(task.name)}
-            name={task.name}
-            code={`return (async () => {${task.code}\n})();`}
-            handlers={{
-              ...task.api,
-              eventRegister: ({ event }, taskExecutor) => {
-                this.registerForEvents(event, taskExecutor);
-              },
-            }}
-          />
-        ))}
+        {tasks.map(task => {
+          const sdkHandlers: { [command: string]: SdkCommandHandler<>} = {
+            ...task.api,
+            eventRegister: ({ event }, taskExecutor) => {
+              this.registerForEvents(event, taskExecutor);
+            },
+          };
+
+          return (
+            <TaskExecutor
+              key={task.name}
+              ref={this.taskExecutorRefs.get(task.name)}
+              name={task.name}
+              code={`return (async () => {${task.code}\n})();`}
+              handlers={mapObject(sdkHandlers, (h) => this.makeHandlerWithTaskName(h))}
+            />
+          );
+        })}
       </>
     );
   }
