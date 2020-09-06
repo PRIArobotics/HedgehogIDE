@@ -86,28 +86,30 @@ class Executor extends React.Component<PropTypes, StateTypes> {
     }
   }
 
-  makeHandlerWithTaskName(handler: SdkCommandHandler<>): CommandHandler {
-    return (payload, taskName) => {
-      const taskExecutor = this.getTaskExecutor(taskName);
-      // eslint-disable-next-line no-throw-literal
-      if (taskExecutor === null) throw 'unreachable';
-
-      return handler(payload, taskExecutor);
-    };
-  }
-
   render() {
     const { tasks } = this.state;
 
     return (
       <>
         {tasks.map(task => {
-          const sdkHandlers: { [command: string]: SdkCommandHandler<>} = {
-            ...task.api,
-            eventRegister: ({ event }, taskExecutor) => {
-              this.registerForEvents(event, taskExecutor);
+          const taskExecutorRef = this.taskExecutorRefs.get(task.name);
+          // eslint-disable-next-line no-throw-literal
+          if (taskExecutorRef === undefined) throw 'unreachable';
+
+          const handlers = mapObject(
+            {
+              ...task.api,
+              eventRegister: ({ event }, taskExecutor) => {
+                this.registerForEvents(event, taskExecutor);
+              },
             },
-          };
+            // for each handler, create a function that invokes it with the payload and taskExecutor
+            (handler) => (payload) => {
+              // eslint-disable-next-line no-throw-literal
+              if (taskExecutorRef.current === null) throw 'unreachable';
+              return handler(payload, taskExecutorRef.current);
+            },
+          );
 
           return (
             <TaskExecutor
@@ -115,7 +117,7 @@ class Executor extends React.Component<PropTypes, StateTypes> {
               ref={this.taskExecutorRefs.get(task.name)}
               name={task.name}
               code={`return (async () => {${task.code}\n})();`}
-              handlers={mapObject(sdkHandlers, (h) => this.makeHandlerWithTaskName(h))}
+              handlers={handlers}
             />
           );
         })}
