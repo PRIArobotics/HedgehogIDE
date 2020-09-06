@@ -4,8 +4,6 @@ import * as React from 'react';
 
 import * as hooks from '../../misc/hooks';
 
-import { type Handler as SdkCommandHandler } from '../../../sdk/base';
-
 type ExecutorMessage = {
   command: string,
   payload: any,
@@ -15,14 +13,6 @@ export type CommandHandler = (
   payload: any,
   taskName: string,
 ) => void | Promise<void>;
-
-export type Task = {|
-  name: string,
-  code: string,
-  api: {
-    [command: string]: SdkCommandHandler<>,
-  },
-|};
 
 type Props = {|
   name: string,

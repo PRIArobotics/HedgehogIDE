@@ -1,12 +1,18 @@
 // @flow
 
 import * as React from 'react';
-import TaskExecutor, { type TaskExecutorType, type Task, type CommandHandler } from './TaskExecutor';
+import TaskExecutor, { type TaskExecutorType, type CommandHandler } from './TaskExecutor';
 import { type Handler as SdkCommandHandler } from '../../../sdk/base';
 
 import { mapObject } from '../../../util';
 
-export type { Task };
+export type Task = {|
+  name: string,
+  code: string,
+  api: {
+    [command: string]: SdkCommandHandler<>,
+  },
+|};
 
 type PropTypes = {||};
 type StateTypes = {|
