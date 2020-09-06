@@ -9,10 +9,9 @@ type ExecutorMessage = {
   payload: any,
 };
 
-export type CommandHandler = (payload: any, taskName: string) => void | Promise<void>;
+export type CommandHandler = (payload: any) => void | Promise<void>;
 
 type Props = {|
-  name: string,
   code: string,
   handlers: {
     [command: string]: CommandHandler,
@@ -34,7 +33,7 @@ const fetchExecutorDoc = fetch('/executor').then(response => response.text());
  * The component sets up communication facilities for communication between the iframe and the IDE.
  */
 const TaskExecutor = React.forwardRef<Props, Instance>(
-  ({ name, code, handlers }: Props, ref: Ref<Instance>) => {
+  ({ code, handlers }: Props, ref: Ref<Instance>) => {
     // load the executorDoc in the beginning
     const [executorDoc, setExecutorDoc] = React.useState<string | null>(null);
     React.useEffect(() => {
@@ -66,14 +65,14 @@ const TaskExecutor = React.forwardRef<Props, Instance>(
           // $FlowExpectError
           (data: ExecutorMessage);
 
-        handlers[command]?.(payload, name);
+        handlers[command]?.(payload);
       }
 
       window.addEventListener('message', receiveMessage, false);
       return () => {
         window.removeEventListener('message', receiveMessage);
       };
-    }, [frameRef, name, handlers]);
+    }, [frameRef, handlers]);
 
     // send execute command to iframe
     React.useEffect(() => {

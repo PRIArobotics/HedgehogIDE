@@ -116,7 +116,6 @@ class Executor extends React.Component<PropTypes, StateTypes> {
             <TaskExecutor
               key={task.name}
               ref={this.taskExecutorRefs.get(task.name)}
-              name={task.name}
               code={`return (async () => {${task.code}\n})();`}
               handlers={handlers}
             />
