@@ -9,10 +9,7 @@ type ExecutorMessage = {
   payload: any,
 };
 
-export type CommandHandler = (
-  payload: any,
-  taskName: string,
-) => void | Promise<void>;
+export type CommandHandler = (payload: any, taskName: string) => void | Promise<void>;
 
 type Props = {|
   name: string,
@@ -81,6 +78,7 @@ const TaskExecutor = React.forwardRef<Props, Instance>(
     // send execute command to iframe
     React.useEffect(() => {
       if (!loaded) return;
+      // eslint-disable-next-line no-throw-literal
       if (frameRef.current === null) throw 'ref is null';
 
       const frame = frameRef.current;
@@ -93,7 +91,7 @@ const TaskExecutor = React.forwardRef<Props, Instance>(
       };
     }, [frameRef, loaded]);
 
-    //imperative API
+    // imperative API
     function sendMessage(sender: string | null, command: string, payload: any) {
       if (frameRef.current === null) return;
       frameRef.current.contentWindow.postMessage({ sender, command, payload }, '*');
@@ -121,17 +119,21 @@ const TaskExecutor = React.forwardRef<Props, Instance>(
       }
     }
 
-    React.useImperativeHandle(ref, () => ({
-      sendEvent,
-      sendReply,
-      sendErrorReply,
-      withReply,
-    }), [frameRef]);
+    React.useImperativeHandle(
+      ref,
+      () => ({
+        sendEvent,
+        sendReply,
+        sendErrorReply,
+        withReply,
+      }),
+      [frameRef],
+    );
 
     // only render the iframe after loading the executorDoc
     if (executorDoc === null) return null;
 
-    return(
+    return (
       // eslint-disable-next-line jsx-a11y/iframe-has-title
       <iframe
         ref={attachFrame}

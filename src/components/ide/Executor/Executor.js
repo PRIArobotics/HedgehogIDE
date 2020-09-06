@@ -1,7 +1,7 @@
 // @flow
 
 import * as React from 'react';
-import TaskExecutor, { type TaskExecutorType, type CommandHandler } from './TaskExecutor';
+import TaskExecutor, { type TaskExecutorType } from './TaskExecutor';
 import { type Handler as SdkCommandHandler } from '../../../sdk/base';
 
 import { mapObject } from '../../../util';
@@ -49,6 +49,7 @@ class Executor extends React.Component<PropTypes, StateTypes> {
 
   removeTask(task: Task) {
     const taskExecutor = this.getTaskExecutor(task.name);
+    // eslint-disable-next-line no-throw-literal
     if (taskExecutor === null) throw 'unreachable';
 
     this.setState(state => ({
@@ -104,7 +105,7 @@ class Executor extends React.Component<PropTypes, StateTypes> {
               },
             },
             // for each handler, create a function that invokes it with the payload and taskExecutor
-            (handler) => (payload) => {
+            handler => payload => {
               // eslint-disable-next-line no-throw-literal
               if (taskExecutorRef.current === null) throw 'unreachable';
               return handler(payload, taskExecutorRef.current);
