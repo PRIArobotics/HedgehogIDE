@@ -1,7 +1,7 @@
 // @flow
 
 import * as React from 'react';
-import TaskExecutor, { type TaskExecutorType } from './TaskExecutor';
+import TaskExecutor, { type CommandHandler } from './TaskExecutor';
 import { type Handler as SdkCommandHandler } from '../../../sdk/base';
 
 import { mapObject } from '../../../util';
@@ -14,9 +14,77 @@ export type Task = {|
   },
 |};
 
+export class TaskHandle {
+  name: string;
+  // eslint-disable-next-line no-use-before-define
+  executor: Executor;
+
+  handlers: {
+    [command: string]: CommandHandler,
+  };
+  frame: React.ElementRef<'iframe'> | null = null;
+
+  // eslint-disable-next-line no-use-before-define
+  constructor(executor: Executor, task: Task) {
+    this.executor = executor;
+    this.name = task.name;
+
+    this.handlers = mapObject(
+      {
+        ...task.api,
+        eventRegister: ({ event }, taskHandle) => {
+          executor.registerForEvents(event, taskHandle);
+        },
+      },
+      // for each handler, create a function that takes the payload and invokes the handler
+      handler => payload => handler(payload, this),
+    );
+  }
+
+  // arrow function because of binding
+  setFrame = (frame: React.ElementRef<'iframe'> | null) => {
+    this.frame = frame;
+  };
+
+  // public API
+  sendMessage(sender: string | null, command: string, payload: any) {
+    if (this.frame === null) return;
+    this.frame.contentWindow.postMessage({ sender, command, payload }, '*');
+  }
+
+  sendExecute(code: string) {
+    this.sendMessage(null, 'execute', code);
+  }
+
+  sendReply(value: any) {
+    this.sendMessage(null, 'reply', value);
+  }
+
+  sendErrorReply(error: any) {
+    this.sendMessage(null, 'errorReply', error);
+  }
+
+  sendEvent(event: string, payload: any) {
+    this.sendMessage(null, 'event', { event, payload });
+  }
+
+  async withReply(cb: () => any | Promise<any>) {
+    try {
+      const value = await cb();
+      this.sendReply(value);
+    } catch (error) {
+      console.error(error);
+      this.sendErrorReply(error.toString());
+    }
+  }
+}
+
 type PropTypes = {||};
 type StateTypes = {|
-  tasks: Task[],
+  tasks: {
+    task: Task,
+    taskHandle: TaskHandle,
+  }[],
 |};
 
 /**
@@ -28,45 +96,42 @@ type StateTypes = {|
  * The executor then creates a `TaskExecutor` that runs that workload.
  */
 class Executor extends React.Component<PropTypes, StateTypes> {
-  taskExecutorRefs: Map<string, RefObject<typeof TaskExecutor>> = new Map();
-  eventRegistry: Map<string, Set<TaskExecutorType>> = new Map();
+  taskHandles: Map<string, TaskHandle> = new Map();
+  eventRegistry: Map<string, Set<TaskHandle>> = new Map();
 
   state = {
     tasks: [],
   };
 
-  get tasks() {
-    return this.state.tasks;
-  }
-
   addTask(task: Task): Task {
-    this.taskExecutorRefs.set(task.name, React.createRef());
+    const taskHandle = new TaskHandle(this, task);
+    this.taskHandles.set(task.name, taskHandle);
     this.setState(state => ({
-      tasks: [...state.tasks, task],
+      tasks: [...state.tasks, { task, taskHandle }],
     }));
     return task;
   }
 
   removeTask(task: Task) {
-    const taskExecutor = this.getTaskExecutor(task.name);
+    const taskHandle = this.getTaskHandle(task.name);
     // eslint-disable-next-line no-throw-literal
-    if (taskExecutor === null) throw 'unreachable';
+    if (taskHandle === null) throw 'unreachable';
 
     this.setState(state => ({
-      tasks: state.tasks.filter(t => t.name !== task.name),
+      tasks: state.tasks.filter(({ task: t }) => t.name !== task.name),
     }));
     task.api.misc_exit({});
-    this.taskExecutorRefs.delete(task.name);
+    this.taskHandles.delete(task.name);
     for (const listeners of this.eventRegistry.values()) {
-      listeners.delete(taskExecutor);
+      listeners.delete(taskHandle);
     }
   }
 
-  getTaskExecutor(taskName: string): TaskExecutorType | null {
-    return this.taskExecutorRefs.get(taskName)?.current ?? null;
+  getTaskHandle(taskName: string): TaskHandle | null {
+    return this.taskHandles.get(taskName) ?? null;
   }
 
-  registerForEvents(event: string, taskExecutor: TaskExecutorType) {
+  registerForEvents(event: string, taskHandle: TaskHandle) {
     let listeners = this.eventRegistry.get(event);
 
     // create listeners array if necessary
@@ -75,7 +140,7 @@ class Executor extends React.Component<PropTypes, StateTypes> {
       this.eventRegistry.set(event, listeners);
     }
 
-    listeners.add(taskExecutor);
+    listeners.add(taskHandle);
   }
 
   sendEvent(event: string, payload: any) {
@@ -92,35 +157,14 @@ class Executor extends React.Component<PropTypes, StateTypes> {
 
     return (
       <>
-        {tasks.map(task => {
-          const taskExecutorRef = this.taskExecutorRefs.get(task.name);
-          // eslint-disable-next-line no-throw-literal
-          if (taskExecutorRef === undefined) throw 'unreachable';
-
-          const handlers = mapObject(
-            {
-              ...task.api,
-              eventRegister: ({ event }, taskExecutor) => {
-                this.registerForEvents(event, taskExecutor);
-              },
-            },
-            // for each handler, create a function that invokes it with the payload and taskExecutor
-            handler => payload => {
-              // eslint-disable-next-line no-throw-literal
-              if (taskExecutorRef.current === null) throw 'unreachable';
-              return handler(payload, taskExecutorRef.current);
-            },
-          );
-
-          return (
-            <TaskExecutor
-              key={task.name}
-              ref={this.taskExecutorRefs.get(task.name)}
-              code={`return (async () => {${task.code}\n})();`}
-              handlers={handlers}
-            />
-          );
-        })}
+        {tasks.map(({ task, taskHandle }) => (
+          <TaskExecutor
+            key={task.name}
+            ref={taskHandle.setFrame}
+            code={`return (async () => {${task.code}\n})();`}
+            handlers={taskHandle.handlers}
+          />
+        ))}
       </>
     );
   }

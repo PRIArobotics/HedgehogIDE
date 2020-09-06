@@ -2,7 +2,7 @@
 /* eslint-disable */
 // DO NOT DELETE GSL TAGS
 
-import { type TaskExecutorType } from '../components/ide/Executor/TaskExecutor';
+import { type TaskHandle } from '../components/ide/Executor/Executor';
 import baseEmit from './base';
 // <GSL customizable: blockly-imports>
 import * as React from 'react';
@@ -115,8 +115,8 @@ export default async function init() {
     // </GSL customizable: blockly-extra-return>
     emit,
     handlers: {
-      'blockly_addBlock': async ({ dynamicBlock }: { dynamicBlock: DynamicBlock }, taskExecutor: TaskExecutorType) => {
-        return taskExecutor.withReply(addBlock.bind(null, dynamicBlock));
+      'blockly_addBlock': async ({ dynamicBlock }: { dynamicBlock: DynamicBlock }, taskHandle: TaskHandle) => {
+        return taskHandle.withReply(addBlock.bind(null, dynamicBlock));
       },
     },
   };
