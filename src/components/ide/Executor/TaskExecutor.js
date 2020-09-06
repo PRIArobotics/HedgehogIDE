@@ -40,25 +40,15 @@ const TaskExecutor = React.forwardRef<Props, Instance>(
       fetchExecutorDoc.then(setExecutorDoc);
     }, []);
 
-    // the frame ref, and a state variable signifying when it was set
-    const frameRef = hooks.useElementRef<'iframe'>();
-    const [loaded, setLoaded] = React.useState<boolean>(false);
-    // uses useCallback because otherwise each render resets the ref.
-    // (the ref could be registered with a new callback,
-    // so the callback needs to be stable)
-    const attachFrame = React.useCallback(
-      frame => {
-        frameRef.current = frame;
-        setLoaded(true);
-      },
-      [frameRef],
-    );
+    // the frame, stored for local use
+    const [frame, setFrame] = React.useState<React.ElementRef<'iframe'> | null>(null);
 
     // register message listener
     React.useEffect(() => {
+      if (frame === null) return;
+
       function receiveMessage({ data, origin, source }: MessageEvent) {
-        if (frameRef.current === null) return;
-        if (origin !== 'null' || source !== frameRef.current.contentWindow) return;
+        if (origin !== 'null' || source !== frame.contentWindow) return;
 
         const { command, payload } =
           // if the source is what we expected, we assume the data is valid
@@ -72,15 +62,11 @@ const TaskExecutor = React.forwardRef<Props, Instance>(
       return () => {
         window.removeEventListener('message', receiveMessage);
       };
-    }, [frameRef, handlers]);
+    }, [frame, handlers]);
 
     // send execute command to iframe
     React.useEffect(() => {
-      if (!loaded) return;
-      // eslint-disable-next-line no-throw-literal
-      if (frameRef.current === null) throw 'ref is null';
-
-      const frame = frameRef.current;
+      if (frame === null) return;
 
       frame.onload = () => {
         const sender = null;
@@ -88,12 +74,12 @@ const TaskExecutor = React.forwardRef<Props, Instance>(
         const payload = code;
         frame.contentWindow.postMessage({ sender, command, payload }, '*');
       };
-    }, [frameRef, loaded]);
+    }, [frame]);
 
     // imperative API
     function sendMessage(sender: string | null, command: string, payload: any) {
-      if (frameRef.current === null) return;
-      frameRef.current.contentWindow.postMessage({ sender, command, payload }, '*');
+      if (frame === null) return;
+      frame.contentWindow.postMessage({ sender, command, payload }, '*');
     }
 
     function sendEvent(event: string, payload: any) {
@@ -126,7 +112,7 @@ const TaskExecutor = React.forwardRef<Props, Instance>(
         sendErrorReply,
         withReply,
       }),
-      [frameRef],
+      [frame],
     );
 
     // only render the iframe after loading the executorDoc
@@ -135,7 +121,7 @@ const TaskExecutor = React.forwardRef<Props, Instance>(
     return (
       // eslint-disable-next-line jsx-a11y/iframe-has-title
       <iframe
-        ref={attachFrame}
+        ref={setFrame}
         sandbox="allow-scripts"
         // src="/executor"
         srcDoc={executorDoc}
