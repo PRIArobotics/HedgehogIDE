@@ -18,17 +18,17 @@ def generate_ide_code(model, module, root):
   os.makedirs(os.path.dirname(out_file), exist_ok=True)
 
   def handler_function_code(function):
-    payloadArg = f"{{ {', '.join([arg.name for arg in function.args])} }}: {{ {', '.join([f'{arg.name}: {arg.type}' for arg in function.args])} }}"
+    payloadArg = f"{{ {', '.join(arg.name for arg in function.args)} }}: {{ {', '.join(f'{arg.name}: {arg.type}' for arg in function.args)} }}"
 
     if function.hasReply:
       yield from lines(f"""\
       '{command_for(module, function.name)}': async ({payloadArg}, taskHandle: TaskHandle) => {{
-        return taskHandle.withReply(null, {function.handlerName}.bind(null, {', '.join([arg.name for arg in function.args])}));
+        return taskHandle.withReply(null, {function.handlerName}.bind(null, {', '.join(arg.name for arg in function.args)}));
       }},
 """)
     else:
       yield from lines(f"""\
-      '{command_for(module, function.name)}': ({payloadArg}) => {function.handlerName}({', '.join([arg.name for arg in function.args])}),
+      '{command_for(module, function.name)}': ({payloadArg}) => {function.handlerName}({', '.join(arg.name for arg in function.args)}),
 """)
 
   def handler_code():
@@ -50,7 +50,7 @@ def generate_ide_code(model, module, root):
 
   def function_code(function):
     yield from lines(f"""\
-  async function {function.handlerName}({', '.join([f"{arg.name}: {arg.type}" for arg in function.args])}) {{
+  async function {function.handlerName}({', '.join(f"{arg.name}: {arg.type}" for arg in function.args)}) {{
     // <default GSL customizable: {module.name}-body-{function.name}>
     // Your function code goes here
 
@@ -63,7 +63,7 @@ def generate_ide_code(model, module, root):
   const moduleFunctions = {{
 """)
     for function in module.functions:
-      yield f'    \'{function.name}\': ({{ {", ".join([arg.name for arg in function.args])} }}) => {function.handlerName}({", ".join([arg.name for arg in function.args])}),'
+      yield f'    \'{function.name}\': ({{ {", ".join(arg.name for arg in function.args)} }}) => {function.handlerName}({", ".join(arg.name for arg in function.args)}),'
     yield from lines(f"""\
   }};
 \n""")
@@ -86,7 +86,7 @@ import baseEmit from './base';
 
 // </GSL customizable: {module.name}-imports>
 
-export default async function init({', '.join([f"{arg.name}: {arg.type}" for arg in module.init.args])}) {{
+export default async function init({', '.join(f"{arg.name}: {arg.type}" for arg in module.init.args)}) {{
   // <default GSL customizable: {module.name}-init>
   // Your module initialization code
 
@@ -108,8 +108,8 @@ def generate_executor_module_code(model, module, root):
 
   def function_code(function):
     yield from lines(f"""\
-export {'async ' if function.hasReply else ''}function {function.name}({', '.join([f"{arg.name}: {arg.type}" for arg in function.args])}) {{
-  connection.send('{command_for(module, function.name)}', {{ {', '.join([arg.name for arg in function.args])} }});
+export {'async ' if function.hasReply else ''}function {function.name}({', '.join(f"{arg.name}: {arg.type}" for arg in function.args)}) {{
+  connection.send('{command_for(module, function.name)}', {{ {', '.join(arg.name for arg in function.args)} }});
 """)
     if function.hasReply:
       yield from lines(f"""\
