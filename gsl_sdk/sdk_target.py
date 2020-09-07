@@ -23,7 +23,7 @@ def generate_ide_code(model, module, root):
     if function.hasReply:
       yield from lines(f"""\
       '{command_for(module, function.name)}': async ({payloadArg}, taskHandle: TaskHandle) => {{
-        return taskHandle.withReply({function.handlerName}.bind(null, {', '.join([arg.name for arg in function.args])}));
+        return taskHandle.withReply(null, {function.handlerName}.bind(null, {', '.join([arg.name for arg in function.args])}));
       }},
 """)
     else:

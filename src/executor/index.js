@@ -32,14 +32,14 @@ const handlers: HandlerMap = {
       }
     })();
   },
+  event({ event, payload }: IdeEvent, sender: string | null) {
+    eventHandler.handleEvent(sender, event, payload);
+  },
   reply(value: any) {
     connection.handleReply(value);
   },
   errorReply(error: any) {
     connection.handleErrorReply(error);
-  },
-  event({ event, payload }: IdeEvent, sender: string | null) {
-    eventHandler.handleEvent(sender, event, payload);
   },
 };
 

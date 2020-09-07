@@ -85,22 +85,22 @@ export default async function init(getSimulator: () => Promise<SimulatorType>) {
     emit,
     handlers: {
       'hedgehog_commands': async ({ robot, cmds }: { robot: string, cmds: Command[] }, taskHandle: TaskHandle) => {
-        return taskHandle.withReply(commands.bind(null, robot, cmds));
+        return taskHandle.withReply(null, commands.bind(null, robot, cmds));
       },
       'hedgehog_moveMotor': async ({ robot, port, power }: { robot: string, port: number, power: number }, taskHandle: TaskHandle) => {
-        return taskHandle.withReply(moveMotor.bind(null, robot, port, power));
+        return taskHandle.withReply(null, moveMotor.bind(null, robot, port, power));
       },
       'hedgehog_setServo': async ({ robot, port, position }: { robot: string, port: number, position: number }, taskHandle: TaskHandle) => {
-        return taskHandle.withReply(setServo.bind(null, robot, port, position));
+        return taskHandle.withReply(null, setServo.bind(null, robot, port, position));
       },
       'hedgehog_getAnalog': async ({ robot, port }: { robot: string, port: number }, taskHandle: TaskHandle) => {
-        return taskHandle.withReply(getAnalog.bind(null, robot, port));
+        return taskHandle.withReply(null, getAnalog.bind(null, robot, port));
       },
       'hedgehog_getDigital': async ({ robot, port }: { robot: string, port: number }, taskHandle: TaskHandle) => {
-        return taskHandle.withReply(getDigital.bind(null, robot, port));
+        return taskHandle.withReply(null, getDigital.bind(null, robot, port));
       },
       'hedgehog_sleep': async ({ millis }: { millis: number }, taskHandle: TaskHandle) => {
-        return taskHandle.withReply(sleep.bind(null, millis));
+        return taskHandle.withReply(null, sleep.bind(null, millis));
       },
     },
   };

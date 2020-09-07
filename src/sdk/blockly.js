@@ -116,7 +116,7 @@ export default async function init() {
     emit,
     handlers: {
       'blockly_addBlock': async ({ dynamicBlock }: { dynamicBlock: DynamicBlock }, taskHandle: TaskHandle) => {
-        return taskHandle.withReply(addBlock.bind(null, dynamicBlock));
+        return taskHandle.withReply(null, addBlock.bind(null, dynamicBlock));
       },
     },
   };

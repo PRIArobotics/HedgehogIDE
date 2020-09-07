@@ -65,24 +65,24 @@ export class TaskHandle {
     this.frame.contentWindow.postMessage({ sender, command, payload }, '*');
   }
 
-  sendReply(value: any) {
-    this.sendMessage(null, 'reply', value);
-  }
-
-  sendErrorReply(error: any) {
-    this.sendMessage(null, 'errorReply', error);
-  }
-
   sendEvent(sender: string | null, event: string, payload: any) {
     this.sendMessage(sender, 'event', { event, payload });
   }
 
-  async withReply(cb: () => any | Promise<any>) {
+  sendReply(sender: string | null, value: any) {
+    this.sendMessage(sender, 'reply', value);
+  }
+
+  sendErrorReply(sender: string | null, error: any) {
+    this.sendMessage(sender, 'errorReply', error);
+  }
+
+  async withReply(sender: string | null, cb: () => any | Promise<any>) {
     try {
       const value = await cb();
-      this.sendReply(value);
+      this.sendReply(sender, value);
     } catch (error) {
-      console.error(error);
+      console.error(sender, error);
       this.sendErrorReply(error.toString());
     }
   }
