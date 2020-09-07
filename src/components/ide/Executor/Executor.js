@@ -29,24 +29,32 @@ export class TaskHandle {
     this.executor = executor;
     this.task = task;
 
-    this.handlers = mapObject(
-      {
-        ...task.api,
-        eventRegister: ({ event }, taskHandle) => {
-          executor.registerForEvents(event, taskHandle);
-        },
-      },
-      // for each handler, create a function that takes the payload and invokes the handler
-      handler => payload => handler(payload, this),
-    );
+    this.handlers = {
+      ...mapObject(
+        task.api,
+        // for each handler, create a function that takes the payload and invokes the handler
+        handler => payload => handler(payload, this),
+      ),
+      // built-in handlers
+      subscribe: this.subscribe,
+    };
   }
 
-  // arrow function because of binding
+  // handlers to be passed into components. arrow functions because of binding
+
+  // used as the component ref for TaskExecutor, which has the instance type iframe
   setFrame = (frame: React.ElementRef<'iframe'> | null) => {
     this.frame = frame;
   };
 
+  // message handlers
+
+  subscribe = ({ event }) => {
+    this.executor.registerForEvents(event, this);
+  };
+
   // public API
+
   sendMessage(sender: string | null, command: string, payload: any) {
     if (this.frame === null) return;
     this.frame.contentWindow.postMessage({ sender, command, payload }, '*');
