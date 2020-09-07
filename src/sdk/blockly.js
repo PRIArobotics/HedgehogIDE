@@ -72,7 +72,7 @@ export default async function init() {
       generators: {
         JavaScript: block => {
           let code = '';
-          code += `await sdk.misc.emit('blockly', 'blk_${type}_called', {\n`;
+          code += `await sdk.blockly.emit('blk_${type}_called', {\n`;
           for (const { name, type } of dynamicBlock.blockJson.args0) {
             let res;
             if (type === 'input_value') {

@@ -37,6 +37,7 @@ export class TaskHandle {
       ),
       // built-in handlers
       subscribe: this.subscribe,
+      emit: this.emit,
     };
   }
 
@@ -51,6 +52,10 @@ export class TaskHandle {
 
   subscribe = ({ event }) => {
     this.executor.registerForEvents(event, this);
+  };
+
+  emit = ({ event, payload }) => {
+    this.executor.sendEvent(event, payload);
   };
 
   // public API

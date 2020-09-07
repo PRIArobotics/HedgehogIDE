@@ -137,6 +137,7 @@ import eventHandler from '../event';
       yield from function_code(function)
     yield from lines(f"""\
 export const on = eventHandler.on.bind(eventHandler, '{module.name}');
+export const emit = eventHandler.emit.bind(eventHandler, '{module.name}');
 """)
 
 

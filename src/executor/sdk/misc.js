@@ -21,8 +21,5 @@ export function pluginReady() {
   connection.send('misc_pluginReady', {  });
 }
 
-export function emit(prefix: string, event: string, payload: any) {
-  connection.send('misc_emit', { prefix, event, payload });
-}
-
 export const on = eventHandler.on.bind(eventHandler, 'misc');
+export const emit = eventHandler.emit.bind(eventHandler, 'misc');

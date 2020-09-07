@@ -21,16 +21,6 @@ modules:
           type: string | void
       pluginReady:
         args: []
-      emit:
-        handlerName: handleEmit
-        hasReply: false
-        args:
-        - name: prefix
-          type: string
-        - name: event
-          type: string
-        - name: payload
-          type: any
     events:
       testEvent:
   hedgehog:

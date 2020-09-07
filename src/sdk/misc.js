@@ -42,13 +42,6 @@ export default async function init(getConsole: () => Promise<ConsoleType>, onExi
     // </GSL customizable: misc-body-pluginReady>
   }
 
-  async function handleEmit(prefix: string, event: string, payload: any) {
-    // <GSL customizable: misc-body-emit>
-    // Your function code goes here
-    baseEmit(prefix, executor, event, payload);
-    // </GSL customizable: misc-body-emit>
-  }
-
   return {
     // <default GSL customizable: misc-extra-return>
     // Space for extra exports
@@ -59,7 +52,6 @@ export default async function init(getConsole: () => Promise<ConsoleType>, onExi
       'misc_print': ({ text }: { text: any }) => print(text),
       'misc_exit': ({ error }: { error: string | void }) => exit(error),
       'misc_pluginReady': ({  }: {  }) => pluginReady(),
-      'misc_emit': ({ prefix, event, payload }: { prefix: string, event: string, payload: any }) => handleEmit(prefix, event, payload),
     },
   };
 }

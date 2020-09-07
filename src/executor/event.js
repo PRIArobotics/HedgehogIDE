@@ -22,6 +22,11 @@ class EventHandler {
     callbacks.add(cb);
   }
 
+  emit(prefix: string, eventName: string, payload: any) {
+    const event = `${prefix}_${eventName}`;
+    connection.send('emit', { event, payload });
+  }
+
   handleEvent(event: string, payload: any) {
     let callbacks = this.handlers.get(event);
     if (callbacks === undefined) return;

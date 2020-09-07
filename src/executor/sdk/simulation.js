@@ -10,3 +10,4 @@ import eventHandler from '../event';
 // </GSL customizable: simulation-executor-imports>
 
 export const on = eventHandler.on.bind(eventHandler, 'simulation');
+export const emit = eventHandler.emit.bind(eventHandler, 'simulation');

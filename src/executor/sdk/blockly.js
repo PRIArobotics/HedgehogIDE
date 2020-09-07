@@ -16,3 +16,4 @@ export async function addBlock(dynamicBlock: DynamicBlock) {
 }
 
 export const on = eventHandler.on.bind(eventHandler, 'blockly');
+export const emit = eventHandler.emit.bind(eventHandler, 'blockly');

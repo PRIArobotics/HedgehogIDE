@@ -41,3 +41,4 @@ export async function sleep(millis: number) {
 }
 
 export const on = eventHandler.on.bind(eventHandler, 'hedgehog');
+export const emit = eventHandler.emit.bind(eventHandler, 'hedgehog');
