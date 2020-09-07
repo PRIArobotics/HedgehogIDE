@@ -146,10 +146,9 @@ class Executor extends React.Component<PropTypes, StateTypes> {
 
   sendEvent(event: string, payload: any) {
     const listeners = this.eventRegistry.get(event);
-    if (listeners !== undefined) {
-      for (const listener of listeners) {
-        listener.sendEvent(event, payload);
-      }
+    if (listeners === undefined) return;
+    for (const listener of listeners) {
+      listener.sendEvent(event, payload);
     }
   }
 

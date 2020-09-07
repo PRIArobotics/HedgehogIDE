@@ -2,34 +2,46 @@
 
 import connection from './connection';
 
-class EventHandler {
-  handlers: {
-    [name: string]: ((payload: any) => void | Promise<void>)[],
-  } = {};
+type EventCallback = (payload: any) => void | Promise<void>;
 
-  on(prefix: string, event: string, cb: (payload: any) => void) {
-    const eventName = `${prefix}_${event}`;
-    this.handlers[eventName] = [...(this.handlers[eventName] ?? []), cb];
-    connection.send('subscribe', { event: eventName });
+class EventHandler {
+  handlers: Map<string, Set<EventCallback>> = new Map();
+
+  on(prefix: string, eventName: string, cb: EventCallback) {
+    const event = `${prefix}_${eventName}`;
+
+    let callbacks = this.handlers.get(event);
+
+    // create callbacks array & register with the IDE if necessary
+    if (callbacks === undefined) {
+      callbacks = new Set();
+      this.handlers.set(event, callbacks);
+      connection.send('subscribe', { event });
+    }
+
+    callbacks.add(cb);
   }
 
   handleEvent(event: string, payload: any) {
-    if (!this.handlers[event]) {
-      return;
-    }
-    this.handlers[event].forEach(cb => {
+    let callbacks = this.handlers.get(event);
+    if (callbacks === undefined) return;
+    for (let cb of callbacks) {
       cb(payload);
-    });
+    }
   }
 
+  /**
+   * This async method either resolves immediately if there are no event listeners,
+   * Or blocks indefinitely to wait for further events to be received.
+   */
   async waitForEvents() {
-    const handlerCount = Object.entries(this.handlers).reduce(
-      (count, [_event, handlers]) => count + (Array.isArray(handlers) ? handlers.length : 0),
-      0,
-    );
-    if (handlerCount > 0) {
-      return new Promise(() => {});
+    for (let callbacks of this.handlers.values()) {
+      if (callbacks.size > 0) {
+        // never resolve
+        return new Promise(() => {});
+      }
     }
+    // resolve immediately
     return Promise.resolve();
   }
 }
