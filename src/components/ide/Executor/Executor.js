@@ -37,7 +37,10 @@ export class TaskHandle {
       ),
       // built-in handlers
       subscribe: this.subscribe,
+      call: this.call,
       emit: this.emit,
+      reply: this.reply,
+      errorReply: this.errorReply,
     };
   }
 
@@ -54,8 +57,41 @@ export class TaskHandle {
     this.executor.registerForEvents(event, this);
   };
 
+  call = ({ receiver, command, payload }) => {
+    const receiverHandle = this.executor.getTaskHandle(receiver);
+    // TODO without knowing whether the call expects a return value there is no way to report the error properly
+    if (receiverHandle === null) {
+      console.error(`unknown receiving task '${receiver}' for call ${command}() with payload`, payload);
+      return;
+    }
+
+    receiverHandle.sendCall(this.task.name, command, payload);
+  };
+
   emit = ({ event, payload }) => {
     this.executor.sendEvent(this.task.name, event, payload);
+  };
+
+  reply = ({ receiver, value }) => {
+    const receiverHandle = this.executor.getTaskHandle(receiver);
+    // even less chance to report back the error for a reply. log to console
+    if (receiverHandle === null) {
+      console.error(`unknown receiving task '${receiver}' for reply with value`, value);
+      return;
+    }
+
+    receiverHandle.sendReply(this.task.name, value);
+  };
+
+  errorReply = ({ receiver, error }) => {
+    const receiverHandle = this.executor.getTaskHandle(receiver);
+    // even less chance to report back the error for a reply. log to console
+    if (receiverHandle === null) {
+      console.error(`unknown receiving task '${receiver}' for reply with error`, error);
+      return;
+    }
+
+    receiverHandle.sendErrorReply(this.task.name, error);
   };
 
   // public API
@@ -63,6 +99,10 @@ export class TaskHandle {
   sendMessage(sender: string | null, command: string, payload: any) {
     if (this.frame === null) return;
     this.frame.contentWindow.postMessage({ sender, command, payload }, '*');
+  }
+
+  sendCall(sender: string | null, command: string, payload: any) {
+    this.sendMessage(sender, 'call', { command, payload });
   }
 
   sendEvent(sender: string | null, event: string, payload: any) {

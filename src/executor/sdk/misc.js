@@ -4,9 +4,17 @@
 
 import connection from '../connection';
 import eventHandler from '../event';
-// <default GSL customizable: misc-executor-imports>
+// <GSL customizable: misc-executor-imports>
 // Put your imports tags here
 
+export function call(receiver: string, command: string, payload: any) {
+  connection.send('call', { receiver, command, payload });
+}
+
+export async function callWithResult(receiver: string, command: string, payload: any) {
+  call(receiver, command, payload);
+  return connection.recv();
+}
 // </GSL customizable: misc-executor-imports>
 
 export function print(text: any) {

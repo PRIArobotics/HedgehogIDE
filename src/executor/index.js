@@ -10,6 +10,11 @@ type IdeEvent = {
   payload: any,
 };
 
+type IdeCall = {
+  command: string,
+  payload: any,
+};
+
 type HandlerMap = {
   [command: string]: (payload: any, sender: string | null, source: WindowProxy) => void,
 };
@@ -31,6 +36,9 @@ const handlers: HandlerMap = {
         sdk.misc.exit(error.toString());
       }
     })();
+  },
+  call({ command, payload }: IdeCall, sender: string | null) {
+    // TODO
   },
   event({ event, payload }: IdeEvent, sender: string | null) {
     eventHandler.handleEvent(sender, event, payload);
