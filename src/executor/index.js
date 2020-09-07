@@ -3,6 +3,7 @@
 import Hedgehog from './Hedgehog';
 import connection, { ORIGIN, type IdeMessage } from './connection';
 import sdk from './sdk';
+import callHandler from './call';
 import eventHandler from './event';
 
 type IdeEvent = {
@@ -38,7 +39,7 @@ const handlers: HandlerMap = {
     })();
   },
   call({ command, payload }: IdeCall, sender: string | null) {
-    // TODO
+    callHandler.handleCall(sender, command, payload);
   },
   event({ event, payload }: IdeEvent, sender: string | null) {
     eventHandler.handleEvent(sender, event, payload);

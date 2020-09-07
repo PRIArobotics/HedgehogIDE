@@ -6,15 +6,12 @@ import connection from '../connection';
 import eventHandler from '../event';
 // <GSL customizable: misc-executor-imports>
 // Put your imports tags here
+import callHandler from '../call';
 
-export function call(receiver: string, command: string, payload: any) {
-  connection.send('call', { receiver, command, payload });
-}
-
-export async function callWithResult(receiver: string, command: string, payload: any) {
-  call(receiver, command, payload);
-  return connection.recv();
-}
+export const call = callHandler.call.bind(callHandler);
+export const callWithReply = callHandler.callWithReply.bind(callHandler);
+export const registerCall = callHandler.registerCall.bind(callHandler);
+export const registerCallWithReply = callHandler.registerCallWithReply.bind(callHandler);
 // </GSL customizable: misc-executor-imports>
 
 export function print(text: any) {
