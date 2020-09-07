@@ -71,8 +71,11 @@ export default async function init() {
       blockJson: dynamicBlock.blockJson,
       generators: {
         JavaScript: block => {
+          const hasOutput = 'output' in dynamicBlock.blockJson;
+          const callFunction = hasOutput ? 'callWithReply' : 'call';
+
           let code = '';
-          code += `await sdk.misc.call('${taskHandle.task.name}', 'blk_${type}', {\n`;
+          code += `await sdk.misc.${callFunction}('${taskHandle.task.name}', 'blk_${type}', {\n`;
           for (const { name, type } of dynamicBlock.blockJson.args0) {
             let res;
             if (type === 'input_value') {
@@ -92,8 +95,13 @@ export default async function init() {
 
             if (res !== undefined) code += `  ${name}: ${res},\n`;
           }
-          code += `});\n`;
-          return code;
+          code += `})`;
+
+          if (hasOutput) {
+            return [code, Blockly.JavaScript.ORDER_AWAIT];
+          } else {
+            return `${code};\n`;
+          }
         },
         Python: block => {
           return '';
