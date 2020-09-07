@@ -38,8 +38,8 @@ const handlers: HandlerMap = {
   errorReply(error: any) {
     connection.handleErrorReply(error);
   },
-  event({ event, payload }: IdeEvent) {
-    eventHandler.handleEvent(event, payload);
+  event({ event, payload }: IdeEvent, sender: string | null) {
+    eventHandler.handleEvent(sender, event, payload);
   },
 };
 

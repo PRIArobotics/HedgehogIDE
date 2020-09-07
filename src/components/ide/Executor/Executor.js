@@ -55,7 +55,7 @@ export class TaskHandle {
   };
 
   emit = ({ event, payload }) => {
-    this.executor.sendEvent(event, payload);
+    this.executor.sendEvent(this.task.name, event, payload);
   };
 
   // public API
@@ -73,8 +73,8 @@ export class TaskHandle {
     this.sendMessage(null, 'errorReply', error);
   }
 
-  sendEvent(event: string, payload: any) {
-    this.sendMessage(null, 'event', { event, payload });
+  sendEvent(sender: string | null, event: string, payload: any) {
+    this.sendMessage(sender, 'event', { event, payload });
   }
 
   async withReply(cb: () => any | Promise<any>) {
@@ -149,11 +149,11 @@ class Executor extends React.Component<PropTypes, StateTypes> {
     listeners.add(taskHandle);
   }
 
-  sendEvent(event: string, payload: any) {
+  sendEvent(sender: string | null, event: string, payload: any) {
     const listeners = this.eventRegistry.get(event);
     if (listeners === undefined) return;
     for (const listener of listeners) {
-      listener.sendEvent(event, payload);
+      listener.sendEvent(sender, event, payload);
     }
   }
 

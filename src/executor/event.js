@@ -2,7 +2,7 @@
 
 import connection from './connection';
 
-type EventCallback = (payload: any) => void | Promise<void>;
+type EventCallback = (payload: any, sender: string | null) => void | Promise<void>;
 
 class EventHandler {
   handlers: Map<string, Set<EventCallback>> = new Map();
@@ -27,11 +27,11 @@ class EventHandler {
     connection.send('emit', { event, payload });
   }
 
-  handleEvent(event: string, payload: any) {
+  handleEvent(sender: string | null, event: string, payload: any) {
     let callbacks = this.handlers.get(event);
     if (callbacks === undefined) return;
     for (let cb of callbacks) {
-      cb(payload);
+      cb(payload, sender);
     }
   }
 
