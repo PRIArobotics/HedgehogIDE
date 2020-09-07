@@ -52,10 +52,6 @@ export class TaskHandle {
     this.frame.contentWindow.postMessage({ sender, command, payload }, '*');
   }
 
-  sendExecute(code: string) {
-    this.sendMessage(null, 'execute', code);
-  }
-
   sendReply(value: any) {
     this.sendMessage(null, 'reply', value);
   }

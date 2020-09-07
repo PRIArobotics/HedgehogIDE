@@ -16,7 +16,7 @@ type HandlerMap = {
 
 // message listener & handlers
 const handlers: HandlerMap = {
-  execute(code: string, _sender, source: WindowProxy) {
+  init(code: string, _sender, source: WindowProxy) {
     connection.setSource(source);
 
     (async () => {

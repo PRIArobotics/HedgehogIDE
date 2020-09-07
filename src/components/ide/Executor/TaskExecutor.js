@@ -78,7 +78,7 @@ const TaskExecutor = React.forwardRef<Props, Instance>(
 
       frame.onload = () => {
         const sender = null;
-        const command = 'execute';
+        const command = 'init';
         const payload = code;
         frame.contentWindow.postMessage({ sender, command, payload }, '*');
       };
