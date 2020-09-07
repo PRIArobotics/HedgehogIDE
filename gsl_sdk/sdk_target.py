@@ -18,17 +18,22 @@ def generate_ide_code(model, module, root):
   os.makedirs(os.path.dirname(out_file), exist_ok=True)
 
   def handler_function_code(function):
-    payloadArg = f"{{ {', '.join(arg.name for arg in function.args)} }}: {{ {', '.join(f'{arg.name}: {arg.type}' for arg in function.args)} }}"
+    argsDeclared = f"{{ {', '.join(arg.name for arg in function.args)} }}: {{ {', '.join(f'{arg.name}: {arg.type}' for arg in function.args)} }}"
+    if function.hasReply or function.useTaskHandle:
+      argsDeclared = f"{argsDeclared}, taskHandle: TaskHandle"
+    argsPassed = ', '.join(arg.name for arg in function.args)
+    if function.useTaskHandle:
+      argsPassed = f"taskHandle, {argsPassed}" if argsPassed else "taskHandle"
 
     if function.hasReply:
       yield from lines(f"""\
-      '{command_for(module, function.name)}': async ({payloadArg}, taskHandle: TaskHandle) => {{
-        return taskHandle.withReply(null, {function.handlerName}.bind(null, {', '.join(arg.name for arg in function.args)}));
+      '{command_for(module, function.name)}': async ({argsDeclared}) => {{
+        return taskHandle.withReply(null, {function.handlerName}.bind(null, {argsPassed}));
       }},
 """)
     else:
       yield from lines(f"""\
-      '{command_for(module, function.name)}': ({payloadArg}) => {function.handlerName}({', '.join(arg.name for arg in function.args)}),
+      '{command_for(module, function.name)}': ({argsDeclared}) => {function.handlerName}({argsPassed}),
 """)
 
   def handler_code():
@@ -49,8 +54,12 @@ def generate_ide_code(model, module, root):
 """)
 
   def function_code(function):
+    args = ', '.join(f"{arg.name}: {arg.type}" for arg in function.args)
+    if function.useTaskHandle:
+      args = f"taskHandle: TaskHandle, {args}" if args else "taskHandle: TaskHandle"
+
     yield from lines(f"""\
-  async function {function.handlerName}({', '.join(f"{arg.name}: {arg.type}" for arg in function.args)}) {{
+  async function {function.handlerName}({args}) {{
     // <default GSL customizable: {module.name}-body-{function.name}>
     // Your function code goes here
 

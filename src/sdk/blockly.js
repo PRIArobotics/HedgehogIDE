@@ -59,7 +59,7 @@ export default async function init() {
 
   const emit = baseEmit.bind(null, 'blockly');
 
-  async function addBlock(dynamicBlock: DynamicBlock) {
+  async function addBlock(taskHandle: TaskHandle, dynamicBlock: DynamicBlock) {
     // <GSL customizable: blockly-body-addBlock>
     // Your function code goes here
     const { type } = dynamicBlock.blockJson;
@@ -72,7 +72,7 @@ export default async function init() {
       generators: {
         JavaScript: block => {
           let code = '';
-          code += `await sdk.blockly.emit('blk_${type}_called', {\n`;
+          code += `await sdk.misc.call('${taskHandle.task.name}', 'blk_${type}', {\n`;
           for (const { name, type } of dynamicBlock.blockJson.args0) {
             let res;
             if (type === 'input_value') {
@@ -116,7 +116,7 @@ export default async function init() {
     emit,
     handlers: {
       'blockly_addBlock': async ({ dynamicBlock }: { dynamicBlock: DynamicBlock }, taskHandle: TaskHandle) => {
-        return taskHandle.withReply(null, addBlock.bind(null, dynamicBlock));
+        return taskHandle.withReply(null, addBlock.bind(null, taskHandle, dynamicBlock));
       },
     },
   };

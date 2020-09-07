@@ -80,6 +80,7 @@ modules:
     functions:
       addBlock:
         hasReply: true
+        useTaskHandle: true
         args:
         - name: dynamicBlock
           type: DynamicBlock
