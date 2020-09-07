@@ -15,9 +15,9 @@ export type Task = {|
 |};
 
 export class TaskHandle {
-  name: string;
   // eslint-disable-next-line no-use-before-define
   executor: Executor;
+  task: Task;
 
   handlers: {
     [command: string]: CommandHandler,
@@ -27,7 +27,7 @@ export class TaskHandle {
   // eslint-disable-next-line no-use-before-define
   constructor(executor: Executor, task: Task) {
     this.executor = executor;
-    this.name = task.name;
+    this.task = task;
 
     this.handlers = mapObject(
       {
@@ -81,10 +81,7 @@ export class TaskHandle {
 
 type PropTypes = {||};
 type StateTypes = {|
-  tasks: {
-    task: Task,
-    taskHandle: TaskHandle,
-  }[],
+  taskHandleList: TaskHandle[],
 |};
 
 /**
@@ -100,14 +97,14 @@ class Executor extends React.Component<PropTypes, StateTypes> {
   eventRegistry: Map<string, Set<TaskHandle>> = new Map();
 
   state = {
-    tasks: [],
+    taskHandleList: [],
   };
 
   addTask(task: Task): Task {
     const taskHandle = new TaskHandle(this, task);
     this.taskHandles.set(task.name, taskHandle);
     this.setState(state => ({
-      tasks: [...state.tasks, { task, taskHandle }],
+      taskHandleList: [...state.taskHandleList, taskHandle],
     }));
     return task;
   }
@@ -118,7 +115,7 @@ class Executor extends React.Component<PropTypes, StateTypes> {
     if (taskHandle === null) throw 'unreachable';
 
     this.setState(state => ({
-      tasks: state.tasks.filter(({ task: t }) => t.name !== task.name),
+      taskHandleList: state.taskHandleList.filter(t => t !== taskHandle),
     }));
     task.api.misc_exit({});
     this.taskHandles.delete(task.name);
@@ -153,15 +150,15 @@ class Executor extends React.Component<PropTypes, StateTypes> {
   }
 
   render() {
-    const { tasks } = this.state;
+    const { taskHandleList } = this.state;
 
     return (
       <>
-        {tasks.map(({ task, taskHandle }) => (
+        {taskHandleList.map(taskHandle => (
           <TaskExecutor
-            key={task.name}
+            key={taskHandle.task.name}
             ref={taskHandle.setFrame}
-            code={`return (async () => {${task.code}\n})();`}
+            code={`return (async () => {${taskHandle.task.code}\n})();`}
             handlers={taskHandle.handlers}
           />
         ))}
