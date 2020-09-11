@@ -179,16 +179,16 @@ export default class Simulation {
     this.updateSensorCache();
   }
 
-  mount(element: Element, width: number, height: number) {
+  mount(canvas: HTMLCanvasElement) {
     this.unmount();
 
     // TODO creating a Render instance with a running Engine will error,
     // as the Engine's internal state is recursive.
     // mount() can therefore not be called after initially starting the simulation
     this.render = Matter.Render.create({
-      element,
+      canvas,
       engine: this.engine,
-      options: { width, height, wireframes: false, background: '#eeeeee' },
+      options: { width: 600, height: 400, wireframes: false, background: '#eeeeee' },
     });
     if (this.bounds !== null) Matter.Render.lookAt(this.render, this.bounds);
   }

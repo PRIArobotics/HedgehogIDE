@@ -888,10 +888,8 @@ function Ide({ projectName }: Props) {
         return (
           <Simulator
             ref={attachSimulator}
-            width={600}
-            height={400}
-            onExecutionAction={handleExecutionAction}
             running={runningTask !== null}
+            onExecutionAction={handleExecutionAction}
           />
         );
       }

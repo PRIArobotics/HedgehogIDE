@@ -16,10 +16,8 @@ import s from './Simulator.scss';
 import { Simulation } from './simulation';
 
 type Props = {|
-  width: number,
-  height: number,
-  onExecutionAction: (action: ExecutionAction) => void | Promise<void>,
   running: boolean,
+  onExecutionAction: (action: ExecutionAction) => void | Promise<void>,
 |};
 type Instance = {|
   simulation: Simulation,
@@ -376,11 +374,11 @@ const Simulator = React.forwardRef<Props, Instance>(
     });
 
     // mount simulator in the target and simulate continuously
-    const [renderTarget, setRenderTarget] = React.useState<HTMLDivElement | null>(null);
+    const [renderTarget, setRenderTarget] = React.useState<HTMLCanvasElement | null>(null);
     React.useEffect(() => {
       if (renderTarget === null) return undefined;
 
-      simulation.mount(renderTarget, width, height);
+      simulation.mount(renderTarget);
       simulation.startMatter();
       simulation.startRender();
       return () => {
@@ -388,7 +386,7 @@ const Simulator = React.forwardRef<Props, Instance>(
         simulation.stopMatter();
         simulation.unmount();
       };
-    }, [renderTarget, simulation, width, height]);
+    }, [renderTarget, simulation]);
 
     // Need to use a dependency array here, because Ide requires a stable ref.
     // On each change to the Simulator ref, jsonInit is potentially called.
@@ -398,7 +396,7 @@ const Simulator = React.forwardRef<Props, Instance>(
     return (
       <div className={s.root}>
         <div className={s.container}>
-          <div className={s.canvas} ref={setRenderTarget} />
+          <canvas className={s.canvas} ref={setRenderTarget} />
         </div>
         <ToolBar>
           {running ? (
