@@ -77,6 +77,8 @@ import UploadIcon from 'mdi-material-ui/Upload';
 import ExecuteIcon from 'mdi-material-ui/Play';
 import TerminateIcon from 'mdi-material-ui/Stop';
 import ResetIcon from 'mdi-material-ui/RotateLeft';
+import ZoomInIcon from 'mdi-material-ui/MagnifyPlusOutline';
+import ZoomOutIcon from 'mdi-material-ui/MagnifyMinusOutline';
 
 const TerminateAndResetIcon = React.forwardRef<
   React.ElementConfig<typeof TerminateIcon>,
@@ -131,6 +133,8 @@ export {
   ExecuteIcon,
   TerminateIcon,
   ResetIcon,
+  ZoomInIcon,
+  ZoomOutIcon,
   TerminateAndResetIcon,
   SlideLeftIcon,
   SlideRightIcon,

@@ -3,7 +3,7 @@
 import * as React from 'react';
 import useStyles from 'isomorphic-style-loader/useStyles';
 
-import { TerminateIcon, ResetIcon, TerminateAndResetIcon } from '../../misc/palette';
+import { TerminateIcon, ResetIcon, TerminateAndResetIcon, ZoomInIcon, ZoomOutIcon } from '../../misc/palette';
 import * as hooks from '../../misc/hooks';
 
 import { type ExecutionAction } from '../Ide';
@@ -432,6 +432,22 @@ const Simulator = React.forwardRef<Props, Instance>(
               color="red"
               disableRipple
               disabled={!running}
+            />
+          </ToolBarItem>
+          <ToolBarItem>
+            <ToolBarIconButton
+              onClick={() => {
+              }}
+              icon={ZoomInIcon}
+              disableRipple
+            />
+          </ToolBarItem>
+          <ToolBarItem>
+            <ToolBarIconButton
+              onClick={() => {
+              }}
+              icon={ZoomOutIcon}
+              disableRipple
             />
           </ToolBarItem>
         </ToolBar>
