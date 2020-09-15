@@ -36,7 +36,7 @@ class PluginManager {
       misc: await initMiscSdk(this.getConsole, () => {}, this, this.executor),
       hedgehog: await initHedgehogSdk(this.getSimulator),
       blockly: await initBlocklySdk(),
-      simulation: await initSimulationSdk(this.executor),
+      simulation: await initSimulationSdk(this.executor, this.getSimulator),
     };
   }
 

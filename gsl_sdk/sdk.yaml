@@ -89,5 +89,10 @@ modules:
       args:
       - name: executor
         type: Executor
-    functions: {}
-
+      - name: getSimulator
+        type: () => Promise<SimulatorType>
+    functions:
+      add:
+        args:
+        - name: objects
+          type: SimulationSchema.Object[]
