@@ -16,6 +16,11 @@ function setInitialPose(body: Matter.Body, pose: Pose | void) {
   body.plugin.hedgehog.initialPose = pose ?? { ...body.position, angle: body.angle };
 }
 
+function setTemporary(body: Matter.Body, temporary: boolean) {
+  if (!body.plugin.hedgehog) body.plugin.hedgehog = {};
+  body.plugin.hedgehog.temporary = temporary;
+}
+
 /**
  * Manages a robot simulation.
  * The simulation can contain multiple robots, and objects representing the environment.
@@ -137,7 +142,7 @@ export default class Simulation {
     this.jsonAdd(schema.objects);
   }
 
-  jsonAdd(objects: SimulationSchema.Object[]) {
+  jsonAdd(objects: SimulationSchema.Object[], temporary: boolean = false) {
     for (const object of objects) {
       switch (object.type) {
         case 'rectangle': {
@@ -145,6 +150,7 @@ export default class Simulation {
           const { type: _type, width, height, ...options } = object;
           const body = Matter.Bodies.rectangle(0, 0, width, height, options);
           setInitialPose(body);
+          setTemporary(body, temporary);
 
           this.add([body]);
           break;
@@ -153,6 +159,7 @@ export default class Simulation {
           const { type: _type, radius, ...options } = object;
           const body = Matter.Bodies.circle(0, 0, radius, options);
           setInitialPose(body);
+          setTemporary(body, temporary);
 
           this.add([body]);
           break;
@@ -168,7 +175,7 @@ export default class Simulation {
           const pose = { x, y, angle };
           robot.setPose(pose);
           setInitialPose(robot.body);
-          // TODO color
+          // TODO color, temporary
 
           this.addRobot(name, robot);
           break;
@@ -265,6 +272,8 @@ export default class Simulation {
   }
 
   reset() {
+    const bodiesToRemove = [];
+
     for (const composite of [
       ...Matter.Composite.allComposites(this.world),
       ...Matter.Composite.allBodies(this.world),
@@ -276,6 +285,12 @@ export default class Simulation {
         Matter.Body.setVelocity(composite, { x: 0, y: 0 });
         Matter.Body.setAngularVelocity(composite, 0);
       }
+      if (composite.plugin.hedgehog?.temporary) {
+        bodiesToRemove.push(composite);
+      }
+    }
+    for (const body of bodiesToRemove) {
+      Matter.World.remove(this.world, body);
     }
   }
 }

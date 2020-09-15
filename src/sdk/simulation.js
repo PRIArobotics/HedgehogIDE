@@ -27,7 +27,7 @@ export default async function init(executor: Executor, getSimulator: () => Promi
   async function add(objects: SimulationSchema.Object[]) {
     // <GSL customizable: simulation-body-add>
     const simulation = (await getSimulator()).simulation;
-    simulation.jsonAdd(objects);
+    simulation.jsonAdd(objects, true);
     // </GSL customizable: simulation-body-add>
   }
 
