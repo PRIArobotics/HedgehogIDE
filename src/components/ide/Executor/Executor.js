@@ -54,7 +54,7 @@ export class TaskHandle {
   // message handlers
 
   subscribe = ({ event }) => {
-    this.executor.registerForEvents(event, this);
+    this.executor.registerForEvents(event, this.onEvent);
   };
 
   call = ({ receiver, command, payload }) => {
@@ -94,6 +94,11 @@ export class TaskHandle {
     receiverHandle.sendErrorReply(this.task.name, error);
   };
 
+  // event handler
+  onEvent = (sender: string | null, event: string, payload: any) => {
+    this.sendEvent(sender, event, payload);
+  };
+
   // public API
 
   sendMessage(sender: string | null, command: string, payload: any) {
@@ -128,6 +133,8 @@ export class TaskHandle {
   }
 }
 
+type EventListener = (sender: string | null, event: string, payload: any) => void | Promise<void>;
+
 type PropTypes = {||};
 type StateTypes = {|
   taskHandleList: TaskHandle[],
@@ -143,7 +150,7 @@ type StateTypes = {|
  */
 class Executor extends React.Component<PropTypes, StateTypes> {
   taskHandles: Map<string, TaskHandle> = new Map();
-  eventRegistry: Map<string, Set<TaskHandle>> = new Map();
+  eventRegistry: Map<string, Set<EventListener>> = new Map();
 
   state = {
     taskHandleList: [],
@@ -169,7 +176,7 @@ class Executor extends React.Component<PropTypes, StateTypes> {
     task.api.misc_exit({});
     this.taskHandles.delete(task.name);
     for (const listeners of this.eventRegistry.values()) {
-      listeners.delete(taskHandle);
+      listeners.delete(taskHandle.onEvent);
     }
   }
 
@@ -177,7 +184,7 @@ class Executor extends React.Component<PropTypes, StateTypes> {
     return this.taskHandles.get(taskName) ?? null;
   }
 
-  registerForEvents(event: string, taskHandle: TaskHandle) {
+  registerForEvents(event: string, listener: EventListener) {
     let listeners = this.eventRegistry.get(event);
 
     // create listeners array if necessary
@@ -186,14 +193,14 @@ class Executor extends React.Component<PropTypes, StateTypes> {
       this.eventRegistry.set(event, listeners);
     }
 
-    listeners.add(taskHandle);
+    listeners.add(listener);
   }
 
   sendEvent(sender: string | null, event: string, payload: any) {
     const listeners = this.eventRegistry.get(event);
     if (listeners === undefined) return;
     for (const listener of listeners) {
-      listener.sendEvent(sender, event, payload);
+      listener(sender, event, payload);
     }
   }
 
