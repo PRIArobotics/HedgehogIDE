@@ -165,16 +165,16 @@ class Executor extends React.Component<PropTypes, StateTypes> {
     return task;
   }
 
-  removeTask(task: Task) {
-    const taskHandle = this.getTaskHandle(task.name);
+  removeTask(taskName: string) {
+    const taskHandle = this.getTaskHandle(taskName);
     // eslint-disable-next-line no-throw-literal
     if (taskHandle === null) throw 'unreachable';
 
     this.setState(state => ({
       taskHandleList: state.taskHandleList.filter(t => t !== taskHandle),
     }));
-    task.api.misc_exit({});
-    this.taskHandles.delete(task.name);
+    taskHandle.task.api.misc_exit({}, taskHandle);
+    this.taskHandles.delete(taskName);
     for (const listeners of this.eventRegistry.values()) {
       listeners.delete(taskHandle.onEvent);
     }

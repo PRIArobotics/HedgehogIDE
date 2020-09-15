@@ -137,7 +137,7 @@ type Props = {|
 function Ide({ projectName }: Props) {
   const project = useProjectInfo(projectName);
   const [pluginsLoaded, setPluginsLoaded] = React.useState<boolean>(false);
-  const [runningTask, setRunningTask] = React.useState<Task | null>(null);
+  const [running, setRunning] = React.useState<boolean>(false);
 
   const [projectCache, refreshProject] = useProjectCache(project);
   const [state, dispatch] = usePersistentState(project?.uid ?? null);
@@ -432,7 +432,7 @@ function Ide({ projectName }: Props) {
           // it also doesn't do some other cleanup stuff, e.g. turn off the robot,
           // as handleTerminate would
           // problem is, handleTerminate captures runningTask, so calling it here doesn't have the desired effect.
-          setRunningTask(null);
+          setRunning(false);
 
           pluginManager.getSdk().misc.emit(executor, 'programTerminate', { error });
         },
@@ -442,7 +442,7 @@ function Ide({ projectName }: Props) {
       hedgehog: await initHedgehogSdk(getSimulator),
     };
 
-    const task = {
+    executor.addTask({
       // just some key that is unlikely to collide with a plugin
       // plugins are looked up by the .js file extension, so this should be safe
       name: '$user-program',
@@ -451,8 +451,8 @@ function Ide({ projectName }: Props) {
         ...sdk.misc.handlers,
         ...sdk.hedgehog.handlers,
       },
-    };
-    setRunningTask(executor.addTask(task));
+    });
+    setRunning(true);
 
     pluginManager.getSdk().misc.emit(executor, 'programExecute', null);
   }
@@ -461,10 +461,9 @@ function Ide({ projectName }: Props) {
     // eslint-disable-next-line no-throw-literal
     if (executorRef.current === null) throw 'ref is null';
 
-    if (runningTask !== null) {
-      executorRef.current.removeTask(runningTask);
-      setRunningTask(null);
-    }
+    executorRef.current.removeTask('$user-program');
+    setRunning(false);
+
     if (simulatorRef.current !== null) {
       simulatorRef.current.simulation.robots.forEach(robot => {
         robot.controller.off();
@@ -880,7 +879,7 @@ function Ide({ projectName }: Props) {
             path={id}
             // {...bindEditorProps(id, 'editor')}
             onExecutionAction={handleExecutionAction}
-            running={runningTask !== null}
+            running={running}
           />
         );
       }
@@ -888,7 +887,7 @@ function Ide({ projectName }: Props) {
         return (
           <Simulator
             ref={attachSimulator}
-            running={runningTask !== null}
+            running={running}
             onExecutionAction={handleExecutionAction}
           />
         );
@@ -904,7 +903,7 @@ function Ide({ projectName }: Props) {
             path={id}
             {...bindEditorProps(id, 'blockly')}
             onExecutionAction={handleExecutionAction}
-            running={runningTask !== null}
+            running={running}
           />
         );
       }
