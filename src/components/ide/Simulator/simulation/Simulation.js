@@ -235,7 +235,7 @@ export default class Simulation {
 
   addRobot(name: string, robot: Robot) {
     this.robots.set(name, robot);
-    this.add(robot.bodies);
+    this.add(robot.robot);
   }
 
   // this method has to be called after adding one or more robots to the

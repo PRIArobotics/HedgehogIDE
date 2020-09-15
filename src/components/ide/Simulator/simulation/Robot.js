@@ -26,7 +26,7 @@ export default class Robot {
   drive: DifferentialDrive;
   servoArms: ServoArm[];
 
-  bodies: Matter.Body[];
+  robot: Matter.Composite;
 
   constructor() {
     this.initBody();
@@ -208,14 +208,12 @@ export default class Robot {
       // new ServoArm(this.controller, 1, mainBody, pivotAnchorRight, rightGrabber, pivotArm, 30),
     ];
 
-    const bot = Matter.Composite.create({
-      parts: [this.body],
+    this.robot = Matter.Composite.create({
+      bodies: [this.body],
       // parts: [this.body, leftGrabber, rightGrabber],
       constraints: [...this.servoArms.flatMap(arm => [arm.pivotConstraint, arm.controlConstraint])],
       label: 'bot',
     });
-
-    this.bodies = [bot, ...bot.parts];
   }
 
   setPose({ x, y, angle }: Pose) {
