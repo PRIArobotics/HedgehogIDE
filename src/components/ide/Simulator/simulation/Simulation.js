@@ -181,6 +181,13 @@ export default class Simulation {
     this.updateSensorCache();
   }
 
+  removeBody(label: string) {
+    const bodiesToRemove = this.world.bodies.filter(body => body.label === label);
+    for (const body of bodiesToRemove) {
+      Matter.World.remove(this.world, body);
+    }
+  }
+
   mount(canvas: HTMLCanvasElement) {
     this.unmount();
 
