@@ -93,7 +93,9 @@ export type Simulation = {
   height: number,
 };
 
+export type Object = Rectangle | Circle | Robot;
+
 export type SimulatorJson = {
   simulation: Simulation,
-  objects: (Rectangle | Circle | Robot)[],
+  objects: Object[],
 };

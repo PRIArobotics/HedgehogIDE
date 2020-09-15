@@ -122,21 +122,23 @@ export default class Simulation {
   jsonInit(schema: SimulationSchema.SimulatorJson) {
     this.clear(false);
 
-    {
-      const {
-        center: { x, y },
-        // eslint-disable-next-line no-shadow
-        width,
-        // eslint-disable-next-line no-shadow
-        height,
-      } = schema.simulation;
-      this.lookAt({
-        min: { x: x - width / 2, y: y - height / 2 },
-        max: { x: x + width / 2, y: y + height / 2 },
-      });
-    }
+    const {
+      center: { x, y },
+      // eslint-disable-next-line no-shadow
+      width,
+      // eslint-disable-next-line no-shadow
+      height,
+    } = schema.simulation;
+    this.lookAt({
+      min: { x: x - width / 2, y: y - height / 2 },
+      max: { x: x + width / 2, y: y + height / 2 },
+    });
 
-    for (const object of schema.objects) {
+    this.jsonAdd(schema.objects);
+  }
+
+  jsonAdd(objects: SimulationSchema.Object[]) {
+    for (const object of objects) {
       switch (object.type) {
         case 'rectangle': {
           // eslint-disable-next-line no-shadow
