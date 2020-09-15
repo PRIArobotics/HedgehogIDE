@@ -28,9 +28,9 @@ class EventHandler {
   }
 
   handleEvent(sender: string | null, event: string, payload: any) {
-    let callbacks = this.handlers.get(event);
+    const callbacks = this.handlers.get(event);
     if (callbacks === undefined) return;
-    for (let cb of callbacks) {
+    for (const cb of callbacks) {
       cb(payload, sender);
     }
   }
@@ -40,7 +40,7 @@ class EventHandler {
    * Or blocks indefinitely to wait for further events to be received.
    */
   async waitForEvents() {
-    for (let callbacks of this.handlers.values()) {
+    for (const callbacks of this.handlers.values()) {
       if (callbacks.size > 0) {
         // never resolve
         return new Promise(() => {});

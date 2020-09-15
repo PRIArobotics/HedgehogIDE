@@ -61,7 +61,10 @@ export class TaskHandle {
     const receiverHandle = this.executor.getTaskHandle(receiver);
     // TODO without knowing whether the call expects a return value there is no way to report the error properly
     if (receiverHandle === null) {
-      console.error(`unknown receiving task '${receiver}' for call ${command}() with payload`, payload);
+      console.error(
+        `unknown receiving task '${receiver}' for call ${command}() with payload`,
+        payload,
+      );
       return;
     }
 

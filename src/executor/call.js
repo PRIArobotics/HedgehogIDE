@@ -36,7 +36,7 @@ class CallHandler {
   }
 
   handleCall(sender: string | null, command: string, payload: any) {
-    let callback = this.handlers.get(command);
+    const callback = this.handlers.get(command);
     if (callback === undefined) {
       // TODO without knowing whether the call expects a return value there is no way to report the error properly
       console.error(`unknown received call ${command}() with payload`, payload);
