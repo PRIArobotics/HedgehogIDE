@@ -31,10 +31,10 @@ export default async function init(executor: Executor, getSimulator: () => Promi
     // </GSL customizable: simulation-body-add>
   }
 
-  async function remove(label: string) {
+  async function remove(labels: string[]) {
     // <GSL customizable: simulation-body-remove>
     const simulation = (await getSimulator()).simulation;
-    simulation.removeBody(label);
+    simulation.removeBodies(labels);
     // </GSL customizable: simulation-body-remove>
   }
 
@@ -46,7 +46,7 @@ export default async function init(executor: Executor, getSimulator: () => Promi
     emit,
     handlers: {
       'simulation_add': ({ objects }: { objects: SimulationSchema.Object[] }) => add(objects),
-      'simulation_remove': ({ label }: { label: string }) => remove(label),
+      'simulation_remove': ({ labels }: { labels: string[] }) => remove(labels),
     },
   };
 }

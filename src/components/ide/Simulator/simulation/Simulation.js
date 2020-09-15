@@ -181,8 +181,8 @@ export default class Simulation {
     this.updateSensorCache();
   }
 
-  removeBody(label: string) {
-    const bodiesToRemove = this.world.bodies.filter(body => body.label === label);
+  removeBodies(labels: string[]) {
+    const bodiesToRemove = this.world.bodies.filter(body => labels.includes(body.label));
     for (const body of bodiesToRemove) {
       Matter.World.remove(this.world, body);
     }

@@ -14,8 +14,8 @@ export function add(objects: SimulationSchema.Object[]) {
   connection.send('simulation_add', { objects });
 }
 
-export function remove(label: string) {
-  connection.send('simulation_remove', { label });
+export function remove(labels: string[]) {
+  connection.send('simulation_remove', { labels });
 }
 
 export const on = eventHandler.on.bind(eventHandler, 'simulation');
