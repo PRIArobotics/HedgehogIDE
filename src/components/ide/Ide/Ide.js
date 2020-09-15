@@ -425,20 +425,7 @@ function Ide({ projectName }: Props) {
     if (pluginManager === null) throw 'ref is null';
 
     const sdk = {
-      misc: await initMiscSdk(
-        getConsole,
-        error => {
-          // TODO this does not remove the task from the executor
-          // it also doesn't do some other cleanup stuff, e.g. turn off the robot,
-          // as handleTerminate would
-          // problem is, handleTerminate captures runningTask, so calling it here doesn't have the desired effect.
-          setRunning(false);
-
-          pluginManager.getSdk().misc.emit(executor, 'programTerminate', { error });
-        },
-        pluginManager,
-        executor,
-      ),
+      misc: await initMiscSdk(getConsole, handleTerminate, pluginManager, executor),
       hedgehog: await initHedgehogSdk(getSimulator),
     };
 
@@ -457,17 +444,24 @@ function Ide({ projectName }: Props) {
     pluginManager.getSdk().misc.emit(executor, 'programExecute', null);
   }
 
-  async function handleTerminate() {
+  async function handleTerminate(error: string | void) {
+    const executor = executorRef.current;
     // eslint-disable-next-line no-throw-literal
-    if (executorRef.current === null) throw 'ref is null';
+    if (executor === null) throw 'ref is null';
 
-    executorRef.current.removeTask('$user-program');
+    const pluginManager = pluginManagerRef.current;
+    // eslint-disable-next-line no-throw-literal
+    if (pluginManager === null) throw 'ref is null';
+
+    executor.removeTask('$user-program');
     setRunning(false);
+    pluginManager.getSdk().misc.emit(executor, 'programTerminate', { error });
 
-    if (simulatorRef.current !== null) {
-      simulatorRef.current.simulation.robots.forEach(robot => {
+    const simulator = simulatorRef.current;
+    if (simulator !== null) {
+      for (const robot of simulator.simulation.robots.values()) {
         robot.controller.off();
-      });
+      }
     }
   }
 

@@ -167,13 +167,11 @@ class Executor extends React.Component<PropTypes, StateTypes> {
 
   removeTask(taskName: string) {
     const taskHandle = this.getTaskHandle(taskName);
-    // eslint-disable-next-line no-throw-literal
-    if (taskHandle === null) throw 'unreachable';
+    if (taskHandle === null) return;
 
     this.setState(state => ({
       taskHandleList: state.taskHandleList.filter(t => t !== taskHandle),
     }));
-    taskHandle.task.api.misc_exit({}, taskHandle);
     this.taskHandles.delete(taskName);
     for (const listeners of this.eventRegistry.values()) {
       listeners.delete(taskHandle.onEvent);
