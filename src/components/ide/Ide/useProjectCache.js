@@ -13,36 +13,43 @@ import {
 
 import { useAsyncState } from '../../misc/hooks';
 
+type InternalCache = {|
+  files: FilerRecursiveStatInfo,
+  simulatorXml: string | null,
+  layoutJson: string | null,
+  assetBlobs: Map<string, Blob>,
+|};
+
 type ProjectCache = {|
   files: FilerRecursiveStatInfo,
   simulatorXml: string | null,
   layoutJson: string | null,
-  assets: Map<string, Uint8Array>,
+  assets: Map<string, string>,
 |};
 
 export default function useProjectCache(
   project: Project | null,
 ): [ProjectCache | null, () => void] {
-  const [state, setState] = useAsyncState<ProjectCache | null>(null);
+  const [internalState, setInternalState] = useAsyncState<InternalCache | null>(null);
 
   function refreshProject() {
     if (project === null) {
-      setState(null);
+      setInternalState(null);
       return;
     }
 
-    async function loadAssets(root: FilerRecursiveStatInfo): Promise<Map<string, Uint8Array>> {
-      const assetsMap: Map<string, Uint8Array> = new Map();
+    async function loadAssets(root: FilerRecursiveStatInfo): Promise<Map<string, Blob>> {
+      const assetBlobs: Map<string, Blob> = new Map();
 
       let assetsFile: FilerRecursiveStatInfo;
       try {
         assetsFile = getDescendant(root, '.metadata', 'assets');
       } catch (err) {
         console.error(err);
-        return assetsMap;
+        return assetBlobs;
       }
 
-      if (!assetsFile.isDirectory()) return assetsMap;
+      if (!assetsFile.isDirectory()) return assetBlobs;
       // $FlowExpectError
       const assetsDir: FilerRecursiveDirectoryInfo = assetsFile;
 
@@ -55,8 +62,9 @@ export default function useProjectCache(
               await walk(`${prefix}${f.name}/`, dir.contents);
             } else {
               const absolutePath = project.resolve('./.metadata/assets', prefix, f.name);
-              const asset = await fs.promises.readFile(absolutePath);
-              assetsMap.set(`asset:${prefix}${f.name}`, asset);
+              const buffer = await fs.promises.readFile(absolutePath);
+              const blob = new Blob([buffer]);
+              assetBlobs.set(`asset:${prefix}${f.name}`, blob);
             }
           }),
         );
@@ -64,16 +72,16 @@ export default function useProjectCache(
 
       await walk('', assetsDir.contents);
 
-      return assetsMap;
+      return assetBlobs;
     }
 
     async function loadFilesAndAssets(): Promise<
-      [FilerRecursiveStatInfo, Map<string, Uint8Array>],
+      [FilerRecursiveStatInfo, Map<string, Blob>],
     > {
       const files = await project.getFiles();
-      const assets = await loadAssets(files);
+      const assetBlobs = await loadAssets(files);
 
-      return [files, assets];
+      return [files, assetBlobs];
     }
 
     async function loadSimulatorXml(): Promise<string | null> {
@@ -105,22 +113,50 @@ export default function useProjectCache(
 
     async function loadProjectCache() {
       // load project from the file system
-      const [[files, assets], simulatorXml, layoutJson] = await Promise.all([
+      const [[files, assetBlobs], simulatorXml, layoutJson] = await Promise.all([
         loadFilesAndAssets(),
         loadSimulatorXml(),
         loadLayoutJson(),
       ]);
 
-      return { files, simulatorXml, layoutJson, assets };
+      return { files, simulatorXml, layoutJson, assetBlobs };
     }
 
-    setState(loadProjectCache());
+    setInternalState(loadProjectCache());
   }
 
   // refresh project when projectName changes
   React.useEffect(() => {
     refreshProject();
   }, [project]);
+
+  const [state, setState] = React.useState<ProjectCache | null>(null);
+
+  // provide blob URLs for assets
+  React.useEffect(() => {
+    if (internalState === null) {
+      setState(null);
+      return;
+    }
+
+    const { files, simulatorXml, layoutJson, assetBlobs } = internalState;
+
+    const urls = [];
+    const assets: Map<string, string> = new Map();
+    for (const [key, blob] of assetBlobs) {
+      var url = URL.createObjectURL(blob);
+      urls.push(url);
+      assets.set(key, url);
+    }
+
+    setState({ files, simulatorXml, layoutJson, assets });
+
+    return () => {
+      for (const url of urls) {
+        URL.revokeObjectURL(url);
+      }
+    };
+  }, [internalState]);
 
   return [state, refreshProject];
 }
