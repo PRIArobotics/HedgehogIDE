@@ -9,11 +9,13 @@ import sRcTree from 'rc-tree/assets/index.css';
 
 import {
   FileIcon,
+  ImageFileIcon,
   FolderIcon,
   FolderOpenIcon,
   LanguageBlocklyIcon,
   LanguageJavascriptIcon,
   MetadataPluginsIcon,
+  MetadataAssetsIcon,
   MetadataLayoutIcon,
   MetadataSimulatorIcon,
   MetadataToolboxIcon,
@@ -211,9 +213,12 @@ function FileTree({ files, expandedKeys, filter, onFileAction, onUpdate }: Props
           return MetadataPluginsIcon;
         if (file.name.endsWith('.blockly')) return LanguageBlocklyIcon;
         if (file.name.endsWith('.js')) return LanguageJavascriptIcon;
+        if (file.name.endsWith('.png') || file.name.endsWith('.jpg')) return ImageFileIcon;
         return FileIcon;
       } else {
-        return isExpanded ? FolderOpenIcon : FolderIcon;
+        if (isExpanded) return FolderOpenIcon;
+        if (path === './.metadata/assets') return MetadataAssetsIcon;
+        return FolderIcon;
       }
     })();
 
