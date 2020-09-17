@@ -197,11 +197,12 @@ function Ide({ projectName }: Props) {
 
   // load the project's simulator schema if it or the simulator changes
   const simulatorXml = projectCache?.simulatorXml ?? null;
+  const assets = projectCache?.assets ?? null;
 
   function refreshSimulatorFromSchema(schema: SimulationSchema.SimulatorJson | null) {
-    if (simulatorRef.current === null || schema === null) return;
+    if (simulatorRef.current === null || schema === null || assets === null) return;
 
-    simulatorRef.current.simulation.jsonInit(schema);
+    simulatorRef.current.simulation.jsonInit(schema, assets);
   }
 
   function refreshSimulator() {
@@ -213,7 +214,7 @@ function Ide({ projectName }: Props) {
 
   React.useEffect(() => {
     refreshSimulator();
-  }, [simulatorXml]);
+  }, [simulatorXml, assets]);
 
   // uses useCallback because otherwise each render resets the ref.
   // (the ref could be registered with a new callback,

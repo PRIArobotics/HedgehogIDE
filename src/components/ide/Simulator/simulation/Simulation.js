@@ -35,6 +35,9 @@ export default class Simulation {
   render: Matter.Render | null = null;
   bounds: { min: Point, max: Point } | null = null;
 
+  // assets
+  assets: Map<string, string> | null = null;
+
   // special bodies for simulation logic
   robots: Map<string, Robot> = new Map();
   sensorsCache: Set<Matter.Body> = new Set();
@@ -124,8 +127,10 @@ export default class Simulation {
     });
   }
 
-  jsonInit(schema: SimulationSchema.SimulatorJson) {
+  jsonInit(schema: SimulationSchema.SimulatorJson, assets: Map<string, string> | null = null) {
     this.clear(false);
+
+    this.assets = assets;
 
     const {
       center: { x, y },
@@ -143,11 +148,24 @@ export default class Simulation {
   }
 
   jsonAdd(objects: SimulationSchema.Object[], temporary: boolean = false) {
+    const resolveSprite = (sprite: { texture: string | void } | void) => {
+      if (sprite?.texture && sprite.texture.startsWith('asset:')) {
+        if (this.assets === null) {
+          throw new Error(`Trying to use '${sprite.texture}, but there's no asset map`);
+        }
+        // the result may be undefined, which is fine with us,
+        // because that means Matter.js will not fail loading a texture
+        sprite.texture = this.assets.get(sprite.texture);
+      }
+    }
+
     for (const object of objects) {
       switch (object.type) {
         case 'rectangle': {
           // eslint-disable-next-line no-shadow
           const { type: _type, width, height, ...options } = object;
+          resolveSprite(options?.render?.sprite);
+
           const body = Matter.Bodies.rectangle(0, 0, width, height, options);
           setInitialPose(body);
           setTemporary(body, temporary);
@@ -157,6 +175,8 @@ export default class Simulation {
         }
         case 'circle': {
           const { type: _type, radius, ...options } = object;
+          resolveSprite(options?.render?.sprite);
+
           const body = Matter.Bodies.circle(0, 0, radius, options);
           setInitialPose(body);
           setTemporary(body, temporary);
