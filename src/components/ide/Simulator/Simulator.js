@@ -35,7 +35,7 @@ type Instance = {|
  * Besides the simulation itself, the toolbar allows terminating programs and resetting the simulation.
  */
 const Simulator = React.forwardRef<Props, Instance>(
-  ({ width, height, onExecutionAction, running }: Props, ref: Ref<Instance>) => {
+  ({ onExecutionAction, running }: Props, ref: Ref<Instance>) => {
     const simulation = hooks.useValue(() => {
       const sim = new Simulation();
       sim.jsonInit({
