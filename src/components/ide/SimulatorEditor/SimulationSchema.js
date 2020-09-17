@@ -10,24 +10,18 @@ type Rotation = {|
   angle: number,
 |};
 
-type Color = {|
-  render?: {
-    fillStyle?: string,
-  },
+type RenderColor = {|
+  fillStyle?: string,
 |};
 
-type Visibility = {|
-  render?: {
-    opacity?: number,
-    visible?: boolean,
-  },
+type RenderVisibility = {|
+  opacity?: number,
+  visible?: boolean,
 |};
 
-type Sprite = {|
-  render?: {
-    sprite?: {
-      texture: string,
-    },
+type RenderSprite = {|
+  sprite?: {
+    texture: string,
   },
 |};
 
@@ -62,13 +56,18 @@ type Label = {|
 type RobotProps = {|
   ...Translation,
   ...Rotation,
-  ...Color,
+  render?: {
+    ...RenderColor,
+  },
 |};
 
 type AllProps = {|
   ...RobotProps,
-  ...Visibility,
-  ...Sprite,
+  render?: {
+    ...RenderColor,
+    ...RenderVisibility,
+    ...RenderSprite,
+  },
   ...Static,
   ...Sensor,
   ...Line,
