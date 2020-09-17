@@ -110,17 +110,21 @@ export class Project {
   }
 
   async getFiles(): Promise<FilerRecursiveStatInfo> {
-    const root = await fs.promises.stat(this.path);
-    root.contents = await sh.promises.ls(this.path, { recursive: true });
-
-    const sortRecursively = (file: FilerRecursiveStatInfo) => {
+    function sortRecursively(file: FilerRecursiveStatInfo) {
       if (!file.isDirectory()) return;
 
       // $FlowExpectError
       const dir: FilerRecursiveDirectoryInfo = file;
       dir.contents.sort(cmpFile);
       dir.contents.forEach(f => sortRecursively(f));
-    };
+    }
+
+    const [root, contents] = await Promise.all([
+      fs.promises.stat(this.path),
+      sh.promises.ls(this.path, { recursive: true }),
+    ]);
+
+    root.contents = contents;
     sortRecursively(root);
 
     return root;
