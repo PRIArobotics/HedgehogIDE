@@ -13,6 +13,7 @@ import {
   LanguageBlocklyIcon,
   LanguageJavascriptIcon,
   MetadataPluginsIcon,
+  MetadataAssetsIcon,
   MetadataLayoutIcon,
   MetadataSimulatorIcon,
   MetadataToolboxIcon,
@@ -224,6 +225,18 @@ class FileMenu extends React.Component<PropTypes, StateTypes> {
                           })
                         }
                         icon={MetadataPluginsIcon}
+                      />,
+                      <FileMenuItem
+                        key="create_assets_directory"
+                        titleMsg={messages.createAssetsDirectory}
+                        onClick={() =>
+                          this.handleCreate({
+                            type: 'METADATA',
+                            name: 'assets',
+                            fileType: 'DIRECTORY',
+                          })
+                        }
+                        icon={MetadataAssetsIcon}
                       />,
                       <FileMenuItem
                         key="create_layout_config"
