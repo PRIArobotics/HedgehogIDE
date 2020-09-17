@@ -40,6 +40,22 @@ export type FilerRecursiveDirectoryInfo = FilerStatInfo & {
 
 export type FilerRecursiveStatInfo = FilerRecursiveDirectoryInfo | FilerStatInfo;
 
+/**
+ * Given a file, returns the named child file.
+ * The operation fails if the given file is not a directory,
+ * or if the named child does not exist.
+ */
+export function getChild(file: FilerRecursiveStatInfo, name: string): FilerRecursiveStatInfo {
+  if (!file.isDirectory()) throw new Error(`'${file.name}' is not a directory`);
+  // $FlowExpectError
+  const directory: FilerRecursiveDirectoryInfo = file;
+
+  // Find the child and make sure it exists
+  const child = directory.contents.find(f => f.name === name);
+  if (child === undefined) throw new Error(`'${name}' does not exist`);
+  return child;
+}
+
 export class ProjectError extends Error {
   name = 'ProjectError';
 }

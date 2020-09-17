@@ -40,6 +40,7 @@ import * as SimulationSchema from '../SimulatorEditor/SimulationSchema';
 import {
   type FilerRecursiveStatInfo,
   type FilerRecursiveDirectoryInfo,
+  getChild,
 } from '../../../core/store/projects';
 
 import useCreateFileDialog from '../FileTree/useCreateFileDialog';
@@ -235,21 +236,7 @@ function Ide({ projectName }: Props) {
 
     const [_root, ...fragments] = path.split('/');
 
-    // The reducer function navigates to the child in a directory.
-    // Therefore the parameter must be a directory - if it isn't, there can't be a child.
-    // The end result, however, can be a regular file.
-    const reducer = (file: FilerRecursiveStatInfo, name: string) => {
-      if (!file.isDirectory()) throw new Error(`'${file.name}' is not a directory`);
-      // $FlowExpectError
-      const directory: FilerRecursiveDirectoryInfo = file;
-
-      // Find the child and make sure it exists
-      const child = directory.contents.find(f => f.name === name);
-      if (child === undefined) throw new Error(`'${name}' does not exist`);
-      return child;
-    };
-
-    const file = fragments.reduce(reducer, projectCache.files);
+    const file = fragments.reduce(getChild, projectCache.files);
     return { path, file };
   }
 
