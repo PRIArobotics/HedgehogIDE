@@ -42,8 +42,13 @@ const messages = defineMessages({
   },
   createPluginsDirectory: {
     id: 'app.ide.file_menu.create_plugins_directory',
-    description: 'Menu item text for creating a plugin directory',
-    defaultMessage: 'Create Plugin Directory',
+    description: 'Menu item text for creating the plugin folder',
+    defaultMessage: 'Create Plugin Folder',
+  },
+  createAssetsDirectory: {
+    id: 'app.ide.file_menu.create_assets_directory',
+    description: 'Menu item text for creating the assets folder',
+    defaultMessage: 'Create Assets Folder',
   },
   createSimulatorConfiguration: {
     id: 'app.ide.file_menu.create_simulator_configuration',

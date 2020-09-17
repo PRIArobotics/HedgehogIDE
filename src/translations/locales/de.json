@@ -34,6 +34,7 @@
   "app.ide.create_file_dialog.title": "{type, select, FILE {Neue Datei} DIRECTORY {Neuen Ordner}} anlegen",
   "app.ide.delete_file_dialog.description": "Willst du {type, select, FILE {die Datei} DIRECTORY {den Ordner}} \"{name}\" wirklich löschen?",
   "app.ide.delete_file_dialog.title": "Löschen bestätigen",
+  "app.ide.file_menu.create_assets_directory": "Assets-Ordner anlegen",
   "app.ide.file_menu.create_blockly_file": "Neue Blockly-Datei",
   "app.ide.file_menu.create_folder": "Neuer Ordner",
   "app.ide.file_menu.create_js_file": "Neue Javascript-Datei",
