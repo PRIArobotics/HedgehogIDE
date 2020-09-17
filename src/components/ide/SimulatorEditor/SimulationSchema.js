@@ -21,7 +21,7 @@ type RenderVisibility = {|
 
 type RenderSprite = {|
   sprite?: {
-    texture: string,
+    texture?: string,
   },
 |};
 
