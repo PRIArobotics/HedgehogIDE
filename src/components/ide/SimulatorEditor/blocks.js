@@ -527,6 +527,53 @@ export const SIMULATOR_SETTINGS_VISIBILITY = {
   },
 };
 
+export const SIMULATOR_SETTINGS_SPRITE = {
+  blockJson: {
+    type: 'simulator_settings_sprite',
+    message0: 'sprite: %1 %2',
+    args0: [
+      {
+        type: 'field_input',
+        name: 'URL',
+        value: '',
+      },
+      {
+        type: 'input_value',
+        name: 'MORE',
+        check: 'SimulatorObjectSettings',
+      },
+    ],
+    inputsInline: false,
+    output: 'SimulatorObjectSettings',
+    colour: 180,
+    tooltip: 'sets a sprite to use to draw the object instead of a color',
+    helpUrl: 'TODO',
+  },
+  blockExtras: {
+    onchange: forbidsAncestor(['simulator_robot'], 'robots can not have sprites'),
+    getSettings() {
+      const url = this.getFieldValue('URL');
+      return {
+        render: {
+          sprite: { texture: url },
+        },
+      };
+    },
+  },
+  toolboxBlocks: {
+    default: () => (
+      <block type="simulator_settings_sprite">
+        <field name="URL">asset:foo.png</field>
+      </block>
+    ),
+    external: () => (
+      <block type="simulator_settings_sprite">
+        <field name="URL">https://example.com/foo.png</field>
+      </block>
+    ),
+  },
+};
+
 export const SIMULATOR_SETTINGS_STATIC = {
   blockJson: {
     type: 'simulator_settings_static',
@@ -750,6 +797,7 @@ const blocks = [
   SIMULATOR_SETTINGS_ROTATE,
   SIMULATOR_SETTINGS_COLOR,
   SIMULATOR_SETTINGS_VISIBILITY,
+  SIMULATOR_SETTINGS_SPRITE,
   SIMULATOR_SETTINGS_STATIC,
   SIMULATOR_SETTINGS_SENSOR,
   SIMULATOR_SETTINGS_LINE,
