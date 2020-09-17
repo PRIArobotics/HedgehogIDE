@@ -23,6 +23,14 @@ type Visibility = {|
   },
 |};
 
+type Sprite = {|
+  render?: {
+    sprite?: {
+      texture: string,
+    },
+  },
+|};
+
 type Static = {|
   isStatic?: boolean,
 |};
@@ -60,6 +68,7 @@ type RobotProps = {|
 type AllProps = {|
   ...RobotProps,
   ...Visibility,
+  ...Sprite,
   ...Static,
   ...Sensor,
   ...Line,
