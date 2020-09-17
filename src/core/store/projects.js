@@ -56,6 +56,20 @@ export function getChild(file: FilerRecursiveStatInfo, name: string): FilerRecur
   return child;
 }
 
+/**
+ * Given a file, returns one of its descendant files.
+ * The first fragment must be the name of a child of the given file,
+ * The second the name of one of that file's children and so on.
+ * The operation fails if an intermediate file file is not a directory,
+ * or if a named descendant does not exist.
+ */
+export function getDescendant(
+  file: FilerRecursiveStatInfo,
+  ...fragments: string[]
+): FilerRecursiveStatInfo {
+  return fragments.reduce(getChild, file);
+}
+
 export class ProjectError extends Error {
   name = 'ProjectError';
 }

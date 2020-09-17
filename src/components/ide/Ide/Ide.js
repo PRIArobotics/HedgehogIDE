@@ -40,7 +40,7 @@ import * as SimulationSchema from '../SimulatorEditor/SimulationSchema';
 import {
   type FilerRecursiveStatInfo,
   type FilerRecursiveDirectoryInfo,
-  getChild,
+  getDescendant,
 } from '../../../core/store/projects';
 
 import useCreateFileDialog from '../FileTree/useCreateFileDialog';
@@ -230,13 +230,16 @@ function Ide({ projectName }: Props) {
     // eslint-disable-next-line no-throw-literal
     if (projectCache === null) throw 'unreachable';
 
-    // the root path is the one path where a trailing slash is correct.
-    // however, this confuses our use of `split`, so handle it as a special case
-    if (path === './') return { path, file: projectCache.files };
+    const fragments = (() => {
+      // the root path is the one path where a trailing slash is correct.
+      // however, this confuses our use of `split`, so handle it as a special case
+      if (path === './') return [];
 
-    const [_root, ...fragments] = path.split('/');
+      const [_root, ...fragments] = path.split('/');
+      return fragments;
+    })();
 
-    const file = fragments.reduce(getChild, projectCache.files);
+    const file = getDescendant(projectCache.files, ...fragments);
     return { path, file };
   }
 
