@@ -21,6 +21,20 @@ Arguments:
 - `event`: Event name
 - `cb`: Handler function which will be called when the event occurs
 
+#### `sdk.<MODULE>.registerCall(command: string, cb: (payload: any) => void)`
+Register a command handler.
+
+Arguments:
+- `name`: Function name
+- `cb`: Handler function which will be called when the command is invoked
+
+#### `sdk.<MODULE>.registerCallWithReply(command: string, cb: (payload: any) => any)`
+Register a command handler that returns a result.
+
+Arguments:
+- `name`: Function name
+- `cb`: Handler function which will be called when the command is invoked
+
 #### `sdk.misc.exit()`
 Terminates the plugin.
 
