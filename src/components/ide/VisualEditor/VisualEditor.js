@@ -331,7 +331,14 @@ function VisualEditor({
     if (blocklyRef.current.workspace === null) throw 'workspace is null';
 
     const language = Blockly[codeLanguage];
-    return language.workspaceToCode(blocklyRef.current.workspace);
+    try {
+      return language.workspaceToCode(blocklyRef.current.workspace);
+    } catch (err) {
+      // Happens e.g. when deleting a function that is used somewhere.
+      // Blockly will quickly recover from this, so it's not a big deal.
+      // Just make sure the IDE doesn't crash until then.
+      return null;
+    }
   }
   function refreshCode() {
     if (blocklyRef.current === null || blocklyRef.current.workspace === null) return;
@@ -381,10 +388,13 @@ function VisualEditor({
         <ToolBarItem>
           <ToolBarIconButton
             onClick={() => {
-              onExecutionAction({
-                action: 'EXECUTE',
-                code: generateCode('JavaScript'),
-              });
+              const code = generateCode('JavaScript');
+              if (code !== null) {
+                onExecutionAction({
+                  action: 'EXECUTE',
+                  code,
+                });
+              }
             }}
             icon={ExecuteIcon}
             color="limegreen"
