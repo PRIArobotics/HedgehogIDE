@@ -62,57 +62,62 @@ export default async function init() {
   async function addBlock(taskHandle: TaskHandle, dynamicBlock: DynamicBlock) {
     // <GSL customizable: blockly-body-addBlock>
     // Your function code goes here
-    const { type } = dynamicBlock.blockJson;
-    if (type in Blockly.Blocks) {
-      throw new Error(`block with type '${type}' already exists`);
-    }
+    try {
+      const { type } = dynamicBlock.blockJson;
+      if (type in Blockly.Blocks) {
+        throw new Error(`block with type '${type}' already exists`);
+      }
 
-    const block = {
-      blockJson: dynamicBlock.blockJson,
-      generators: {
-        JavaScript: block => {
-          const hasOutput = 'output' in dynamicBlock.blockJson;
-          const callFunction = hasOutput ? 'callWithReply' : 'call';
+      const toolboxBlock = buildToolboxBlock(dynamicBlock);
+      const block = {
+        blockJson: dynamicBlock.blockJson,
+        generators: {
+          JavaScript: block => {
+            const hasOutput = 'output' in dynamicBlock.blockJson;
+            const callFunction = hasOutput ? 'callWithReply' : 'call';
 
-          let code = '';
-          code += `await sdk.misc.${callFunction}('${taskHandle.task.name}', 'blk_${type}', {\n`;
-          for (const { name, type } of dynamicBlock.blockJson.args0) {
-            let res;
-            if (type === 'input_value') {
-              res = Blockly.JavaScript.valueToCode(block, name, Blockly.JavaScript.ORDER_NONE);
-            } else if (type === 'input_statement') {
-              // TODO input_statement unsupported for now
-              res = undefined;
-            } else if (type === 'input_dummy') {
-              // nothing to do
-              res = undefined;
-            } else if (type.startsWith('field_')) {
-              res = block.getFieldValue(name);
-            } else {
-              // hopefully unreachable
-              res = undefined;
+            let code = '';
+            code += `await sdk.misc.${callFunction}('${taskHandle.task.name}', 'blk_${type}', {\n`;
+            for (const { name, type } of dynamicBlock.blockJson.args0) {
+              let res;
+              if (type === 'input_value') {
+                res = Blockly.JavaScript.valueToCode(block, name, Blockly.JavaScript.ORDER_NONE);
+              } else if (type === 'input_statement') {
+                // TODO input_statement unsupported for now
+                res = undefined;
+              } else if (type === 'input_dummy') {
+                // nothing to do
+                res = undefined;
+              } else if (type.startsWith('field_')) {
+                res = block.getFieldValue(name);
+              } else {
+                // hopefully unreachable
+                res = undefined;
+              }
+
+              if (res !== undefined) code += `  ${name}: ${res},\n`;
             }
+            code += `})`;
 
-            if (res !== undefined) code += `  ${name}: ${res},\n`;
-          }
-          code += `})`;
-
-          if (hasOutput) {
-            return [code, Blockly.JavaScript.ORDER_AWAIT];
-          } else {
-            return `${code};\n`;
+            if (hasOutput) {
+              return [code, Blockly.JavaScript.ORDER_AWAIT];
+            } else {
+              return `${code};\n`;
+            }
+          },
+          Python: block => {
+            return '';
           }
         },
-        Python: block => {
-          return '';
-        }
-      },
-      toolboxBlocks: {
-        default: () => buildToolboxBlock(dynamicBlock),
-      },
-    };
-    dynamicBlocks.push(block);
-    registerBlocklyBlock(block);
+        toolboxBlocks: {
+          default: () => toolboxBlock,
+        },
+      };
+      dynamicBlocks.push(block);
+      registerBlocklyBlock(block);
+    } catch (err) {
+      console.log(err);
+    }
     // </GSL customizable: blockly-body-addBlock>
   }
 
