@@ -240,6 +240,14 @@ function VisualEditor({
         <category name="%{BKY_CAT_TEXT}" colour="70">
           {miscBlocks.PRINT_BLOCK.toolboxBlocks.default()}
           <block type="text" />
+          <block type="text_join" inline="true">
+            <value name="ADD0">
+              <shadow type="text" />
+            </value>
+            <value name="ADD1">
+              <shadow type="text" />
+            </value>
+          </block>
         </category>
       </xml>,
     );
