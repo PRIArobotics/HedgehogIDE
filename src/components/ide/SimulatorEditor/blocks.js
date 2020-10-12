@@ -125,7 +125,7 @@ function collectSettings(object) {
 export const SIMULATOR_ROOT = {
   blockJson: {
     type: 'simulator_root',
-    message0: 'Simulation centered at (%1, %2) sized %3 x %4 %5 %6',
+    message0: 'Simulation centered at (%1, %2) sized %3 x %4, with wall:  %5 %6 %7',
     args0: [
       {
         type: 'field_number',
@@ -152,6 +152,11 @@ export const SIMULATOR_ROOT = {
         precision: 1,
       },
       {
+        type: 'field_checkbox',
+        name: 'WALLS',
+        checked: true,
+      },
+      {
         type: 'input_dummy',
       },
       {
@@ -173,18 +178,70 @@ export const SIMULATOR_ROOT = {
     serialize(): SimulationSchema.SimulatorJson {
       const objectTypes = ['simulator_robot', 'simulator_rect', 'simulator_circle'];
 
-      const objects = this.getDescendants(true)
+      const x = this.getFieldValue('X');
+      const y = this.getFieldValue('Y');
+      const width = this.getFieldValue('W');
+      const height = this.getFieldValue('H');
+
+      let objects = this.getDescendants(true)
         .filter(block => objectTypes.includes(block.type))
         .map(object => object.serialize());
 
+      if (this.getField('WALLS').getValueBoolean()) {
+        const template = {
+          type: "rectangle",
+          angle: 0,
+          isStatic: true,
+          render: {
+            fillStyle: '#222222'
+          },
+        };
+        objects = [
+          {
+            ...template,
+            width,
+            height: 10,
+            position: {
+              x: 0,
+              y: -(height /2 - 5),
+            },
+          },
+          {
+            ...template,
+            width,
+            height: 10,
+            position: {
+              x: 0,
+              y: height /2 - 5,
+            },
+          },
+          {
+            ...template,
+            width: 10,
+            height,
+            position: {
+              x: -(width /2 - 5),
+              y: 0,
+            },
+          },
+          {
+            ...template,
+            width: 10,
+            height,
+            position: {
+              x: width /2 - 5,
+              y: 0,
+            },
+          },
+          ...objects,
+        ];
+      }
+
       return {
         simulation: {
-          center: {
-            x: this.getFieldValue('X'),
-            y: this.getFieldValue('Y'),
-          },
-          width: this.getFieldValue('W'),
-          height: this.getFieldValue('H'),
+          center: { x, y },
+          width,
+          height,
         },
         objects,
       };
