@@ -356,11 +356,47 @@ function Help() {
           Probieren wir jetzt ein simples Programm:
         </Typography>
         <Typography variant="body1" component="div" paragraph>
-          <Grid container spacing={1}>
-            <Grid item xs={12} className={`${s.gridImg} ${s.gridImgLg}`}>
-              <img src={help4img1} alt="Beispielprogramm" />
-            </Grid>
-          </Grid>
+          <ReadOnlyBlockly width="100%" height="160px">
+            <block type="hedgehog_move2_unlimited">
+              <field name="PORT1">0</field>
+              <field name="PORT2">1</field>
+              <value name="SPEED1">
+                <shadow type="math_number">
+                  <field name="NUM">1000</field>
+                </shadow>
+              </value>
+              <value name="SPEED2">
+                <shadow type="math_number">
+                  <field name="NUM">1000</field>
+                </shadow>
+              </value>
+              <next>
+                <block type="controls_whileUntil">
+                  <field name="MODE">WHILE</field>
+                  <value name="BOOL">
+                    <block type="hedgehog_read_digital">
+                      <field name="PORT">8</field>
+                    </block>
+                  </value>
+                  <statement name="DO">
+                    <block type="hedgehog_sleep">
+                      <value name="TIME">
+                        <shadow type="math_number">
+                          <field name="NUM">0.01</field>
+                        </shadow>
+                      </value>
+                    </block>
+                  </statement>
+                  <next>
+                    <block type="hedgehog_brake2">
+                      <field name="PORT1">0</field>
+                      <field name="PORT2">1</field>
+                    </block>
+                  </next>
+                </block>
+              </next>
+            </block>
+          </ReadOnlyBlockly>
         </Typography>
         <Typography variant="body1" paragraph>
           Erstelle dieses Programm in deinem Projekt, dann klicke auf den grünen Pfeil. Du wirst
