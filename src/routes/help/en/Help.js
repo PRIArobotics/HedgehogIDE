@@ -55,7 +55,7 @@ function Help() {
       </>
       <>
         <Typography component="h2" variant="h4" gutterBottom>
-          Creating a project
+          <span id="project">Creating a project</span>
         </Typography>
         <Typography variant="body1" paragraph>
           A software project contains files that work together to create a program. Creating one is
@@ -101,7 +101,7 @@ function Help() {
       </>
       <>
         <Typography component="h2" variant="h4" gutterBottom>
-          Controlling a simulated robot with Blockly
+          <span id="simulation">Controlling a simulated robot with Blockly</span>
         </Typography>
         <Typography variant="body1" paragraph>
           Before you start adding blocks to your program, let&apos;s look at the simulator. Click on
@@ -127,11 +127,11 @@ function Help() {
       </>
       <>
         <Typography component="h2" variant="h4" gutterBottom>
-          Blockly Commands
+          <span id="blockly">Blockly Commands</span>
         </Typography>
         <>
           <Typography component="h3" variant="h5" gutterBottom>
-            Drive
+            <span id="blockly-drive">Drive</span>
           </Typography>
           <Typography variant="body1" paragraph>
               Commands in this category let you drive the robot by starting or stopping two motors
@@ -170,7 +170,7 @@ function Help() {
         </>
         <>
           <Typography component="h3" variant="h5" gutterBottom>
-            Motors
+            <span id="blockly-motors">Motors</span>
           </Typography>
           <Typography variant="body1" paragraph>
             Commands in this category let you control the robot's motors individually. Apart from that,
@@ -208,7 +208,7 @@ function Help() {
         </>
         <>
           <Typography component="h3" variant="h5" gutterBottom>
-            Servos
+            <span id="blockly-servos">Servos</span>
           </Typography>
           <Typography variant="body1" paragraph>
             Servos hold a position that is set for them. Servo positions are between 0 and 1000,
@@ -236,7 +236,7 @@ function Help() {
         </>
         <>
           <Typography component="h3" variant="h5" gutterBottom>
-            Sensoren
+            <span id="blockly-sensors">Sensoren</span>
           </Typography>
           <Typography variant="body1" paragraph>
             Sensors let the robot observe the simulated environment. Sensor values are between 0 and
@@ -321,7 +321,7 @@ function Help() {
         </>
         <>
           <Typography component="h3" variant="h5" gutterBottom>
-            Miscellaneous
+            <span id="blockly-misc">Miscellaneous</span>
           </Typography>
           <Typography variant="body1" component="div" paragraph>
             <ReadOnlyBlockly width="100%" height="60px">
@@ -418,7 +418,7 @@ function Help() {
       </>
       <>
         <Typography component="h2" variant="h4" gutterBottom>
-          Exporting & importing files
+        <span id="export-import">Exporting & importing files</span>
         </Typography>
         <Typography variant="body1" paragraph>
           To download one of your files so that you can, for example, share it with others, right

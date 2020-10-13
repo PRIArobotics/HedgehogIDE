@@ -57,7 +57,7 @@ function Help() {
       </>
       <>
         <Typography component="h2" variant="h4" gutterBottom>
-          Ein Projekt anlegen
+          <span id="project">Ein Projekt anlegen</span>
         </Typography>
         <Typography variant="body1" paragraph>
           Ein Softwareprojekt enthält Dateien, die zusammen ein Programm ergeben. Ein Projekt
@@ -103,7 +103,7 @@ function Help() {
       </>
       <>
         <Typography component="h2" variant="h4" gutterBottom>
-          Einen simulierten Roboter mit Blockly steuern
+          <span id="simulation">Einen simulierten Roboter mit Blockly steuern</span>
         </Typography>
         <Typography variant="body1" paragraph>
           Bevor du beginnst Blöcke zu deinem Programm hinzuzufügen, machen wir schnell einen Blick auf
@@ -130,11 +130,11 @@ function Help() {
       </>
       <>
         <Typography component="h2" variant="h4" gutterBottom>
-          Die Blockly-Befehle
+          <span id="blockly">Die Blockly-Befehle</span>
         </Typography>
         <>
           <Typography component="h3" variant="h5" gutterBottom>
-            Fahren
+            <span id="blockly-drive">Fahren</span>
           </Typography>
           <Typography variant="body1" paragraph>
               Diese Kategorie enthält Befehle, um immer zwei Motoren gleichzeitig zu steuern. Dadurch
@@ -174,7 +174,7 @@ function Help() {
         </>
         <>
           <Typography component="h3" variant="h5" gutterBottom>
-            Motoren
+            <span id="blockly-motors">Motoren</span>
           </Typography>
           <Typography variant="body1" paragraph>
             In dieser Kategorie sind Befehle, um Motoren einzeln anzusteuern. Die Befehle
@@ -212,7 +212,7 @@ function Help() {
         </>
         <>
           <Typography component="h3" variant="h5" gutterBottom>
-            Servos
+            <span id="blockly-servos">Servos</span>
           </Typography>
           <Typography variant="body1" paragraph>
             Servos können auf Positionen eingestellt werden, die zwischen 0 und 1000 bzw. zwischen
@@ -239,7 +239,7 @@ function Help() {
         </>
         <>
           <Typography component="h3" variant="h5" gutterBottom>
-            Sensoren
+            <span id="blockly-sensors">Sensoren</span>
           </Typography>
           <Typography variant="body1" paragraph>
               Mit Sensoren kann der Roboter seine Umgebung wahrnehmen. Sensorwerte liegen zwischen
@@ -328,7 +328,7 @@ function Help() {
         </>
         <>
           <Typography component="h3" variant="h5" gutterBottom>
-            Verschiedenes
+            <span id="blockly-misc">Verschiedenes</span>
           </Typography>
           <Typography variant="body1" component="div" paragraph>
             <ReadOnlyBlockly width="100%" height="60px">
@@ -426,7 +426,7 @@ function Help() {
       </>
       <>
         <Typography component="h2" variant="h4" gutterBottom>
-          Dateien exportieren & importieren
+          <span id="export-import">Dateien exportieren &amp; importieren</span>
         </Typography>
         <Typography variant="body1" paragraph>
           Willst du eine deiner Dateien herunterzuladen, z.B. um diese mit anderen zu teilen, mach
