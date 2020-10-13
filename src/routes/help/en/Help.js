@@ -9,6 +9,12 @@ import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 
 import Link from '../../../components/misc/Link';
+import ReadOnlyBlockly from '../../../components/ide/ReadOnlyBlockly';
+
+import Blockly, {
+  hedgehogBlocks,
+  miscBlocks,
+} from '../../../components/ide/VisualEditor/blockly_config.js';
 
 import s from '../Help.scss';
 
@@ -120,81 +126,223 @@ function Help() {
         </Typography>
       </>
       <>
-        <Typography variant="body1" paragraph>
-          Blockly commands are organized by categories:
+        <Typography component="h2" variant="h4" gutterBottom>
+          Blockly Commands
         </Typography>
-        <Typography variant="body1" component="div" paragraph>
-          <ul>
-            <li>
-              <strong>Drive</strong> lets you drive the robot by starting or stopping two motors at
-              the same time. Motors can use speeds between -1000 and +1000. The simulated robot&apos;s
-              left wheel is motor 0, the right wheel motor 1.
-            </li>
-            <li>
-              <strong>Motors</strong> lets you control motors individually.
-            </li>
-            <li>
-              <strong>Servos</strong> lets you control servos. Servo positions are between 0 and 1000.
-              The simulated robot does not yet have any servos, though. Stay tuned!
-            </li>
-            <li>
-              <strong>Sensors</strong> lets you observe the simulated environment. Sensor values are
-              between 0 and 4095, the exact value ranges depend on the type of sensor though. The
-              simulated robot has eight sensors at its front:
-              <ul>
-                <li>
-                  Four line sensors that can detect black lines on the ground; these are sensors 0 to
-                  3, from left to right. These sensors change color to orange when a line is detected.
-                  <br />
-                  <strong>Values:</strong> The sensor value is high when a (dark) line is detected,
-                  otherwise (on light surfaces) it is low.
-                </li>
-                <li>
-                  Three distance sensors looking forward and slightly to the sides can detect
-                  obstacles without touching them; these are sensors 4 to 6, from left to right. The
-                  rays coming out of the robot's front indicate the direction and range of these
-                  sensors.
-                  <br />
-                  <strong>Values:</strong> The sensor value increases when getting closer to an
-                  obstacle, then decreases again when the obstacle almost touches the robot. This
-                  behavior models a distance sensor very popular in hobby robotics.
-                </li>
-                <li>
-                  One bump sensor that is almost as wide as the robot front; this is sensor 8. This
-                  sensor changes color to orange when a line is detected.
-                  <br />
-                  <strong>Values:</strong> The sensor value is low when a collision is detected. This
-                  behavior models a &quot;pull-up&quot; circuit that is often used for touch sensors.
-                </li>
-              </ul>
-              Sensors come in two varieties, analog and digital:
-              <ul>
-                <li>
-                  <strong>Analog</strong> sensors can take on many different values; a good example is
-                  the distance sensor. To use an analog sensor, you have to work with the numeric
-                  values between 0 and 4095.
-                </li>
-                <li>
-                  <strong>Digital</strong> sensors only have two possible states, e.g.
-                  &quot;collision&quot; and &quot;no collision&quot; or &quot;line&quot; or &quot;no
-                  line&quot;. For these sensors, you can simplify your work by using digital values:
-                  <ul>
-                    <li>
-                      Analog values 0 bis 2047: Digital value <code>false</code>
-                    </li>
-                    <li>
-                      Analog values 2048 bis 4095: Digital value <code>true</code>
-                    </li>
-                  </ul>
-                </li>
-              </ul>
-            </li>
-            <li>
-              The other categories contain general programming constructs, such as conditionals and
-              loops.
-            </li>
-          </ul>
-        </Typography>
+        <>
+          <Typography component="h3" variant="h5" gutterBottom>
+            Drive
+          </Typography>
+          <Typography variant="body1" paragraph>
+              Commands in this category let you drive the robot by starting or stopping two motors
+              at the same time. Motors can use speeds between -1000 and +1000. The simulated
+              robot&apos;s left wheel is motor 0, the right wheel motor 1.
+          </Typography>
+          <Typography variant="body1" component="div" paragraph>
+            <ReadOnlyBlockly width="100%" height="60px">
+              {hedgehogBlocks.HEDGEHOG_MOVE2_UNLIMITED.toolboxBlocks.default()}
+            </ReadOnlyBlockly>
+          </Typography>
+          <Typography variant="body1" component="div" paragraph>
+            <ReadOnlyBlockly width="100%" height="60px">
+              {hedgehogBlocks.HEDGEHOG_MOVE2.toolboxBlocks.default()}
+            </ReadOnlyBlockly>
+          </Typography>
+          <Typography variant="body1" paragraph>
+            These commands start the motors. The second variant also brakes the motors after the
+            specified time.
+          </Typography>
+          <Typography variant="body1" component="div" paragraph>
+            <ReadOnlyBlockly width="100%" height="50px">
+              {hedgehogBlocks.HEDGEHOG_MOTOR_OFF2.toolboxBlocks.default()}
+            </ReadOnlyBlockly>
+          </Typography>
+          <Typography variant="body1" component="div" paragraph>
+            <ReadOnlyBlockly width="100%" height="50px">
+              {hedgehogBlocks.HEDGEHOG_BRAKE2.toolboxBlocks.default()}
+            </ReadOnlyBlockly>
+          </Typography>
+          <Typography variant="body1" paragraph>
+            These commands stop the motors. Currently both commands do the same thing in the
+            simulation. The idea is that turning off lets the wheels roll out, while braking stops
+            the robot quickly.
+          </Typography>
+        </>
+        <>
+          <Typography component="h3" variant="h5" gutterBottom>
+            Motors
+          </Typography>
+          <Typography variant="body1" paragraph>
+            Commands in this category let you control the robot's motors individually. Apart from that,
+            the commands work like those in the Drive category.
+          </Typography>
+          <Typography variant="body1" component="div" paragraph>
+            <ReadOnlyBlockly width="100%" height="60px">
+              {hedgehogBlocks.HEDGEHOG_MOVE_UNLIMITED.toolboxBlocks.default()}
+            </ReadOnlyBlockly>
+          </Typography>
+          <Typography variant="body1" component="div" paragraph>
+            <ReadOnlyBlockly width="100%" height="60px">
+              {hedgehogBlocks.HEDGEHOG_MOVE.toolboxBlocks.default()}
+            </ReadOnlyBlockly>
+          </Typography>
+          <Typography variant="body1" paragraph>
+            These commands start a motor. The second variant also brakes the motor after the
+            specified time.
+          </Typography>
+          <Typography variant="body1" component="div" paragraph>
+            <ReadOnlyBlockly width="100%" height="50px">
+              {hedgehogBlocks.HEDGEHOG_MOTOR_OFF.toolboxBlocks.default()}
+            </ReadOnlyBlockly>
+          </Typography>
+          <Typography variant="body1" component="div" paragraph>
+            <ReadOnlyBlockly width="100%" height="50px">
+              {hedgehogBlocks.HEDGEHOG_BRAKE.toolboxBlocks.default()}
+            </ReadOnlyBlockly>
+          </Typography>
+          <Typography variant="body1" paragraph>
+            These commands stop the motor. Currently both commands do the same thing in the
+            simulation. The idea is that turning off lets the wheel roll out, while braking stops
+            the motor quickly.
+          </Typography>
+        </>
+        <>
+          <Typography component="h3" variant="h5" gutterBottom>
+            Servos
+          </Typography>
+          <Typography variant="body1" paragraph>
+            Servos hold a position that is set for them. Servo positions are between 0 and 1000,
+            corresponding to 0° and 180°. The simulated robot does not yet have any servos, though.
+            Stay tuned!
+          </Typography>
+          <Typography variant="body1" component="div" paragraph>
+            <ReadOnlyBlockly width="100%" height="60px">
+              {hedgehogBlocks.HEDGEHOG_SERVO.toolboxBlocks.default()}
+            </ReadOnlyBlockly>
+          </Typography>
+          <Typography variant="body1" paragraph>
+            This command sets the servo to a certain position. Even if there's resistance (e.g.
+            an obstacle) the servo will try to hold its position.
+          </Typography>
+          <Typography variant="body1" component="div" paragraph>
+            <ReadOnlyBlockly width="100%" height="50px">
+              {hedgehogBlocks.HEDGEHOG_SERVO_OFF.toolboxBlocks.default()}
+            </ReadOnlyBlockly>
+          </Typography>
+          <Typography variant="body1" paragraph>
+            This command turns the servo off. The servo will not hold its position if there's
+            resistance.
+          </Typography>
+        </>
+        <>
+          <Typography component="h3" variant="h5" gutterBottom>
+            Sensoren
+          </Typography>
+          <Typography variant="body1" paragraph>
+            Sensors let the robot observe the simulated environment. Sensor values are between 0 and
+            4095, the exact value ranges depend on the type of sensor though.
+          </Typography>
+          <Typography variant="body1" component="div" paragraph>
+            The simulated robot has eight sensors at its front:
+            <ul>
+              <li>
+                Four line sensors that can detect black lines on the ground; these are sensors 0 to
+                3, from left to right. These sensors change color to orange when a line is detected.
+                <br />
+                <strong>Values:</strong> The sensor value is high when a (dark) line is detected,
+                otherwise (on light surfaces) it is low.
+              </li>
+              <li>
+                Three distance sensors looking forward and slightly to the sides can detect
+                obstacles without touching them; these are sensors 4 to 6, from left to right. The
+                rays coming out of the robot's front indicate the direction and range of these
+                sensors.
+                <br />
+                <strong>Values:</strong> The sensor value increases when getting closer to an
+                obstacle, then decreases again when the obstacle almost touches the robot. This
+                behavior models a distance sensor very popular in hobby robotics.
+              </li>
+              <li>
+                One bump sensor that is almost as wide as the robot front; this is sensor 8. This
+                sensor changes color to orange when a line is detected.
+                <br />
+                <strong>Values:</strong> The sensor value is low when a collision is detected. This
+                behavior models a &quot;pull-up&quot; circuit that is often used for touch sensors.
+              </li>
+            </ul>
+          </Typography>
+          <Typography variant="body1" component="div" paragraph>
+            Sensors come in two varieties, analog and digital:
+            <ul>
+              <li>
+                <strong>Analog</strong> sensors can take on many different values; a good example is
+                the distance sensor. To use an analog sensor, you have to work with the numeric
+                values between 0 and 4095.
+              </li>
+              <li>
+                <strong>Digital</strong> sensors only have two possible states, e.g.
+                &quot;collision&quot; and &quot;no collision&quot; or &quot;line&quot; or &quot;no
+                line&quot;. For these sensors, you can simplify your work by using digital values:
+                <ul>
+                  <li>
+                    Analog values 0 bis 2047: Digital value <code>false</code>
+                  </li>
+                  <li>
+                    Analog values 2048 bis 4095: Digital value <code>true</code>
+                  </li>
+                </ul>
+              </li>
+            </ul>
+          </Typography>
+          <Typography variant="body1" component="div" paragraph>
+            <ReadOnlyBlockly width="100%" height="50px">
+              {hedgehogBlocks.HEDGEHOG_READ_DIGITAL.toolboxBlocks.default()}
+            </ReadOnlyBlockly>
+          </Typography>
+          <Typography variant="body1" paragraph>
+            Reads the digital value of a sensor.
+          </Typography>
+          <Typography variant="body1" component="div" paragraph>
+            <ReadOnlyBlockly width="100%" height="50px">
+              {hedgehogBlocks.HEDGEHOG_READ_ANALOG.toolboxBlocks.default()}
+            </ReadOnlyBlockly>
+          </Typography>
+          <Typography variant="body1" component="div" paragraph>
+            <ReadOnlyBlockly width="100%" height="60px">
+              {hedgehogBlocks.HEDGEHOG_READ_ANALOG.toolboxBlocks.comparison()}
+            </ReadOnlyBlockly>
+          </Typography>
+          <Typography variant="body1" paragraph>
+            Reads the analog value of a sensor. The second example compares the value to a threshold
+            to convert it to a (digital) truth value (true/false). The threshold of 2048 leads to
+            the same behavior as the block for reading a digital value, but using the comparison
+            block lets you adjust the threshold.
+          </Typography>
+        </>
+        <>
+          <Typography component="h3" variant="h5" gutterBottom>
+            Miscellaneous
+          </Typography>
+          <Typography variant="body1" component="div" paragraph>
+            <ReadOnlyBlockly width="100%" height="60px">
+              {hedgehogBlocks.HEDGEHOG_SLEEP.toolboxBlocks.default()}
+            </ReadOnlyBlockly>
+          </Typography>
+          <Typography variant="body1" paragraph>
+            This block lets the program pause for the specified duration. If any motors are turned
+            on, they will continue to move during that time.
+          </Typography>
+          <Typography variant="body1" component="div" paragraph>
+            <ReadOnlyBlockly width="100%" height="60px">
+              {miscBlocks.PRINT_BLOCK.toolboxBlocks.default()}
+            </ReadOnlyBlockly>
+          </Typography>
+          <Typography variant="body1" paragraph>
+            This command displays a value on the console. The value may be a text, a number or a
+            digital truth value. It's often useful to display sensor values when a program isn't
+            doing what it should.
+          </Typography>
+        </>
       </>
       <>
         <Typography variant="body1" paragraph>

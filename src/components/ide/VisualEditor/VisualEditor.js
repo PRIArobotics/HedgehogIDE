@@ -90,16 +90,16 @@ function VisualEditor({
       <xml>
         <category name="%{BKY_HEDGEHOG_CAT_DRIVE}" colour="120">
           {hedgehogBlocks.HEDGEHOG_MOVE2_UNLIMITED.toolboxBlocks.default()}
+          {hedgehogBlocks.HEDGEHOG_MOVE2.toolboxBlocks.default()}
           {hedgehogBlocks.HEDGEHOG_MOTOR_OFF2.toolboxBlocks.default()}
           {hedgehogBlocks.HEDGEHOG_BRAKE2.toolboxBlocks.default()}
-          {hedgehogBlocks.HEDGEHOG_MOVE2.toolboxBlocks.default()}
           {hedgehogBlocks.HEDGEHOG_SLEEP.toolboxBlocks.default()}
         </category>
         <category name="%{BKY_HEDGEHOG_CAT_MOTORS}" colour="120">
           {hedgehogBlocks.HEDGEHOG_MOVE_UNLIMITED.toolboxBlocks.default()}
+          {hedgehogBlocks.HEDGEHOG_MOVE.toolboxBlocks.default()}
           {hedgehogBlocks.HEDGEHOG_MOTOR_OFF.toolboxBlocks.default()}
           {hedgehogBlocks.HEDGEHOG_BRAKE.toolboxBlocks.default()}
-          {hedgehogBlocks.HEDGEHOG_MOVE.toolboxBlocks.default()}
           {hedgehogBlocks.HEDGEHOG_SLEEP.toolboxBlocks.default()}
         </category>
         <category name="%{BKY_HEDGEHOG_CAT_SERVOS}" colour="120">

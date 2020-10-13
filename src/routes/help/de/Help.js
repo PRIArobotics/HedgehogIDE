@@ -9,6 +9,12 @@ import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 
 import Link from '../../../components/misc/Link';
+import ReadOnlyBlockly from '../../../components/ide/ReadOnlyBlockly';
+
+import Blockly, {
+  hedgehogBlocks,
+  miscBlocks,
+} from '../../../components/ide/VisualEditor/blockly_config.js';
 
 import s from '../Help.scss';
 
@@ -123,87 +129,227 @@ function Help() {
         </Typography>
       </>
       <>
-        <Typography variant="body1" paragraph>
-          Die Blockly-Befehle sind in mehrere Kategorien eingeteilt:
+        <Typography component="h2" variant="h4" gutterBottom>
+          Die Blockly-Befehle
         </Typography>
-        <Typography variant="body1" component="div" paragraph>
-          <ul>
-            <li>
-              Die Kategorie <strong>Fahren</strong> enthält Befehle, um immer zwei Motoren
-              gleichzeitig zu steuern. Dadurch können beide Räder des Roboters zeitgleich gestartet
-              oder angehalten werden. Die Geschwindigkeit der Motoren wird als Zahl zwischen -1000 und
-              +1000 angegeben. Der Simulierte Roboter hat sein linkes Rad an Motor 0, sein rechtes an
-              Motor 1.
-            </li>
-            <li>
-              In der <strong>Motoren</strong>-Kategorie sind Befehle, um Motoren einzeln anzusteuern.
-            </li>
-            <li>
-              <strong>Servos</strong> können auf Positionen eingestellt werden, die zwischen 0 und
-              1000 angegeben werden. Der simulierte Roboter hat momentan noch keine Servos.
-            </li>
-            <li>
-              Mit <strong>Sensoren</strong> kann der Roboter seine Umgebung wahrnehmen. Sensorwerte
-              liegen zwischen 0 und 4095, die genauen Wertebereiche hängen aber von der Art des
-              Sensors ab. Vorne hat der simulierte Roboter acht Sensoren:
-              <ul>
-                <li>
-                  Vier Liniensensoren, die schwarze Linien auf dem Boden erkennen können. Das sind von
-                  links nach rechts die Sensoren 0 bis 3. Die Sensoren werden orange dargestellt, wenn
-                  eine Linie erkannt wird.
-                  <br />
-                  <strong>Werte:</strong> Wenn eine (dunkle) Linie unter dem Sensor erkannt wird, ist
-                  der Sensorwert hoch, sonst (auf heller Oberfläche) niedrig.
-                </li>
-                <li>
-                  Drei Abstandssensoren, die seitlich und direkt nach vorne gerichtet sind und mit
-                  denen Hindernissen ohne Berührung erkannt werden können. Das sind von links nach
-                  rechts die Sensoren 4 bis 6. Die Strahlen vor dem Roboter stellen die Richtung und
-                  Reichweite der Abstandssensoren dar.
-                  <br />
-                  <strong>Werte:</strong> Wenn ein Hindernis näher kommt steigt der Wert zuerst an,
-                  wenn es den Roboter fast berührt sinkt er wieder. Dieses Verhalten bildet einen
-                  häufig verwendeten Abstandssensor aus der Hobby-Robotik nach.
-                </li>
-                <li>
-                  Ein Stoßsensor, der fast so breit ist wie der Roboter selbst, befindet sich vorne am
-                  Roboter. Dieser Sensor hat die Nummer 8. Er wird orange dargestellt, wenn eine
-                  Kollision erkannt wird.
-                  <br />
-                  <strong>Werte:</strong> Der Wert ist niedrig, wenn eine Kollision erkannt wird.
-                  Dieses Verhalten bildet die elektronische &quot;pull-up&quot; Schaltung für
-                  Tastsensoren nach.
-                </li>
-              </ul>
-              Sensoren gibt es in zwei Arten, analog und digital:
-              <ul>
-                <li>
-                  <strong>Analoge</strong> Sensoren können viele verschiedene Werte Annehmen; der
-                  Abstandssensor ist dafür ein gutes Beispiel. Um einen Analogsensor zu benutzen,
-                  musst du mit den Werten zwischen 0 und 4095 arbeiten.
-                </li>
-                <li>
-                  <strong>Digitale</strong> Sensoren haben nur zwei mögliche Zustände, zum Beispiel
-                  &quot;Zusammenstoß&quot; und &quot;kein Zusammenstoß&quot; oder &quot;Linie
-                  erkannt&quot; und &quot;keine Linie erkannt&quot;. Bei diesen Sensoren kann man auch
-                  den entsprechenden Digitalwert abfragen:
-                  <ul>
-                    <li>
-                      Analogwerte 0 bis 2047: Digitalwert <code>false</code>, &quot;falsch&quot;
-                    </li>
-                    <li>
-                      Analogwerte 2048 bis 4095: Digitalwert <code>true</code>, &quot;wahr&quot;
-                    </li>
-                  </ul>
-                </li>
-              </ul>
-            </li>
-            <li>
-              Die anderen Kategorien enthalten generelle Programmierwerkzeuge, etwa Unterscheidungen
-              und Schleifen.
-            </li>
-          </ul>
-        </Typography>
+        <>
+          <Typography component="h3" variant="h5" gutterBottom>
+            Fahren
+          </Typography>
+          <Typography variant="body1" paragraph>
+              Diese Kategorie enthält Befehle, um immer zwei Motoren gleichzeitig zu steuern. Dadurch
+              können beide Räder des Roboters zeitgleich gestartet oder angehalten werden. Die
+              Geschwindigkeit der Motoren wird als Zahl zwischen -1000 und +1000 angegeben. Der
+              Simulierte Roboter hat sein linkes Rad an Motor 0, sein rechtes an Motor 1.
+          </Typography>
+          <Typography variant="body1" component="div" paragraph>
+            <ReadOnlyBlockly width="100%" height="60px">
+              {hedgehogBlocks.HEDGEHOG_MOVE2_UNLIMITED.toolboxBlocks.default()}
+            </ReadOnlyBlockly>
+          </Typography>
+          <Typography variant="body1" component="div" paragraph>
+            <ReadOnlyBlockly width="100%" height="60px">
+              {hedgehogBlocks.HEDGEHOG_MOVE2.toolboxBlocks.default()}
+            </ReadOnlyBlockly>
+          </Typography>
+          <Typography variant="body1" paragraph>
+            Diese Befehle starten die Motoren. Bei der zweiten Variante wird der Roboter nach einer
+            gewissen Zeit wieder abgebremst.
+          </Typography>
+          <Typography variant="body1" component="div" paragraph>
+            <ReadOnlyBlockly width="100%" height="50px">
+              {hedgehogBlocks.HEDGEHOG_MOTOR_OFF2.toolboxBlocks.default()}
+            </ReadOnlyBlockly>
+          </Typography>
+          <Typography variant="body1" component="div" paragraph>
+            <ReadOnlyBlockly width="100%" height="50px">
+              {hedgehogBlocks.HEDGEHOG_BRAKE2.toolboxBlocks.default()}
+            </ReadOnlyBlockly>
+          </Typography>
+          <Typography variant="body1" paragraph>
+            Diese Befehle stoppen die Motoren. Momentan machen beide Befehle in der Simulation das
+            gleiche, aber die Idee ist, dass der Roboter bei Ausschalten weiter ausrollt, beim Bremsen
+            schnell stehenbleibt.
+          </Typography>
+        </>
+        <>
+          <Typography component="h3" variant="h5" gutterBottom>
+            Motoren
+          </Typography>
+          <Typography variant="body1" paragraph>
+            In dieser Kategorie sind Befehle, um Motoren einzeln anzusteuern. Die Befehle
+            funktionieren sonst genau so wie die Fahrbefehle.
+          </Typography>
+          <Typography variant="body1" component="div" paragraph>
+            <ReadOnlyBlockly width="100%" height="60px">
+              {hedgehogBlocks.HEDGEHOG_MOVE_UNLIMITED.toolboxBlocks.default()}
+            </ReadOnlyBlockly>
+          </Typography>
+          <Typography variant="body1" component="div" paragraph>
+            <ReadOnlyBlockly width="100%" height="60px">
+              {hedgehogBlocks.HEDGEHOG_MOVE.toolboxBlocks.default()}
+            </ReadOnlyBlockly>
+          </Typography>
+          <Typography variant="body1" paragraph>
+            Diese Befehle starten einen Motor. Bei der zweiten Variante wird der Motor nach einer
+            gewissen Zeit wieder abgebremst.
+          </Typography>
+          <Typography variant="body1" component="div" paragraph>
+            <ReadOnlyBlockly width="100%" height="50px">
+              {hedgehogBlocks.HEDGEHOG_MOTOR_OFF.toolboxBlocks.default()}
+            </ReadOnlyBlockly>
+          </Typography>
+          <Typography variant="body1" component="div" paragraph>
+            <ReadOnlyBlockly width="100%" height="50px">
+              {hedgehogBlocks.HEDGEHOG_BRAKE.toolboxBlocks.default()}
+            </ReadOnlyBlockly>
+          </Typography>
+          <Typography variant="body1" paragraph>
+            Diese Befehle stoppen einen Motor. Momentan machen beide Befehle in der Simulation das
+            gleiche, aber die Idee ist, dass der Motor bei Ausschalten weiter ausrollt, beim Bremsen
+            schnell stehenbleibt.
+          </Typography>
+        </>
+        <>
+          <Typography component="h3" variant="h5" gutterBottom>
+            Servos
+          </Typography>
+          <Typography variant="body1" paragraph>
+            Servos können auf Positionen eingestellt werden, die zwischen 0 und 1000 bzw. zwischen
+            0° und 180° angegeben werden. Der simulierte Roboter hat momentan noch keine Servos.
+          </Typography>
+          <Typography variant="body1" component="div" paragraph>
+            <ReadOnlyBlockly width="100%" height="60px">
+              {hedgehogBlocks.HEDGEHOG_SERVO.toolboxBlocks.default()}
+            </ReadOnlyBlockly>
+          </Typography>
+          <Typography variant="body1" paragraph>
+            Dieser Befehl stellt den Servo auf eine Position ein. Auch bei Widerstand (z.B. einem
+            Hindernis) versucht der Servo den eingestellten Winkel zu halten.
+          </Typography>
+          <Typography variant="body1" component="div" paragraph>
+            <ReadOnlyBlockly width="100%" height="50px">
+              {hedgehogBlocks.HEDGEHOG_SERVO_OFF.toolboxBlocks.default()}
+            </ReadOnlyBlockly>
+          </Typography>
+          <Typography variant="body1" paragraph>
+            Dieser Befehl schaltet den Servo aus. Der Servo wird seine Position bei Widerstand nicht
+            halten.
+          </Typography>
+        </>
+        <>
+          <Typography component="h3" variant="h5" gutterBottom>
+            Sensoren
+          </Typography>
+          <Typography variant="body1" paragraph>
+              Mit Sensoren kann der Roboter seine Umgebung wahrnehmen. Sensorwerte liegen zwischen
+              0 und 4095, die genauen Wertebereiche hängen aber von der Art des Sensors ab.
+          </Typography>
+          <Typography variant="body1" component="div" paragraph>
+            Vorne hat der simulierte Roboter acht Sensoren:
+            <ul>
+              <li>
+                Vier Liniensensoren, die schwarze Linien auf dem Boden erkennen können. Das sind von
+                links nach rechts die Sensoren 0 bis 3. Die Sensoren werden orange dargestellt, wenn
+                eine Linie erkannt wird.
+                <br />
+                <strong>Werte:</strong> Wenn eine (dunkle) Linie unter dem Sensor erkannt wird, ist
+                der Sensorwert hoch, sonst (auf heller Oberfläche) niedrig.
+              </li>
+              <li>
+                Drei Abstandssensoren, die seitlich und direkt nach vorne gerichtet sind und mit
+                denen Hindernissen ohne Berührung erkannt werden können. Das sind von links nach
+                rechts die Sensoren 4 bis 6. Die Strahlen vor dem Roboter stellen die Richtung und
+                Reichweite der Abstandssensoren dar.
+                <br />
+                <strong>Werte:</strong> Wenn ein Hindernis näher kommt steigt der Wert zuerst an,
+                wenn es den Roboter fast berührt sinkt er wieder. Dieses Verhalten bildet einen
+                häufig verwendeten Abstandssensor aus der Hobby-Robotik nach.
+              </li>
+              <li>
+                Ein Stoßsensor, der fast so breit ist wie der Roboter selbst, befindet sich vorne am
+                Roboter. Dieser Sensor hat die Nummer 8. Er wird orange dargestellt, wenn eine
+                Kollision erkannt wird.
+                <br />
+                <strong>Werte:</strong> Der Wert ist niedrig, wenn eine Kollision erkannt wird.
+                Dieses Verhalten bildet die elektronische &quot;pull-up&quot; Schaltung für
+                Tastsensoren nach.
+              </li>
+            </ul>
+          </Typography>
+          <Typography variant="body1" component="div" paragraph>
+            Sensoren gibt es in zwei Arten, analog und digital:
+            <ul>
+              <li>
+                <strong>Analoge</strong> Sensoren können viele verschiedene Werte Annehmen; der
+                Abstandssensor ist dafür ein gutes Beispiel. Um einen Analogsensor zu benutzen,
+                musst du mit den Werten zwischen 0 und 4095 arbeiten.
+              </li>
+              <li>
+                <strong>Digitale</strong> Sensoren haben nur zwei mögliche Zustände, zum Beispiel
+                &quot;Zusammenstoß&quot; und &quot;kein Zusammenstoß&quot; oder &quot;Linie
+                erkannt&quot; und &quot;keine Linie erkannt&quot;. Bei diesen Sensoren kann man auch
+                den entsprechenden Digitalwert abfragen:
+                <ul>
+                  <li>
+                    Analogwerte 0 bis 2047: Digitalwert <code>false</code>, &quot;falsch&quot;
+                  </li>
+                  <li>
+                    Analogwerte 2048 bis 4095: Digitalwert <code>true</code>, &quot;wahr&quot;
+                  </li>
+                </ul>
+              </li>
+            </ul>
+          </Typography>
+          <Typography variant="body1" component="div" paragraph>
+            <ReadOnlyBlockly width="100%" height="50px">
+              {hedgehogBlocks.HEDGEHOG_READ_DIGITAL.toolboxBlocks.default()}
+            </ReadOnlyBlockly>
+          </Typography>
+          <Typography variant="body1" paragraph>
+            Liest den digitalen Wert eines Sensors aus.
+          </Typography>
+          <Typography variant="body1" component="div" paragraph>
+            <ReadOnlyBlockly width="100%" height="50px">
+              {hedgehogBlocks.HEDGEHOG_READ_ANALOG.toolboxBlocks.default()}
+            </ReadOnlyBlockly>
+          </Typography>
+          <Typography variant="body1" component="div" paragraph>
+            <ReadOnlyBlockly width="100%" height="60px">
+              {hedgehogBlocks.HEDGEHOG_READ_ANALOG.toolboxBlocks.comparison()}
+            </ReadOnlyBlockly>
+          </Typography>
+          <Typography variant="body1" paragraph>
+            Liest den analogen Wert eines Sensors aus. Das untere Beispiel vergleicht den Wert mit
+            einem Grenzwert, um daraus einen (digitalen) Wahrheitswert (wahr/falsch) zu machen. Der
+            Grenzwert 2048 verhält sich genau gleich wie der obere Block zum auslesen des
+            Digitalwerts. Mit dem Vergleichsblock kann der Grenzwert aber angepasst werden.
+          </Typography>
+        </>
+        <>
+          <Typography component="h3" variant="h5" gutterBottom>
+            Verschiedenes
+          </Typography>
+          <Typography variant="body1" component="div" paragraph>
+            <ReadOnlyBlockly width="100%" height="60px">
+              {hedgehogBlocks.HEDGEHOG_SLEEP.toolboxBlocks.default()}
+            </ReadOnlyBlockly>
+          </Typography>
+          <Typography variant="body1" paragraph>
+            Dieser Befehl unterbricht das Programm für eine gewisse Zeit. Wenn währenddessen ein
+            Motor eingeschalten ist, wird sich dieser weiterdrehen.
+          </Typography>
+          <Typography variant="body1" component="div" paragraph>
+            <ReadOnlyBlockly width="100%" height="60px">
+              {miscBlocks.PRINT_BLOCK.toolboxBlocks.default()}
+            </ReadOnlyBlockly>
+          </Typography>
+          <Typography variant="body1" paragraph>
+            Dieser Befehl gibt einen Wert auf der Konsole aus. Der Wert kann ein Text sein, oder
+            eine Zahl oder ein digitaler Wahrheitswert. Oft hilft es, sich den Wert eines Sensors
+            anzeigen zu lassen, wenn ein Programm nicht tut was man will.
+          </Typography>
+        </>
       </>
       <>
         <Typography variant="body1" paragraph>
