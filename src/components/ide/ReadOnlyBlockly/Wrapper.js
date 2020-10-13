@@ -4,7 +4,11 @@ import * as React from 'react';
 
 import NoSSR from '../../misc/NoSSR';
 
-type Props = {||};
+export type Props = {|
+  children?: React.Node,
+  width: string,
+  height: string,
+|};
 
 function showReadOnlyBlockly(props: Props) {
   return async () => {

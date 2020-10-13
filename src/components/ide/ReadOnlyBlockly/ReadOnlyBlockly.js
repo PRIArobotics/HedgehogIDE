@@ -8,15 +8,11 @@ import { getTranslation } from '../../../translations';
 
 import * as hooks from '../../misc/hooks';
 
-import Blockly, {
-  hedgehogBlocks,
-  miscBlocks,
-  LOCALES
-} from '../VisualEditor/blockly_config.js';
+import Blockly, { LOCALES } from '../VisualEditor/blockly_config.js';
 
-type Props = {||};
+import { type Props } from '.';
 
-function ReadOnlyBlockly({}: Props) {
+function ReadOnlyBlockly({ children, width, height }: Props) {
   const [workspaceDiv, setWorkspaceDiv] = React.useState<React.ElementRef<'div'> | null>(null);
   const { preferredLocales } = useLocale();
 
@@ -39,9 +35,7 @@ function ReadOnlyBlockly({}: Props) {
     });
 
     const xml = ReactDOM.renderToStaticMarkup(
-      <xml xmlns="https://developers.google.com/blockly/xml">
-        {hedgehogBlocks.HEDGEHOG_MOVE2_UNLIMITED.toolboxBlocks.default()}
-      </xml>
+      <xml xmlns="https://developers.google.com/blockly/xml">{children}</xml>
     );
     const dom = Blockly.Xml.textToDom(xml);
     Blockly.Xml.clearWorkspaceAndLoadFromXml(dom, workspace);
@@ -53,7 +47,7 @@ function ReadOnlyBlockly({}: Props) {
 
 
   return (
-    <div ref={setWorkspaceDiv} style={{ height: '60px', width: '920px' }} />
+    <div ref={setWorkspaceDiv} style={{ width, height }} />
   );
 }
 
