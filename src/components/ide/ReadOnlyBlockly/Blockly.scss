@@ -1,0 +1,10 @@
+@import '../../variables.scss';
+
+.blocklyContainer {
+  flex: 1 0 auto;
+  position: relative;
+
+  & .blockly {
+    position: absolute;
+  }
+}
