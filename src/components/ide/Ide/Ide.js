@@ -32,9 +32,10 @@ import FileTree, {
   type FileAction,
   type FileType,
 } from '../FileTree';
+import Markdown from '../Markdown';
 import Simulator, { type SimulatorType } from '../Simulator';
-import VisualEditor from '../VisualEditor';
 import SimulatorEditor, { generateSchemaFromXml } from '../SimulatorEditor';
+import VisualEditor from '../VisualEditor';
 import * as SimulationSchema from '../SimulatorEditor/SimulationSchema';
 
 import {
@@ -792,6 +793,7 @@ function Ide({ projectName }: Props) {
           // if (path === './.metadata/toolbox') return 'toolbox-editor';
           if (file.name.endsWith('.blockly')) return 'blockly';
           if (file.name.endsWith('.js')) return 'editor';
+          if (file.name.endsWith('.md')) return 'markdown';
           return 'editor';
         })();
 
@@ -868,18 +870,6 @@ function Ide({ projectName }: Props) {
           />
         );
       }
-      case 'simulator': {
-        return (
-          <Simulator
-            ref={attachSimulator}
-            running={running}
-            onExecutionAction={handleExecutionAction}
-          />
-        );
-      }
-      case 'console': {
-        return <Console ref={consoleRef} />;
-      }
       case 'blockly': {
         return (
           <VisualEditor
@@ -889,6 +879,16 @@ function Ide({ projectName }: Props) {
             {...bindEditorProps(id, 'blockly')}
             onExecutionAction={handleExecutionAction}
             running={running}
+          />
+        );
+      }
+      case 'markdown': {
+        return (
+          <Markdown
+            layoutNode={node}
+            project={project}
+            path={id}
+            {...bindEditorProps(id, 'markdown')}
           />
         );
       }
@@ -902,6 +902,18 @@ function Ide({ projectName }: Props) {
             onSchemaChange={refreshSimulatorFromSchema}
           />
         );
+      }
+      case 'simulator': {
+        return (
+          <Simulator
+            ref={attachSimulator}
+            running={running}
+            onExecutionAction={handleExecutionAction}
+          />
+        );
+      }
+      case 'console': {
+        return <Console ref={consoleRef} />;
       }
       default:
         return null;

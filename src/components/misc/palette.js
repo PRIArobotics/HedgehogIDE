@@ -38,6 +38,7 @@ import FolderOpenIcon from 'mdi-material-ui/FolderOpen';
 import LanguageBlocklyIcon from 'mdi-material-ui/Widgets';
 import LanguageJavascriptIcon from 'mdi-material-ui/LanguageJavascript';
 import LanguagePythonIcon from 'mdi-material-ui/LanguagePython';
+import LanguageMarkdownIcon from 'mdi-material-ui/FileDocument';
 
 // files: metadata
 import MetadataPluginsIcon from 'mdi-material-ui/ToyBrick';
@@ -98,8 +99,8 @@ const TerminateAndResetIcon = React.forwardRef<
 // misc actions
 import SlideLeftIcon from 'mdi-material-ui/ChevronLeft';
 import SlideRightIcon from 'mdi-material-ui/ChevronRight';
-import AccountCircleIcon from '@material-ui/icons/AccountCircle';
-import ExitToAppIcon from '@material-ui/icons/ExitToApp';
+import AccountCircleIcon from 'mdi-material-ui/AccountCircle';
+import ExitToAppIcon from 'mdi-material-ui/ExitToApp';
 
 export {
   MenuIcon,
@@ -110,6 +111,7 @@ export {
   LanguageBlocklyIcon,
   LanguageJavascriptIcon,
   LanguagePythonIcon,
+  LanguageMarkdownIcon,
   MetadataPluginsIcon,
   MetadataAssetsIcon,
   MetadataLayoutIcon,

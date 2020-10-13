@@ -1,0 +1,11 @@
+@import '../../variables.scss';
+
+.container {
+  flex: 1 0 auto;
+}
+
+.root {
+  display: flex;
+  flex-flow: row nowrap;
+  height: 100%;
+}

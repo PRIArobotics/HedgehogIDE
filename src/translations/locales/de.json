@@ -39,6 +39,7 @@
   "app.ide.file_menu.create_folder": "Neuer Ordner",
   "app.ide.file_menu.create_js_file": "Neue Javascript-Datei",
   "app.ide.file_menu.create_layout_configuration": "Layout-Konfiguration anlegen/aktualisieren",
+  "app.ide.file_menu.create_markdown_file": "Neue Markdown-Datei",
   "app.ide.file_menu.create_plugins_directory": "Plugin-Ordner anlegen",
   "app.ide.file_menu.create_simulator_configuration": "Simulator-Konfiguration anlegen",
   "app.ide.file_menu.create_toolbox_configuration": "Toolbox-Konfiguration anlegen",

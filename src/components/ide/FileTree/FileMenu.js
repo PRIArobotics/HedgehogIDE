@@ -12,6 +12,7 @@ import {
   FolderIcon,
   LanguageBlocklyIcon,
   LanguageJavascriptIcon,
+  LanguageMarkdownIcon,
   MetadataPluginsIcon,
   MetadataAssetsIcon,
   MetadataLayoutIcon,
@@ -40,6 +41,11 @@ const messages = defineMessages({
     id: 'app.ide.file_menu.create_blockly_file',
     description: 'Menu item text for creating a Blockly file',
     defaultMessage: 'New Blockly File',
+  },
+  createMarkdownFile: {
+    id: 'app.ide.file_menu.create_markdown_file',
+    description: 'Menu item text for creating a Markdown file',
+    defaultMessage: 'New Markdown File',
   },
   createPluginsDirectory: {
     id: 'app.ide.file_menu.create_plugins_directory',
@@ -292,6 +298,12 @@ class FileMenu extends React.Component<PropTypes, StateTypes> {
                           })
                         }
                         icon={LanguageBlocklyIcon}
+                      />,
+                      <FileMenuItem
+                        key="create_md_file"
+                        titleMsg={messages.createMarkdownFile}
+                        onClick={() => this.handleCreate({ type: 'FILE', extension: '.md' })}
+                        icon={LanguageMarkdownIcon}
                       />,
                     ]),
                 <Divider key="divider-directory" />,
