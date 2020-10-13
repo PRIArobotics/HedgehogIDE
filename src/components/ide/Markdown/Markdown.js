@@ -3,9 +3,13 @@
 import * as React from 'react';
 import useStyles from 'isomorphic-style-loader/useStyles';
 
-import MDEditor from '@uiw/react-md-editor';
+import IconButton from '@material-ui/core/IconButton';
+import Tooltip from '@material-ui/core/Tooltip';
+
+import MDEditor, { commands } from '@uiw/react-md-editor';
 import md_s from '@uiw/react-md-editor/dist/markdown-editor.css';
 
+import { LanguageMarkdownIcon } from '../../misc/palette';
 import * as hooks from '../../misc/hooks';
 
 import s from './Markdown.scss';
@@ -68,9 +72,32 @@ function Markdown({ layoutNode, project, path, mode, onUpdate }: Props) {
               onChange={setContent}
               visiableDragbar={false}
               height={height}
+              commands={[
+                ...commands.getCommands().slice(0, -1),
+                {
+                  name: 'activatePreview',
+                  keyCommand: 'activatePreview',
+                  buttonProps: { 'aria-label': 'Activate Preview' },
+                  icon: commands.fullscreen.icon,
+                  execute: (_state, _api) => {
+                    onUpdate({ mode: 'preview' });
+                  },
+                }
+              ]}
             />
           ) : (
-            <MDEditor.Markdown source={content} />
+            <div className={s.previewContainer}>
+              <div className={s.preview}>
+                <MDEditor.Markdown source={content} />
+              </div>
+              <div className={s.previewToolbar}>
+                <Tooltip title="Edit">
+                  <IconButton size="small" onClick={() => onUpdate({ mode: 'edit' })}>
+                    <LanguageMarkdownIcon />
+                  </IconButton>
+                </Tooltip>
+              </div>
+            </div>
           )
         )}
       </div>

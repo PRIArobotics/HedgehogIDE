@@ -9,3 +9,20 @@
   flex-flow: row nowrap;
   height: 100%;
 }
+
+.previewContainer {
+  margin: 0 20px;
+
+  display: flex;
+  flex-flow: column nowrap;
+  height: 100%;
+
+  & .preview {
+    flex: 1 0 auto;
+  }
+
+  & .previewToolbar {
+    margin: 0 0 20px auto;
+    flex: 0 0 auto;
+  }
+}
