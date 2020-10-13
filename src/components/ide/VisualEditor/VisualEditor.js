@@ -4,15 +4,8 @@ import * as React from 'react';
 import ReactDOM from 'react-dom/server';
 import useStyles from 'isomorphic-style-loader/useStyles';
 
-import Blockly from 'blockly/core';
-import 'blockly/blocks';
-import 'blockly/javascript';
-import 'blockly/python';
-import De from 'blockly/msg/de';
-import En from 'blockly/msg/en';
-
 import { useLocale } from '../../locale';
-import { type LocaleMap, getTranslation } from '../../../translations';
+import { getTranslation } from '../../../translations';
 
 import {
   ExecuteIcon,
@@ -28,7 +21,6 @@ import * as hooks from '../../misc/hooks';
 
 import { type ExecutionAction } from '../Ide';
 import BlocklyComponent, {
-  type Locale as BlocklyLocale,
   type WorkspaceTransform,
 } from '../Blockly';
 import ToolBar from '../ToolBar';
@@ -39,24 +31,11 @@ import s from './VisualEditor.scss';
 
 import useFile, { Project } from '../useFile';
 
-import './blocks/async_procedures_js';
-import DeHedgehog from './blocks/hedgehog_msg_de';
-import EnHedgehog from './blocks/hedgehog_msg_en';
-import DeMisc from './blocks/misc_msg_de';
-import EnMisc from './blocks/misc_msg_en';
-import * as hedgehogBlocks from './blocks/hedgehog';
-import * as miscBlocks from './blocks/misc';
-
-const LOCALES: LocaleMap<BlocklyLocale> = {
-  de: {
-    rtl: false,
-    msg: { ...De, ...DeHedgehog, ...DeMisc },
-  },
-  en: {
-    rtl: false,
-    msg: { ...En, ...EnHedgehog, ...EnMisc },
-  },
-};
+import Blockly, {
+  hedgehogBlocks,
+  miscBlocks,
+  LOCALES
+} from './blockly_config.js';
 
 export type ControlledState = {|
   codeCollapsed: boolean,

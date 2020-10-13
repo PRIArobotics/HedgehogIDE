@@ -3,38 +3,16 @@
 import * as React from 'react';
 import ReactDOM from 'react-dom/server';
 
-import Blockly from 'blockly/core';
-import 'blockly/blocks';
-import 'blockly/javascript';
-import 'blockly/python';
-import De from 'blockly/msg/de';
-import En from 'blockly/msg/en';
-
 import { useLocale } from '../../locale';
-import { type LocaleMap, getTranslation } from '../../../translations';
+import { getTranslation } from '../../../translations';
 
 import * as hooks from '../../misc/hooks';
 
-import { type Locale as BlocklyLocale } from '../Blockly';
-
-import '../VisualEditor/blocks/async_procedures_js';
-import '../VisualEditor/blocks/hedgehog';
-import '../VisualEditor/blocks/misc';
-import DeHedgehog from '../VisualEditor/blocks/hedgehog_msg_de';
-import EnHedgehog from '../VisualEditor/blocks/hedgehog_msg_en';
-import DeMisc from '../VisualEditor/blocks/misc_msg_de';
-import EnMisc from '../VisualEditor/blocks/misc_msg_en';
-
-const LOCALES: LocaleMap<BlocklyLocale> = {
-  de: {
-    rtl: false,
-    msg: { ...De, ...DeHedgehog, ...DeMisc },
-  },
-  en: {
-    rtl: false,
-    msg: { ...En, ...EnHedgehog, ...EnMisc },
-  },
-};
+import Blockly, {
+  hedgehogBlocks,
+  miscBlocks,
+  LOCALES
+} from '../VisualEditor/blockly_config.js';
 
 type Props = {||};
 
@@ -62,18 +40,7 @@ function ReadOnlyBlockly({}: Props) {
 
     const xml = ReactDOM.renderToStaticMarkup(
       <xml xmlns="https://developers.google.com/blockly/xml">
-        <block type="hedgehog_move">
-          <value name="SPEED">
-            <shadow type="math_number">
-              <field name="NUM">1000</field>
-            </shadow>
-          </value>
-          <value name="TIME">
-            <shadow type="math_number">
-              <field name="NUM">1</field>
-            </shadow>
-          </value>
-        </block>
+        {hedgehogBlocks.HEDGEHOG_MOVE2_UNLIMITED.toolboxBlocks.default()}
       </xml>
     );
     const dom = Blockly.Xml.textToDom(xml);
