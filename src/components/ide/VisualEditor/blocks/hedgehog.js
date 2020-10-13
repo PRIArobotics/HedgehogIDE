@@ -35,7 +35,7 @@ export const HEDGEHOG_MOVE: Block = {
     nextStatement: null,
     colour: 120,
     tooltip: '%{BKY_HEDGEHOG_MOVE_TOOLTIP}',
-    helpUrl: 'TODO',
+    helpUrl: '/help#blockly-motors',
     extensions: ['requires_async_js_function'],
   },
   generators: {
@@ -110,7 +110,7 @@ export const HEDGEHOG_MOVE_UNLIMITED: Block = {
     nextStatement: null,
     colour: 120,
     tooltip: '%{BKY_HEDGEHOG_MOVE_UNLIMITED_TOOLTIP}',
-    helpUrl: 'TODO',
+    helpUrl: '/help#blockly-motors',
     extensions: ['requires_async_js_function'],
   },
   generators: {
@@ -166,7 +166,7 @@ export const HEDGEHOG_MOTOR_OFF: Block = {
     nextStatement: null,
     colour: 120,
     tooltip: '%{BKY_HEDGEHOG_MOTOR_OFF_TOOLTIP}',
-    helpUrl: 'TODO',
+    helpUrl: '/help#blockly-motors',
     extensions: ['requires_async_js_function'],
   },
   generators: {
@@ -215,7 +215,7 @@ export const HEDGEHOG_BRAKE: Block = {
     nextStatement: null,
     colour: 120,
     tooltip: '%{BKY_HEDGEHOG_BRAKE_TOOLTIP}',
-    helpUrl: 'TODO',
+    helpUrl: '/help#blockly-motors',
     extensions: ['requires_async_js_function'],
   },
   generators: {
@@ -287,7 +287,7 @@ export const HEDGEHOG_MOVE2: Block = {
     nextStatement: null,
     colour: 120,
     tooltip: '%{BKY_HEDGEHOG_MOVE2_TOOLTIP}',
-    helpUrl: 'TODO',
+    helpUrl: '/help#blockly-drive',
     extensions: ['requires_async_js_function'],
   },
   generators: {
@@ -397,7 +397,7 @@ export const HEDGEHOG_MOVE2_UNLIMITED: Block = {
     nextStatement: null,
     colour: 120,
     tooltip: '%{BKY_HEDGEHOG_MOVE2_UNLIMITED_TOOLTIP}',
-    helpUrl: 'TODO',
+    helpUrl: '/help#blockly-drive',
     extensions: ['requires_async_js_function'],
   },
   generators: {
@@ -480,7 +480,7 @@ export const HEDGEHOG_MOTOR_OFF2: Block = {
     nextStatement: null,
     colour: 120,
     tooltip: '%{BKY_HEDGEHOG_MOTOR_OFF2_TOOLTIP}',
-    helpUrl: 'TODO',
+    helpUrl: '/help#blockly-drive',
     extensions: ['requires_async_js_function'],
   },
   generators: {
@@ -549,7 +549,7 @@ export const HEDGEHOG_BRAKE2: Block = {
     nextStatement: null,
     colour: 120,
     tooltip: '%{BKY_HEDGEHOG_BRAKE2_TOOLTIP}',
-    helpUrl: 'TODO',
+    helpUrl: '/help#blockly-drive',
     extensions: ['requires_async_js_function'],
   },
   generators: {
@@ -615,7 +615,7 @@ export const HEDGEHOG_SERVO: Block = {
     nextStatement: null,
     colour: 120,
     tooltip: '%{BKY_HEDGEHOG_SERVO_TOOLTIP}',
-    helpUrl: 'TODO',
+    helpUrl: '/help#blockly-servos',
   },
   generators: {
     JavaScript: block => {
@@ -672,7 +672,7 @@ export const HEDGEHOG_SERVO_OFF: Block = {
     nextStatement: null,
     colour: 120,
     tooltip: '%{BKY_HEDGEHOG_SERVO_OFF_TOOLTIP}',
-    helpUrl: 'TODO',
+    helpUrl: '/help#blockly-servos',
   },
   generators: {
     JavaScript: block => {
@@ -718,7 +718,7 @@ export const HEDGEHOG_READ_ANALOG: Block = {
     output: 'Number',
     colour: 120,
     tooltip: '%{BKY_HEDGEHOG_READ_ANALOG_TOOLTIP}',
-    helpUrl: 'TODO',
+    helpUrl: '/help#blockly-sensors',
     extensions: ['requires_async_js_function'],
   },
   generators: {
@@ -779,7 +779,7 @@ export const HEDGEHOG_READ_DIGITAL: Block = {
     output: 'Boolean',
     colour: 120,
     tooltip: '%{BKY_HEDGEHOG_READ_DIGITAL_TOOLTIP}',
-    helpUrl: 'TODO',
+    helpUrl: '/help#blockly-sensors',
     extensions: ['requires_async_js_function'],
   },
   generators: {
@@ -826,7 +826,7 @@ export const HEDGEHOG_SLEEP: Block = {
     nextStatement: null,
     colour: 120,
     tooltip: '%{BKY_HEDGEHOG_SLEEP_TOOLTIP}',
-    helpUrl: 'TODO',
+    helpUrl: '/help#blockly-misc',
     extensions: ['requires_async_js_function'],
   },
   generators: {

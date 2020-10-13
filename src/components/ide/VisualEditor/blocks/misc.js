@@ -26,7 +26,7 @@ export const PRINT_BLOCK: Block = {
     nextStatement: null,
     colour: 70,
     tooltip: '%{BKY_PRINT_BLOCK_TOOLTIP}',
-    helpUrl: 'TODO',
+    helpUrl: '/help#blockly-misc',
   },
   generators: {
     JavaScript: block => {

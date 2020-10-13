@@ -45,8 +45,10 @@ args0: {json.dumps(block.args, indent=2)},""", 4 * " "))
     nextStatement: null,""")
             yield from lines(f"""\
     colour: {block.get('colour', 120)},
-    tooltip: '%{{BKY_{block.name.upper()}_TOOLTIP}}',
-    helpUrl: 'TODO',""")
+    tooltip: '%{{BKY_{block.name.upper()}_TOOLTIP}}',""")
+            if 'help' in block:
+                yield from lines(f"""\
+    helpUrl: '{block.help}',""")
             extensions = []
             if block.get('async', False):
                 extensions.append('requires_async_js_function')
@@ -125,7 +127,7 @@ args0: {json.dumps(block.args, indent=2)},""", 4 * " "))
 import * as React from 'react';
 import Blockly from 'blockly/core';
 
-import {{ type Block }} from '.';""")
+import {{ type Block, registerBlocklyBlock }} from '.';""")
         for block in mod.blocks:
             yield from block_code(block)
         yield from lines(f"""\
@@ -137,17 +139,7 @@ const blocks = [""")
         yield from lines(f"""\
 ];
 
-blocks.forEach(block => {{
-  const {{ type }} = block.blockJson;
-
-  Blockly.Blocks[type] = {{
-    init() {{
-      this.jsonInit(block.blockJson);
-    }},
-  }};
-  Blockly.JavaScript[type] = block.generators.JavaScript;
-  Blockly.Python[type] = block.generators.Python;
-}});
+blocks.forEach(registerBlocklyBlock);
 
 export default blocks;
 """)

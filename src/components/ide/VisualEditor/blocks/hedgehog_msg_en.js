@@ -12,9 +12,6 @@ Msg['HEDGEHOG_CAT_SERVOS'] = 'Servos';
 
 Msg['HEDGEHOG_CAT_SENSORS'] = 'Sensors';
 
-Msg['HEDGEHOG_SCOPE'] = 'Hedgehog scope %1 %2';
-Msg['HEDGEHOG_SCOPE_TOOLTIP'] = 'All Hedgehog blocks have to be inside of this block';
-
 Msg['HEDGEHOG_MOVE'] = 'move motor %1 with speeds %2 for %3 seconds';
 Msg['HEDGEHOG_MOVE_TOOLTIP'] = 'move one motor for a certain duration';
 

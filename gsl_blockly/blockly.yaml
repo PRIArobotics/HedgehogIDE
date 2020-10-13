@@ -6,6 +6,7 @@ modules:
       - type: input_value
         name: TEXT
         check: [Number, Boolean, String]
+      help: /help#blockly-misc
   hedgehog:
     hedgehog_move:
       requiresScope: hedgehog
@@ -23,6 +24,7 @@ modules:
         name: TIME
         check: Number
       async: true
+      help: /help#blockly-motors
     hedgehog_move_unlimited:
       requiresScope: hedgehog
       args:
@@ -36,6 +38,7 @@ modules:
         name: SPEED
         check: Number
       async: true
+      help: /help#blockly-motors
     hedgehog_motor_off:
       requiresScope: hedgehog
       args:
@@ -46,6 +49,7 @@ modules:
         max: 3
         precision: 1
       async: true
+      help: /help#blockly-motors
     hedgehog_brake:
       requiresScope: hedgehog
       args:
@@ -56,6 +60,7 @@ modules:
         max: 3
         precision: 1
       async: true
+      help: /help#blockly-motors
     hedgehog_move2:
       requiresScope: hedgehog
       args:
@@ -81,6 +86,7 @@ modules:
         name: TIME
         check: Number
       async: true
+      help: /help#blockly-drive
     hedgehog_move2_unlimited:
       requiresScope: hedgehog
       args:
@@ -103,6 +109,7 @@ modules:
         name: SPEED2
         check: Number
       async: true
+      help: /help#blockly-drive
     # hedgehog_forward:
     #   requiresScope: hedgehog
     #   args:
@@ -161,6 +168,7 @@ modules:
         max: 3
         precision: 1
       async: true
+      help: /help#blockly-drive
     hedgehog_brake2:
       requiresScope: hedgehog
       args:
@@ -177,6 +185,7 @@ modules:
         max: 3
         precision: 1
       async: true
+      help: /help#blockly-drive
     hedgehog_servo:
       requiresScope: hedgehog
       args:
@@ -189,6 +198,7 @@ modules:
       - type: input_value
         name: ANGLE
         check: Number
+      help: /help#blockly-servos
     hedgehog_servo_off:
       requiresScope: hedgehog
       args:
@@ -198,6 +208,7 @@ modules:
         min: 0
         max: 5
         precision: 1
+      help: /help#blockly-servos
     # hedgehog_speaker:
     #   requiresScope: hedgehog
     #   args:
@@ -233,6 +244,7 @@ modules:
         max: 15
         precision: 1
       async: true
+      help: /help#blockly-sensors
     hedgehog_read_digital:
       requiresScope: hedgehog
       output: Boolean
@@ -244,6 +256,7 @@ modules:
         max: 15
         precision: 1
       async: true
+      help: /help#blockly-sensors
     # hedgehog_read_imu:
     #   requiresScope: hedgehog
     #   output: Number
@@ -268,6 +281,7 @@ modules:
         name: TIME
         check: Number
       async: true
+      help: /help#blockly-misc
     # hedgehog_create_scope:
     #   scope: true
     #   args:
