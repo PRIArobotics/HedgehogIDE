@@ -74,7 +74,7 @@ function VisualEditor({
   const blocklyRef = hooks.useElementRef<typeof BlocklyComponent>();
   const codeRef = hooks.useElementRef<'pre'>();
 
-  const [content, setContent] = useFile(project, path);
+  const [content, setContent] = useFile(project, path, 'utf8');
 
   // TODO this has a timing issue, as it depends on `VisualEditor.dynamicBlockLoaders`
   // being fully initialized before the VisualEditor component is created

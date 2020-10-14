@@ -40,7 +40,7 @@ function Editor({ layoutNode, project, path, onExecutionAction, running }: Props
   const [[width, height], setDimension] = React.useState<[string, string]>(['0', '0']);
   const containerRef = hooks.useElementRef<'div'>();
 
-  const [content, setContent] = useFile(project, path);
+  const [content, setContent] = useFile(project, path, 'utf8');
 
   // update editor size when the containing tab is resized or made visible
   React.useEffect(() => {

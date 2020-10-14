@@ -123,7 +123,7 @@ function SimulatorEditor({
   const blocklyRef = hooks.useElementRef<typeof BlocklyComponent>();
   const jsonRef = hooks.useElementRef<'pre'>();
 
-  const [content, setContent] = useFile(project, path);
+  const [content, setContent] = useFile(project, path, 'utf8');
 
   // update workspace size when the containing tab is resized or made visible
   React.useEffect(() => {

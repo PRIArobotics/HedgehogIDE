@@ -39,7 +39,7 @@ function Markdown({ layoutNode, project, path, mode, onUpdate }: Props) {
   const [height, setHeight] = React.useState<number>(200);
   const containerRef = hooks.useElementRef<'div'>();
 
-  const [content, setContent] = useFile(project, path);
+  const [content, setContent] = useFile(project, path, 'utf8');
 
   // update editor size when the containing tab is resized or made visible
   React.useEffect(() => {
