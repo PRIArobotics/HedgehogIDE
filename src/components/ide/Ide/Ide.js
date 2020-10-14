@@ -890,6 +890,7 @@ function Ide({ projectName }: Props) {
             layoutNode={node}
             project={project}
             path={id}
+            assets={projectCache.assets}
             {...bindEditorProps(id, 'markdown')}
           />
         );

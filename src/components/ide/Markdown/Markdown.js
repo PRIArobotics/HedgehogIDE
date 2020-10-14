@@ -24,6 +24,7 @@ type Props = {|
   layoutNode: any,
   project: Project,
   path: string,
+  assets: Map<string, string>,
   ...ControlledState,
   onUpdate: (state: ControlledState) => void | Promise<void>,
 |};
@@ -32,7 +33,7 @@ type Props = {|
  * Wraps an `MDEditor` for display in a `FlexLayout` tab,
  * and for editing the contents of a project file.
  */
-function Markdown({ layoutNode, project, path, mode, onUpdate }: Props) {
+function Markdown({ layoutNode, project, path, assets, mode, onUpdate }: Props) {
   const [height, setHeight] = React.useState<number>(200);
   const containerRef = hooks.useElementRef<'div'>();
 
@@ -64,6 +65,17 @@ function Markdown({ layoutNode, project, path, mode, onUpdate }: Props) {
     onUpdate({ mode: content === '' ? 'edit' : 'preview'});
   }, [mode, content]);
 
+  // resolve assets for the preview
+  const [previewContent, setPreviewContent] = React.useState<string | null>(null);
+  React.useEffect(() => {
+    if (content === null) {
+      setPreviewContent(null);
+      return;
+    }
+
+    setPreviewContent(content.replaceAll(/\]\((asset:.*?)\)/g, (_match, asset) => `](${assets.get(asset) ?? ''})`));
+  }, [content]);
+
   useStyles(s);
   useStyles(md_s);
   return (
@@ -92,7 +104,7 @@ function Markdown({ layoutNode, project, path, mode, onUpdate }: Props) {
           ) : (
             <div className={s.previewContainer}>
               <div className={s.preview}>
-                <MDEditor.Markdown source={content} />
+                <MDEditor.Markdown source={previewContent} />
               </div>
               <div className={s.previewToolbar}>
                 <Tooltip title="Edit">
