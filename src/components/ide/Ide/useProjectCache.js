@@ -144,7 +144,7 @@ export default function useProjectCache(
     const urls = [];
     const assets: Map<string, string> = new Map();
     for (const [key, blob] of assetBlobs) {
-      var url = URL.createObjectURL(blob);
+      const url = URL.createObjectURL(blob);
       urls.push(url);
       assets.set(key, url);
     }
