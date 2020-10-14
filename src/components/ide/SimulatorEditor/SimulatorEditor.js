@@ -5,6 +5,9 @@ import ReactDOM from 'react-dom/server';
 import useStyles from 'isomorphic-style-loader/useStyles';
 
 import Blockly from 'blockly/core';
+// loading this clears any previously set blocks, so make sure this module is loaded
+// before adding any custom blocks
+import 'blockly/blocks';
 
 import { useLocale } from '../../locale';
 import { type LocaleMap, getTranslation } from '../../../translations';
