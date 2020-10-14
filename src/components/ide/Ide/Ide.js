@@ -33,6 +33,7 @@ import FileTree, {
   type FileType,
 } from '../FileTree';
 import Markdown from '../Markdown';
+import PdfViewer from '../PdfViewer';
 import Simulator, { type SimulatorType } from '../Simulator';
 import SimulatorEditor, { generateSchemaFromXml } from '../SimulatorEditor';
 import VisualEditor from '../VisualEditor';
@@ -794,6 +795,7 @@ function Ide({ projectName }: Props) {
           if (file.name.endsWith('.blockly')) return 'blockly';
           if (file.name.endsWith('.js')) return 'editor';
           if (file.name.endsWith('.md')) return 'markdown';
+          if (file.name.endsWith('.pdf')) return 'pdf';
           return 'editor';
         })();
 
@@ -889,6 +891,16 @@ function Ide({ projectName }: Props) {
             project={project}
             path={id}
             {...bindEditorProps(id, 'markdown')}
+          />
+        );
+      }
+      case 'pdf': {
+        return (
+          <PdfViewer
+            layoutNode={node}
+            project={project}
+            path={id}
+            // {...bindEditorProps(id, 'markdown')}
           />
         );
       }
