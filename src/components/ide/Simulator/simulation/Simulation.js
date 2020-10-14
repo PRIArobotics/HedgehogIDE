@@ -36,7 +36,7 @@ export default class Simulation {
   bounds: { min: Point, max: Point } | null = null;
 
   // assets
-  assets: Map<string, string> | null = null;
+  assets: Map<string, [string, Uint8Array]> | null = null;
 
   // special bodies for simulation logic
   robots: Map<string, Robot> = new Map();
@@ -127,7 +127,7 @@ export default class Simulation {
     });
   }
 
-  jsonInit(schema: SimulationSchema.SimulatorJson, assets: Map<string, string> | null = null) {
+  jsonInit(schema: SimulationSchema.SimulatorJson, assets: Map<string, [string, Uint8Array]> | null = null) {
     this.clear(false);
 
     this.assets = assets;
@@ -151,11 +151,11 @@ export default class Simulation {
     const resolveSprite = (sprite: { texture: string | void } | void) => {
       if (sprite?.texture && sprite.texture.startsWith('asset:')) {
         if (this.assets === null) {
-          throw new Error(`Trying to use '${sprite.texture}, but there's no asset map`);
+          throw new Error(`Trying to use '${sprite.texture}', but there's no asset map`);
         }
         // the result may be undefined, which is fine with us,
         // because that means Matter.js will not fail loading a texture
-        sprite.texture = this.assets.get(sprite.texture);
+        sprite.texture = this.assets.get(sprite.texture)?.[0];
       }
     }
 

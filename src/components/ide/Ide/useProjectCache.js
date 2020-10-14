@@ -17,14 +17,14 @@ type InternalCache = {|
   files: FilerRecursiveStatInfo,
   simulatorXml: string | null,
   layoutJson: string | null,
-  assetBlobs: Map<string, Blob>,
+  assetBuffers: Map<string, Uint8Array>,
 |};
 
 type ProjectCache = {|
   files: FilerRecursiveStatInfo,
   simulatorXml: string | null,
   layoutJson: string | null,
-  assets: Map<string, string>,
+  assets: Map<string, [string, Uint8Array]>,
 |};
 
 export default function useProjectCache(
@@ -38,18 +38,18 @@ export default function useProjectCache(
       return;
     }
 
-    async function loadAssets(root: FilerRecursiveStatInfo): Promise<Map<string, Blob>> {
-      const assetBlobs: Map<string, Blob> = new Map();
+    async function loadAssets(root: FilerRecursiveStatInfo): Promise<Map<string, Uint8Array>> {
+      const assetBuffers: Map<string, Uint8Array> = new Map();
 
       let assetsFile: FilerRecursiveStatInfo;
       try {
         assetsFile = getDescendant(root, '.metadata', 'assets');
       } catch (err) {
         console.error(err);
-        return assetBlobs;
+        return assetBuffers;
       }
 
-      if (!assetsFile.isDirectory()) return assetBlobs;
+      if (!assetsFile.isDirectory()) return assetBuffers;
       // $FlowExpectError
       const assetsDir: FilerRecursiveDirectoryInfo = assetsFile;
 
@@ -63,8 +63,7 @@ export default function useProjectCache(
             } else {
               const absolutePath = project.resolve('./.metadata/assets', prefix, f.name);
               const buffer = await fs.promises.readFile(absolutePath);
-              const blob = new Blob([buffer]);
-              assetBlobs.set(`asset:${prefix}${f.name}`, blob);
+              assetBuffers.set(`asset:${prefix}${f.name}`, buffer);
             }
           }),
         );
@@ -72,16 +71,16 @@ export default function useProjectCache(
 
       await walk('', assetsDir.contents);
 
-      return assetBlobs;
+      return assetBuffers;
     }
 
     async function loadFilesAndAssets(): Promise<
-      [FilerRecursiveStatInfo, Map<string, Blob>],
+      [FilerRecursiveStatInfo, Map<string, Uint8Array>],
     > {
       const files = await project.getFiles();
-      const assetBlobs = await loadAssets(files);
+      const assetBuffers = await loadAssets(files);
 
-      return [files, assetBlobs];
+      return [files, assetBuffers];
     }
 
     async function loadSimulatorXml(): Promise<string | null> {
@@ -111,15 +110,15 @@ export default function useProjectCache(
       }
     }
 
-    async function loadProjectCache() {
+    async function loadProjectCache(): Promise<InternalCache> {
       // load project from the file system
-      const [[files, assetBlobs], simulatorXml, layoutJson] = await Promise.all([
+      const [[files, assetBuffers], simulatorXml, layoutJson] = await Promise.all([
         loadFilesAndAssets(),
         loadSimulatorXml(),
         loadLayoutJson(),
       ]);
 
-      return { files, simulatorXml, layoutJson, assetBlobs };
+      return { files, simulatorXml, layoutJson, assetBuffers };
     }
 
     setInternalState(loadProjectCache());
@@ -139,14 +138,15 @@ export default function useProjectCache(
       return;
     }
 
-    const { files, simulatorXml, layoutJson, assetBlobs } = internalState;
+    const { files, simulatorXml, layoutJson, assetBuffers } = internalState;
 
     const urls = [];
-    const assets: Map<string, string> = new Map();
-    for (const [key, blob] of assetBlobs) {
+    const assets: Map<string, [string, Uint8Array]> = new Map();
+    for (const [key, buffer] of assetBuffers) {
+      const blob = new Blob([buffer]);
       const url = URL.createObjectURL(blob);
       urls.push(url);
-      assets.set(key, url);
+      assets.set(key, [url, buffer]);
     }
 
     setState({ files, simulatorXml, layoutJson, assets });

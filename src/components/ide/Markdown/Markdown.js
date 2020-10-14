@@ -24,7 +24,7 @@ type Props = {|
   layoutNode: any,
   project: Project,
   path: string,
-  assets: Map<string, string>,
+  assets: Map<string, [string, Uint8Array]>,
   ...ControlledState,
   onUpdate: (state: ControlledState) => void | Promise<void>,
 |};
@@ -73,7 +73,7 @@ function Markdown({ layoutNode, project, path, assets, mode, onUpdate }: Props) 
       return;
     }
 
-    setPreviewContent(content.replaceAll(/\]\((asset:.*?)\)/g, (_match, asset) => `](${assets.get(asset) ?? ''})`));
+    setPreviewContent(content.replaceAll(/\]\((asset:.*?)\)/g, (_match, asset) => `](${assets.get(asset)?.[0] ?? ''})`));
   }, [content]);
 
   useStyles(s);
