@@ -89,6 +89,12 @@ export type Circle = {
   ...AllProps,
 };
 
+export type Svg = {
+  type: 'svg',
+  src: string,
+  ...AllProps,
+};
+
 export type Robot = {
   type: 'robot',
   name: string,
@@ -101,7 +107,7 @@ export type Simulation = {
   height: number,
 };
 
-export type Object = Rectangle | Circle | Robot;
+export type Object = Rectangle | Circle | Svg | Robot;
 
 export type SimulatorJson = {
   simulation: Simulation,

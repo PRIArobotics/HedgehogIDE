@@ -176,7 +176,7 @@ export const SIMULATOR_ROOT = {
       this.setWarningText(roots.length >= 2 ? 'only one configuration root allowed' : null);
     },
     serialize(): SimulationSchema.SimulatorJson {
-      const objectTypes = ['simulator_robot', 'simulator_rect', 'simulator_circle'];
+      const objectTypes = ['simulator_robot', 'simulator_rect', 'simulator_circle', 'simulator_svg'];
 
       const x = this.getFieldValue('X');
       const y = this.getFieldValue('Y');
@@ -342,6 +342,48 @@ export const SIMULATOR_CIRCLE = {
   },
   toolboxBlocks: {
     default: () => <block type="simulator_circle" />,
+  },
+};
+
+export const SIMULATOR_SVG = {
+  blockJson: {
+    type: 'simulator_svg',
+    message0: 'SVG %1 %2',
+    args0: [
+      {
+        type: 'field_input',
+        name: 'SRC',
+        value: 'asset:foo.svg',
+      },
+      {
+        type: 'input_value',
+        name: 'SETTINGS',
+        check: 'SimulatorObjectSettings',
+      },
+    ],
+    previousStatement: 'SimulatorObject',
+    nextStatement: 'SimulatorObject',
+    colour: 240,
+    tooltip: 'Shape from SVG',
+    helpUrl: 'TODO',
+  },
+  blockExtras: {
+    getFields() {
+      return {
+        type: 'svg',
+        src: this.getFieldValue('SRC'),
+      };
+    },
+    getSettings,
+    serialize(): SimulationSchema.Svg {
+      return {
+        ...this.getFields(),
+        ...collectSettings(this),
+      };
+    },
+  },
+  toolboxBlocks: {
+    default: () => <block type="simulator_svg" />,
   },
 };
 
@@ -849,6 +891,7 @@ const blocks = [
   SIMULATOR_ROOT,
   SIMULATOR_RECT,
   SIMULATOR_CIRCLE,
+  SIMULATOR_SVG,
   SIMULATOR_ROBOT,
   SIMULATOR_SETTINGS_TRANSLATE,
   SIMULATOR_SETTINGS_ROTATE,

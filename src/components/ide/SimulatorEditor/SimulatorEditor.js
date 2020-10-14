@@ -46,6 +46,7 @@ const workspaceOptions = {
         {blocks.SIMULATOR_ROOT.toolboxBlocks.default()}
         {blocks.SIMULATOR_RECT.toolboxBlocks.default()}
         {blocks.SIMULATOR_CIRCLE.toolboxBlocks.default()}
+        {blocks.SIMULATOR_SVG.toolboxBlocks.default()}
         {blocks.SIMULATOR_GROUP.toolboxBlocks.default()}
         {blocks.SIMULATOR_SETTINGS_TRANSLATE.toolboxBlocks.default()}
         {blocks.SIMULATOR_SETTINGS_ROTATE.toolboxBlocks.default()}

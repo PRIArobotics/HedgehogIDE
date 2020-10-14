@@ -184,6 +184,18 @@ export default class Simulation {
           this.add([body]);
           break;
         }
+        case 'svg': {
+          const { type: _type, src, ...options } = object;
+          resolveSprite(options?.render?.sprite);
+
+          // TODO
+          // const body = Matter.Bodies.circle(0, 0, radius, options);
+          // setInitialPose(body);
+          // setTemporary(body, temporary);
+
+          // this.add([body]);
+          break;
+        }
         case 'robot': {
           const {
             name,
