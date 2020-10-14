@@ -14,12 +14,12 @@ type Props = {|
 |};
 
 /**
- * Shows a project PDF file in an iframe.
+ * Shows a project file in an iframe. This is effective for file types such as PDF documents or images.
  */
-function PdfViewer({ layoutNode, project, path }: Props) {
+function IframeViewer({ layoutNode, project, path }: Props) {
   const url = useFileObjectURL(project, path);
 
   return url === null ? null : <iframe src={url} style={{ width: '100%', height: '100%' }} />;
 }
 
-export default PdfViewer;
+export default IframeViewer;
