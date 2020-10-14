@@ -5,7 +5,7 @@ import useStyles from 'isomorphic-style-loader/useStyles';
 
 import * as hooks from '../../misc/hooks';
 
-import useFile, { Project } from '../useFile';
+import useFileObjectURL, { Project } from '../useFileObjectURL';
 
 type Props = {|
   layoutNode: any,
@@ -21,12 +21,9 @@ type Props = {|
  * and resetting the simulation.
  */
 function PdfViewer({ layoutNode, project, path }: Props) {
+  const url = useFileObjectURL(project, path);
 
-  // const [content, setContent] = useFile(project, path);
-
-  return (
-    <iframe src="http://webspace.pria.at/documents/ECER_Folder.pdf" style={{ width: '100%', height: '100%' }} />
-  );
+  return url === null ? null : <iframe src={url} style={{ width: '100%', height: '100%' }} />;
 }
 
 export default PdfViewer;
