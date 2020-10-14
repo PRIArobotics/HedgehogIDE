@@ -14,11 +14,7 @@ type Props = {|
 |};
 
 /**
- * Wraps an `AceEditor` for display in a `FlexLayout` tab,
- * and for editing the contents of a project file.
- *
- * Besides the editor surface, the editor's toolbar allows running and terminating programs,
- * and resetting the simulation.
+ * Shows a project PDF file in an iframe.
  */
 function PdfViewer({ layoutNode, project, path }: Props) {
   const url = useFileObjectURL(project, path);

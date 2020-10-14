@@ -29,11 +29,8 @@ type Props = {|
 |};
 
 /**
- * Wraps an `AceEditor` for display in a `FlexLayout` tab,
+ * Wraps an `MDEditor` for display in a `FlexLayout` tab,
  * and for editing the contents of a project file.
- *
- * Besides the editor surface, the editor's toolbar allows running and terminating programs,
- * and resetting the simulation.
  */
 function Markdown({ layoutNode, project, path, mode, onUpdate }: Props) {
   const [height, setHeight] = React.useState<number>(200);
