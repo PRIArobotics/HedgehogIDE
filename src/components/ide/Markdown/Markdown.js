@@ -17,7 +17,7 @@ import s from './Markdown.scss';
 import useFile, { Project } from '../useFile';
 
 export type ControlledState = {|
-  mode: 'edit' | 'preview',
+  mode: 'edit' | 'preview' | 'default',
 |};
 
 type Props = {|
@@ -59,6 +59,13 @@ function Markdown({ layoutNode, project, path, mode, onUpdate }: Props) {
       layoutNode.setEventListener('visibility', null);
     };
   }, [layoutNode, containerRef]);
+
+  // update the mode on first load
+  React.useEffect(() => {
+    if (mode !== 'default' || content === null) return;
+
+    onUpdate({ mode: content === '' ? 'edit' : 'preview'});
+  }, [mode, content]);
 
   useStyles(s);
   useStyles(md_s);
@@ -106,7 +113,7 @@ function Markdown({ layoutNode, project, path, mode, onUpdate }: Props) {
 }
 Markdown.defaultProps = {
   // eslint-disable-next-line react/default-props-match-prop-types
-  mode: 'edit',
+  mode: 'default',
 };
 
 export default Markdown;
