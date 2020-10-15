@@ -10,7 +10,7 @@ import MDEditor, { commands } from '@uiw/react-md-editor';
 // $FlowExpectError
 import md_s from '@uiw/react-md-editor/dist/markdown-editor.css';
 
-import { LanguageMarkdownIcon } from '../../misc/palette';
+import { MarkdownFileIcon } from '../../misc/palette';
 import * as hooks from '../../misc/hooks';
 
 import s from './Markdown.scss';
@@ -110,7 +110,7 @@ function Markdown({ layoutNode, project, path, assets, mode, onUpdate }: Props) 
               <div className={s.previewToolbar}>
                 <Tooltip title="Edit">
                   <IconButton size="small" onClick={() => onUpdate({ mode: 'edit' })}>
-                    <LanguageMarkdownIcon />
+                    <MarkdownFileIcon />
                   </IconButton>
                 </Tooltip>
               </div>

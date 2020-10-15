@@ -12,7 +12,7 @@ import {
   FolderIcon,
   LanguageBlocklyIcon,
   LanguageJavascriptIcon,
-  LanguageMarkdownIcon,
+  MarkdownFileIcon,
   MetadataPluginsIcon,
   MetadataAssetsIcon,
   MetadataLayoutIcon,
@@ -303,7 +303,7 @@ class FileMenu extends React.Component<PropTypes, StateTypes> {
                         key="create_md_file"
                         titleMsg={messages.createMarkdownFile}
                         onClick={() => this.handleCreate({ type: 'FILE', extension: '.md' })}
-                        icon={LanguageMarkdownIcon}
+                        icon={MarkdownFileIcon}
                       />,
                     ]),
                 <Divider key="divider-directory" />,

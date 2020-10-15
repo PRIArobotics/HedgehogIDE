@@ -30,7 +30,6 @@ import MenuIcon from 'mdi-material-ui/DotsVertical';
 
 // files: general
 import FileIcon from 'mdi-material-ui/File';
-import ImageFileIcon from 'mdi-material-ui/Image';
 import FolderIcon from 'mdi-material-ui/Folder';
 import FolderOpenIcon from 'mdi-material-ui/FolderOpen';
 
@@ -38,7 +37,11 @@ import FolderOpenIcon from 'mdi-material-ui/FolderOpen';
 import LanguageBlocklyIcon from 'mdi-material-ui/Widgets';
 import LanguageJavascriptIcon from 'mdi-material-ui/LanguageJavascript';
 import LanguagePythonIcon from 'mdi-material-ui/LanguagePython';
-import LanguageMarkdownIcon from 'mdi-material-ui/FileDocument';
+
+// files: other file types
+import ImageFileIcon from 'mdi-material-ui/Image';
+import MarkdownFileIcon from 'mdi-material-ui/LanguageMarkdown';
+import PdfFileIcon from 'mdi-material-ui/FilePdf';
 
 // files: metadata
 import MetadataPluginsIcon from 'mdi-material-ui/ToyBrick';
@@ -105,13 +108,14 @@ import ExitToAppIcon from 'mdi-material-ui/ExitToApp';
 export {
   MenuIcon,
   FileIcon,
-  ImageFileIcon,
   FolderIcon,
   FolderOpenIcon,
   LanguageBlocklyIcon,
   LanguageJavascriptIcon,
   LanguagePythonIcon,
-  LanguageMarkdownIcon,
+  ImageFileIcon,
+  MarkdownFileIcon,
+  PdfFileIcon,
   MetadataPluginsIcon,
   MetadataAssetsIcon,
   MetadataLayoutIcon,
