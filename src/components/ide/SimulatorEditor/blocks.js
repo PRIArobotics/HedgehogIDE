@@ -5,18 +5,20 @@ import Blockly from 'blockly/core';
 
 import * as SimulationSchema from './SimulationSchema';
 
+function anyAncestor(block, condition) {
+  for (let ancestor = block.getSurroundParent(); ancestor !== null; ancestor = ancestor.getSurroundParent()) {
+    if (condition(ancestor)) return true;
+  }
+  return false;
+}
+
 function forbidsAncestor(types, warning) {
   return function onchange() {
     // Don't change state at the start of a drag.
     if (this.workspace.isDragging()) return;
-    let legal = true;
-    // Is the block nested in a scope?
-    for (let block = this.getSurroundParent(); block !== null; block = block.getSurroundParent()) {
-      if (types.indexOf(block.type) !== -1) {
-        legal = false;
-        break;
-      }
-    }
+
+    // Is the block nested in a forbidden ancestor?
+    let legal = !anyAncestor(this, block => types.indexOf(block.type) !== -1);
     if (legal) {
       this.setWarningText(null);
       if (!this.isInFlyout) this.setEnabled(true);
@@ -178,13 +180,17 @@ export const SIMULATOR_ROOT = {
     serialize(): SimulationSchema.SimulatorJson {
       const objectTypes = ['simulator_robot', 'simulator_rect', 'simulator_circle', 'simulator_svg'];
 
+      function isRobotPart(object) {
+        return anyAncestor(object, ancestor => ancestor.type === 'simulator_robot');
+      }
+
       const x = this.getFieldValue('X');
       const y = this.getFieldValue('Y');
       const width = this.getFieldValue('W');
       const height = this.getFieldValue('H');
 
       let objects = this.getDescendants(true)
-        .filter(block => objectTypes.includes(block.type))
+        .filter(block => objectTypes.includes(block.type) && !isRobotPart(block))
         .map(object => object.serialize());
 
       if (this.getField('WALLS').getValueBoolean()) {
@@ -438,7 +444,7 @@ export const SIMULATOR_GROUP = {
 export const SIMULATOR_ROBOT = {
   blockJson: {
     type: 'simulator_robot',
-    message0: 'Robot "%1" %2',
+    message0: 'Robot "%1" %2 %3',
     args0: [
       {
         type: 'field_input',
@@ -449,6 +455,12 @@ export const SIMULATOR_ROBOT = {
         type: 'input_value',
         name: 'SETTINGS',
         check: 'SimulatorObjectSettings',
+      },
+      {
+        type: 'input_statement',
+        name: 'PARTS',
+        align: 'RIGHT',
+        check: 'SimulatorRobotPart',
       },
     ],
     previousStatement: 'SimulatorObject',
@@ -466,6 +478,12 @@ export const SIMULATOR_ROBOT = {
     },
     getSettings,
     serialize(): SimulationSchema.Robot {
+      const objectTypes = ['simulator_robot_part_touch'];
+
+      const parts = this.getDescendants(true)
+        .filter(block => objectTypes.includes(block.type))
+        .map(object => object.serialize());
+
       const {
         static: _static,
         sensor: _sensor,
@@ -477,6 +495,7 @@ export const SIMULATOR_ROBOT = {
       return {
         ...this.getFields(),
         ...settings,
+        parts,
       };
     },
   },
@@ -902,6 +921,57 @@ export const SIMULATOR_SETTINGS_LABEL = {
   },
 };
 
+export const SIMULATOR_ROBOT_PART_TOUCH = {
+  blockJson: {
+    type: 'simulator_robot_part_touch',
+    message0: 'Touch Sensor %1 %2 %3',
+    args0: [
+      {
+        type: 'field_number',
+        name: 'PORT',
+        value: 0,
+      },
+      {
+        type: 'input_dummy',
+      },
+      {
+        type: 'input_statement',
+        name: 'OBJECTS',
+        align: 'RIGHT',
+        check: 'SimulatorObject',
+      },
+    ],
+    previousStatement: 'SimulatorRobotPart',
+    nextStatement: 'SimulatorRobotPart',
+    colour: 90,
+    tooltip: 'simulated touch sensor',
+    helpUrl: 'TODO',
+  },
+  blockExtras: {
+    getFields() {
+      return {
+        type: 'touch',
+        port: this.getFieldValue('PORT'),
+      };
+    },
+    serialize(): SimulationSchema.TouchSensor {
+      const objectTypes = ['simulator_rect', 'simulator_circle', 'simulator_svg'];
+
+      let objects = this.getDescendants(true)
+        .filter(block => objectTypes.includes(block.type))
+        .map(object => object.serialize());
+
+      return {
+        ...this.getFields(),
+        objects,
+      };
+    },
+  },
+  toolboxBlocks: {
+    default: () => <block type="simulator_robot_part_touch" />,
+  },
+};
+
 const blocks = [
   SIMULATOR_ROOT,
   SIMULATOR_RECT,
@@ -919,6 +989,7 @@ const blocks = [
   SIMULATOR_SETTINGS_DENSITY,
   SIMULATOR_SETTINGS_FRICTION_AIR,
   SIMULATOR_SETTINGS_LABEL,
+  SIMULATOR_ROBOT_PART_TOUCH,
   SIMULATOR_GROUP,
 ];
 

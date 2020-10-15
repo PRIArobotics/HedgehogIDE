@@ -60,6 +60,7 @@ const workspaceOptions = {
         {blocks.SIMULATOR_SETTINGS_FRICTION_AIR.toolboxBlocks.default()}
         {blocks.SIMULATOR_SETTINGS_LABEL.toolboxBlocks.default()}
         {blocks.SIMULATOR_ROBOT.toolboxBlocks.default()}
+        {blocks.SIMULATOR_ROBOT_PART_TOUCH.toolboxBlocks.default()}
       </category>
     </xml>,
   ),

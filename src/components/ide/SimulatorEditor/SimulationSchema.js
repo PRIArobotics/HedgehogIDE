@@ -98,10 +98,19 @@ export type Svg = {
   ...AllProps,
 };
 
+export type TouchSensor = {
+  type: 'touch',
+  port: number,
+  objects: Object[],
+};
+
+export type RobotPart = TouchSensor;
+
 export type Robot = {
   type: 'robot',
   name: string,
   ...RobotProps,
+  parts: RobotPart[],
 };
 
 export type Simulation = {
