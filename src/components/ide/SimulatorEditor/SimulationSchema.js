@@ -92,6 +92,8 @@ export type Circle = {
 export type Svg = {
   type: 'svg',
   src: string,
+  scale: number,
+  granularity: number,
   ...AllProps,
 };
 

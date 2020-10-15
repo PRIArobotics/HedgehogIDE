@@ -187,7 +187,7 @@ export default class Simulation {
           break;
         }
         case 'svg': {
-          const { type: _type, src, position, angle, ...options } = object;
+          const { type: _type, src, scale, granularity, position, angle, ...options } = object;
           resolveSprite(options?.render?.sprite);
 
           try {
@@ -203,7 +203,7 @@ export default class Simulation {
 
             const paths = Array.from(svgDocument.getElementsByTagName('path'));
             const vertexSets = paths.map(path =>
-              Matter.Vertices.scale(Matter.Svg.pathToVertices(path, 50), 3, 3));
+              Matter.Vertices.scale(Matter.Svg.pathToVertices(path, granularity), scale, scale));
 
             const body = Matter.Bodies.fromVertices(position.x, position.y, vertexSets, options, true);
             Matter.Body.setAngle(body, angle);

@@ -348,12 +348,26 @@ export const SIMULATOR_CIRCLE = {
 export const SIMULATOR_SVG = {
   blockJson: {
     type: 'simulator_svg',
-    message0: 'SVG %1 %2',
+    message0: 'SVG %1 @ %2%%, granularity %3 %4',
     args0: [
       {
         type: 'field_input',
         name: 'SRC',
         value: 'asset:foo.svg',
+      },
+      {
+        type: 'field_number',
+        name: 'SCALE',
+        value: 100,
+        min: 1,
+        precision: 1,
+      },
+      {
+        type: 'field_number',
+        name: 'GRANULARITY',
+        value: 15,
+        min: 1,
+        precision: 1,
       },
       {
         type: 'input_value',
@@ -372,6 +386,8 @@ export const SIMULATOR_SVG = {
       return {
         type: 'svg',
         src: this.getFieldValue('SRC'),
+        scale: this.getFieldValue('SCALE') / 100,
+        granularity: this.getFieldValue('GRANULARITY'),
       };
     },
     getSettings,
