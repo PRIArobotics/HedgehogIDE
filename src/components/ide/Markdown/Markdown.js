@@ -7,6 +7,7 @@ import IconButton from '@material-ui/core/IconButton';
 import Tooltip from '@material-ui/core/Tooltip';
 
 import MDEditor, { commands } from '@uiw/react-md-editor';
+// $FlowExpectError
 import md_s from '@uiw/react-md-editor/dist/markdown-editor.css';
 
 import { LanguageMarkdownIcon } from '../../misc/palette';
