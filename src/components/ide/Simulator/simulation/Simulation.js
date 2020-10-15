@@ -224,6 +224,8 @@ export default class Simulation {
             angle,
             ...options
           } = object;
+          resolveSprite(options?.render?.sprite);
+
           const robot = new Robot(options);
           const pose = { x, y, angle };
           robot.setPose(pose);

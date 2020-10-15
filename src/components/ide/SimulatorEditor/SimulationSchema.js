@@ -58,6 +58,7 @@ export type RobotProps = {|
   ...Rotation,
   render?: {
     ...RenderColor,
+    ...RenderSprite,
   },
 |};
 

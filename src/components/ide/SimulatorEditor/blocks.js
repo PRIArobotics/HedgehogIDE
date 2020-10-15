@@ -665,7 +665,6 @@ export const SIMULATOR_SETTINGS_SPRITE = {
     helpUrl: 'TODO',
   },
   blockExtras: {
-    onchange: forbidsAncestor(['simulator_robot'], 'robots can not have sprites'),
     getSettings() {
       const url = this.getFieldValue('URL');
       return {
