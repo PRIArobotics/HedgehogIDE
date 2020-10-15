@@ -6,6 +6,7 @@ import { Pose, Hedgehog } from '.';
 import { DifferentialDrive } from './drives';
 import { CollisionSensor, TouchSensor, LineSensor, DistanceSensor } from './sensors';
 import { ServoArm } from './servo';
+import * as SimulationSchema from '../../SimulatorEditor/SimulationSchema';
 
 function createArray<T>(length: number, cb: (index: number) => T): T[] {
   // Array.from({ length: n }, (v, i) => ...):
@@ -28,11 +29,13 @@ export default class Robot {
 
   robot: Matter.Composite;
 
-  constructor() {
-    this.initBody();
+  constructor(options: SimulationSchema.RobotProps) {
+    this.initBody(options);
   }
 
-  initBody() {
+  initBody({
+    render: renderBody,
+  }: SimulationSchema.RobotProps) {
     const material = {
       density: 1,
       frictionAir: 0.4,
@@ -49,9 +52,7 @@ export default class Robot {
     const styleBody = {
       render: {
         fillStyle: '#38b449',
-        // sprite: {
-        //   texture: '/icon.png',
-        // },
+        ...renderBody,
       },
     };
     const styleLineSensor = {

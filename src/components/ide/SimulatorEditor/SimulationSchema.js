@@ -53,7 +53,7 @@ type Label = {|
   label?: string,
 |};
 
-type RobotProps = {|
+export type RobotProps = {|
   ...Translation,
   ...Rotation,
   render?: {

@@ -222,9 +222,9 @@ export default class Simulation {
             name,
             position: { x, y },
             angle,
-            // color,
+            ...options
           } = object;
-          const robot = new Robot();
+          const robot = new Robot(options);
           const pose = { x, y, angle };
           robot.setPose(pose);
           setInitialPose(robot.body);
