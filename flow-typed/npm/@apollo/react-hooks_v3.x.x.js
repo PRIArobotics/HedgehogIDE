@@ -1,5 +1,5 @@
-// flow-typed signature: ab5c87518e4b0d20a250eeafa7a68f32
-// flow-typed version: cdfa128204/@apollo/react-hooks_v3.x.x/flow_>=v0.104.x
+// flow-typed signature: 5ce638d85015478765f7dd398a805ab0
+// flow-typed version: 07b166ad13/@apollo/react-hooks_v3.x.x/flow_>=v0.104.x
 
 // flow-typed signature: d6583f94eec029c4723062cbbe8065ec
 // flow-typed version: 35be10a6f7/@apollo/react-hooks_v3.x.x/flow_>=v0.104.x
@@ -1017,7 +1017,7 @@ declare module '@apollo/react-hooks' {
     complete?: boolean,
   |};
 
-  declare interface DataProxy {
+  declare export interface DataProxy {
     readQuery<QueryType, TVariables>(
       options: DataProxyReadQueryOptions<TVariables>,
       optimistic?: boolean
