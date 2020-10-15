@@ -1,6 +1,8 @@
 // @flow
 
 import Matter from 'matter-js';
+import 'pathseg';
+import '../../../../client/poly-decomp-polyfill';
 
 import { Point, Pose, Robot } from '.';
 import * as SimulationSchema from '../../SimulatorEditor/SimulationSchema';
@@ -185,15 +187,34 @@ export default class Simulation {
           break;
         }
         case 'svg': {
-          const { type: _type, src, ...options } = object;
+          const { type: _type, src, position, angle, ...options } = object;
           resolveSprite(options?.render?.sprite);
 
-          // TODO
-          // const body = Matter.Bodies.circle(0, 0, radius, options);
-          // setInitialPose(body);
-          // setTemporary(body, temporary);
+          try {
+            if (this.assets === null) {
+              throw new Error(`Trying to use '${src}', but there's no asset map`);
+            }
+            const svgBuffer = this.assets.get(src)?.[1] ?? null;
+            if (svgBuffer === null) {
+              throw new Error(`asset not found: '${src}'`);
+            }
+            const svgText = new TextDecoder('utf-8').decode(svgBuffer);
+            const svgDocument = new DOMParser().parseFromString(svgText, 'image/svg+xml');
 
-          // this.add([body]);
+            const paths = Array.from(svgDocument.getElementsByTagName('path'));
+            const vertexSets = paths.map(path =>
+              Matter.Vertices.scale(Matter.Svg.pathToVertices(path, 50), 3, 3));
+
+            const body = Matter.Bodies.fromVertices(position.x, position.y, vertexSets, options, true);
+            Matter.Body.setAngle(body, angle);
+            setInitialPose(body);
+            setTemporary(body, temporary);
+
+            this.add([body]);
+          } catch (err) {
+            console.error(err);
+          }
+
           break;
         }
         case 'robot': {
