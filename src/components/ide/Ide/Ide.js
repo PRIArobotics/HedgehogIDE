@@ -35,7 +35,7 @@ import FileTree, {
 import Markdown from '../Markdown';
 import IframeViewer from '../IframeViewer';
 import Simulator, { type SimulatorType } from '../Simulator';
-import SimulatorEditor, { generateSchemaFromXml } from '../SimulatorEditor';
+import SimulatorEditor, { generateConfigFromXml } from '../SimulatorEditor';
 import VisualEditor from '../VisualEditor';
 import { schema as simulationSchema } from '../Simulator/simulation';
 
@@ -197,21 +197,21 @@ function Ide({ projectName }: Props) {
     [executorRef, project, layoutModel, pluginsLoaded],
   );
 
-  // load the project's simulator schema if it or the simulator changes
+  // load the project's simulator config if it or the simulator changes
   const simulatorXml = projectCache?.simulatorXml ?? null;
   const assets = projectCache?.assets ?? null;
 
-  function refreshSimulatorFromSchema(schema: simulationSchema.Simulation | null) {
-    if (simulatorRef.current === null || schema === null || assets === null) return;
+  function refreshSimulatorFromConfig(config: simulationSchema.Simulation | null) {
+    if (simulatorRef.current === null || config === null || assets === null) return;
 
-    simulatorRef.current.simulation.jsonInit(schema, assets);
+    simulatorRef.current.simulation.jsonInit(config, assets);
   }
 
   function refreshSimulator() {
     if (simulatorXml === null) return;
 
-    const schema = generateSchemaFromXml(simulatorXml);
-    refreshSimulatorFromSchema(schema);
+    const config = generateConfigFromXml(simulatorXml);
+    refreshSimulatorFromConfig(config);
   }
 
   React.useEffect(() => {
@@ -917,7 +917,7 @@ function Ide({ projectName }: Props) {
             project={project}
             path={id}
             {...bindEditorProps(id, 'simulator-editor')}
-            onSchemaChange={refreshSimulatorFromSchema}
+            onConfigChange={refreshSimulatorFromConfig}
           />
         );
       }

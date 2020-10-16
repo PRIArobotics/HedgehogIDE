@@ -94,13 +94,13 @@ export type ControlledState = {|
 type Props = {|
   project: Project,
   path: string,
-  onSchemaChange: (schema: schema.Simulation | null) => void | Promise<void>,
+  onConfigChange: (config: schema.Simulation | null) => void | Promise<void>,
   ...ControlledState,
   onUpdate: (state: ControlledState) => void | Promise<void>,
   layoutNode: any,
 |};
 
-function generateSchema(workspace: Blockly.Workspace): schema.Simulation | null {
+function generateConfig(workspace: Blockly.Workspace): schema.Simulation | null {
   const roots = workspace.getBlocksByType('simulator_root');
   if (roots.length !== 1) return null;
 
@@ -108,10 +108,10 @@ function generateSchema(workspace: Blockly.Workspace): schema.Simulation | null 
   return simulation.serialize();
 }
 
-export function generateSchemaFromXml(workspaceXml: string): schema.Simulation | null {
+export function generateConfigFromXml(workspaceXml: string): schema.Simulation | null {
   const workspace = new Blockly.Workspace();
   Blockly.Xml.domToWorkspace(Blockly.Xml.textToDom(workspaceXml), workspace);
-  const result = generateSchema(workspace);
+  const result = generateConfig(workspace);
   workspace.dispose();
   return result;
 }
@@ -120,7 +120,7 @@ function SimulatorEditor({
   layoutNode,
   project,
   path,
-  onSchemaChange,
+  onConfigChange,
   jsonCollapsed,
   workspaceTransform,
   onUpdate,
@@ -174,9 +174,9 @@ function SimulatorEditor({
   const [json, setJson] = React.useState<string | null>(null);
 
   function handleBlocklyChange(workspace: Blockly.Workspace) {
-    const schema = generateSchema(workspace);
-    setJson(schema === null ? '' : JSON.stringify(schema, undefined, 2));
-    onSchemaChange(schema);
+    const config = generateConfig(workspace);
+    setJson(config === null ? '' : JSON.stringify(config, undefined, 2));
+    onConfigChange(config);
 
     const workspaceXml = Blockly.Xml.domToText(Blockly.Xml.workspaceToDom(workspace));
     setContent(workspaceXml);
