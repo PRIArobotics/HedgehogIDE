@@ -27,9 +27,8 @@ import help2img2 from './2_create_file/2_create_file.png';
 import help2img3 from './2_create_file/3_open_file.png';
 import help3img1 from './3_open_simulator/1_drag_tab.png';
 import help3img2 from './3_open_simulator/2_result.png';
-import help4img1 from './4_blockly_example/1_example_program.png';
-import help5img1 from './5_import_export/1_export.png';
-import help5img2 from './5_import_export/2_import.png';
+import help4img1 from './4_import_export/1_export.png';
+import help4img2 from './4_import_export/2_import.png';
 
 function Help() {
   return (
@@ -439,10 +438,10 @@ function Help() {
         <Typography variant="body1" component="div" paragraph>
           <Grid container spacing={1}>
             <Grid item sm={12} md={6} className={`${s.gridImg} ${s.gridImgSm}`}>
-              <img src={help5img1} alt="download a file" />
+              <img src={help4img1} alt="download a file" />
             </Grid>
             <Grid item sm={12} md={6} className={`${s.gridImg} ${s.gridImgSm}`}>
-              <img src={help5img2} alt="upload a file" />
+              <img src={help4img2} alt="upload a file" />
             </Grid>
           </Grid>
         </Typography>
