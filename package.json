@@ -165,7 +165,7 @@
     "workbox-webpack-plugin": "^5.0.0"
   },
   "scripts": {
-    "lint-js": "eslint --ignore-path .gitignore --ignore-pattern \"/flow-typed/*\" --ignore-pattern \"!**/.*\" .",
+    "lint-js": "eslint --ignore-path .gitignore --ignore-pattern \"/flow-typed/*\" --ignore-pattern \"/src/routes/webrtc/conclave/*\" --ignore-pattern \"!**/.*\" .",
     "lint-css": "stylelint \"src/**/*.{css,less,styl,scss,sass,sss}\"",
     "lint": "yarn run lint-js && yarn run lint-css",
     "fix-js": "yarn run lint-js --fix",
