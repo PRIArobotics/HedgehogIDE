@@ -228,6 +228,7 @@ export default class Simulation {
         }
         case 'robot': {
           const {
+            type: _type,
             name,
             position: { x, y },
             angle,
