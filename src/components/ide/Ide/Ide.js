@@ -105,7 +105,7 @@ const SquarePaper = React.forwardRef<
   React.Element<typeof Paper>,
 >((props, ref) => <Paper ref={ref} square {...props} />);
 
-const useStylesMaterial = makeStyles(theme => ({
+const useStylesMaterial = makeStyles((theme) => ({
   root: {
     boxSizing: 'border-box',
     height: '100%',
@@ -165,7 +165,7 @@ function Ide({ projectName }: Props) {
   }
   const [layoutModel, setLayoutState, layoutProps] = useLayoutModel(
     initialLayoutState,
-    layoutState => {
+    (layoutState) => {
       dispatch({ type: 'LAYOUT', layoutState });
     },
   );
@@ -190,7 +190,7 @@ function Ide({ projectName }: Props) {
   // (the ref could be registered with a new callback,
   // so the callback needs to be stable)
   const attachExecutor = React.useCallback(
-    executor => {
+    (executor) => {
       executorRef.current = executor;
       initializePluginManager();
     },
@@ -222,7 +222,7 @@ function Ide({ projectName }: Props) {
   // (the ref could be registered with a new callback,
   // so the callback needs to be stable)
   const attachSimulator = React.useCallback(
-    sim => {
+    (sim) => {
       simulatorRef.current = sim;
       refreshSimulator();
     },
@@ -252,7 +252,7 @@ function Ide({ projectName }: Props) {
 
     const nodes = {};
 
-    layoutModel.visitNodes(node => {
+    layoutModel.visitNodes((node) => {
       nodes[node.getId()] = node;
     });
 
@@ -328,7 +328,7 @@ function Ide({ projectName }: Props) {
       if (current.file.isDirectory()) {
         // $FlowExpectError
         const dir: DirReference = current;
-        dir.file.contents.forEach(child =>
+        dir.file.contents.forEach((child) =>
           listPaths({ path: `${dir.path}/${child.name}`, file: child }),
         );
       } else {
@@ -339,7 +339,7 @@ function Ide({ projectName }: Props) {
 
     // close those paths that are open
     const nodes = getNodes();
-    pathsToClose.forEach(path => {
+    pathsToClose.forEach((path) => {
       if (path in nodes) {
         layoutModel.doAction(FlexLayout.Actions.deleteTab(path));
       }
@@ -347,7 +347,7 @@ function Ide({ projectName }: Props) {
   }
 
   async function waitForSimulator(): Promise<SimulatorType> {
-    return /* await */ new Promise(resolve => {
+    return /* await */ new Promise((resolve) => {
       function tryIt() {
         if (simulatorRef.current) {
           resolve(simulatorRef.current);
@@ -366,7 +366,7 @@ function Ide({ projectName }: Props) {
       component: 'simulator',
       name: 'Simulator',
     });
-    waitForSimulator().then(s => {
+    waitForSimulator().then((s) => {
       // eslint-disable-next-line no-throw-literal
       if (pluginManagerRef.current === null) throw 'ref is null';
 
@@ -396,7 +396,7 @@ function Ide({ projectName }: Props) {
 
   async function getConsole(): Promise<ConsoleType> {
     addConsole();
-    return /* await */ new Promise(resolve => {
+    return /* await */ new Promise((resolve) => {
       function tryIt() {
         if (consoleRef.current) {
           resolve(consoleRef.current);
@@ -488,7 +488,7 @@ function Ide({ projectName }: Props) {
         if (reset && simulatorRef.current !== null) {
           // TODO this is a workaround for the simulated robot
           // (and probably other objects) still moving after terminating
-          await new Promise(resolve => setTimeout(resolve, 100));
+          await new Promise((resolve) => setTimeout(resolve, 100));
           await handleReset();
         }
         break;
@@ -634,9 +634,9 @@ function Ide({ projectName }: Props) {
     let dir: FilerRecursiveDirectoryInfo = root;
 
     // determine the files that are siblings of the event target
-    path.forEach(fragment => {
+    path.forEach((fragment) => {
       // right now `fragment` is a child of `dir`. look it up.
-      const child = dir.contents.find(c => c.name === fragment);
+      const child = dir.contents.find((c) => c.name === fragment);
 
       // the child is an ancestor of `file` and thus a directory. assert and cast
       // eslint-disable-next-line no-throw-literal
@@ -645,7 +645,10 @@ function Ide({ projectName }: Props) {
       dir = child;
     });
 
-    renameFile.show(file, dir.contents.map(f => f.name));
+    renameFile.show(
+      file,
+      dir.contents.map((f) => f.name),
+    );
   }
 
   async function confirmDeleteFile(file: FileReference): Promise<boolean> {
@@ -853,7 +856,7 @@ function Ide({ projectName }: Props) {
           const editorState = editorStates ? editorStates[editorType] : null;
           return editorState;
         })(),
-        onUpdate: editorState => {
+        onUpdate: (editorState) => {
           const editorStates = { [editorType]: editorState };
           dispatch({ type: 'SET_EDITOR_STATE', path, editorStates });
         },
@@ -1039,7 +1042,7 @@ function Ide({ projectName }: Props) {
           onFileAction={handleFileAction}
           onUpdate={
             // eslint-disable-next-line no-shadow
-            fileTreeState => dispatch({ type: 'UPDATE_FILE_TREE', fileTreeState })
+            (fileTreeState) => dispatch({ type: 'UPDATE_FILE_TREE', fileTreeState })
           }
         />
         <SimpleDialog id="create-file-dialog" {...createFile.mountSimpleDialog()} />
@@ -1054,7 +1057,7 @@ function Ide({ projectName }: Props) {
           <FlexLayout.Layout
             {...layoutProps}
             factory={factory}
-            classNameMapper={className => FlexLayoutTheme[className]}
+            classNameMapper={(className) => FlexLayoutTheme[className]}
           />
         </Grid>
       ) : null}

@@ -25,7 +25,7 @@ export type RemoteCursorsAction =
   | {| type: 'DELETE', start: AcePosition, end: AcePosition |};
 
 function remoteCursorsReducer(state: RemoteCursors, action: RemoteCursorsAction): RemoteCursors {
-  function mapRemoteCursor(fn: AcePosition => AcePosition): RemoteCursor => RemoteCursor {
+  function mapRemoteCursor(fn: (AcePosition) => AcePosition): (RemoteCursor) => RemoteCursor {
     return ({ selection, cursor }) => {
       if (selection !== null) {
         // eslint-disable-next-line no-param-reassign

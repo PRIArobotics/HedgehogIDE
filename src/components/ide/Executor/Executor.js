@@ -33,7 +33,7 @@ export class TaskHandle {
       ...mapObject(
         task.api,
         // for each handler, create a function that takes the payload and invokes the handler
-        handler => payload => handler(payload, this),
+        (handler) => (payload) => handler(payload, this),
       ),
       // built-in handlers
       subscribe: this.subscribe,
@@ -162,7 +162,7 @@ class Executor extends React.Component<PropTypes, StateTypes> {
   addTask(task: Task): Task {
     const taskHandle = new TaskHandle(this, task);
     this.taskHandles.set(task.name, taskHandle);
-    this.setState(state => ({
+    this.setState((state) => ({
       taskHandleList: [...state.taskHandleList, taskHandle],
     }));
     return task;
@@ -172,8 +172,8 @@ class Executor extends React.Component<PropTypes, StateTypes> {
     const taskHandle = this.getTaskHandle(taskName);
     if (taskHandle === null) return;
 
-    this.setState(state => ({
-      taskHandleList: state.taskHandleList.filter(t => t !== taskHandle),
+    this.setState((state) => ({
+      taskHandleList: state.taskHandleList.filter((t) => t !== taskHandle),
     }));
     this.taskHandles.delete(taskName);
     for (const listeners of this.eventRegistry.values()) {
@@ -210,7 +210,7 @@ class Executor extends React.Component<PropTypes, StateTypes> {
 
     return (
       <>
-        {taskHandleList.map(taskHandle => (
+        {taskHandleList.map((taskHandle) => (
           <TaskExecutor
             key={taskHandle.task.name}
             ref={taskHandle.setFrame}

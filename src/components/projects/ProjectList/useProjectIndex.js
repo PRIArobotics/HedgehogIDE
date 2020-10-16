@@ -26,8 +26,8 @@ const useRemoteProjectsQuery = hooks.makeQuery<RemoteProjects, void>(gql`
 
 type LocalToRemoteIdMap = {| [projectUid: string]: string |};
 const useLocalToRemoteIdMap = hooks.makeLocalStorage<LocalToRemoteIdMap>(
-  json => ({ ...(json !== null ? JSON.parse(json) : null) }),
-  state => JSON.stringify(state),
+  (json) => ({ ...(json !== null ? JSON.parse(json) : null) }),
+  (state) => JSON.stringify(state),
 );
 
 /**
@@ -38,11 +38,11 @@ function removeNonexistentMapEntries(remoteProjects: RemoteProject[]) {
   return (oldMap: LocalToRemoteIdMap) => {
     // $FlowExpectError
     const oldEntries: [string, string][] = Object.entries(oldMap);
-    const newEntries = oldEntries.flatMap(entry => {
+    const newEntries = oldEntries.flatMap((entry) => {
       const [_projectUid, remoteId] = entry;
 
       // skip any entries that refer to nonexistent remote projects
-      if (remoteProjects.findIndex(project => project.id === remoteId) === -1) return [];
+      if (remoteProjects.findIndex((project) => project.id === remoteId) === -1) return [];
 
       return [entry];
     });
@@ -124,7 +124,7 @@ export default function useProjectIndex(): [ProjectIndex, (ProjectIndexAction) =
       }
       case 'ADD_MAPPING': {
         const { projectUid, remoteId } = action;
-        setLocalToRemoteIdMap(oldMap => ({
+        setLocalToRemoteIdMap((oldMap) => ({
           ...oldMap,
           [projectUid]: remoteId,
         }));
@@ -149,8 +149,8 @@ export default function useProjectIndex(): [ProjectIndex, (ProjectIndexAction) =
     // $FlowExpectError
     const remoteId: string = remoteId0;
 
-    const localProject = localProjects.find(project => project.uid === projectUid);
-    const remoteProject = remoteProjects.find(project => project.id === remoteId);
+    const localProject = localProjects.find((project) => project.uid === projectUid);
+    const remoteProject = remoteProjects.find((project) => project.id === remoteId);
     if (localProject !== undefined && remoteProject !== undefined) {
       localToRemoteMap[projectUid] = remoteProject;
       if (!(remoteId in remoteToLocalMap)) remoteToLocalMap[remoteId] = [];

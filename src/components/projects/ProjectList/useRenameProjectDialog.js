@@ -86,7 +86,7 @@ export default function useRenameProjectDialog(
   }
 
   const valid =
-    newProjectName !== '' && allProjects.every(project => project.name !== newProjectName);
+    newProjectName !== '' && allProjects.every((project) => project.name !== newProjectName);
 
   return {
     show,

@@ -8,7 +8,7 @@ mongoose
     useCreateIndex: true,
     useUnifiedTopology: true,
   })
-  .catch(error => {
+  .catch((error) => {
     console.error('MongoDB initial connection failed', error);
   });
 

@@ -9,8 +9,8 @@ export default async function createUser() {
     output: process.stdout,
   });
 
-  const question = query =>
-    new Promise(resolve => {
+  const question = (query) =>
+    new Promise((resolve) => {
       input.question(query, resolve);
     });
 

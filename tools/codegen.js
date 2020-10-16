@@ -35,7 +35,7 @@ export default async function codegen() {
     stdio: 'inherit',
   });
 
-  await new Promise(resolve => {
+  await new Promise((resolve) => {
     httpServer.close(() => {
       console.info('Server closed');
       resolve();

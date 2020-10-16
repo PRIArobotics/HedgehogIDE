@@ -41,7 +41,7 @@ type Config = {|
 |};
 
 export default function useCreateRemoteProjectDialog(
-  onCreate: Project => boolean | Promise<boolean>,
+  onCreate: (Project) => boolean | Promise<boolean>,
 ): CreateRemoteProjectDialogHook {
   const [open, setOpen] = React.useState<boolean>(false);
   const [config, setConfig] = React.useState<Config | null>(null);

@@ -19,7 +19,7 @@ type Props = {|
 |};
 type Instance = React.ElementRef<'iframe'>;
 
-const fetchExecutorDoc = fetch('/executor').then(response => response.text());
+const fetchExecutorDoc = fetch('/executor').then((response) => response.text());
 
 /**
  * A TaskExecutor encapsulates a single hidden, sandboxed iframe containing the `/executor` document.
@@ -40,7 +40,7 @@ const TaskExecutor = React.forwardRef<Props, Instance>(
     // uses useCallback because otherwise each render resets the ref.
     // (the ref could be registered with a new callback, so the callback needs to be stable)
     const attachFrame = React.useCallback(
-      f => {
+      (f) => {
         // set the ref for this component
         if (typeof ref === 'function') ref(f);
         // eslint-disable-next-line no-param-reassign

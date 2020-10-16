@@ -133,7 +133,7 @@ export default class Robot {
       const length = 5;
       const numSegments = 60;
 
-      const segments = createArray(numSegments, index => {
+      const segments = createArray(numSegments, (index) => {
         const distance = length / 2 + length * index;
         const body = Matter.Bodies.rectangle(x + cos * distance, y + sin * distance, length, 2, {
           ...optionsDistanceSensorSegment,
@@ -209,7 +209,9 @@ export default class Robot {
     this.robot = Matter.Composite.create({
       bodies: [this.body],
       // parts: [this.body, leftGrabber, rightGrabber],
-      constraints: [...this.servoArms.flatMap(arm => [arm.pivotConstraint, arm.controlConstraint])],
+      constraints: [
+        ...this.servoArms.flatMap((arm) => [arm.pivotConstraint, arm.controlConstraint]),
+      ],
       label: 'bot',
     });
   }

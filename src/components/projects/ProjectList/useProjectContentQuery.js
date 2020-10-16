@@ -92,8 +92,8 @@ export default function useProjectContentQuery(): (
   const [executeQuery, projectContentResponse] = useRemoteProjectContentQuery();
   const resolveRef = React.useRef<{|
     projectId: string,
-    resolve: RemoteProjectContents => void,
-    reject: Error => void,
+    resolve: (RemoteProjectContents) => void,
+    reject: (Error) => void,
   |} | null>(null);
 
   React.useEffect(() => {

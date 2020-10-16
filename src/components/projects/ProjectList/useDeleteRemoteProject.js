@@ -12,7 +12,7 @@ const useDeleteProjectMutation = hooks.makeMutation<DeleteProject, DeleteProject
   }
 `);
 
-export default function useDeleteRemoteProject(): string => Promise<string | null> {
+export default function useDeleteRemoteProject(): (string) => Promise<string | null> {
   const [performDeleteProject, _deleteProjectResponse] = useDeleteProjectMutation();
 
   async function deleteProject(projectId: string) {

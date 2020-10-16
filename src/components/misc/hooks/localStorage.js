@@ -2,7 +2,7 @@
 
 import * as React from 'react';
 
-type Setter<T> = ((T => T) | T) => void;
+type Setter<T> = (((T) => T) | T) => void;
 type LocalStorageOptHook<T> = (key: string | null) => [T | void, Setter<T>];
 type LocalStorageHook<T> = (key: string) => [T, Setter<T>];
 
@@ -45,7 +45,7 @@ type LocalStorageValue<T> =
  */
 export function makeLocalStorageOpt<T>(
   deserialize: (string | null) => T,
-  serialize: T => string | null,
+  serialize: (T) => string | null,
 ): LocalStorageOptHook<T> {
   function load(key: string | null): LocalStorageValue<T> {
     if (key === null) return { key };
@@ -77,11 +77,11 @@ export function makeLocalStorageOpt<T>(
 
     // we use a functional update as each update needs to access the key,
     // which is part of the state
-    function setState(value: (T => T) | T) {
+    function setState(value: ((T) => T) | T) {
       // $FlowExpectError
-      const setter: T => T = typeof value === 'function' ? value : () => value;
+      const setter: (T) => T = typeof value === 'function' ? value : () => value;
 
-      setStateImpl(oldValue => {
+      setStateImpl((oldValue) => {
         if (oldValue.key === null) return oldValue;
 
         const newValue = {
@@ -126,7 +126,7 @@ export function makeLocalStorageOpt<T>(
  */
 export function makeLocalStorage<T>(
   deserialize: (string | null) => T,
-  serialize: T => string | null,
+  serialize: (T) => string | null,
 ): LocalStorageHook<T> {
   // $FlowExpectError
   return makeLocalStorageOpt<T>(deserialize, serialize);

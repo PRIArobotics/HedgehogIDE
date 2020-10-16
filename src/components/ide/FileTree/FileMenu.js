@@ -157,7 +157,7 @@ class FileMenu extends React.Component<PropTypes, StateTypes> {
   }
 
   handleCreate(desc: FileDesc | MetadataDesc) {
-    this.action(file => {
+    this.action((file) => {
       // $FlowExpectError
       const parentDir: DirReference = file;
 
@@ -166,19 +166,19 @@ class FileMenu extends React.Component<PropTypes, StateTypes> {
   }
 
   handleRename() {
-    this.action(file => ({ action: 'RENAME', file }));
+    this.action((file) => ({ action: 'RENAME', file }));
   }
 
   handleDelete() {
-    this.action(file => ({ action: 'DELETE', file }));
+    this.action((file) => ({ action: 'DELETE', file }));
   }
 
   handleDownload() {
-    this.action(file => ({ action: 'DOWNLOAD', file }));
+    this.action((file) => ({ action: 'DOWNLOAD', file }));
   }
 
   handleUpload() {
-    this.action(file => {
+    this.action((file) => {
       // $FlowExpectError
       const parentDir: DirReference = file;
 

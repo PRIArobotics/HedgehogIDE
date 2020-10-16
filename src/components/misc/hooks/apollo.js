@@ -69,7 +69,7 @@ type QueryHook<TData, TVariables> = (
 ) => QueryResult<TData, TVariables>;
 
 export function makeQuery<TData, TVariables>(query: DocumentNode): QueryHook<TData, TVariables> {
-  return options => useQuery<TData, TVariables>(query, options);
+  return (options) => useQuery<TData, TVariables>(query, options);
 }
 
 type LazyQueryHook<TData, TVariables> = (
@@ -79,7 +79,7 @@ type LazyQueryHook<TData, TVariables> = (
 export function makeLazyQuery<TData, TVariables>(
   query: DocumentNode,
 ): LazyQueryHook<TData, TVariables> {
-  return options => useLazyQuery<TData, TVariables>(query, options);
+  return (options) => useLazyQuery<TData, TVariables>(query, options);
 }
 
 type SubscriptionHook<TData, TVariables> = (
@@ -89,7 +89,7 @@ type SubscriptionHook<TData, TVariables> = (
 export function makeSubscription<TData, TVariables>(
   query: DocumentNode,
 ): SubscriptionHook<TData, TVariables> {
-  return options => useSubscription<TData, TVariables>(query, options);
+  return (options) => useSubscription<TData, TVariables>(query, options);
 }
 
 type MutationHook<TData, TVariables> = (
@@ -99,5 +99,5 @@ type MutationHook<TData, TVariables> = (
 export function makeMutation<TData, TVariables>(
   query: DocumentNode,
 ): MutationHook<TData, TVariables> {
-  return options => useMutation<TData, TVariables>(query, options);
+  return (options) => useMutation<TData, TVariables>(query, options);
 }

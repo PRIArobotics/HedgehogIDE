@@ -66,12 +66,12 @@ export function useAsyncState<T>(initialState: T): [T, (T | Promise<T>) => void]
 
     dispatch({ type: 'START' });
     promise.then(
-      value => {
+      (value) => {
         if (!cancelled) {
           dispatch({ type: 'RESOLVE', value });
         }
       },
-      _error => {
+      (_error) => {
         if (!cancelled) {
           dispatch({ type: 'REJECT' });
         }
@@ -128,7 +128,7 @@ type StoreState<T> = {| value: T |};
  */
 export function useStore<T>(
   load: () => T | Promise<T>,
-  store: T => void | Promise<void>,
+  store: (T) => void | Promise<void>,
   deps?: any[],
 ): [T | null, (T) => void] {
   const realDeps = deps ?? [load, store];
@@ -139,7 +139,7 @@ export function useStore<T>(
 
   // reload the state when the store changes
   React.useEffect(() => {
-    setStateImpl(Promise.resolve(load()).then(value => ({ value })));
+    setStateImpl(Promise.resolve(load()).then((value) => ({ value })));
 
     // after changing the store, clear the state to prevent further use
     return () => {

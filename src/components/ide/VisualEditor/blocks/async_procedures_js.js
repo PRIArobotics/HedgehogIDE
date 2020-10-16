@@ -28,12 +28,12 @@ function isAsyncProcedure(block: Blockly.Block): boolean {
 
   // a procedure is async if any descendant is async,
   // i.e. if not every descendant is not async
-  return !block.getDescendants().every(child => !requiresAsyncJsFunction(child));
+  return !block.getDescendants().every((child) => !requiresAsyncJsFunction(child));
 }
 
 // eslint-disable-next-line camelcase
 const original_procedures_callreturn_generator = Blockly.JavaScript.procedures_callreturn;
-Blockly.JavaScript.procedures_callreturn = block => {
+Blockly.JavaScript.procedures_callreturn = (block) => {
   let code = original_procedures_callreturn_generator(block)[0];
   if (isAsyncProcedureCall(block)) code = `await ${code}`;
   return [code, Blockly.JavaScript.ORDER_AWAIT];

@@ -44,7 +44,7 @@ type CreateProjectDialogHook = {|
 |};
 
 export default function useCreateProjectDialog(
-  onCreate: string => boolean | Promise<boolean>,
+  onCreate: (string) => boolean | Promise<boolean>,
   allProjects: Project[],
 ): CreateProjectDialogHook {
   const [open, setOpen] = React.useState<boolean>(false);
@@ -76,7 +76,7 @@ export default function useCreateProjectDialog(
   }
 
   const valid =
-    newProjectName !== '' && allProjects.every(project => project.name !== newProjectName);
+    newProjectName !== '' && allProjects.every((project) => project.name !== newProjectName);
 
   return {
     show,

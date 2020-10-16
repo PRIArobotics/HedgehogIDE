@@ -60,8 +60,8 @@ class PluginManager {
     this.plugins.push(
       ...(await Promise.all(
         pluginFiles
-          .filter(pluginFile => pluginFile.name.endsWith('.js'))
-          .map(async pluginFile => {
+          .filter((pluginFile) => pluginFile.name.endsWith('.js'))
+          .map(async (pluginFile) => {
             const code = await fs.promises.readFile(
               project.resolve('.metadata', 'plugins', pluginFile.name),
               'utf8',
@@ -73,7 +73,7 @@ class PluginManager {
   }
 
   async addPlugin(name: string, code: string): Promise<Task> {
-    const readyPromise = new Promise(resolve => {
+    const readyPromise = new Promise((resolve) => {
       this.pluginReadyResolvers.push(resolve);
     });
     const task = this.executor.addTask({

@@ -14,7 +14,7 @@ type ContentHook = {|
 |};
 
 export default function useContent(
-  remoteCursorsDispatch: RemoteCursorsAction => void,
+  remoteCursorsDispatch: (RemoteCursorsAction) => void,
   controller: Controller,
 ): ContentHook {
   const [value, setValue] = React.useState<string>('');

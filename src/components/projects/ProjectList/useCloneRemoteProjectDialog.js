@@ -87,7 +87,7 @@ export default function useCloneRemoteProjectDialog(
   }
 
   const valid =
-    newProjectName !== '' && allProjects.every(project => project.name !== newProjectName);
+    newProjectName !== '' && allProjects.every((project) => project.name !== newProjectName);
 
   const name = config?.project.name ?? '';
 

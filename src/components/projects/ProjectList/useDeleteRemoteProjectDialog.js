@@ -41,7 +41,7 @@ type Config = {|
 |};
 
 export default function useDeleteRemoteProjectDialog(
-  onDelete: RemoteProject => boolean | Promise<boolean>,
+  onDelete: (RemoteProject) => boolean | Promise<boolean>,
 ): DeleteRemoteProjectDialogHook {
   const [open, setOpen] = React.useState<boolean>(false);
   const [config, setConfig] = React.useState<Config | null>(null);

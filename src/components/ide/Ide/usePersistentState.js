@@ -92,7 +92,7 @@ function ideState(state: PersistentState, action: IdeAction): PersistentState {
 }
 
 const useStorage = makeLocalStorageOpt<PersistentState>(
-  json => ({
+  (json) => ({
     // default state
     fileTreeState: { expandedKeys: [] },
     showMetadataFolder: false,
@@ -101,7 +101,7 @@ const useStorage = makeLocalStorageOpt<PersistentState>(
     // persisted state
     ...(json !== null ? JSON.parse(json) : null),
   }),
-  state => JSON.stringify(state),
+  (state) => JSON.stringify(state),
 );
 
 export default function usePersistentState(

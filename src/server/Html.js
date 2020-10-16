@@ -44,7 +44,7 @@ class Html extends React.Component<PropTypes> {
           <title>{title}</title>
           <meta name="description" content={description} />
           <meta name="viewport" content="width=device-width, initial-scale=1" />
-          {scripts.map(script => (
+          {scripts.map((script) => (
             <link key={script} rel="preload" href={script} as="script" />
           ))}
           <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
@@ -61,7 +61,7 @@ class Html extends React.Component<PropTypes> {
           <meta name="msapplication-TileImage" content="/mstile-144x144.png" />
           <meta name="msapplication-config" content="/browserconfig.xml" />
           <meta name="theme-color" content="#ffffff" />
-          {styles.map(style => (
+          {styles.map((style) => (
             <style
               key={style.id}
               id={style.id}
@@ -72,7 +72,7 @@ class Html extends React.Component<PropTypes> {
         <body>
           <div id="app" dangerouslySetInnerHTML={{ __html: children }} />
           <script dangerouslySetInnerHTML={{ __html: `window.App=${serialize(app)}` }} />
-          {scripts.map(script => (
+          {scripts.map((script) => (
             <script key={script} src={script} />
           ))}
           {config.analytics.googleTrackingId && (
@@ -80,9 +80,7 @@ class Html extends React.Component<PropTypes> {
               dangerouslySetInnerHTML={{
                 __html:
                   'window.ga=function(){ga.q.push(arguments)};ga.q=[];ga.l=+new Date;' +
-                  `ga('create','${
-                    config.analytics.googleTrackingId
-                  }','auto');ga('send','pageview')`,
+                  `ga('create','${config.analytics.googleTrackingId}','auto');ga('send','pageview')`,
               }}
             />
           )}

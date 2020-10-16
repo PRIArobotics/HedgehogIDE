@@ -49,7 +49,7 @@ function Chat({ connection, sendText }: ChatProps) {
   function handleSend() {
     if (connection === null) return;
 
-    setMessages(oldMessages => [...oldMessages, msg('OUT', sendText)]);
+    setMessages((oldMessages) => [...oldMessages, msg('OUT', sendText)]);
     connection.send(sendText);
   }
 
@@ -57,7 +57,7 @@ function Chat({ connection, sendText }: ChatProps) {
     if (connection === null) return undefined;
 
     function handleRecv(text) {
-      setMessages(oldMessages => [...oldMessages, msg('IN', text)]);
+      setMessages((oldMessages) => [...oldMessages, msg('IN', text)]);
     }
 
     connection.on('data', handleRecv);
@@ -135,16 +135,16 @@ function WebRTC(_props: Props) {
       // eslint-disable-next-line no-console
       console.log('peers created');
       // eslint-disable-next-line no-console
-      leftPeer.on('error', err => console.log(err));
+      leftPeer.on('error', (err) => console.log(err));
       // eslint-disable-next-line no-console
-      rightPeer.on('error', err => console.log(err));
+      rightPeer.on('error', (err) => console.log(err));
 
-      const leftId = await new Promise(resolve => leftPeer.on('open', resolve));
-      const rightId = await new Promise(resolve => rightPeer.on('open', resolve));
+      const leftId = await new Promise((resolve) => leftPeer.on('open', resolve));
+      const rightId = await new Promise((resolve) => rightPeer.on('open', resolve));
       // eslint-disable-next-line no-console
       console.log(leftId, rightId);
       const rightConn = rightPeer.connect(leftId);
-      const leftConn = await new Promise(resolve => leftPeer.on('connection', resolve));
+      const leftConn = await new Promise((resolve) => leftPeer.on('connection', resolve));
       // eslint-disable-next-line no-console
       console.log('peers connected');
 

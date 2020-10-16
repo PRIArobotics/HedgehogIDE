@@ -51,7 +51,7 @@ export function getChild(file: FilerRecursiveStatInfo, name: string): FilerRecur
   const directory: FilerRecursiveDirectoryInfo = file;
 
   // Find the child and make sure it exists
-  const child = directory.contents.find(f => f.name === name);
+  const child = directory.contents.find((f) => f.name === name);
   if (child === undefined) throw new Error(`'${name}' does not exist`);
   return child;
 }
@@ -78,7 +78,7 @@ const cmpFile = (a: FilerStatInfo, b: FilerStatInfo) => {
   let result;
 
   // sort directories before files (& symlinks)
-  const typeVal = f => (f.isDirectory() ? 0 : 1);
+  const typeVal = (f) => (f.isDirectory() ? 0 : 1);
   result = typeVal(a) - typeVal(b);
   if (result !== 0) return result;
 
@@ -146,7 +146,7 @@ export class Project {
       // $FlowExpectError
       const dir: FilerRecursiveDirectoryInfo = file;
       dir.contents.sort(cmpFile);
-      dir.contents.forEach(f => sortRecursively(f));
+      dir.contents.forEach((f) => sortRecursively(f));
     }
 
     const [root, contents] = await Promise.all([

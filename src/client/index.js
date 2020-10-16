@@ -33,9 +33,9 @@ const apolloClient = createApolloClient();
 // https://github.com/kriasoft/isomorphic-style-loader
 const insertCss = (...styles) => {
   // eslint-disable-next-line no-underscore-dangle
-  const removeCss = styles.map(x => x._insertCss());
+  const removeCss = styles.map((x) => x._insertCss());
   return () => {
-    removeCss.forEach(f => f());
+    removeCss.forEach((f) => f());
   };
 };
 

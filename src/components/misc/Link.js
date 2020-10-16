@@ -23,7 +23,7 @@ function isModifiedEvent(event) {
 
 type PropTypes = {|
   to: string,
-  onClick?: Object => void,
+  onClick?: (Object) => void,
   children?: React.Node,
   className?: string,
 |};

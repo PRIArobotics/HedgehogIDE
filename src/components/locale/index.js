@@ -87,7 +87,7 @@ export function useLocale(): Locale {
 }
 
 type LocaleConsumerPropTypes = {|
-  children: Locale => React.Node,
+  children: (Locale) => React.Node,
 |};
 
 /**

@@ -128,7 +128,7 @@ const def: GraphqlDefShape = {
           );
 
           async function saveFileTree(tree) {
-            const savedFilePromises = tree.files.map(file =>
+            const savedFilePromises = tree.files.map((file) =>
               File.create(
                 [
                   {
@@ -144,8 +144,8 @@ const def: GraphqlDefShape = {
               })),
             );
 
-            const savedTreePromises = tree.trees.map(childTree =>
-              saveFileTree(childTree.tree).then(savedTree => ({
+            const savedTreePromises = tree.trees.map((childTree) =>
+              saveFileTree(childTree.tree).then((savedTree) => ({
                 name: childTree.name,
                 type: 'TREE',
                 ref: savedTree.id,

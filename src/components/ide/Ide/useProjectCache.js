@@ -55,7 +55,7 @@ export default function useProjectCache(
 
       async function walk(prefix: string, files: FilerRecursiveStatInfo[]) {
         await Promise.all(
-          files.map(async f => {
+          files.map(async (f) => {
             if (f.isDirectory()) {
               // $FlowExpectError
               const dir: FilerRecursiveDirectoryInfo = f;

@@ -56,7 +56,7 @@ const config = {
     filename: isDebug ? '[name].js' : '[name].[chunkhash:8].js',
     chunkFilename: isDebug ? '[name].chunk.js' : '[name].[chunkhash:8].chunk.js',
     // Point sourcemap entries to original disk location (format as URL on Windows)
-    devtoolModuleFilenameTemplate: info =>
+    devtoolModuleFilenameTemplate: (info) =>
       path.resolve(info.absoluteResourcePath).replace(/\\/g, '/'),
   },
 
@@ -335,8 +335,8 @@ const clientConfig = {
         // Write chunk-manifest.json.json
         const chunkFileName = `${BUILD_DIR}/server/chunk-manifest.json`;
         try {
-          const fileFilter = file => !file.endsWith('.map');
-          const addPath = file => manifest.getPublicPath(file);
+          const fileFilter = (file) => !file.endsWith('.map');
+          const addPath = (file) => manifest.getPublicPath(file);
           const chunkFiles = stats.compilation.chunkGroups.reduce((acc, c) => {
             acc[c.name] = [
               ...(acc[c.name] || []),
@@ -427,14 +427,14 @@ const serverConfig = {
   module: {
     ...config.module,
 
-    rules: overrideRules(config.module.rules, rule => {
+    rules: overrideRules(config.module.rules, (rule) => {
       // Override babel-preset-env configuration for Node.js
       if (rule.loader === 'babel-loader') {
         return {
           ...rule,
           options: {
             ...rule.options,
-            presets: rule.options.presets.map(preset =>
+            presets: rule.options.presets.map((preset) =>
               preset[0] !== '@babel/preset-env'
                 ? preset
                 : [

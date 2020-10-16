@@ -28,7 +28,7 @@ const OpenDrawer = React.forwardRef<OpenDrawerProps, React.Element<typeof Drawer
 
 // main component
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   appBar: {
     zIndex: theme.zIndex.drawer + 1,
   },

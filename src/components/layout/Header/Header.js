@@ -54,7 +54,7 @@ const messages = {
   ...commonMessages,
 };
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   gutters: {
     paddingLeft: theme.spacing(2),
   },

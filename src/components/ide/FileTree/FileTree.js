@@ -196,8 +196,8 @@ function FileTree({ files, expandedKeys, filter, onFileAction, onUpdate }: Props
 
   function renderChildren(path: string, children: FilerRecursiveStatInfo[]) {
     return children
-      .filter(child => effectiveFilter(path, child))
-      .map(child =>
+      .filter((child) => effectiveFilter(path, child))
+      .map((child) =>
         // eslint-disable-next-line no-use-before-define
         renderNode(`${path}/${child.name}`, child),
       );
@@ -235,10 +235,10 @@ function FileTree({ files, expandedKeys, filter, onFileAction, onUpdate }: Props
       title: (
         // TODO figure out accessibility
         <span
-          onClick={e => handleFileClick(e, { path, file })}
-          onContextMenu={e => handleFileRightClick(e, { path, file })}
-          onDoubleClick={e => handleFileDoubleClick(e, { path, file })}
-          onKeyDown={e => handleFileKeyDown(e, { path, file })}
+          onClick={(e) => handleFileClick(e, { path, file })}
+          onContextMenu={(e) => handleFileRightClick(e, { path, file })}
+          onDoubleClick={(e) => handleFileDoubleClick(e, { path, file })}
+          onKeyDown={(e) => handleFileKeyDown(e, { path, file })}
           role="treeitem"
           tabIndex="0"
         >
@@ -272,7 +272,7 @@ function FileTree({ files, expandedKeys, filter, onFileAction, onUpdate }: Props
         expandedKeys={expandedKeys}
         onExpand={
           // eslint-disable-next-line no-shadow
-          expandedKeys => onUpdate({ expandedKeys })
+          (expandedKeys) => onUpdate({ expandedKeys })
         }
         selectedKeys={selectedKeys}
         onDrop={handleFileDrop}

@@ -89,7 +89,7 @@ export default function useCreateFileDialog(
         ? newFileName
         : `${newFileName}${desc.extension}`;
     const valid =
-      newFileName !== '' && parentDir.file.contents.every(f => f.name !== actualNewFileName);
+      newFileName !== '' && parentDir.file.contents.every((f) => f.name !== actualNewFileName);
     setFileNameState({
       actualNewFileName,
       valid,

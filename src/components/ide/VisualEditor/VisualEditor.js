@@ -75,8 +75,8 @@ function VisualEditor({
   const workspaceOptions = React.useMemo(() => {
     const dynamicBlocks = VisualEditor.dynamicBlockLoaders.length ? (
       <category name="%{BKY_CAT_CUSTOM}" colour="120">
-        {VisualEditor.dynamicBlockLoaders.map(loader =>
-          loader().map(block => block.toolboxBlocks.default()),
+        {VisualEditor.dynamicBlockLoaders.map((loader) =>
+          loader().map((block) => block.toolboxBlocks.default()),
         )}
       </category>
     ) : null;

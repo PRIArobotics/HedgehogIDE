@@ -22,7 +22,7 @@ function forbidsAncestor(types, warning) {
     if (this.workspace.isDragging()) return;
 
     // Is the block nested in a forbidden ancestor?
-    const legal = !anyAncestor(this, block => types.indexOf(block.type) !== -1);
+    const legal = !anyAncestor(this, (block) => types.indexOf(block.type) !== -1);
     if (legal) {
       this.setWarningText(null);
       if (!this.isInFlyout) this.setEnabled(true);
@@ -190,7 +190,7 @@ export const SIMULATOR_ROOT = {
       ];
 
       function isRobotPart(object) {
-        return anyAncestor(object, ancestor => ancestor.type === 'simulator_robot');
+        return anyAncestor(object, (ancestor) => ancestor.type === 'simulator_robot');
       }
 
       const x = this.getFieldValue('X');
@@ -199,8 +199,8 @@ export const SIMULATOR_ROOT = {
       const height = this.getFieldValue('H');
 
       let objects = this.getDescendants(true)
-        .filter(block => objectTypes.includes(block.type) && !isRobotPart(block))
-        .map(object => object.serialize());
+        .filter((block) => objectTypes.includes(block.type) && !isRobotPart(block))
+        .map((object) => object.serialize());
 
       if (this.getField('WALLS').getValueBoolean()) {
         const template = {
@@ -490,8 +490,8 @@ export const SIMULATOR_ROBOT = {
       const objectTypes = ['simulator_robot_part_touch'];
 
       const parts = this.getDescendants(true)
-        .filter(block => objectTypes.includes(block.type))
-        .map(object => object.serialize());
+        .filter((block) => objectTypes.includes(block.type))
+        .map((object) => object.serialize());
 
       const {
         static: _static,
@@ -967,8 +967,8 @@ export const SIMULATOR_ROBOT_PART_TOUCH = {
       const objectTypes = ['simulator_rect', 'simulator_circle', 'simulator_svg'];
 
       const objects = this.getDescendants(true)
-        .filter(block => objectTypes.includes(block.type))
-        .map(object => object.serialize());
+        .filter((block) => objectTypes.includes(block.type))
+        .map((object) => object.serialize());
 
       return {
         ...this.getFields(),
@@ -1002,7 +1002,7 @@ const blocks = [
   SIMULATOR_GROUP,
 ];
 
-blocks.forEach(block => {
+blocks.forEach((block) => {
   const { type } = block.blockJson;
 
   Blockly.Blocks[type] = {

@@ -78,7 +78,7 @@ function SimpleDialog({
       actionsNode = actions;
   }
 
-  const handleSubmit = event => {
+  const handleSubmit = (event) => {
     if (onConfirm !== undefined) onConfirm();
     event.preventDefault();
   };

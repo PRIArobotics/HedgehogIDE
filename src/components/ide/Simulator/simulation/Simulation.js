@@ -123,7 +123,7 @@ export default class Simulation {
   }
 
   async sleep(millis: number): Promise<void> {
-    return /* await */ new Promise(resolve => {
+    return /* await */ new Promise((resolve) => {
       this.timers.push([this.engine.timing.timestamp + millis, resolve]);
     });
   }
@@ -201,7 +201,7 @@ export default class Simulation {
             const svgDocument = new DOMParser().parseFromString(svgText, 'image/svg+xml');
 
             const paths = Array.from(svgDocument.getElementsByTagName('path'));
-            const vertexSets = paths.map(path =>
+            const vertexSets = paths.map((path) =>
               Matter.Vertices.scale(Matter.Svg.pathToVertices(path, granularity), scale, scale),
             );
 
@@ -250,7 +250,7 @@ export default class Simulation {
   }
 
   removeBodies(labels: string[]) {
-    const bodiesToRemove = this.world.bodies.filter(body => labels.includes(body.label));
+    const bodiesToRemove = this.world.bodies.filter((body) => labels.includes(body.label));
     for (const body of bodiesToRemove) {
       Matter.World.remove(this.world, body);
     }

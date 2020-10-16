@@ -79,7 +79,7 @@ appUseAuth(
   expressJwt({
     secret: config.auth.jwt.secret,
     credentialsRequired: false,
-    getToken: req => req.headers.authorization,
+    getToken: (req) => req.headers.authorization,
   }),
 );
 // Error handler for express-jwt
@@ -103,7 +103,7 @@ const apolloServer = new ApolloServer({
     path: '/subscriptions',
     onConnect: async (connectionParams, webSocket) => {
       const applyMiddleware = (middleware, req) =>
-        new Promise(resolve => middleware(req, null, resolve));
+        new Promise((resolve) => middleware(req, null, resolve));
 
       // eslint-disable-next-line no-restricted-syntax
       for (const middleware of authMiddlewares) {

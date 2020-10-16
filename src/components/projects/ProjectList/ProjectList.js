@@ -275,7 +275,7 @@ function ProjectList(_props: Props) {
           </Tooltip>
         </Toolbar>
         <List>
-          {localProjects.map(project => (
+          {localProjects.map((project) => (
             <ListItem key={project.name} button component={Link} to={`/projects/${project.name}`}>
               <ListItemAvatar>
                 <Avatar>
@@ -361,7 +361,7 @@ function ProjectList(_props: Props) {
           </Tooltip>
         </Toolbar>
         <List>
-          {remoteProjects.map(exercise => {
+          {remoteProjects.map((exercise) => {
             const associatedProjects = remoteToLocalMap[exercise.id] ?? [];
 
             const hasOpenCommand = associatedProjects.length > 0;
@@ -402,7 +402,7 @@ function ProjectList(_props: Props) {
                     </IconButton>
                   </Tooltip>
                   {!hasOpenCommand ? null : !hasOpenPopup ? (
-                    associatedProjects.map(project => (
+                    associatedProjects.map((project) => (
                       <Tooltip
                         key={project.name}
                         title={intl.formatMessage(messages.openAssociatedProjectTooltip, {
@@ -426,7 +426,7 @@ function ProjectList(_props: Props) {
                     ))
                   ) : (
                     <PopupState variant="popover" popupId={`${exercise.name}-menu`}>
-                      {popupState => (
+                      {(popupState) => (
                         <>
                           <Tooltip
                             title={intl.formatMessage(messages.openAssociatedProjectMenuTooltip, {
@@ -457,7 +457,7 @@ function ProjectList(_props: Props) {
                             keepMounted
                             {...bindMenu(popupState)}
                           >
-                            {associatedProjects.map(project => (
+                            {associatedProjects.map((project) => (
                               <MenuItem
                                 key={project.name}
                                 component={Link}

@@ -19,7 +19,7 @@ class NoSSR extends React.Component<PropTypes, StateTypes> {
 
   componentDidMount() {
     if (process.env.BROWSER) {
-      this.props.children().then(children => {
+      this.props.children().then((children) => {
         this.setState({
           children,
         });

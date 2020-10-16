@@ -40,7 +40,7 @@ type LayoutProps = {|
 //    return model && <FlexLayout.Layout {...layoutProps} />;
 export default function useLayoutModel(
   layoutState: LayoutState | null,
-  onLayoutStateChange: LayoutState => void,
+  onLayoutStateChange: (LayoutState) => void,
 ): [FlexLayout.Model | null, (LayoutState) => void, LayoutProps] {
   const [model, setModel] = React.useState<FlexLayout.Model | null>(null);
 

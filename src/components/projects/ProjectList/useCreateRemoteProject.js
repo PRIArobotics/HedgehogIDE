@@ -74,7 +74,7 @@ async function projectToInput(project: Project): Promise<ProjectInput> {
   };
 }
 
-export default function useCreateRemoteProject(): Project => Promise<string> {
+export default function useCreateRemoteProject(): (Project) => Promise<string> {
   const [performCreateProject, _createProjectResponse] = useCreateProjectMutation();
 
   async function createProject(project: Project) {

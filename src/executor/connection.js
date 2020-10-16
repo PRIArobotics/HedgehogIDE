@@ -19,8 +19,8 @@ export interface Connection {
 class Conn implements Connection {
   source: window | null = null;
   resolvers: Array<{|
-    resolve: any => void,
-    reject: any => void,
+    resolve: (any) => void,
+    reject: (any) => void,
   |}> = [];
 
   setSource(source: window) {

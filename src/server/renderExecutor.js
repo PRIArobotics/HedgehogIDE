@@ -13,12 +13,12 @@ export default function renderExecutor() {
     <html>
       <head>
         <meta charSet="utf-8" />
-        {scripts.map(script => (
+        {scripts.map((script) => (
           <link key={script} rel="preload" href={script} as="script" />
         ))}
       </head>
       <body>
-        {scripts.map(script => (
+        {scripts.map((script) => (
           <script key={script} src={script} />
         ))}
       </body>

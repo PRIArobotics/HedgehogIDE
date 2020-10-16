@@ -56,7 +56,7 @@ function Login({ open, onSuccess, onError }: LoginProps) {
   const [password, setPassword] = React.useState<string>('');
   const [error, setError] = React.useState<string | null>(null);
 
-  const login = async event => {
+  const login = async (event) => {
     event.preventDefault();
     try {
       await auth.login(username, password);
@@ -96,7 +96,7 @@ function Login({ open, onSuccess, onError }: LoginProps) {
             fullWidth
             label={intl.formatMessage(messages.username)}
             value={username}
-            onChange={e => setUsername(e.target.value)}
+            onChange={(e) => setUsername(e.target.value)}
           />
           <TextField
             margin="normal"
@@ -105,7 +105,7 @@ function Login({ open, onSuccess, onError }: LoginProps) {
             label={intl.formatMessage(messages.password)}
             type="password"
             value={password}
-            onChange={e => setPassword(e.target.value)}
+            onChange={(e) => setPassword(e.target.value)}
           />
         </DialogContent>
         <DialogActions>
