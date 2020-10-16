@@ -1,57 +1,18 @@
 // @flow
 
-import type { Point } from './misc';
-
-type Translation = {|
-  position: Point,
-|};
-
-type Rotation = {|
-  angle: number,
-|};
-
-type RenderColor = {|
-  fillStyle?: string,
-|};
-
-type RenderVisibility = {|
-  opacity?: number,
-  visible?: boolean,
-|};
-
-type RenderSprite = {|
-  sprite?: {
-    texture?: string,
-  },
-|};
-
-type Static = {|
-  isStatic?: boolean,
-|};
-
-type Sensor = {|
-  isSensor?: boolean,
-|};
-
-type Line = {|
-  plugin?: {
-    hedgehog: {
-      isLine?: boolean,
-    },
-  },
-|};
-
-type Density = {|
-  density?: number,
-|};
-
-type FrictionAir = {|
-  frictionAir?: number,
-|};
-
-type Label = {|
-  label?: string,
-|};
+import type {
+  Translation,
+  Rotation,
+  RenderColor,
+  RenderVisibility,
+  RenderSprite,
+  Static,
+  Sensor,
+  Line,
+  Density,
+  FrictionAir,
+  Label,
+} from './settings';
 
 export type RobotProps = {|
   ...Translation,
