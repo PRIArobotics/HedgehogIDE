@@ -6,7 +6,11 @@ import Blockly from 'blockly/core';
 import { schema } from '../Simulator/simulation';
 
 function anyAncestor(block, condition) {
-  for (let ancestor = block.getSurroundParent(); ancestor !== null; ancestor = ancestor.getSurroundParent()) {
+  for (
+    let ancestor = block.getSurroundParent();
+    ancestor !== null;
+    ancestor = ancestor.getSurroundParent()
+  ) {
     if (condition(ancestor)) return true;
   }
   return false;
@@ -18,7 +22,7 @@ function forbidsAncestor(types, warning) {
     if (this.workspace.isDragging()) return;
 
     // Is the block nested in a forbidden ancestor?
-    let legal = !anyAncestor(this, block => types.indexOf(block.type) !== -1);
+    const legal = !anyAncestor(this, block => types.indexOf(block.type) !== -1);
     if (legal) {
       this.setWarningText(null);
       if (!this.isInFlyout) this.setEnabled(true);
@@ -178,7 +182,12 @@ export const SIMULATOR_ROOT = {
       this.setWarningText(roots.length >= 2 ? 'only one configuration root allowed' : null);
     },
     serialize(): schema.SimulatorJson {
-      const objectTypes = ['simulator_robot', 'simulator_rect', 'simulator_circle', 'simulator_svg'];
+      const objectTypes = [
+        'simulator_robot',
+        'simulator_rect',
+        'simulator_circle',
+        'simulator_svg',
+      ];
 
       function isRobotPart(object) {
         return anyAncestor(object, ancestor => ancestor.type === 'simulator_robot');
@@ -195,11 +204,11 @@ export const SIMULATOR_ROOT = {
 
       if (this.getField('WALLS').getValueBoolean()) {
         const template = {
-          type: "rectangle",
+          type: 'rectangle',
           angle: 0,
           isStatic: true,
           render: {
-            fillStyle: '#222222'
+            fillStyle: '#222222',
           },
         };
         objects = [
@@ -209,7 +218,7 @@ export const SIMULATOR_ROOT = {
             height: 10,
             position: {
               x: 0,
-              y: -(height /2 - 5),
+              y: -(height / 2 - 5),
             },
           },
           {
@@ -218,7 +227,7 @@ export const SIMULATOR_ROOT = {
             height: 10,
             position: {
               x: 0,
-              y: height /2 - 5,
+              y: height / 2 - 5,
             },
           },
           {
@@ -226,7 +235,7 @@ export const SIMULATOR_ROOT = {
             width: 10,
             height,
             position: {
-              x: -(width /2 - 5),
+              x: -(width / 2 - 5),
               y: 0,
             },
           },
@@ -235,7 +244,7 @@ export const SIMULATOR_ROOT = {
             width: 10,
             height,
             position: {
-              x: width /2 - 5,
+              x: width / 2 - 5,
               y: 0,
             },
           },
@@ -957,7 +966,7 @@ export const SIMULATOR_ROBOT_PART_TOUCH = {
     serialize(): schema.TouchSensor {
       const objectTypes = ['simulator_rect', 'simulator_circle', 'simulator_svg'];
 
-      let objects = this.getDescendants(true)
+      const objects = this.getDescendants(true)
         .filter(block => objectTypes.includes(block.type))
         .map(object => object.serialize());
 

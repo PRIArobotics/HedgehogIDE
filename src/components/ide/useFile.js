@@ -7,7 +7,7 @@ import { useStore } from '../misc/hooks';
 
 export { Project };
 
-type Encoding = "utf8";
+type Encoding = 'utf8';
 
 /**
  * Provides access to a file in a local project.
@@ -16,7 +16,11 @@ type Encoding = "utf8";
  * This function optionally accepts an encoding of `utf8`, in which case the file will be read and
  * written as utf8 text instead of binary.
  */
-export default function useFile(project: Project, path: string, encoding?: Encoding): [string | null, (string) => void] {
+export default function useFile(
+  project: Project,
+  path: string,
+  encoding?: Encoding,
+): [string | null, (string) => void] {
   async function load() {
     const absolutePath = project.resolve(path);
     return /* await */ fs.promises.readFile(absolutePath, encoding);

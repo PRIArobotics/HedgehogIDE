@@ -217,7 +217,8 @@ function FileTree({ files, expandedKeys, filter, onFileAction, onUpdate }: Props
         if (file.name.endsWith('.blockly')) return LanguageBlocklyIcon;
         if (file.name.endsWith('.js')) return LanguageJavascriptIcon;
         if (file.name.endsWith('.py')) return LanguagePythonIcon;
-        if (file.name.endsWith('.png') || file.name.endsWith('.jpg') || file.name.endsWith('.svg')) return ImageFileIcon;
+        if (file.name.endsWith('.png') || file.name.endsWith('.jpg') || file.name.endsWith('.svg'))
+          return ImageFileIcon;
         if (file.name.endsWith('.md')) return MarkdownFileIcon;
         if (file.name.endsWith('.pdf')) return PdfFileIcon;
         return FileIcon;

@@ -158,7 +158,7 @@ export default class Simulation {
         // because that means Matter.js will not fail loading a texture
         sprite.texture = this.assets.get(sprite.texture)?.[0];
       }
-    }
+    };
 
     for (const object of objects) {
       switch (object.type) {
@@ -202,9 +202,16 @@ export default class Simulation {
 
             const paths = Array.from(svgDocument.getElementsByTagName('path'));
             const vertexSets = paths.map(path =>
-              Matter.Vertices.scale(Matter.Svg.pathToVertices(path, granularity), scale, scale));
+              Matter.Vertices.scale(Matter.Svg.pathToVertices(path, granularity), scale, scale),
+            );
 
-            const body = Matter.Bodies.fromVertices(position.x, position.y, vertexSets, options, true);
+            const body = Matter.Bodies.fromVertices(
+              position.x,
+              position.y,
+              vertexSets,
+              options,
+              true,
+            );
             Matter.Body.setAngle(body, angle);
             setInitialPose(body);
             setTemporary(body, temporary);

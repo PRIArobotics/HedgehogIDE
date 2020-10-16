@@ -20,9 +20,7 @@ import {
 import * as hooks from '../../misc/hooks';
 
 import { type ExecutionAction } from '../Ide';
-import BlocklyComponent, {
-  type WorkspaceTransform,
-} from '../Blockly';
+import BlocklyComponent, { type WorkspaceTransform } from '../Blockly';
 import ToolBar from '../ToolBar';
 import ToolBarIconButton from '../ToolBar/ToolBarIconButton';
 import ToolBarItem from '../ToolBar/ToolBarItem';
@@ -31,11 +29,7 @@ import s from './VisualEditor.scss';
 
 import useFile, { Project } from '../useFile';
 
-import Blockly, {
-  hedgehogBlocks,
-  miscBlocks,
-  LOCALES
-} from './blockly_config.js';
+import Blockly, { hedgehogBlocks, miscBlocks, LOCALES } from './blockly_config.js';
 
 export type ControlledState = {|
   codeCollapsed: boolean,

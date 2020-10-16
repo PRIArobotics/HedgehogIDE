@@ -63,7 +63,7 @@ function Markdown({ layoutNode, project, path, assets, mode, onUpdate }: Props) 
   React.useEffect(() => {
     if (mode !== 'default' || content === null) return;
 
-    onUpdate({ mode: content === '' ? 'edit' : 'preview'});
+    onUpdate({ mode: content === '' ? 'edit' : 'preview' });
   }, [mode, content]);
 
   // resolve assets for the preview
@@ -74,7 +74,11 @@ function Markdown({ layoutNode, project, path, assets, mode, onUpdate }: Props) 
       return;
     }
 
-    setPreviewContent(content.replaceAll(/\]\((asset:.*?)\)/g, (_match, asset) => `](${assets.get(asset)?.[0] ?? ''})`));
+    const replaced = content.replaceAll(
+      /\]\((asset:.*?)\)/g,
+      (_match, asset) => `](${assets.get(asset)?.[0] ?? ''})`,
+    );
+    setPreviewContent(replaced);
   }, [content]);
 
   useStyles(s);
@@ -82,40 +86,38 @@ function Markdown({ layoutNode, project, path, assets, mode, onUpdate }: Props) 
   return (
     <div className={s.root}>
       <div key={`md-${height}`} className={s.container} ref={containerRef}>
-        {content === null ? null : (
-          mode === 'edit' ? (
-            <MDEditor
-              value={content}
-              onChange={setContent}
-              visiableDragbar={false}
-              height={height}
-              commands={[
-                ...commands.getCommands().slice(0, -1),
-                {
-                  name: 'activatePreview',
-                  keyCommand: 'activatePreview',
-                  buttonProps: { 'aria-label': 'Activate Preview' },
-                  icon: commands.fullscreen.icon,
-                  execute: (_state, _api) => {
-                    onUpdate({ mode: 'preview' });
-                  },
-                }
-              ]}
-            />
-          ) : (
-            <div className={s.previewContainer}>
-              <div className={s.preview}>
-                <MDEditor.Markdown source={previewContent} />
-              </div>
-              <div className={s.previewToolbar}>
-                <Tooltip title="Edit">
-                  <IconButton size="small" onClick={() => onUpdate({ mode: 'edit' })}>
-                    <MarkdownFileIcon />
-                  </IconButton>
-                </Tooltip>
-              </div>
+        {content === null ? null : mode === 'edit' ? (
+          <MDEditor
+            value={content}
+            onChange={setContent}
+            visiableDragbar={false}
+            height={height}
+            commands={[
+              ...commands.getCommands().slice(0, -1),
+              {
+                name: 'activatePreview',
+                keyCommand: 'activatePreview',
+                buttonProps: { 'aria-label': 'Activate Preview' },
+                icon: commands.fullscreen.icon,
+                execute: (_state, _api) => {
+                  onUpdate({ mode: 'preview' });
+                },
+              },
+            ]}
+          />
+        ) : (
+          <div className={s.previewContainer}>
+            <div className={s.preview}>
+              <MDEditor.Markdown source={previewContent} />
             </div>
-          )
+            <div className={s.previewToolbar}>
+              <Tooltip title="Edit">
+                <IconButton size="small" onClick={() => onUpdate({ mode: 'edit' })}>
+                  <MarkdownFileIcon />
+                </IconButton>
+              </Tooltip>
+            </div>
+          </div>
         )}
       </div>
     </div>

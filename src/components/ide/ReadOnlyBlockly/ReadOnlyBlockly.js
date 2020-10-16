@@ -35,7 +35,7 @@ function ReadOnlyBlockly({ children, width, height }: Props) {
     });
 
     const xml = ReactDOM.renderToStaticMarkup(
-      <xml xmlns="https://developers.google.com/blockly/xml">{children}</xml>
+      <xml xmlns="https://developers.google.com/blockly/xml">{children}</xml>,
     );
     const dom = Blockly.Xml.textToDom(xml);
     Blockly.Xml.clearWorkspaceAndLoadFromXml(dom, workspace);
@@ -45,10 +45,7 @@ function ReadOnlyBlockly({ children, width, height }: Props) {
     };
   }, [workspaceDiv, preferredLocales]);
 
-
-  return (
-    <div ref={setWorkspaceDiv} style={{ width, height }} />
-  );
+  return <div ref={setWorkspaceDiv} style={{ width, height }} />;
 }
 
 export default ReadOnlyBlockly;

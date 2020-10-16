@@ -40,17 +40,17 @@ function Help() {
         </Typography>
         <Typography variant="body1" paragraph>
           Die Hedgehog IDE ermöglicht es dir, einfach eigene Programme zu schreiben und auszuführen,
-          ohne vorher zusätzliche Software installieren oder ein Konto erstellen zu müssen. Wir legen
-          großen Wert auf Privatsphäre und Datenschutz, deshalb fragen wir dich nach keinen Daten die
-          wir nicht unbedingt benötigen. Im Großen und Ganzen heißt das, außer deinem Code musst du
-          uns keine Daten geben.
+          ohne vorher zusätzliche Software installieren oder ein Konto erstellen zu müssen. Wir
+          legen großen Wert auf Privatsphäre und Datenschutz, deshalb fragen wir dich nach keinen
+          Daten die wir nicht unbedingt benötigen. Im Großen und Ganzen heißt das, außer deinem Code
+          musst du uns keine Daten geben.
         </Typography>
         <Typography variant="body1" component="div" paragraph>
           <Alert severity="info">
             Die Hedgehog IDE befindet sich noch im Anfangsstadium. Manche Funktionen sind vielleicht
             noch nicht ganz ausgereift oder fehlen noch. Zukünftige Features, wie etwa eigenen Code
-            mit anderen zu teilen, können zusätzliche Daten von dir benötigen. Solche Features werden
-            jedenfalls opt-in sein, das heißt du entscheidest ob du diese nutzt und uns die
+            mit anderen zu teilen, können zusätzliche Daten von dir benötigen. Solche Features
+            werden jedenfalls opt-in sein, das heißt du entscheidest ob du diese nutzt und uns die
             notwendigen Daten gibst.
           </Alert>
         </Typography>
@@ -62,8 +62,8 @@ function Help() {
         <Typography variant="body1" paragraph>
           Ein Softwareprojekt enthält Dateien, die zusammen ein Programm ergeben. Ein Projekt
           anzulegen ist deshalb der erste Schritt. Klicke in deiner{' '}
-          <Link to="/">Projektübersicht</Link>, auf den &quot;+&quot;-Button und such dir einen Namen
-          aus. Klicke danach auf das Projekt um es zu öffnen.
+          <Link to="/">Projektübersicht</Link>, auf den &quot;+&quot;-Button und such dir einen
+          Namen aus. Klicke danach auf das Projekt um es zu öffnen.
         </Typography>
         <Typography variant="body1" component="div" paragraph>
           <Grid container spacing={1}>
@@ -82,10 +82,11 @@ function Help() {
           </Grid>
         </Typography>
         <Typography variant="body1" paragraph>
-          Nachdem du das Projekt geöffnet hast, mach einen Rechtsklick auf den Projektordner, um darin
-          eine Datei anzulegen. In diesem Beispiel wählen wir &quot;Neue Blockly Datei&quot; &ndash;
-          mit Blockly kannst du dein Programm grafisch erstellen. Nachdem du die Datei angelegt hast,
-          wird diese automatisch geöffnet, du solltest also den leeren Blockly-Arbeitsbereich sehen.
+          Nachdem du das Projekt geöffnet hast, mach einen Rechtsklick auf den Projektordner, um
+          darin eine Datei anzulegen. In diesem Beispiel wählen wir &quot;Neue Blockly Datei&quot;
+          &ndash; mit Blockly kannst du dein Programm grafisch erstellen. Nachdem du die Datei
+          angelegt hast, wird diese automatisch geöffnet, du solltest also den leeren
+          Blockly-Arbeitsbereich sehen.
         </Typography>
         <Typography variant="body1" component="div" paragraph>
           <Grid container spacing={1}>
@@ -106,10 +107,10 @@ function Help() {
           <span id="simulation">Einen simulierten Roboter mit Blockly steuern</span>
         </Typography>
         <Typography variant="body1" paragraph>
-          Bevor du beginnst Blöcke zu deinem Programm hinzuzufügen, machen wir schnell einen Blick auf
-          den Simulator. Klicke über dem Projektordner auf das Symbol mit den X,Y,Z Achsen um ihn zu
-          öffnen, dann ziehe den neu geöffneten Tab nach unten, damit Blockly und der Simulator
-          gleichzeitig sichtbar sind.
+          Bevor du beginnst Blöcke zu deinem Programm hinzuzufügen, machen wir schnell einen Blick
+          auf den Simulator. Klicke über dem Projektordner auf das Symbol mit den X,Y,Z Achsen um
+          ihn zu öffnen, dann ziehe den neu geöffneten Tab nach unten, damit Blockly und der
+          Simulator gleichzeitig sichtbar sind.
         </Typography>
         <Typography variant="body1" component="div" paragraph>
           <Grid container spacing={1}>
@@ -123,9 +124,9 @@ function Help() {
         </Typography>
         <Typography variant="body1" paragraph>
           Der Simulator (und übrigens auch die Konsole, die mit dem zweiten Button über dem
-          Projektordner geöffnet wird) öffnen sich automatisch, wenn ein Befehl an den Roboter gegeben
-          (oder eben Text ausgegeben) werden soll. Es ist aber trotzdem praktischer, diese Tabs vorher
-          selbst zu platzieren.
+          Projektordner geöffnet wird) öffnen sich automatisch, wenn ein Befehl an den Roboter
+          gegeben (oder eben Text ausgegeben) werden soll. Es ist aber trotzdem praktischer, diese
+          Tabs vorher selbst zu platzieren.
         </Typography>
       </>
       <>
@@ -137,10 +138,10 @@ function Help() {
             <span id="blockly-drive">Fahren</span>
           </Typography>
           <Typography variant="body1" paragraph>
-              Diese Kategorie enthält Befehle, um immer zwei Motoren gleichzeitig zu steuern. Dadurch
-              können beide Räder des Roboters zeitgleich gestartet oder angehalten werden. Die
-              Geschwindigkeit der Motoren wird als Zahl zwischen -1000 und +1000 angegeben. Der
-              Simulierte Roboter hat sein linkes Rad an Motor 0, sein rechtes an Motor 1.
+            Diese Kategorie enthält Befehle, um immer zwei Motoren gleichzeitig zu steuern. Dadurch
+            können beide Räder des Roboters zeitgleich gestartet oder angehalten werden. Die
+            Geschwindigkeit der Motoren wird als Zahl zwischen -1000 und +1000 angegeben. Der
+            Simulierte Roboter hat sein linkes Rad an Motor 0, sein rechtes an Motor 1.
           </Typography>
           <Typography variant="body1" component="div" paragraph>
             <ReadOnlyBlockly width="100%" height="60px">
@@ -168,8 +169,8 @@ function Help() {
           </Typography>
           <Typography variant="body1" paragraph>
             Diese Befehle stoppen die Motoren. Momentan machen beide Befehle in der Simulation das
-            gleiche, aber die Idee ist, dass der Roboter bei Ausschalten weiter ausrollt, beim Bremsen
-            schnell stehenbleibt.
+            gleiche, aber die Idee ist, dass der Roboter bei Ausschalten weiter ausrollt, beim
+            Bremsen schnell stehenbleibt.
           </Typography>
         </>
         <>
@@ -242,8 +243,8 @@ function Help() {
             <span id="blockly-sensors">Sensoren</span>
           </Typography>
           <Typography variant="body1" paragraph>
-              Mit Sensoren kann der Roboter seine Umgebung wahrnehmen. Sensorwerte liegen zwischen
-              0 und 4095, die genauen Wertebereiche hängen aber von der Art des Sensors ab.
+            Mit Sensoren kann der Roboter seine Umgebung wahrnehmen. Sensorwerte liegen zwischen 0
+            und 4095, die genauen Wertebereiche hängen aber von der Art des Sensors ab.
           </Typography>
           <Typography variant="body1" component="div" paragraph>
             Vorne hat der simulierte Roboter acht Sensoren:
@@ -400,8 +401,8 @@ function Help() {
         </Typography>
         <Typography variant="body1" paragraph>
           Erstelle dieses Programm in deinem Projekt, dann klicke auf den grünen Pfeil. Du wirst
-          sehen, wie der Roboter bis zur nächsten Wand fährt und dort nach der Kollision stehenbleibt.
-          Schritt für Schritt ist folgendes passiert:
+          sehen, wie der Roboter bis zur nächsten Wand fährt und dort nach der Kollision
+          stehenbleibt. Schritt für Schritt ist folgendes passiert:
         </Typography>
         <Typography variant="body1" component="div" paragraph>
           <ul>

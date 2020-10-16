@@ -19,9 +19,7 @@ function showReadOnlyBlockly(props: Props) {
 }
 
 function Wrapper(props: Props) {
-  return (
-    <NoSSR>{showReadOnlyBlockly(props)}</NoSSR>
-  );
+  return <NoSSR>{showReadOnlyBlockly(props)}</NoSSR>;
 }
 
 export default Wrapper;

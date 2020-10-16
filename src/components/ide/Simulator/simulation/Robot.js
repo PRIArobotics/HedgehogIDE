@@ -32,9 +32,7 @@ export default class Robot {
     this.initBody(options);
   }
 
-  initBody({
-    render: renderBody,
-  }: schema.RobotProps) {
+  initBody({ render: renderBody }: schema.RobotProps) {
     const material = {
       density: 1,
       frictionAir: 0.4,

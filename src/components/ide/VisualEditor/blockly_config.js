@@ -32,8 +32,4 @@ const LOCALES: LocaleMap<BlocklyLocale> = {
 
 export default Blockly;
 
-export {
-  hedgehogBlocks,
-  miscBlocks,
-  LOCALES,
-}
+export { hedgehogBlocks, miscBlocks, LOCALES };

@@ -8,7 +8,7 @@ import useFile, { Project } from './useFile';
 
 export { Project };
 
-type Encoding = "utf8";
+type Encoding = 'utf8';
 
 /**
  * Provides access to a file in a local project.
@@ -17,7 +17,11 @@ type Encoding = "utf8";
  * This function optionally accepts an encoding of `utf8`, in which case the file will be read and
  * written as utf8 text instead of binary.
  */
-export default function useFileObjectURL(project: Project, path: string, encoding?: Encoding): string | null {
+export default function useFileObjectURL(
+  project: Project,
+  path: string,
+  encoding?: Encoding,
+): string | null {
   const [content, _setContent] = useFile(project, path, encoding);
 
   const [url, setUrl] = React.useState<string | null>(null);
