@@ -2,6 +2,7 @@
 
 import type { Point } from './misc';
 import type { Object } from './objects';
+import type { Robot } from './robot';
 
 export type Simulation = {
   center: Point,
@@ -11,5 +12,5 @@ export type Simulation = {
 
 export type SimulatorJson = {
   simulation: Simulation,
-  objects: Object[],
+  objects: (Object | Robot)[],
 };
