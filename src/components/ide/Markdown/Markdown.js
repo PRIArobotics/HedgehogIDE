@@ -109,15 +109,17 @@ function Markdown({ layoutNode, project, path, assets, mode, onUpdate }: Props) 
           />
         ) : (
           <div className={s.previewContainer}>
-            <div className={s.preview}>
-              <MDEditor.Markdown source={previewContent} />
-            </div>
-            <div className={s.previewToolbar}>
-              <Tooltip title="Edit">
-                <IconButton size="small" onClick={() => onUpdate({ mode: 'edit' })}>
-                  <MarkdownFileIcon />
-                </IconButton>
-              </Tooltip>
+            <div className={s.previewViewport}>
+              <div className={s.preview}>
+                <MDEditor.Markdown source={previewContent} />
+              </div>
+              <div className={s.previewToolbar}>
+                <Tooltip title="Edit">
+                  <IconButton size="small" onClick={() => onUpdate({ mode: 'edit' })}>
+                    <MarkdownFileIcon />
+                  </IconButton>
+                </Tooltip>
+              </div>
             </div>
           </div>
         )}

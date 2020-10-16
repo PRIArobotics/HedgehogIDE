@@ -2,27 +2,36 @@
 
 .container {
   flex: 1 0 auto;
+  width: 100%;
 }
 
 .root {
   display: flex;
   flex-flow: row nowrap;
+  width: 100%;
   height: 100%;
 }
 
 .previewContainer {
-  margin: 0 20px;
-
-  display: flex;
-  flex-flow: column nowrap;
+  width: 100%;
   height: 100%;
+  overflow: auto;
 
-  & .preview {
-    flex: 1 0 auto;
-  }
+  & .previewViewport {
+    display: flex;
+    flex-flow: column nowrap;
 
-  & .previewToolbar {
-    margin: 0 0 20px auto;
-    flex: 0 0 auto;
+    padding: 0 20px 20px;
+    min-height: 100%;
+    width: fit-content;
+
+    & .preview {
+      flex: 1 auto;
+    }
+
+    & .previewToolbar {
+      margin-left: auto;
+      flex: 0 0 auto;
+    }
   }
 }
