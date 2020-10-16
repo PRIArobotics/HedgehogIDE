@@ -2,8 +2,6 @@
 
 import * as React from 'react';
 
-import { fs } from 'filer';
-
 import useFile, { Project } from './useFile';
 
 export { Project };
@@ -27,7 +25,7 @@ export default function useFileObjectURL(
   const [url, setUrl] = React.useState<string | null>(null);
 
   React.useEffect(() => {
-    if (content === null) return;
+    if (content === null) return undefined;
 
     const blob = new Blob([content]);
     const objectUrl = URL.createObjectURL(blob);

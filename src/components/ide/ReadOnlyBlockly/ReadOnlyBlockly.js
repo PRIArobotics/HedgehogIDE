@@ -6,9 +6,7 @@ import ReactDOM from 'react-dom/server';
 import { useLocale } from '../../locale';
 import { getTranslation } from '../../../translations';
 
-import * as hooks from '../../misc/hooks';
-
-import Blockly, { LOCALES } from '../VisualEditor/blockly_config.js';
+import Blockly, { LOCALES } from '../VisualEditor/blockly_config';
 
 import { type Props } from '.';
 
@@ -17,7 +15,7 @@ function ReadOnlyBlockly({ children, width, height }: Props) {
   const { preferredLocales } = useLocale();
 
   React.useEffect(() => {
-    if (workspaceDiv === null) return;
+    if (workspaceDiv === null) return undefined;
 
     const { rtl, msg } = getTranslation(preferredLocales, LOCALES) ?? LOCALES.en;
 
@@ -43,7 +41,7 @@ function ReadOnlyBlockly({ children, width, height }: Props) {
     return () => {
       workspace.dispose();
     };
-  }, [workspaceDiv, preferredLocales]);
+  }, [workspaceDiv, children, preferredLocales]);
 
   return <div ref={setWorkspaceDiv} style={{ width, height }} />;
 }

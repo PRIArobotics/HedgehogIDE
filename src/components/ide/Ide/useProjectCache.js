@@ -135,7 +135,7 @@ export default function useProjectCache(
   React.useEffect(() => {
     if (internalState === null) {
       setState(null);
-      return;
+      return undefined;
     }
 
     const { files, simulatorXml, layoutJson, assetBuffers } = internalState;

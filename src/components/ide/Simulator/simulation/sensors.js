@@ -132,10 +132,12 @@ export class LineSensor extends SimpleCollisionSensor {
 }
 
 class DistanceSensorSegment extends CollisionSensor {
+  // eslint-disable-next-line no-use-before-define
   sensor: DistanceSensor;
 
   distance: number;
 
+  // eslint-disable-next-line no-use-before-define
   constructor(sensor: DistanceSensor, sensorBody: Matter.Body, distance: number) {
     super(sensorBody);
 

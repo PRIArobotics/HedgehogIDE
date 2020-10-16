@@ -2,8 +2,6 @@
 
 import * as React from 'react';
 
-import * as hooks from '../../misc/hooks';
-
 type ExecutorMessage = {
   command: string,
   payload: any,
@@ -43,7 +41,6 @@ const TaskExecutor = React.forwardRef<Props, Instance>(
       (f) => {
         // set the ref for this component
         if (typeof ref === 'function') ref(f);
-        // eslint-disable-next-line no-param-reassign
         else ref.current = f;
         // set the frame state variable
         setFrame(f);
@@ -53,10 +50,10 @@ const TaskExecutor = React.forwardRef<Props, Instance>(
 
     // register message listener
     React.useEffect(() => {
-      if (frame === null) return;
+      if (frame === null) return undefined;
 
       function receiveMessage({ data, origin, source }: MessageEvent) {
-        if (origin !== 'null' || source !== frame.contentWindow) return undefined;
+        if (origin !== 'null' || source !== frame.contentWindow) return;
 
         const { command, payload } =
           // if the source is what we expected, we assume the data is valid
@@ -82,7 +79,7 @@ const TaskExecutor = React.forwardRef<Props, Instance>(
         const payload = code;
         frame.contentWindow.postMessage({ sender, command, payload }, '*');
       };
-    }, [frame]);
+    }, [frame, code]);
 
     // only render the iframe after loading the executorDoc
     if (executorDoc === null) return null;

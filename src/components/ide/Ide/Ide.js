@@ -50,7 +50,7 @@ import useRenameFileDialog from '../FileTree/useRenameFileDialog';
 import useDeleteFileDialog from '../FileTree/useDeleteFileDialog';
 import FileUpload from '../FileTree/FileUpload';
 import useFileDownload from '../FileTree/useFileDownload';
-import Executor, { type Task } from '../Executor';
+import Executor from '../Executor';
 import initMiscSdk from '../../../sdk/misc';
 import initHedgehogSdk from '../../../sdk/hedgehog';
 import PluginManager from '../../../sdk/PluginManager';

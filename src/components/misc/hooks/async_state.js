@@ -60,7 +60,7 @@ export function useAsyncState<T>(initialState: T): [T, (T | Promise<T>) => void]
   });
 
   React.useEffect(() => {
-    if (promise === null) return;
+    if (promise === null) return undefined;
 
     let cancelled = false;
 
@@ -96,8 +96,6 @@ export function useAsyncState<T>(initialState: T): [T, (T | Promise<T>) => void]
 
       setPromise(null);
       dispatch({ type: 'RESOLVE', value });
-
-      return undefined;
     }
   }
 

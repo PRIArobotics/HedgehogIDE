@@ -5,8 +5,11 @@ import * as React from 'react';
 import NoSSR from '../../misc/NoSSR';
 
 export type Props = {|
+  // eslint-disable-next-line react/no-unused-prop-types
   children?: React.Node,
+  // eslint-disable-next-line react/no-unused-prop-types
   width: string,
+  // eslint-disable-next-line react/no-unused-prop-types
   height: string,
 |};
 

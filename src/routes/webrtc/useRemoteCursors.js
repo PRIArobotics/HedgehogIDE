@@ -28,11 +28,9 @@ function remoteCursorsReducer(state: RemoteCursors, action: RemoteCursorsAction)
   function mapRemoteCursor(fn: (AcePosition) => AcePosition): (RemoteCursor) => RemoteCursor {
     return ({ selection, cursor }) => {
       if (selection !== null) {
-        // eslint-disable-next-line no-param-reassign
         selection = { start: fn(selection.start), end: fn(selection.end) };
       }
       if (cursor !== null) {
-        // eslint-disable-next-line no-param-reassign
         cursor = fn(cursor);
       }
       return { selection, cursor };

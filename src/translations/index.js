@@ -3,9 +3,9 @@
 import { MessageFormatElement } from 'react-intl';
 
 // eslint-disable-next-line camelcase
-import messages_de from './locales/de';
+import messages_de from './locales/de.json';
 // eslint-disable-next-line camelcase
-import messages_en from './locales/en';
+import messages_en from './locales/en.json';
 
 export type LocaleMap<T> = { [locale: string]: T };
 

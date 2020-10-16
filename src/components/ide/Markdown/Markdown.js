@@ -7,8 +7,10 @@ import IconButton from '@material-ui/core/IconButton';
 import Tooltip from '@material-ui/core/Tooltip';
 
 import MDEditor, { commands } from '@uiw/react-md-editor';
+/* eslint-disable camelcase */
 // $FlowExpectError
 import md_s from '@uiw/react-md-editor/dist/markdown-editor.css';
+/* eslint-enable camelcase */
 
 import { MarkdownFileIcon } from '../../misc/palette';
 import * as hooks from '../../misc/hooks';
@@ -64,7 +66,7 @@ function Markdown({ layoutNode, project, path, assets, mode, onUpdate }: Props) 
     if (mode !== 'default' || content === null) return;
 
     onUpdate({ mode: content === '' ? 'edit' : 'preview' });
-  }, [mode, content]);
+  }, [onUpdate, mode, content]);
 
   // resolve assets for the preview
   const [previewContent, setPreviewContent] = React.useState<string | null>(null);
@@ -79,7 +81,7 @@ function Markdown({ layoutNode, project, path, assets, mode, onUpdate }: Props) 
       (_match, asset) => `](${assets.get(asset)?.[0] ?? ''})`,
     );
     setPreviewContent(replaced);
-  }, [content]);
+  }, [content, assets]);
 
   useStyles(s);
   useStyles(md_s);

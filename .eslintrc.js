@@ -49,10 +49,16 @@ module.exports = {
     ],
     'class-methods-use-this': 'warn',
     'lines-between-class-members': 'off',
+    'max-classes-per-file': 'off',
+    'no-continue': 'off',
     'no-else-return': 'off',
     'no-nested-ternary': 'off',
+    'no-param-reassign': 'off',
+
     'react/no-unused-prop-types': 'warn',
     'react/no-multi-comp': 'off',
+    'react/state-in-constructor': ['error', 'never'],
+    'react/static-property-placement': ['error', 'static public field'],
     // Checks rules of Hooks
     'react-hooks/rules-of-hooks': 'error',
     // Checks effect dependencies
@@ -126,6 +132,7 @@ module.exports = {
 
     'react/forbid-prop-types': 'off',
     'react/destructuring-assignment': 'off',
+    'react/jsx-props-no-spreading': 'off',
     'react/sort-comp': 'off',
 
     // PropTypes and states are typed by Flow basically, but Flow cannot type defaultProps.

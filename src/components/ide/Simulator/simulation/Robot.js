@@ -37,10 +37,10 @@ export default class Robot {
       density: 1,
       frictionAir: 0.4,
     };
-    const materialGrabber = {
-      density: 0.02,
-      frictionAir: 0,
-    };
+    // const materialGrabber = {
+    //   density: 0.02,
+    //   frictionAir: 0,
+    // };
     const styleWheel = {
       render: {
         fillStyle: '#777777',
@@ -69,11 +69,11 @@ export default class Robot {
       frictionAir: 0,
       // fillStyle & opacity controlled by sensor
     };
-    const styleGrabber = {
-      render: {
-        fillStyle: '#777777',
-      },
-    };
+    // const styleGrabber = {
+    //   render: {
+    //     fillStyle: '#777777',
+    //   },
+    // };
 
     const leftWheel = Matter.Bodies.rectangle(7, -21, 20, 4, {
       ...material,

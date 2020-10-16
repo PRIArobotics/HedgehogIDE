@@ -22,7 +22,6 @@ export default class AuthDirective extends SchemaDirectiveVisitor {
       return originalResolve.apply(this, args);
     }
 
-    // eslint-disable-next-line no-param-reassign
     field.resolve = resolve.bind(this);
   }
 }

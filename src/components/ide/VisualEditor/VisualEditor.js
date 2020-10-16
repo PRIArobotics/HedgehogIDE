@@ -29,7 +29,7 @@ import s from './VisualEditor.scss';
 
 import useFile, { Project } from '../useFile';
 
-import Blockly, { hedgehogBlocks, miscBlocks, LOCALES } from './blockly_config.js';
+import Blockly, { hedgehogBlocks, miscBlocks, LOCALES } from './blockly_config';
 
 export type ControlledState = {|
   codeCollapsed: boolean,
@@ -306,7 +306,7 @@ function VisualEditor({
     const language = Blockly[codeLanguage];
     try {
       return language.workspaceToCode(blocklyRef.current.workspace);
-    } catch (err) {
+    } catch (_err) {
       // Happens e.g. when deleting a function that is used somewhere.
       // Blockly will quickly recover from this, so it's not a big deal.
       // Just make sure the IDE doesn't crash until then.
@@ -361,6 +361,7 @@ function VisualEditor({
         <ToolBarItem>
           <ToolBarIconButton
             onClick={() => {
+              // eslint-disable-next-line no-shadow
               const code = generateCode('JavaScript');
               if (code !== null) {
                 onExecutionAction({
