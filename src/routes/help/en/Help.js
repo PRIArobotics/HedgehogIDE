@@ -11,10 +11,7 @@ import Typography from '@material-ui/core/Typography';
 import Link from '../../../components/misc/Link';
 import ReadOnlyBlockly from '../../../components/ide/ReadOnlyBlockly';
 
-import Blockly, {
-  hedgehogBlocks,
-  miscBlocks,
-} from '../../../components/ide/VisualEditor/blockly_config.js';
+import { hedgehogBlocks, miscBlocks } from '../../../components/ide/VisualEditor/blockly_config';
 
 import s from '../Help.scss';
 
@@ -172,8 +169,8 @@ function Help() {
             <span id="blockly-motors">Motors</span>
           </Typography>
           <Typography variant="body1" paragraph>
-            Commands in this category let you control the robot's motors individually. Apart from
-            that, the commands work like those in the Drive category.
+            Commands in this category let you control the robot&apos;s motors individually. Apart
+            from that, the commands work like those in the Drive category.
           </Typography>
           <Typography variant="body1" component="div" paragraph>
             <ReadOnlyBlockly width="100%" height="60px">
@@ -220,8 +217,8 @@ function Help() {
             </ReadOnlyBlockly>
           </Typography>
           <Typography variant="body1" paragraph>
-            This command sets the servo to a certain position. Even if there's resistance (e.g. an
-            obstacle) the servo will try to hold its position.
+            This command sets the servo to a certain position. Even if there&apos;s resistance (e.g.
+            an obstacle) the servo will try to hold its position.
           </Typography>
           <Typography variant="body1" component="div" paragraph>
             <ReadOnlyBlockly width="100%" height="50px">
@@ -229,7 +226,7 @@ function Help() {
             </ReadOnlyBlockly>
           </Typography>
           <Typography variant="body1" paragraph>
-            This command turns the servo off. The servo will not hold its position if there's
+            This command turns the servo off. The servo will not hold its position if there&apos;s
             resistance.
           </Typography>
         </>
@@ -254,7 +251,7 @@ function Help() {
               <li>
                 Three distance sensors looking forward and slightly to the sides can detect
                 obstacles without touching them; these are sensors 4 to 6, from left to right. The
-                rays coming out of the robot's front indicate the direction and range of these
+                rays coming out of the robot&apos;s front indicate the direction and range of these
                 sensors.
                 <br />
                 <strong>Values:</strong> The sensor value increases when getting closer to an
@@ -338,8 +335,8 @@ function Help() {
           </Typography>
           <Typography variant="body1" paragraph>
             This command displays a value on the console. The value may be a text, a number or a
-            digital truth value. It's often useful to display sensor values when a program isn't
-            doing what it should.
+            digital truth value. It&apos;s often useful to display sensor values when a program
+            isn&apos;t doing what it should.
           </Typography>
         </>
       </>

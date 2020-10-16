@@ -11,10 +11,7 @@ import Typography from '@material-ui/core/Typography';
 import Link from '../../../components/misc/Link';
 import ReadOnlyBlockly from '../../../components/ide/ReadOnlyBlockly';
 
-import Blockly, {
-  hedgehogBlocks,
-  miscBlocks,
-} from '../../../components/ide/VisualEditor/blockly_config.js';
+import { hedgehogBlocks, miscBlocks } from '../../../components/ide/VisualEditor/blockly_config';
 
 import s from '../Help.scss';
 
