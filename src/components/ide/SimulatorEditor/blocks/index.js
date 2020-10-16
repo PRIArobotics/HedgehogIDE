@@ -3,7 +3,7 @@
 import * as React from 'react';
 import Blockly from 'blockly/core';
 
-import { schema } from '../Simulator/simulation';
+import { schema } from '../../Simulator/simulation';
 
 function anyAncestor(block, condition) {
   for (
