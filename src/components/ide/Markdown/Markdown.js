@@ -76,7 +76,7 @@ function Markdown({ layoutNode, project, path, assets, mode, onUpdate }: Props) 
       return;
     }
 
-    const replaced = content.replaceAll(
+    const replaced = content.replace(
       /\]\((asset:.*?)\)/g,
       (_match, asset) => `](${assets.get(asset)?.[0] ?? ''})`,
     );
