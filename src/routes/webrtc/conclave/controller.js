@@ -8,11 +8,17 @@ import Identifier from './identifier';
 import VersionVector from './versionVector';
 import Version, { type VersionData } from './version';
 import Broadcast, { type EditOperation, type SyncOperation } from './broadcast';
+import type { AcePosition } from '../aceTypes';
 
 export type Position = {|
   line: number,
   ch: number,
 |};
+
+export type ControllerAction =
+  | {| type: 'REMOVE_CURSOR', siteId: string |}
+  | {| type: 'INSERT', siteId: string, value: string, start: AcePosition, end: AcePosition |}
+  | {| type: 'DELETE', siteId: string, value: string, start: AcePosition, end: AcePosition |};
 
 type NetworkEntry = {|
   peerId: string,
@@ -25,7 +31,7 @@ class Controller {
   buffer: any[];
   network: NetworkEntry[];
   urlId: string | null;
-  dispatch;
+  dispatch: (ControllerAction) => void;
 
   broadcast: Broadcast;
   vector: VersionVector;
@@ -48,7 +54,7 @@ class Controller {
     console.log('disconnected');
   }
 
-  populateCRDT(initialStruct) {
+  populateCRDT(initialStruct: any) {
     const struct = initialStruct.map(line =>
       line.map(
         ch =>
@@ -122,15 +128,15 @@ class Controller {
       peerId: this.broadcast.peer.id,
     });
 
-    let connection = this.broadcast.outConns.find(conn => conn.peer === peerId);
+    let existingConnection = this.broadcast.outConns.find(conn => conn.peer === peerId);
 
-    if (connection) {
-      connection.send(completedMessage);
+    if (existingConnection) {
+      existingConnection.send(completedMessage);
     } else {
-      connection = this.broadcast.peer.connect(peerId);
-      this.broadcast.addToOutConns(connection);
-      connection.on('open', () => {
-        connection.send(completedMessage);
+      let newConnection: Peer.DataConnection = this.broadcast.peer.connect(peerId);
+      this.broadcast.addToOutConns(newConnection);
+      newConnection.on('open', () => {
+        newConnection.send(completedMessage);
       });
     }
   }

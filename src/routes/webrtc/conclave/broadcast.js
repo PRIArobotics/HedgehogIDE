@@ -72,7 +72,7 @@ class Broadcast {
   }
 
   processOutgoingBuffer(peerId: string) {
-    const connection = this.outConns.find(conn => conn.peer === peerId);
+    const connection: DataConnection = this.outConns.find(conn => conn.peer === peerId);
     this.outgoingBuffer.forEach(op => {
       connection.send(op);
     });

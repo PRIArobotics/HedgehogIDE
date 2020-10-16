@@ -5,11 +5,11 @@ import * as React from 'react';
 import Peer from 'peerjs';
 
 import * as hooks from '../../components/misc/hooks';
-import type { AceConfig, AceMarker, AcePosition } from './aceTypes';
+import type { AceConfig, AceMarker } from './aceTypes';
 
 import useRemoteCursors from './useRemoteCursors';
 import useContent from './useContent';
-import Controller from './conclave/controller';
+import Controller, { type ControllerAction } from './conclave/controller';
 
 export type ConnectionConfig = {|
   siteId: string,
@@ -17,11 +17,6 @@ export type ConnectionConfig = {|
   peerOptions?: any,
   onOpen?: (id: string) => void,
 |};
-
-type ControllerAction =
-  | {| type: 'REMOVE_CURSOR', siteId: string |}
-  | {| type: 'INSERT', siteId: string, value: string, start: AcePosition, end: AcePosition |}
-  | {| type: 'DELETE', siteId: string, value: string, start: AcePosition, end: AcePosition |};
 
 type ConclaveHook = {|
   mountAceEditor(
