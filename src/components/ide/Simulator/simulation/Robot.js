@@ -28,11 +28,11 @@ export default class Robot {
 
   robot: Matter.Composite;
 
-  constructor(options: schema.RobotProps) {
-    this.initBody(options);
+  constructor(config: schema.RobotConfig) {
+    this.initBody(config);
   }
 
-  initBody({ render: renderBody }: schema.RobotProps) {
+  initBody({ parts, render: renderBody }: schema.RobotConfig) {
     const material = {
       density: 1,
       frictionAir: 0.4,

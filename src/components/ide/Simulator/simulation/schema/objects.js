@@ -14,7 +14,7 @@ import type {
   Label,
 } from './settings';
 
-type AllProps = {|
+type ObjectConfig = {|
   ...Translation,
   ...Rotation,
   render?: {
@@ -34,13 +34,13 @@ export type Rectangle = {
   type: 'rectangle',
   width: number,
   height: number,
-  ...AllProps,
+  ...ObjectConfig,
 };
 
 export type Circle = {
   type: 'circle',
   radius: number,
-  ...AllProps,
+  ...ObjectConfig,
 };
 
 export type Svg = {
@@ -48,7 +48,7 @@ export type Svg = {
   src: string,
   scale: number,
   granularity: number,
-  ...AllProps,
+  ...ObjectConfig,
 };
 
 export type Object = Rectangle | Circle | Svg;
