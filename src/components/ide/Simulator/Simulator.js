@@ -39,14 +39,12 @@ const Simulator = React.forwardRef<Props, Instance>(
     const simulation = hooks.useValue(() => {
       const sim = new Simulation();
       sim.jsonInit({
-        simulation: {
-          center: {
-            x: 0,
-            y: 0,
-          },
-          width: 600,
-          height: 400,
+        center: {
+          x: 0,
+          y: 0,
         },
+        width: 600,
+        height: 400,
         objects: [
           {
             type: 'rectangle',
@@ -367,6 +365,7 @@ const Simulator = React.forwardRef<Props, Instance>(
           {
             type: 'robot',
             name: 'hedgehog',
+            parts: [],
             position: {
               x: -200,
               y: -100,

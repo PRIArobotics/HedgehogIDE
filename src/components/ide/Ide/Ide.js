@@ -201,7 +201,7 @@ function Ide({ projectName }: Props) {
   const simulatorXml = projectCache?.simulatorXml ?? null;
   const assets = projectCache?.assets ?? null;
 
-  function refreshSimulatorFromSchema(schema: simulationSchema.SimulatorJson | null) {
+  function refreshSimulatorFromSchema(schema: simulationSchema.Simulation | null) {
     if (simulatorRef.current === null || schema === null || assets === null) return;
 
     simulatorRef.current.simulation.jsonInit(schema, assets);

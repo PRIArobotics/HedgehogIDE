@@ -128,24 +128,27 @@ export default class Simulation {
     });
   }
 
-  jsonInit(schema: schema.SimulatorJson, assets: Map<string, [string, Uint8Array]> | null = null) {
-    this.clear(false);
-
-    this.assets = assets;
-
-    const {
+  jsonInit(
+    {
       center: { x, y },
       // eslint-disable-next-line no-shadow
       width,
       // eslint-disable-next-line no-shadow
       height,
-    } = schema.simulation;
+      objects,
+    }: schema.Simulation,
+    assets: Map<string, [string, Uint8Array]> | null = null,
+  ) {
+    this.clear(false);
+
+    this.assets = assets;
+
     this.lookAt({
       min: { x: x - width / 2, y: y - height / 2 },
       max: { x: x + width / 2, y: y + height / 2 },
     });
 
-    this.jsonAdd(schema.objects);
+    this.jsonAdd(objects);
   }
 
   jsonAdd(objects: schema.Object[], temporary: boolean = false) {

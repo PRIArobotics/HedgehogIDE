@@ -94,13 +94,13 @@ export type ControlledState = {|
 type Props = {|
   project: Project,
   path: string,
-  onSchemaChange: (schema: schema.SimulatorJson | null) => void | Promise<void>,
+  onSchemaChange: (schema: schema.Simulation | null) => void | Promise<void>,
   ...ControlledState,
   onUpdate: (state: ControlledState) => void | Promise<void>,
   layoutNode: any,
 |};
 
-function generateSchema(workspace: Blockly.Workspace): schema.SimulatorJson | null {
+function generateSchema(workspace: Blockly.Workspace): schema.Simulation | null {
   const roots = workspace.getBlocksByType('simulator_root');
   if (roots.length !== 1) return null;
 
@@ -108,7 +108,7 @@ function generateSchema(workspace: Blockly.Workspace): schema.SimulatorJson | nu
   return simulation.serialize();
 }
 
-export function generateSchemaFromXml(workspaceXml: string): schema.SimulatorJson | null {
+export function generateSchemaFromXml(workspaceXml: string): schema.Simulation | null {
   const workspace = new Blockly.Workspace();
   Blockly.Xml.domToWorkspace(Blockly.Xml.textToDom(workspaceXml), workspace);
   const result = generateSchema(workspace);

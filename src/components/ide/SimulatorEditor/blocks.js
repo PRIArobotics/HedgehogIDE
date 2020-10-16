@@ -181,7 +181,7 @@ export const SIMULATOR_ROOT = {
       const roots = this.workspace.getBlocksByType('simulator_root');
       this.setWarningText(roots.length >= 2 ? 'only one configuration root allowed' : null);
     },
-    serialize(): schema.SimulatorJson {
+    serialize(): schema.Simulation {
       const objectTypes = [
         'simulator_robot',
         'simulator_rect',
@@ -253,11 +253,9 @@ export const SIMULATOR_ROOT = {
       }
 
       return {
-        simulation: {
-          center: { x, y },
-          width,
-          height,
-        },
+        center: { x, y },
+        width,
+        height,
         objects,
       };
     },
