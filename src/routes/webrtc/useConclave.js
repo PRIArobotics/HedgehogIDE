@@ -47,6 +47,7 @@ export default function useConclave(
     const controller = new Controller(
       siteId,
       targetPeerId,
+      // eslint-disable-next-line no-restricted-globals
       location.origin,
       new Peer({
         ...peerOptions,
