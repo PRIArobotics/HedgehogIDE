@@ -11,15 +11,18 @@ export default class AuthDirective extends SchemaDirectiveVisitor {
   }
 
   ensureFieldWrapped(field: GraphQLField) {
-    const { resolve = defaultFieldResolver } = field;
-    // eslint-disable-next-line no-param-reassign
-    field.resolve = async function(...args) {
+    const { resolve: originalResolve = defaultFieldResolver } = field;
+
+    async function resolve(...args) {
       const context = args[2];
       if (!context.user?.userId) {
         throw new AuthenticationError('not authorized');
       }
 
-      return resolve.apply(this, args);
-    }.bind(this);
+      return originalResolve.apply(this, args);
+    }
+
+    // eslint-disable-next-line no-param-reassign
+    field.resolve = resolve.bind(this);
   }
 }
