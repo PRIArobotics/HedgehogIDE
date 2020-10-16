@@ -3,7 +3,7 @@
 import * as React from 'react';
 import Blockly from 'blockly/core';
 
-import * as SimulationSchema from './SimulationSchema';
+import { schema } from '../Simulator/simulation';
 
 function anyAncestor(block, condition) {
   for (let ancestor = block.getSurroundParent(); ancestor !== null; ancestor = ancestor.getSurroundParent()) {
@@ -177,7 +177,7 @@ export const SIMULATOR_ROOT = {
       const roots = this.workspace.getBlocksByType('simulator_root');
       this.setWarningText(roots.length >= 2 ? 'only one configuration root allowed' : null);
     },
-    serialize(): SimulationSchema.SimulatorJson {
+    serialize(): schema.SimulatorJson {
       const objectTypes = ['simulator_robot', 'simulator_rect', 'simulator_circle', 'simulator_svg'];
 
       function isRobotPart(object) {
@@ -296,7 +296,7 @@ export const SIMULATOR_RECT = {
       };
     },
     getSettings,
-    serialize(): SimulationSchema.Rectangle {
+    serialize(): schema.Rectangle {
       return {
         ...this.getFields(),
         ...collectSettings(this),
@@ -339,7 +339,7 @@ export const SIMULATOR_CIRCLE = {
       };
     },
     getSettings,
-    serialize(): SimulationSchema.Circle {
+    serialize(): schema.Circle {
       return {
         ...this.getFields(),
         ...collectSettings(this),
@@ -397,7 +397,7 @@ export const SIMULATOR_SVG = {
       };
     },
     getSettings,
-    serialize(): SimulationSchema.Svg {
+    serialize(): schema.Svg {
       return {
         ...this.getFields(),
         ...collectSettings(this),
@@ -477,7 +477,7 @@ export const SIMULATOR_ROBOT = {
       };
     },
     getSettings,
-    serialize(): SimulationSchema.Robot {
+    serialize(): schema.Robot {
       const objectTypes = ['simulator_robot_part_touch'];
 
       const parts = this.getDescendants(true)
@@ -954,7 +954,7 @@ export const SIMULATOR_ROBOT_PART_TOUCH = {
         port: this.getFieldValue('PORT'),
       };
     },
-    serialize(): SimulationSchema.TouchSensor {
+    serialize(): schema.TouchSensor {
       const objectTypes = ['simulator_rect', 'simulator_circle', 'simulator_svg'];
 
       let objects = this.getDescendants(true)

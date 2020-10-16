@@ -95,7 +95,7 @@ modules:
       add:
         args:
         - name: objects
-          type: SimulationSchema.Object[]
+          type: schema.Object[]
       remove:
         args:
         - name: labels

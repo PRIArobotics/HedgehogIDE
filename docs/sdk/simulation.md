@@ -2,7 +2,7 @@
 The Simulation SDK enables access to the simulation environment.
 
 ## Functions
-#### `sdk.simulation.add(objects: SimulationSchema.Object[])`
+#### `sdk.simulation.add(objects: schema.Object[])`
 Adds multiple objects to the simulation. Objects are given in the same form as they appear in the simulator editor's JSON output.
 
 #### `sdk.simulation.remove(label: string)`

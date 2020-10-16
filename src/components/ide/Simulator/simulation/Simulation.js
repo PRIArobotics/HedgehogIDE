@@ -4,8 +4,7 @@ import Matter from 'matter-js';
 import 'pathseg';
 import '../../../../client/poly-decomp-polyfill';
 
-import { Point, Pose, Robot } from '.';
-import * as SimulationSchema from '../../SimulatorEditor/SimulationSchema';
+import { Point, Pose, Robot, schema } from '.';
 
 type ExternalSensorHandler = (
   eventName: 'collisionStart' | 'collisionEnd',
@@ -129,7 +128,7 @@ export default class Simulation {
     });
   }
 
-  jsonInit(schema: SimulationSchema.SimulatorJson, assets: Map<string, [string, Uint8Array]> | null = null) {
+  jsonInit(schema: schema.SimulatorJson, assets: Map<string, [string, Uint8Array]> | null = null) {
     this.clear(false);
 
     this.assets = assets;
@@ -149,7 +148,7 @@ export default class Simulation {
     this.jsonAdd(schema.objects);
   }
 
-  jsonAdd(objects: SimulationSchema.Object[], temporary: boolean = false) {
+  jsonAdd(objects: schema.Object[], temporary: boolean = false) {
     const resolveSprite = (sprite: { texture: string | void } | void) => {
       if (sprite?.texture && sprite.texture.startsWith('asset:')) {
         if (this.assets === null) {

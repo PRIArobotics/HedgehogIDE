@@ -27,7 +27,7 @@ import s from './SimulatorEditor.scss';
 
 import useFile, { Project } from '../useFile';
 
-import * as SimulationSchema from './SimulationSchema';
+import { schema } from '../Simulator/simulation';
 
 import * as blocks from './blocks';
 
@@ -94,13 +94,13 @@ export type ControlledState = {|
 type Props = {|
   project: Project,
   path: string,
-  onSchemaChange: (schema: SimulationSchema.SimulatorJson | null) => void | Promise<void>,
+  onSchemaChange: (schema: schema.SimulatorJson | null) => void | Promise<void>,
   ...ControlledState,
   onUpdate: (state: ControlledState) => void | Promise<void>,
   layoutNode: any,
 |};
 
-function generateSchema(workspace: Blockly.Workspace): SimulationSchema.SimulatorJson | null {
+function generateSchema(workspace: Blockly.Workspace): schema.SimulatorJson | null {
   const roots = workspace.getBlocksByType('simulator_root');
   if (roots.length !== 1) return null;
 
@@ -108,7 +108,7 @@ function generateSchema(workspace: Blockly.Workspace): SimulationSchema.Simulato
   return simulation.serialize();
 }
 
-export function generateSchemaFromXml(workspaceXml: string): SimulationSchema.SimulatorJson | null {
+export function generateSchemaFromXml(workspaceXml: string): schema.SimulatorJson | null {
   const workspace = new Blockly.Workspace();
   Blockly.Xml.domToWorkspace(Blockly.Xml.textToDom(workspaceXml), workspace);
   const result = generateSchema(workspace);

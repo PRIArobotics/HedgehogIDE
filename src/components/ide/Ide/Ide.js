@@ -37,7 +37,7 @@ import IframeViewer from '../IframeViewer';
 import Simulator, { type SimulatorType } from '../Simulator';
 import SimulatorEditor, { generateSchemaFromXml } from '../SimulatorEditor';
 import VisualEditor from '../VisualEditor';
-import * as SimulationSchema from '../SimulatorEditor/SimulationSchema';
+import { schema as simulationSchema } from '../Simulator/simulation';
 
 import {
   type FilerRecursiveStatInfo,
@@ -201,7 +201,7 @@ function Ide({ projectName }: Props) {
   const simulatorXml = projectCache?.simulatorXml ?? null;
   const assets = projectCache?.assets ?? null;
 
-  function refreshSimulatorFromSchema(schema: SimulationSchema.SimulatorJson | null) {
+  function refreshSimulatorFromSchema(schema: simulationSchema.SimulatorJson | null) {
     if (simulatorRef.current === null || schema === null || assets === null) return;
 
     simulatorRef.current.simulation.jsonInit(schema, assets);

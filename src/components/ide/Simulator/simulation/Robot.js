@@ -2,11 +2,10 @@
 
 import Matter from 'matter-js';
 
-import { Pose, Hedgehog } from '.';
+import { Pose, Hedgehog, schema } from '.';
 import { DifferentialDrive } from './drives';
 import { CollisionSensor, TouchSensor, LineSensor, DistanceSensor } from './sensors';
 import { ServoArm } from './servo';
-import * as SimulationSchema from '../../SimulatorEditor/SimulationSchema';
 
 function createArray<T>(length: number, cb: (index: number) => T): T[] {
   // Array.from({ length: n }, (v, i) => ...):
@@ -29,13 +28,13 @@ export default class Robot {
 
   robot: Matter.Composite;
 
-  constructor(options: SimulationSchema.RobotProps) {
+  constructor(options: schema.RobotProps) {
     this.initBody(options);
   }
 
   initBody({
     render: renderBody,
-  }: SimulationSchema.RobotProps) {
+  }: schema.RobotProps) {
     const material = {
       density: 1,
       frictionAir: 0.4,

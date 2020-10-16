@@ -6,11 +6,11 @@ import connection from '../connection';
 import eventHandler from '../event';
 // <GSL customizable: simulation-executor-imports>
 // Put your imports tags here
-import * as SimulationSchema from '../../components/ide/SimulatorEditor/SimulationSchema';
+import { schema } from '../../components/ide/Simulator/simulation';
 
 // </GSL customizable: simulation-executor-imports>
 
-export function add(objects: SimulationSchema.Object[]) {
+export function add(objects: schema.Object[]) {
   connection.send('simulation_add', { objects });
 }
 
