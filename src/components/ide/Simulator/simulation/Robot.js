@@ -126,16 +126,7 @@ export default class Robot {
       ...lineSensors.map((sensor, index) => new LineSensor(this.controller, sensor, 0 + index)),
     );
 
-    const touchSensors = [
-      Matter.Bodies.rectangle(24, 0, 3, 32, {
-        ...material,
-        ...styleTouchSensor,
-        label: 'frontTouchSensor',
-      }),
-    ];
-    this.collisionSensors.push(
-      ...touchSensors.map((sensor, index) => new TouchSensor(this.controller, sensor, 8 + index)),
-    );
+    const touchSensors = [];
 
     function createDistanceSensor(x: number, y: number, angle: number, label: string) {
       const sensorBody = Matter.Bodies.rectangle(x, y, 3, 3, {
@@ -184,6 +175,40 @@ export default class Robot {
       }),
     );
 
+    for (const part of parts) {
+      try {
+        switch (part.type) {
+          case 'touch': {
+            const {
+              type: _type,
+              port,
+              objects,
+            } = part;
+
+            if (objects.length !== 1) {
+              throw new Error(`robot part must have exactly one object: ${part.type} ${port}`);
+            }
+
+            const [object] = objects;
+            const partBody = schema.createBody({
+              ...material,
+              ...styleTouchSensor,
+              ...object,
+            }, assets);
+            const sensor = new TouchSensor(this.controller, partBody, port);
+
+            touchSensors.push(partBody);
+            this.collisionSensors.push(sensor);
+
+            break;
+          }
+          default:
+            console.warn('unknown robot part:', part);
+        }
+      } catch (err) {
+        console.error(err);
+      }
+    }
 
     this.body = Matter.Body.create({
       parts: [
