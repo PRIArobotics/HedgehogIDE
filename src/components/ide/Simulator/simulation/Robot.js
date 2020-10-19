@@ -3,7 +3,7 @@
 import Matter from 'matter-js';
 
 import { Pose, Hedgehog, schema } from '.';
-import { setInitialPose } from './schema/helpers';
+import { resolveSprite, setInitialPose } from './schema/helpers';
 import { DifferentialDrive } from './drives';
 import { CollisionSensor, TouchSensor, LineSensor, DistanceSensor } from './sensors';
 import { ServoArm } from './servo';
@@ -29,16 +29,16 @@ export default class Robot {
 
   robot: Matter.Composite;
 
-  constructor(config: schema.RobotConfig) {
-    this.jsonInit(config);
+  constructor(config: schema.RobotConfig, assets: Map<string, [string, Uint8Array]> | null = null) {
+    this.jsonInit(config, assets);
   }
 
-  jsonInit({
-    position: { x, y },
-    angle,
-    parts,
-    render: renderBody
-  }: schema.RobotConfig) {
+  jsonInit(
+    { position: { x, y }, angle, parts, render: renderBody }: schema.RobotConfig,
+    assets: Map<string, [string, Uint8Array]> | null = null,
+  ) {
+    resolveSprite(renderBody?.sprite, assets);
+
     const material = {
       density: 1,
       frictionAir: 0.4,

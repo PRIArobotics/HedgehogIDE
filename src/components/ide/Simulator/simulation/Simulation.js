@@ -5,7 +5,6 @@ import 'pathseg';
 import '../../../../client/poly-decomp-polyfill';
 
 import { Point, Robot, schema } from '.';
-import { resolveSprite } from './schema/helpers';
 
 type ExternalSensorHandler = (
   eventName: 'collisionStart' | 'collisionEnd',
@@ -147,9 +146,8 @@ export default class Simulation {
       try {
         if (object.type === 'robot') {
           const { type: _type, name, ...options } = object;
-          resolveSprite(options?.render?.sprite, this.assets);
 
-          this.addRobot(name, new Robot(options));
+          this.addRobot(name, new Robot(options, this.assets));
         } else {
           // this fails cleanly if the object type is not known
           const body = schema.createBody(object, this.assets, temporary);
