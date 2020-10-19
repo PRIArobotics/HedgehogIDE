@@ -4,7 +4,7 @@ import * as React from 'react';
 
 import { schema } from '../../Simulator/simulation';
 
-import { getSettings, collectSettings } from './helpers';
+import { getInputDescendants, getSettings, collectSettings } from './helpers';
 
 export const SIMULATOR_ROBOT = {
   blockJson: {
@@ -35,6 +35,7 @@ export const SIMULATOR_ROBOT = {
     helpUrl: 'TODO',
   },
   blockExtras: {
+    getInputDescendants,
     getFields() {
       return {
         type: 'robot',
@@ -49,7 +50,7 @@ export const SIMULATOR_ROBOT = {
         'simulator_robot_part_distance',
       ];
 
-      const parts = this.getDescendants(true)
+      const parts = this.getInputDescendants('PARTS')
         .filter((block) => objectTypes.includes(block.type))
         .map((object) => object.serialize());
 
@@ -100,6 +101,7 @@ export const SIMULATOR_ROBOT_PART_LINE = {
     helpUrl: 'TODO',
   },
   blockExtras: {
+    getInputDescendants,
     getFields() {
       return {
         type: 'line',
@@ -109,7 +111,7 @@ export const SIMULATOR_ROBOT_PART_LINE = {
     serialize(): schema.TouchSensor {
       const objectTypes = ['simulator_rect', 'simulator_circle', 'simulator_svg'];
 
-      const objects = this.getDescendants(true)
+      const objects = this.getInputDescendants('OBJECTS')
         .filter((block) => objectTypes.includes(block.type))
         .map((object) => object.serialize());
 
@@ -151,6 +153,7 @@ export const SIMULATOR_ROBOT_PART_TOUCH = {
     helpUrl: 'TODO',
   },
   blockExtras: {
+    getInputDescendants,
     getFields() {
       return {
         type: 'touch',
@@ -160,7 +163,7 @@ export const SIMULATOR_ROBOT_PART_TOUCH = {
     serialize(): schema.TouchSensor {
       const objectTypes = ['simulator_rect', 'simulator_circle', 'simulator_svg'];
 
-      const objects = this.getDescendants(true)
+      const objects = this.getInputDescendants('OBJECTS')
         .filter((block) => objectTypes.includes(block.type))
         .map((object) => object.serialize());
 
@@ -202,6 +205,7 @@ export const SIMULATOR_ROBOT_PART_DISTANCE = {
     helpUrl: 'TODO',
   },
   blockExtras: {
+    getInputDescendants,
     getFields() {
       return {
         type: 'distance',
@@ -211,7 +215,7 @@ export const SIMULATOR_ROBOT_PART_DISTANCE = {
     serialize(): schema.TouchSensor {
       const objectTypes = ['simulator_rect', 'simulator_circle', 'simulator_svg'];
 
-      const objects = this.getDescendants(true)
+      const objects = this.getInputDescendants('OBJECTS')
         .filter((block) => objectTypes.includes(block.type))
         .map((object) => object.serialize());
 

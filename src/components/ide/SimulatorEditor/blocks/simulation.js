@@ -4,7 +4,7 @@ import * as React from 'react';
 
 import { schema } from '../../Simulator/simulation';
 
-import { anyAncestor } from './helpers';
+import { anyAncestor, getInputDescendants } from './helpers';
 
 export const SIMULATOR_ROOT = {
   blockJson: {
@@ -55,6 +55,7 @@ export const SIMULATOR_ROOT = {
     helpUrl: 'TODO',
   },
   blockExtras: {
+    getInputDescendants,
     onchange() {
       const roots = this.workspace.getBlocksByType('simulator_root');
       this.setWarningText(roots.length >= 2 ? 'only one configuration root allowed' : null);
@@ -76,7 +77,7 @@ export const SIMULATOR_ROOT = {
       const width = this.getFieldValue('W');
       const height = this.getFieldValue('H');
 
-      let objects = this.getDescendants(true)
+      let objects = this.getInputDescendants('OBJECTS')
         .filter((block) => objectTypes.includes(block.type) && !isRobotPart(block))
         .map((object) => object.serialize());
 

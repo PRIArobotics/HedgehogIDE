@@ -30,6 +30,11 @@ export function forbidsAncestor(types, warning) {
   };
 }
 
+export function getInputDescendants(input: string) {
+  const block = this.getInputTargetBlock(input);
+  return block?.getDescendants(true) ?? [];
+}
+
 // reads the SETTINGS input and recursively that block's MORE input
 // to get a settings object
 export function getSettings() {
