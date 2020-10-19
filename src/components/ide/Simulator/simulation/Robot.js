@@ -100,105 +100,109 @@ export default class Robot {
       label: 'mainBody',
     });
 
-    const lineSensors = [
-      Matter.Bodies.circle(22, -22, 2, {
-        ...material,
-        ...styleLineSensor,
-        label: 'leftLineSensor',
-      }),
-      Matter.Bodies.circle(22, -8, 2, {
-        ...material,
-        ...styleLineSensor,
-        label: 'centerLeftLineSensor',
-      }),
-      Matter.Bodies.circle(22, 8, 2, {
-        ...material,
-        ...styleLineSensor,
-        label: 'centerRightLineSensor',
-      }),
-      Matter.Bodies.circle(22, 22, 2, {
-        ...material,
-        ...styleLineSensor,
-        label: 'rightLineSensor',
-      }),
-    ];
-    this.collisionSensors.push(
-      ...lineSensors.map((sensor, index) => new LineSensor(this.controller, sensor, 0 + index)),
-    );
-
-    const touchSensors = [];
-
-    function createDistanceSensor(x: number, y: number, angle: number, label: string) {
-      const sensorBody = Matter.Bodies.rectangle(x, y, 3, 3, {
-        ...material,
-        ...styleDistanceSensor,
-        angle,
-        label,
-      });
-
-      const cos = Math.cos(angle);
-      const sin = Math.sin(angle);
-      const length = 5;
-      const numSegments = 60;
-
-      const segments = createArray(numSegments, (index) => {
-        const distance = length / 2 + length * index;
-        const body = Matter.Bodies.rectangle(x + cos * distance, y + sin * distance, length, 2, {
-          ...optionsDistanceSensorSegment,
-          angle,
-          label: `${label}-${index}`,
-        });
-
-        return [
-          body,
-          // add another half length to get to the outer edge of the segment
-          length * (index + 1),
-        ];
-      });
-
-      return {
-        sensorBody,
-        segments,
-      };
-    }
-
-    const deg = Math.PI / 180;
-    const distanceSensors = [
-      createDistanceSensor(20, -14, -60 * deg, 'leftDistanceSensor'),
-      createDistanceSensor(20, 0, 0, 'centerDistanceSensor'),
-      createDistanceSensor(20, 14, 60 * deg, 'rightDistanceSensor'),
-    ];
-    this.collisionSensors.push(
-      ...distanceSensors.flatMap(({ segments }, index) => {
-        const sensor = new DistanceSensor(this.controller, 4 + index, segments);
-        return sensor.segments;
-      }),
-    );
+    const partBodies = [];
 
     for (const part of parts) {
       try {
         switch (part.type) {
-          case 'touch': {
-            const {
-              type: _type,
-              port,
-              objects,
-            } = part;
+          case 'line': {
+            const { type: _type, port, objects } = part;
 
             if (objects.length !== 1) {
               throw new Error(`robot part must have exactly one object: ${part.type} ${port}`);
             }
 
             const [object] = objects;
-            const partBody = schema.createBody({
-              ...material,
-              ...styleTouchSensor,
-              ...object,
-            }, assets);
+            const partBody = schema.createBody(
+              {
+                ...material,
+                ...styleTouchSensor,
+                ...object,
+              },
+              assets,
+            );
+            const sensor = new LineSensor(this.controller, partBody, port);
+
+            partBodies.push(partBody);
+            this.collisionSensors.push(sensor);
+
+            break;
+          }
+          case 'touch': {
+            const { type: _type, port, objects } = part;
+
+            if (objects.length !== 1) {
+              throw new Error(`robot part must have exactly one object: ${part.type} ${port}`);
+            }
+
+            const [object] = objects;
+            const partBody = schema.createBody(
+              {
+                ...material,
+                ...styleTouchSensor,
+                ...object,
+              },
+              assets,
+            );
             const sensor = new TouchSensor(this.controller, partBody, port);
 
-            touchSensors.push(partBody);
+            partBodies.push(partBody);
             this.collisionSensors.push(sensor);
+
+            break;
+          }
+          case 'distance': {
+            const { type: _type, port, objects } = part;
+
+            if (objects.length !== 1) {
+              throw new Error(`robot part must have exactly one object: ${part.type} ${port}`);
+            }
+
+            const [object] = objects;
+            const partBody = schema.createBody(
+              {
+                ...material,
+                ...styleTouchSensor,
+                ...object,
+              },
+              assets,
+            );
+
+            const {
+              position: { x, y },
+              angle,
+              label,
+            } = partBody;
+
+            const cos = Math.cos(angle);
+            const sin = Math.sin(angle);
+            const length = 5;
+            const numSegments = 60;
+
+            const segments = createArray(numSegments, (index) => {
+              const distance = length / 2 + length * index;
+              const body = Matter.Bodies.rectangle(
+                x + cos * distance,
+                y + sin * distance,
+                length,
+                2,
+                {
+                  ...optionsDistanceSensorSegment,
+                  angle,
+                  label: `${label}-${index}`,
+                },
+              );
+
+              return [
+                body,
+                // add another half length to get to the outer edge of the segment
+                length * (index + 1),
+              ];
+            });
+            const sensor = new DistanceSensor(this.controller, port, segments);
+
+            partBodies.push(partBody, ...segments.map(([body, _distance]) => body));
+            this.collisionSensors.push(...sensor.segments);
 
             break;
           }
@@ -211,17 +215,7 @@ export default class Robot {
     }
 
     this.body = Matter.Body.create({
-      parts: [
-        leftWheel,
-        rightWheel,
-        ...lineSensors,
-        ...touchSensors,
-        ...distanceSensors.flatMap(({ sensorBody, segments }) => [
-          sensorBody,
-          ...segments.map(([body, _distance]) => body),
-        ]),
-        mainBody,
-      ],
+      parts: [leftWheel, rightWheel, ...partBodies, mainBody],
       ...material,
       label: 'body',
     });

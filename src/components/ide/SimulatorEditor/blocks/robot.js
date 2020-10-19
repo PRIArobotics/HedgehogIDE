@@ -43,7 +43,11 @@ export const SIMULATOR_ROBOT = {
     },
     getSettings,
     serialize(): schema.Robot {
-      const objectTypes = ['simulator_robot_part_touch'];
+      const objectTypes = [
+        'simulator_robot_part_line',
+        'simulator_robot_part_touch',
+        'simulator_robot_part_distance',
+      ];
 
       const parts = this.getDescendants(true)
         .filter((block) => objectTypes.includes(block.type))
@@ -66,6 +70,57 @@ export const SIMULATOR_ROBOT = {
   },
   toolboxBlocks: {
     default: () => <block type="simulator_robot" />,
+  },
+};
+
+export const SIMULATOR_ROBOT_PART_LINE = {
+  blockJson: {
+    type: 'simulator_robot_part_line',
+    message0: 'Line Sensor %1 %2 %3',
+    args0: [
+      {
+        type: 'field_number',
+        name: 'PORT',
+        value: 0,
+      },
+      {
+        type: 'input_dummy',
+      },
+      {
+        type: 'input_statement',
+        name: 'OBJECTS',
+        align: 'RIGHT',
+        check: 'SimulatorObject',
+      },
+    ],
+    previousStatement: 'SimulatorRobotPart',
+    nextStatement: 'SimulatorRobotPart',
+    colour: 90,
+    tooltip: 'simulated line (reflectance) sensor',
+    helpUrl: 'TODO',
+  },
+  blockExtras: {
+    getFields() {
+      return {
+        type: 'line',
+        port: this.getFieldValue('PORT'),
+      };
+    },
+    serialize(): schema.TouchSensor {
+      const objectTypes = ['simulator_rect', 'simulator_circle', 'simulator_svg'];
+
+      const objects = this.getDescendants(true)
+        .filter((block) => objectTypes.includes(block.type))
+        .map((object) => object.serialize());
+
+      return {
+        ...this.getFields(),
+        objects,
+      };
+    },
+  },
+  toolboxBlocks: {
+    default: () => <block type="simulator_robot_part_line" />,
   },
 };
 
@@ -120,4 +175,60 @@ export const SIMULATOR_ROBOT_PART_TOUCH = {
   },
 };
 
-export default [SIMULATOR_ROBOT, SIMULATOR_ROBOT_PART_TOUCH];
+export const SIMULATOR_ROBOT_PART_DISTANCE = {
+  blockJson: {
+    type: 'simulator_robot_part_distance',
+    message0: 'Distance Sensor %1 %2 %3',
+    args0: [
+      {
+        type: 'field_number',
+        name: 'PORT',
+        value: 0,
+      },
+      {
+        type: 'input_dummy',
+      },
+      {
+        type: 'input_statement',
+        name: 'OBJECTS',
+        align: 'RIGHT',
+        check: 'SimulatorObject',
+      },
+    ],
+    previousStatement: 'SimulatorRobotPart',
+    nextStatement: 'SimulatorRobotPart',
+    colour: 90,
+    tooltip: 'simulated (infrared triangulation) distance sensor',
+    helpUrl: 'TODO',
+  },
+  blockExtras: {
+    getFields() {
+      return {
+        type: 'distance',
+        port: this.getFieldValue('PORT'),
+      };
+    },
+    serialize(): schema.TouchSensor {
+      const objectTypes = ['simulator_rect', 'simulator_circle', 'simulator_svg'];
+
+      const objects = this.getDescendants(true)
+        .filter((block) => objectTypes.includes(block.type))
+        .map((object) => object.serialize());
+
+      return {
+        ...this.getFields(),
+        objects,
+      };
+    },
+  },
+  toolboxBlocks: {
+    default: () => <block type="simulator_robot_part_distance" />,
+  },
+};
+
+export default [
+  SIMULATOR_ROBOT,
+  SIMULATOR_ROBOT_PART_LINE,
+  SIMULATOR_ROBOT_PART_TOUCH,
+  SIMULATOR_ROBOT_PART_DISTANCE,
+];
