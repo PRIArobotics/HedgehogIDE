@@ -81,6 +81,9 @@ export default class Robot {
     //   },
     // };
 
+    this.collisionSensors = [];
+    this.servoArms = [];
+
     const leftWheel = Matter.Bodies.rectangle(7, -21, 20, 4, {
       ...material,
       ...styleWheel,
@@ -96,6 +99,7 @@ export default class Robot {
       ...styleBody,
       label: 'mainBody',
     });
+
     const lineSensors = [
       Matter.Bodies.circle(22, -22, 2, {
         ...material,
@@ -118,6 +122,10 @@ export default class Robot {
         label: 'rightLineSensor',
       }),
     ];
+    this.collisionSensors.push(
+      ...lineSensors.map((sensor, index) => new LineSensor(this.controller, sensor, 0 + index)),
+    );
+
     const touchSensors = [
       Matter.Bodies.rectangle(24, 0, 3, 32, {
         ...material,
@@ -125,6 +133,9 @@ export default class Robot {
         label: 'frontTouchSensor',
       }),
     ];
+    this.collisionSensors.push(
+      ...touchSensors.map((sensor, index) => new TouchSensor(this.controller, sensor, 8 + index)),
+    );
 
     function createDistanceSensor(x: number, y: number, angle: number, label: string) {
       const sensorBody = Matter.Bodies.rectangle(x, y, 3, 3, {
@@ -166,6 +177,14 @@ export default class Robot {
       createDistanceSensor(20, 0, 0, 'centerDistanceSensor'),
       createDistanceSensor(20, 14, 60 * deg, 'rightDistanceSensor'),
     ];
+    this.collisionSensors.push(
+      ...distanceSensors.flatMap(({ segments }, index) => {
+        const sensor = new DistanceSensor(this.controller, 4 + index, segments);
+        return sensor.segments;
+      }),
+    );
+
+
     this.body = Matter.Body.create({
       parts: [
         leftWheel,
@@ -183,14 +202,6 @@ export default class Robot {
     });
 
     this.drive = new DifferentialDrive(this.controller, 0, 1, leftWheel, rightWheel, this.body);
-    this.collisionSensors = [
-      ...lineSensors.map((sensor, index) => new LineSensor(this.controller, sensor, 0 + index)),
-      ...touchSensors.map((sensor, index) => new TouchSensor(this.controller, sensor, 8 + index)),
-      ...distanceSensors.flatMap(({ segments }, index) => {
-        const sensor = new DistanceSensor(this.controller, 4 + index, segments);
-        return sensor.segments;
-      }),
-    ];
 
     // // pivot pose in body coords
     // const pivotAnchorLeft = { x: 27, y: -19, angle: 0 };
@@ -207,10 +218,10 @@ export default class Robot {
     //   ...styleGrabber,
     // });
 
-    this.servoArms = [
+    this.servoArms.push(
       // new ServoArm(this.controller, 0, mainBody, pivotAnchorLeft, leftGrabber, pivotArm, 30),
       // new ServoArm(this.controller, 1, mainBody, pivotAnchorRight, rightGrabber, pivotArm, 30),
-    ];
+    );
 
     this.robot = Matter.Composite.create({
       bodies: [this.body],
