@@ -48,6 +48,8 @@ const workspaceOptions = {
         {blocks.SIMULATOR_CIRCLE.toolboxBlocks.default()}
         {blocks.SIMULATOR_SVG.toolboxBlocks.default()}
         {blocks.SIMULATOR_GROUP.toolboxBlocks.default()}
+      </category>
+      <category name="Settings" colour="120">
         {blocks.SIMULATOR_SETTINGS_TRANSLATE.toolboxBlocks.default()}
         {blocks.SIMULATOR_SETTINGS_ROTATE.toolboxBlocks.default()}
         {blocks.SIMULATOR_SETTINGS_COLOR.toolboxBlocks.default()}
@@ -59,6 +61,8 @@ const workspaceOptions = {
         {blocks.SIMULATOR_SETTINGS_DENSITY.toolboxBlocks.default()}
         {blocks.SIMULATOR_SETTINGS_FRICTION_AIR.toolboxBlocks.default()}
         {blocks.SIMULATOR_SETTINGS_LABEL.toolboxBlocks.default()}
+      </category>
+      <category name="Robots" colour="120">
         {blocks.SIMULATOR_ROBOT.toolboxBlocks.default()}
         {blocks.SIMULATOR_ROBOT_PART_LINE.toolboxBlocks.default()}
         {blocks.SIMULATOR_ROBOT_PART_TOUCH.toolboxBlocks.default()}
