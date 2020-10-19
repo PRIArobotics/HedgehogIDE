@@ -5,22 +5,13 @@ import 'pathseg';
 import '../../../../client/poly-decomp-polyfill';
 
 import { Point, Pose, Robot, schema } from '.';
+import { resolveSprite, setInitialPose } from './schema/helpers';
 
 type ExternalSensorHandler = (
   eventName: 'collisionStart' | 'collisionEnd',
   sensor: Matter.Body | Matter.Composite,
   other: Matter.Body | Matter.Composite,
 ) => void | Promise<void>;
-
-function setInitialPose(body: Matter.Body, pose: Pose | void) {
-  if (!body.plugin.hedgehog) body.plugin.hedgehog = {};
-  body.plugin.hedgehog.initialPose = pose ?? { ...body.position, angle: body.angle };
-}
-
-function setTemporary(body: Matter.Body, temporary: boolean) {
-  if (!body.plugin.hedgehog) body.plugin.hedgehog = {};
-  body.plugin.hedgehog.temporary = temporary;
-}
 
 /**
  * Manages a robot simulation.
@@ -152,72 +143,13 @@ export default class Simulation {
   }
 
   jsonAdd(objects: schema.Object[], temporary: boolean = false) {
-    const resolveSprite = (sprite: { texture: string | void } | void) => {
-      if (sprite?.texture && sprite.texture.startsWith('asset:')) {
-        if (this.assets === null) {
-          throw new Error(`Trying to use '${sprite.texture}', but there's no asset map`);
-        }
-        // the result may be undefined, which is fine with us,
-        // because that means Matter.js will not fail loading a texture
-        sprite.texture = this.assets.get(sprite.texture)?.[0];
-      }
-    };
-
     for (const object of objects) {
       switch (object.type) {
-        case 'rectangle': {
-          // eslint-disable-next-line no-shadow
-          const { type: _type, width, height, ...options } = object;
-          resolveSprite(options?.render?.sprite);
-
-          const body = Matter.Bodies.rectangle(0, 0, width, height, options);
-          setInitialPose(body);
-          setTemporary(body, temporary);
-
-          this.add([body]);
-          break;
-        }
-        case 'circle': {
-          const { type: _type, radius, ...options } = object;
-          resolveSprite(options?.render?.sprite);
-
-          const body = Matter.Bodies.circle(0, 0, radius, options);
-          setInitialPose(body);
-          setTemporary(body, temporary);
-
-          this.add([body]);
-          break;
-        }
+        case 'rectangle':
+        case 'circle':
         case 'svg': {
-          const { type: _type, src, scale, granularity, position, angle, ...options } = object;
-          resolveSprite(options?.render?.sprite);
-
           try {
-            if (this.assets === null) {
-              throw new Error(`Trying to use '${src}', but there's no asset map`);
-            }
-            const svgBuffer = this.assets.get(src)?.[1] ?? null;
-            if (svgBuffer === null) {
-              throw new Error(`asset not found: '${src}'`);
-            }
-            const svgText = new TextDecoder('utf-8').decode(svgBuffer);
-            const svgDocument = new DOMParser().parseFromString(svgText, 'image/svg+xml');
-
-            const paths = Array.from(svgDocument.getElementsByTagName('path'));
-            const vertexSets = paths.map((path) =>
-              Matter.Vertices.scale(Matter.Svg.pathToVertices(path, granularity), scale, scale),
-            );
-
-            const body = Matter.Bodies.fromVertices(
-              position.x,
-              position.y,
-              vertexSets,
-              options,
-              true,
-            );
-            Matter.Body.setAngle(body, angle);
-            setInitialPose(body);
-            setTemporary(body, temporary);
+            const body = schema.createBody(object, this.assets, temporary);
 
             this.add([body]);
           } catch (err) {
@@ -234,7 +166,7 @@ export default class Simulation {
             angle,
             ...options
           } = object;
-          resolveSprite(options?.render?.sprite);
+          resolveSprite(options?.render?.sprite, this.assets);
 
           const robot = new Robot(options);
           const pose = { x, y, angle };
