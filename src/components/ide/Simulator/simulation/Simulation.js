@@ -144,29 +144,20 @@ export default class Simulation {
 
   jsonAdd(objects: schema.Object[], temporary: boolean = false) {
     for (const object of objects) {
-      switch (object.type) {
-        case 'rectangle':
-        case 'circle':
-        case 'svg': {
-          try {
-            const body = schema.createBody(object, this.assets, temporary);
-
-            this.add([body]);
-          } catch (err) {
-            console.error(err);
-          }
-
-          break;
-        }
-        case 'robot': {
+      try {
+        if (object.type === 'robot') {
           const { type: _type, name, ...options } = object;
           resolveSprite(options?.render?.sprite, this.assets);
 
           this.addRobot(name, new Robot(options));
-          break;
+        } else {
+          // this fails cleanly if the object type is not known
+          const body = schema.createBody(object, this.assets, temporary);
+
+          this.add([body]);
         }
-        default:
-          console.warn('unknown simulation object:', object);
+      } catch (err) {
+        console.error(err);
       }
     }
 
