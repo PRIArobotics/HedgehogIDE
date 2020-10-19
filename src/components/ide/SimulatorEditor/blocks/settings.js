@@ -2,8 +2,6 @@
 
 import * as React from 'react';
 
-import { schema } from '../../Simulator/simulation';
-
 import { forbidsAncestor } from './helpers';
 
 export const SIMULATOR_SETTINGS_TRANSLATE = {

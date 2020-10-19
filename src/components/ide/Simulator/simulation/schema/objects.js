@@ -80,7 +80,15 @@ export function createBody(
       break;
     }
     case 'svg': {
-      const { type: _type, src, scale, granularity, position, angle, ...options } = config;
+      const {
+        type: _type,
+        src,
+        scale,
+        granularity,
+        position: { x, y },
+        angle,
+        ...options
+      } = config;
       resolveSprite(options?.render?.sprite);
 
       if (assets === null) {
@@ -98,13 +106,7 @@ export function createBody(
         Matter.Vertices.scale(Matter.Svg.pathToVertices(path, granularity), scale, scale),
       );
 
-      body = Matter.Bodies.fromVertices(
-        position.x,
-        position.y,
-        vertexSets,
-        options,
-        true,
-      );
+      body = Matter.Bodies.fromVertices(x, y, vertexSets, options, true);
       Matter.Body.setAngle(body, angle);
       break;
     }

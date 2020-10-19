@@ -120,7 +120,4 @@ export const SIMULATOR_ROBOT_PART_TOUCH = {
   },
 };
 
-export default [
-  SIMULATOR_ROBOT,
-  SIMULATOR_ROBOT_PART_TOUCH,
-];
+export default [SIMULATOR_ROBOT, SIMULATOR_ROBOT_PART_TOUCH];

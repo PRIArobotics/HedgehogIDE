@@ -143,6 +143,4 @@ export const SIMULATOR_ROOT = {
   },
 };
 
-export default [
-  SIMULATOR_ROOT,
-];
+export default [SIMULATOR_ROOT];

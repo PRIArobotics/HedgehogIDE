@@ -12,12 +12,7 @@ export * from './settings';
 export * from './objects';
 export * from './robot';
 
-const blocks = [
-  ...simulationBlocks,
-  ...settingsBlocks,
-  ...objectBlocks,
-  ...robotBlocks,
-];
+const blocks = [...simulationBlocks, ...settingsBlocks, ...objectBlocks, ...robotBlocks];
 
 blocks.forEach((block) => {
   const { type } = block.blockJson;

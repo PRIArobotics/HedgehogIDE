@@ -16,7 +16,7 @@ export function resolveSprite(
     // because that means Matter.js will not fail loading a texture
     sprite.texture = assets.get(sprite.texture)?.[0];
   }
-};
+}
 
 export function setInitialPose(body: Matter.Body, pose: Pose | void) {
   if (!body.plugin.hedgehog) body.plugin.hedgehog = {};
