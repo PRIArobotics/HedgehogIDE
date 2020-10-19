@@ -48,6 +48,7 @@ const workspaceOptions = {
         {blocks.SIMULATOR_CIRCLE.toolboxBlocks.default()}
         {blocks.SIMULATOR_SVG.toolboxBlocks.default()}
         {blocks.SIMULATOR_GROUP.toolboxBlocks.default()}
+        {blocks.SIMULATOR_GROUP.toolboxBlocks.line()}
       </category>
       <category name="Settings" colour="120">
         {blocks.SIMULATOR_SETTINGS_TRANSLATE.toolboxBlocks.default()}

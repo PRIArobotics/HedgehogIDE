@@ -186,6 +186,25 @@ export const SIMULATOR_GROUP = {
   },
   toolboxBlocks: {
     default: () => <block type="simulator_group" />,
+    line: () => (
+      <block type="simulator_group">
+        <value name="SETTINGS">
+          <block type="simulator_settings_color">
+            <value name="MORE">
+              <block type="simulator_settings_static">
+                <value name="MORE">
+                  <block type="simulator_settings_sensor">
+                    <value name="MORE">
+                      <block type="simulator_settings_line" />
+                    </value>
+                  </block>
+                </value>
+              </block>
+            </value>
+          </block>
+        </value>
+      </block>
+    ),
   },
 };
 
