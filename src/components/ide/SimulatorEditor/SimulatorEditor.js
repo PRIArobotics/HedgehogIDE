@@ -52,13 +52,22 @@ const workspaceOptions = {
       </category>
       <category name="Settings" colour="120">
         {blocks.SIMULATOR_SETTINGS_TRANSLATE.toolboxBlocks.default()}
-        {blocks.SIMULATOR_SETTINGS_ROTATE.toolboxBlocks.default()}
+        <block type="simulator_settings_translate">
+          <value name="MORE">
+            <block type="simulator_settings_rotate" />
+          </value>
+        </block>
         {blocks.SIMULATOR_SETTINGS_COLOR.toolboxBlocks.default()}
         {blocks.SIMULATOR_SETTINGS_VISIBILITY.toolboxBlocks.default()}
         {blocks.SIMULATOR_SETTINGS_SPRITE.toolboxBlocks.default()}
+        {blocks.SIMULATOR_SETTINGS_SPRITE.toolboxBlocks.external()}
         {blocks.SIMULATOR_SETTINGS_STATIC.toolboxBlocks.default()}
         {blocks.SIMULATOR_SETTINGS_SENSOR.toolboxBlocks.default()}
-        {blocks.SIMULATOR_SETTINGS_LINE.toolboxBlocks.default()}
+        <block type="simulator_settings_sensor">
+          <value name="MORE">
+            <block type="simulator_settings_line" />
+          </value>
+        </block>
         {blocks.SIMULATOR_SETTINGS_DENSITY.toolboxBlocks.default()}
         {blocks.SIMULATOR_SETTINGS_FRICTION_AIR.toolboxBlocks.default()}
         {blocks.SIMULATOR_SETTINGS_LABEL.toolboxBlocks.default()}

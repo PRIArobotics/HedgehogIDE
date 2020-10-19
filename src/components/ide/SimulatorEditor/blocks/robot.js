@@ -122,7 +122,24 @@ export const SIMULATOR_ROBOT_PART_LINE = {
     },
   },
   toolboxBlocks: {
-    default: () => <block type="simulator_robot_part_line" />,
+    default: () => (
+      <block type="simulator_robot_part_line">
+        <value name="OBJECTS">
+          <block type="simulator_circle">
+            <field name="R">2</field>
+            <value name="SETTINGS">
+              <block type="simulator_settings_translate">
+                <value name="MORE">
+                  <block type="simulator_settings_label">
+                    <field name="LABEL">lineSensor</field>
+                  </block>
+                </value>
+              </block>
+            </value>
+          </block>
+        </value>
+      </block>
+    ),
   },
 };
 
@@ -174,7 +191,25 @@ export const SIMULATOR_ROBOT_PART_TOUCH = {
     },
   },
   toolboxBlocks: {
-    default: () => <block type="simulator_robot_part_touch" />,
+    default: () => (
+      <block type="simulator_robot_part_touch">
+        <value name="OBJECTS">
+          <block type="simulator_rect">
+            <field name="W">3</field>
+            <field name="H">32</field>
+            <value name="SETTINGS">
+              <block type="simulator_settings_translate">
+                <value name="MORE">
+                  <block type="simulator_settings_label">
+                    <field name="LABEL">touchSensor</field>
+                  </block>
+                </value>
+              </block>
+            </value>
+          </block>
+        </value>
+      </block>
+    ),
   },
 };
 
@@ -226,7 +261,29 @@ export const SIMULATOR_ROBOT_PART_DISTANCE = {
     },
   },
   toolboxBlocks: {
-    default: () => <block type="simulator_robot_part_distance" />,
+    default: () => (
+      <block type="simulator_robot_part_distance">
+        <value name="OBJECTS">
+          <block type="simulator_rect">
+            <field name="W">3</field>
+            <field name="H">3</field>
+            <value name="SETTINGS">
+              <block type="simulator_settings_translate">
+                <value name="MORE">
+                  <block type="simulator_settings_rotate">
+                    <value name="MORE">
+                      <block type="simulator_settings_label">
+                        <field name="LABEL">distanceSensor</field>
+                      </block>
+                    </value>
+                  </block>
+                </value>
+              </block>
+            </value>
+          </block>
+        </value>
+      </block>
+    ),
   },
 };
 
