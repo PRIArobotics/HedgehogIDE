@@ -4,8 +4,8 @@ import Matter from 'matter-js';
 import 'pathseg';
 import '../../../../client/poly-decomp-polyfill';
 
-import { Point, Pose, Robot, schema } from '.';
-import { resolveSprite, setInitialPose } from './schema/helpers';
+import { Point, Robot, schema } from '.';
+import { resolveSprite } from './schema/helpers';
 
 type ExternalSensorHandler = (
   eventName: 'collisionStart' | 'collisionEnd',
@@ -159,22 +159,10 @@ export default class Simulation {
           break;
         }
         case 'robot': {
-          const {
-            type: _type,
-            name,
-            position: { x, y },
-            angle,
-            ...options
-          } = object;
+          const { type: _type, name, ...options } = object;
           resolveSprite(options?.render?.sprite, this.assets);
 
-          const robot = new Robot(options);
-          const pose = { x, y, angle };
-          robot.setPose(pose);
-          setInitialPose(robot.body);
-          // TODO color, temporary
-
-          this.addRobot(name, robot);
+          this.addRobot(name, new Robot(options));
           break;
         }
         default:

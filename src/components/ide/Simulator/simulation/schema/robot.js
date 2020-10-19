@@ -11,6 +11,8 @@ export type TouchSensor = {
 export type RobotPart = TouchSensor;
 
 export type RobotConfig = {|
+  ...Translation,
+  ...Rotation,
   parts: RobotPart[],
   render?: {
     ...RenderColor,
@@ -21,7 +23,5 @@ export type RobotConfig = {|
 export type Robot = {|
   type: 'robot',
   name: string,
-  ...Translation,
-  ...Rotation,
   ...RobotConfig,
 |};

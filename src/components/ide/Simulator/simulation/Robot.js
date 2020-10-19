@@ -3,6 +3,7 @@
 import Matter from 'matter-js';
 
 import { Pose, Hedgehog, schema } from '.';
+import { setInitialPose } from './schema/helpers';
 import { DifferentialDrive } from './drives';
 import { CollisionSensor, TouchSensor, LineSensor, DistanceSensor } from './sensors';
 import { ServoArm } from './servo';
@@ -32,7 +33,12 @@ export default class Robot {
     this.jsonInit(config);
   }
 
-  jsonInit({ parts, render: renderBody }: schema.RobotConfig) {
+  jsonInit({
+    position: { x, y },
+    angle,
+    parts,
+    render: renderBody
+  }: schema.RobotConfig) {
     const material = {
       density: 1,
       frictionAir: 0.4,
@@ -214,6 +220,11 @@ export default class Robot {
       ],
       label: 'bot',
     });
+
+    const pose = { x, y, angle };
+    this.setPose(pose);
+    setInitialPose(this.body);
+    // TODO temporary
   }
 
   setPose({ x, y, angle }: Pose) {
