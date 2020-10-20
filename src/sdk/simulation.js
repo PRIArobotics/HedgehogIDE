@@ -15,9 +15,9 @@ export default async function init(executor: Executor, getSimulator: () => Promi
   // Your module initialization code
 
   function handleCollision(eventName, bodyA, bodyB) {
-    emit(executor, 'collision', { bodyA, bodyB });
-    emit(executor, `collision_${bodyA.label}`, { bodyA, bodyB });
-    emit(executor, `collision_${bodyB.label}`, { bodyA: bodyB, bodyB: bodyA });
+    emit(executor, 'collision', { eventName, bodyA, bodyB });
+    emit(executor, `collision_${bodyA.label}`, { eventName, bodyA, bodyB });
+    emit(executor, `collision_${bodyB.label}`, { eventName, bodyA: bodyB, bodyB: bodyA });
   }
 
   function simulatorAdded(simulator: SimulatorType) {
