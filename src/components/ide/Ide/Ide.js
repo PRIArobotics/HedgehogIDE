@@ -370,6 +370,17 @@ function Ide({ projectName }: Props) {
       // eslint-disable-next-line no-throw-literal
       if (pluginManagerRef.current === null) throw 'ref is null';
 
+      // TODO this is the only place where simulatorAdded is called,
+      // and it usually only happens through getSimulator through one
+      // of the SDKs, e.g. the Hedgehog SDK when controlling the robot.
+      // That means for a significant portion of the IDEs life,
+      // the plugin manager does not know about the simulator,
+      // just because no SDK called getSimulator yet.
+
+      // the whole waitForSimulator call could be avoided when the
+      // simulator has already been open, *if* we corrected the
+      // lifecycle and made sure the plugin manager is aware of the
+      // simulator from the beginning.
       pluginManagerRef.current.simulatorAdded(s);
     });
   }

@@ -13,12 +13,15 @@ import Executor from '../components/ide/Executor';
 export default async function init(executor: Executor, getSimulator: () => Promise<SimulatorType>) {
   // <GSL customizable: simulation-init>
   // Your module initialization code
+
+  function handleCollision(eventName, bodyA, bodyB) {
+    emit(executor, 'collision', { bodyA, bodyB });
+    emit(executor, `collision_${bodyA.label}`, { bodyA, bodyB });
+    emit(executor, `collision_${bodyB.label}`, { bodyA: bodyB, bodyB: bodyA });
+  }
+
   function simulatorAdded(simulator: SimulatorType) {
-    simulator.simulation.addSensorHandler((eventName, bodyA, bodyB) => {
-      emit(executor, 'collision', { bodyA, bodyB });
-      emit(executor, `collision_${bodyA.label}`, { bodyA, bodyB });
-      emit(executor, `collision_${bodyB.label}`, { bodyA: bodyB, bodyB: bodyA });
-    });
+    simulator.simulation.addSensorHandler(handleCollision);
   }
   // </GSL customizable: simulation-init>
 

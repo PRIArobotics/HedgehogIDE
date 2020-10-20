@@ -220,7 +220,16 @@ export default class Simulation {
   }
 
   addSensorHandler(handler: ExternalSensorHandler) {
-    this.externalSensorHandlers.push(handler);
+    if (!this.externalSensorHandlers.includes(handler)) {
+      this.externalSensorHandlers.push(handler);
+    }
+  }
+
+  removeSensorHandler(handler: ExternalSensorHandler) {
+    const index = this.externalSensorHandlers.indexOf(handler);
+    if (index !== -1) {
+      this.externalSensorHandlers.splice(index, 1);
+    }
   }
 
   addRobot(name: string, robot: Robot) {
