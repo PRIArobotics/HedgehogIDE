@@ -9,12 +9,17 @@ import { getInputDescendants, getSettings, collectSettings } from './helpers';
 export const SIMULATOR_ROBOT = {
   blockJson: {
     type: 'simulator_robot',
-    message0: 'Robot "%1" %2 %3',
+    message0: 'Robot %1, with default sensors %2 %3 %4',
     args0: [
       {
         type: 'field_input',
         name: 'NAME',
         text: 'hedgehog',
+      },
+      {
+        type: 'field_checkbox',
+        name: 'DEFAULT_SENSORS',
+        checked: true,
       },
       {
         type: 'input_value',
@@ -50,9 +55,75 @@ export const SIMULATOR_ROBOT = {
         'simulator_robot_part_distance',
       ];
 
-      const parts = this.getInputDescendants('PARTS')
+      let parts = this.getInputDescendants('PARTS')
         .filter((block) => objectTypes.includes(block.type))
         .map((object) => object.serialize());
+
+      if (this.getField('DEFAULT_SENSORS').getValueBoolean()) {
+        function lineSensor(port: number, x: number, y: number, label: string) {
+          return {
+            type: 'line',
+            port,
+            objects: [
+              {
+                type: 'circle',
+                radius: 2,
+                angle: 0,
+                position: { x, y },
+                label,
+              },
+            ],
+          };
+        }
+
+        function distanceSensor(port: number, x: number, y: number, angle: number, label: string) {
+          return {
+            type: 'distance',
+            port,
+            objects: [
+              {
+                type: 'rectangle',
+                width: 3,
+                height: 3,
+                angle,
+                position: { x, y },
+                label,
+              },
+            ],
+          };
+        }
+
+        function touchSensor(port: number, object: Object) {
+          return {
+            type: 'touch',
+            port,
+            objects: [object],
+          };
+        }
+
+        const deg = Math.PI / 180;
+        parts = [
+          lineSensor(0, 22, -22, 'leftLineSensor'),
+          lineSensor(1, 22, -8, 'centerLeftLineSensor'),
+          lineSensor(2, 22, 8, 'centerRightLineSensor'),
+          lineSensor(3, 22, 22, 'rightLineSensor'),
+          distanceSensor(4, 20, -14, -60 * deg, 'leftDistanceSensor'),
+          distanceSensor(5, 20, 0, 0 * deg, 'centerDistanceSensor'),
+          distanceSensor(6, 20, 14, 60 * deg, 'rightDistanceSensor'),
+          touchSensor(8, {
+            type: 'rectangle',
+            width: 3,
+            height: 32,
+            angle: 0,
+            position: {
+              x: 24,
+              y: 0,
+            },
+            label: 'frontTouchSensor',
+          }),
+          ...parts,
+        ];
+      }
 
       const {
         static: _static,
