@@ -1,0 +1,301 @@
+<xml xmlns="https://developers.google.com/blockly/xml">
+  <block type="simulator_root" id="Ud0t5eObyOC+TgB2!ft/" x="-50" y="-50">
+    <field name="X">0</field>
+    <field name="Y">0</field>
+    <field name="W">720</field>
+    <field name="H">500</field>
+    <field name="WALLS">FALSE</field>
+    <statement name="OBJECTS">
+      <block type="simulator_group" id=")xvh44LZ@ILx{qI#T1PS">
+        <value name="SETTINGS">
+          <block type="simulator_settings_static" id="}*DugOye@i7eC@Zd$/Am">
+            <field name="STATIC">TRUE</field>
+          </block>
+        </value>
+        <statement name="OBJECTS">
+          <block type="simulator_rect" id="[`ue1h-NPFw]U[rny`cS">
+            <field name="W">10</field>
+            <field name="H">500</field>
+            <value name="SETTINGS">
+              <block type="simulator_settings_color" id="dA(*tLmQB[^`BxVB~fem">
+                <field name="COLOUR">#222222</field>
+                <value name="MORE">
+                  <block type="simulator_settings_sensor" id="N*iF4Oa+A%?L4HMV?+mX">
+                    <field name="SENSOR">TRUE</field>
+                    <value name="MORE">
+                      <block type="simulator_settings_line" id="q}!]!}3WisH!97Ur$I6-">
+                        <field name="LINE">TRUE</field>
+                        <value name="MORE">
+                          <block type="simulator_settings_translate" id="0JNA43_1$!YL;.hw9Gao">
+                            <field name="X">-200</field>
+                            <field name="Y">0</field>
+                          </block>
+                        </value>
+                      </block>
+                    </value>
+                  </block>
+                </value>
+              </block>
+            </value>
+            <next>
+              <block type="simulator_group" id="TS*IimuP0bb/af7*iuza">
+                <value name="SETTINGS">
+                  <block type="simulator_settings_color" id="jMW*yWy9Ea0mLB*fP3UB">
+                    <field name="COLOUR">#33ff33</field>
+                    <value name="MORE">
+                      <block type="simulator_settings_translate" id="Ia%=acVI.i}G`Gy.5XIi">
+                        <field name="X">-20</field>
+                        <field name="Y">0</field>
+                      </block>
+                    </value>
+                  </block>
+                </value>
+                <statement name="OBJECTS">
+                  <block type="simulator_rect" id="z=b4|uZ@7Yf51ry;WXQ3">
+                    <field name="W">110</field>
+                    <field name="H">4</field>
+                    <value name="SETTINGS">
+                      <block type="simulator_settings_translate" id="X{G#P`r_|;Rd7BO?RyNJ">
+                        <field name="X">0</field>
+                        <field name="Y">60</field>
+                      </block>
+                    </value>
+                    <next>
+                      <block type="simulator_rect" id="dz8UW*iq(6UG,]2lsbyC">
+                        <field name="W">110</field>
+                        <field name="H">4</field>
+                        <value name="SETTINGS">
+                          <block type="simulator_settings_translate" id="-4x@7aUOa,czD:hP#?A1">
+                            <field name="X">0</field>
+                            <field name="Y">-60</field>
+                          </block>
+                        </value>
+                        <next>
+                          <block type="simulator_rect" id="uIQ]v^TOZ~JG+;Tl%jtN">
+                            <field name="W">4</field>
+                            <field name="H">124</field>
+                            <value name="SETTINGS">
+                              <block type="simulator_settings_translate" id="6^c!%[2p_poD|L:ol2h0">
+                                <field name="X">55</field>
+                                <field name="Y">0</field>
+                              </block>
+                            </value>
+                            <next>
+                              <block type="simulator_rect" id="[:H]#,$,xGlbYu/K4*Jy">
+                                <field name="W">50</field>
+                                <field name="H">116</field>
+                                <value name="SETTINGS">
+                                  <block type="simulator_settings_color" id="1CEedKU@UVjU7(iEjRr=">
+                                    <field name="COLOUR">#ffffff</field>
+                                    <value name="MORE">
+                                      <block type="simulator_settings_sensor" id="seH)Qxpn45-8Qz2sRG7P">
+                                        <field name="SENSOR">TRUE</field>
+                                        <value name="MORE">
+                                          <block type="simulator_settings_translate" id="w(BhIz:ir?T=W}M0(~+T">
+                                            <field name="X">28</field>
+                                            <field name="Y">0</field>
+                                            <value name="MORE">
+                                              <block type="simulator_settings_label" id="+{K]lrJ~Mg2pvCfR5ZtK">
+                                                <field name="LABEL">green</field>
+                                              </block>
+                                            </value>
+                                          </block>
+                                        </value>
+                                      </block>
+                                    </value>
+                                  </block>
+                                </value>
+                              </block>
+                            </next>
+                          </block>
+                        </next>
+                      </block>
+                    </next>
+                  </block>
+                </statement>
+                <next>
+                  <block type="simulator_group" id="sRAp~WXji0A9!D%]2W^d">
+                    <value name="SETTINGS">
+                      <block type="simulator_settings_color" id="hv.5eIzC=/!])v3@BxX@">
+                        <field name="COLOUR">#3333ff</field>
+                        <value name="MORE">
+                          <block type="simulator_settings_translate" id="hk:A7(|~$1h|MGzCHGQr">
+                            <field name="X">270</field>
+                            <field name="Y">170</field>
+                            <value name="MORE">
+                              <block type="simulator_settings_rotate" id="#4DVxaeA._N}WR+%1=u?">
+                                <field name="ANGLE">315</field>
+                              </block>
+                            </value>
+                          </block>
+                        </value>
+                      </block>
+                    </value>
+                    <statement name="OBJECTS">
+                      <block type="simulator_rect" id="/e80oB4vxD8rbG8f^:xk">
+                        <field name="W">110</field>
+                        <field name="H">4</field>
+                        <value name="SETTINGS">
+                          <block type="simulator_settings_translate" id="f^yqXX.R*Ln7W!he3t%6">
+                            <field name="X">0</field>
+                            <field name="Y">50</field>
+                          </block>
+                        </value>
+                        <next>
+                          <block type="simulator_rect" id="t#dzcgIUC*b*D,Ed`AKU">
+                            <field name="W">110</field>
+                            <field name="H">4</field>
+                            <value name="SETTINGS">
+                              <block type="simulator_settings_translate" id="#P(]A0*4lB4H%_#w5~WO">
+                                <field name="X">0</field>
+                                <field name="Y">-50</field>
+                              </block>
+                            </value>
+                            <next>
+                              <block type="simulator_rect" id="ALXk$-:%;1{[!T_OShEw">
+                                <field name="W">4</field>
+                                <field name="H">104</field>
+                                <value name="SETTINGS">
+                                  <block type="simulator_settings_translate" id="t4n$}s2,nUG?8Vh]|GCi">
+                                    <field name="X">55</field>
+                                    <field name="Y">0</field>
+                                  </block>
+                                </value>
+                                <next>
+                                  <block type="simulator_rect" id="chim|]pGuX:RSpfQzPxk">
+                                    <field name="W">50</field>
+                                    <field name="H">96</field>
+                                    <value name="SETTINGS">
+                                      <block type="simulator_settings_color" id="A29{Nlf4CVj?Wl9abIEz">
+                                        <field name="COLOUR">#ffffff</field>
+                                        <value name="MORE">
+                                          <block type="simulator_settings_sensor" id="0|_;}8kL::=jyZa^ZLBS">
+                                            <field name="SENSOR">TRUE</field>
+                                            <value name="MORE">
+                                              <block type="simulator_settings_translate" id="0yGKN|-{r18z/bH*]C?X">
+                                                <field name="X">28</field>
+                                                <field name="Y">0</field>
+                                                <value name="MORE">
+                                                  <block type="simulator_settings_label" id="/o3=KlS#s%s#C#Z;n)1Q">
+                                                    <field name="LABEL">blue</field>
+                                                  </block>
+                                                </value>
+                                              </block>
+                                            </value>
+                                          </block>
+                                        </value>
+                                      </block>
+                                    </value>
+                                  </block>
+                                </next>
+                              </block>
+                            </next>
+                          </block>
+                        </next>
+                      </block>
+                    </statement>
+                    <next>
+                      <block type="simulator_group" id="dnvn0O?Fll]-HI*@Ep[j">
+                        <value name="SETTINGS">
+                          <block type="simulator_settings_color" id="{0H!|H:#{-TRLhM#F?Q:">
+                            <field name="COLOUR">#ffff00</field>
+                            <value name="MORE">
+                              <block type="simulator_settings_translate" id="Cr3/yNQpOM9gt[yvqN70">
+                                <field name="X">130</field>
+                                <field name="Y">-170</field>
+                                <value name="MORE">
+                                  <block type="simulator_settings_rotate" id="5:o2,iZk-H,nCR,erieP">
+                                    <field name="ANGLE">180</field>
+                                  </block>
+                                </value>
+                              </block>
+                            </value>
+                          </block>
+                        </value>
+                        <statement name="OBJECTS">
+                          <block type="simulator_rect" id="~0Jn+-rW(9{qQ,]V*W*B">
+                            <field name="W">110</field>
+                            <field name="H">4</field>
+                            <value name="SETTINGS">
+                              <block type="simulator_settings_translate" id="_J-UTKFqbWZ-zYJb`/Dq">
+                                <field name="X">0</field>
+                                <field name="Y">45</field>
+                              </block>
+                            </value>
+                            <next>
+                              <block type="simulator_rect" id=")V-k6]NZEaiO!5h!c~cu">
+                                <field name="W">110</field>
+                                <field name="H">4</field>
+                                <value name="SETTINGS">
+                                  <block type="simulator_settings_translate" id="PRNhc#n/}+1%qnzTjlBC">
+                                    <field name="X">0</field>
+                                    <field name="Y">-45</field>
+                                  </block>
+                                </value>
+                                <next>
+                                  <block type="simulator_rect" id="(:hTPm7NQ_sriqusim]i">
+                                    <field name="W">4</field>
+                                    <field name="H">94</field>
+                                    <value name="SETTINGS">
+                                      <block type="simulator_settings_translate" id="p(+BlWNq]5]_TFFel7F(">
+                                        <field name="X">55</field>
+                                        <field name="Y">0</field>
+                                      </block>
+                                    </value>
+                                    <next>
+                                      <block type="simulator_rect" id="lZ$XRfnYy(2-$FXqqogZ">
+                                        <field name="W">50</field>
+                                        <field name="H">86</field>
+                                        <value name="SETTINGS">
+                                          <block type="simulator_settings_color" id="E1qN/*|F(KY0WFBf@3eT">
+                                            <field name="COLOUR">#ffffff</field>
+                                            <value name="MORE">
+                                              <block type="simulator_settings_sensor" id="U}p018SAM}O3]7EJ6ajv">
+                                                <field name="SENSOR">TRUE</field>
+                                                <value name="MORE">
+                                                  <block type="simulator_settings_translate" id="I`ar8|aDjiTm#6z_q(gB">
+                                                    <field name="X">28</field>
+                                                    <field name="Y">0</field>
+                                                    <value name="MORE">
+                                                      <block type="simulator_settings_label" id=":*DDECeZ2r9Xbkeh}+P=">
+                                                        <field name="LABEL">yellow</field>
+                                                      </block>
+                                                    </value>
+                                                  </block>
+                                                </value>
+                                              </block>
+                                            </value>
+                                          </block>
+                                        </value>
+                                      </block>
+                                    </next>
+                                  </block>
+                                </next>
+                              </block>
+                            </next>
+                          </block>
+                        </statement>
+                      </block>
+                    </next>
+                  </block>
+                </next>
+              </block>
+            </next>
+          </block>
+        </statement>
+        <next>
+          <block type="simulator_robot" id="w@.wL:L,Z816e-2Hg_^N">
+            <field name="NAME">hedgehog</field>
+            <field name="DEFAULT_SENSORS">TRUE</field>
+            <value name="SETTINGS">
+              <block type="simulator_settings_translate" id="X?}KHh#p@YbBbw7L=iU;">
+                <field name="X">-270</field>
+                <field name="Y">0</field>
+              </block>
+            </value>
+          </block>
+        </next>
+      </block>
+    </statement>
+  </block>
+</xml>
