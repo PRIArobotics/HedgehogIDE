@@ -96,8 +96,8 @@ export const SIMULATOR_ROOT = {
             width,
             height: 10,
             position: {
-              x: 0,
-              y: -(height / 2 - 5),
+              x,
+              y: y - (height / 2 - 5),
             },
           },
           {
@@ -105,8 +105,8 @@ export const SIMULATOR_ROOT = {
             width,
             height: 10,
             position: {
-              x: 0,
-              y: height / 2 - 5,
+              x,
+              y: y + (height / 2 - 5),
             },
           },
           {
@@ -114,8 +114,8 @@ export const SIMULATOR_ROOT = {
             width: 10,
             height,
             position: {
-              x: -(width / 2 - 5),
-              y: 0,
+              x: x - (width / 2 - 5),
+              y,
             },
           },
           {
@@ -123,8 +123,8 @@ export const SIMULATOR_ROOT = {
             width: 10,
             height,
             position: {
-              x: width / 2 - 5,
-              y: 0,
+              x: x + (width / 2 - 5),
+              y,
             },
           },
           ...objects,
