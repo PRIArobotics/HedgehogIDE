@@ -18,6 +18,18 @@ export default async function init(executor: Executor, getSimulator: () => Promi
     emit(executor, 'collision', { eventName, bodyA, bodyB });
     emit(executor, `collision_${bodyA.label}`, { eventName, bodyA, bodyB });
     emit(executor, `collision_${bodyB.label}`, { eventName, bodyA: bodyB, bodyB: bodyA });
+    if (eventName === 'collisionStart') {
+      emit(executor, 'collision_start', { eventName, bodyA, bodyB });
+      emit(executor, `collision_start_${bodyA.label}`, { eventName, bodyA, bodyB });
+      emit(executor, `collision_start_${bodyB.label}`, { eventName, bodyA: bodyB, bodyB: bodyA });
+    } else if (eventName === 'collisionEnd') {
+      emit(executor, 'collision_end', { eventName, bodyA, bodyB });
+      emit(executor, `collision_end_${bodyA.label}`, { eventName, bodyA, bodyB });
+      emit(executor, `collision_end_${bodyB.label}`, { eventName, bodyA: bodyB, bodyB: bodyA });
+    } else {
+      // eslint-disable-next-line no-throw-literal
+      throw 'unreachable';
+    }
   }
 
   function simulatorAdded(simulator: SimulatorType) {

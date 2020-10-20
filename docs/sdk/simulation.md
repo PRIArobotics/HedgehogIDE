@@ -21,3 +21,6 @@ Payload:
 
 #### `collision_<BODY-LABEL>`
 Same as `collision`, but this event is only triggered for collisions where a body with the given label is involved. The body with the matching label is always `bodyA`.
+
+#### `collision_start`, `collision_start_<BODY-LABEL>`, `collision_end`, `collision_end_<BODY-LABEL>`
+Same as above, but these events are only triggered for either `collisionStart` or `collisionEnd` events, respectively. The payload does not include the `eventName`, as that would be redundant.
