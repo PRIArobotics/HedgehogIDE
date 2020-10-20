@@ -81,9 +81,6 @@ export default class Robot {
     //   },
     // };
 
-    this.collisionSensors = [];
-    this.servoArms = [];
-
     const leftWheel = Matter.Bodies.rectangle(7, -21, 20, 4, {
       ...material,
       ...styleWheel,
@@ -99,6 +96,9 @@ export default class Robot {
       ...styleBody,
       label: 'mainBody',
     });
+
+    this.collisionSensors = [];
+    this.servoArms = [];
 
     const partBodies = [];
 
@@ -116,7 +116,7 @@ export default class Robot {
             const partBody = schema.createBody(
               {
                 ...material,
-                ...styleTouchSensor,
+                ...styleLineSensor,
                 ...object,
               },
               assets,
@@ -162,7 +162,7 @@ export default class Robot {
             const partBody = schema.createBody(
               {
                 ...material,
-                ...styleTouchSensor,
+                ...styleDistanceSensor,
                 ...object,
               },
               assets,
