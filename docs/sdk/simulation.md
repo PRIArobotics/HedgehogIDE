@@ -14,6 +14,8 @@ Called whenever objects collide within the simulation. Internally this event if 
 
 This event is trigger for *every* collision which occurs within the simulation, expect that the handle will be called very frequently, therefore keep the handler as short as possible. There are also specific events which are only triggered for collisions where a body with a specific label is involved as described below.
 
+**Tip:** When debugging, it can be useful to log with which collision events your handler is called. This will lead to very frequent logs, and using `sdk.misc.print` for this will make the simulation laggy. For this reason, prefer `console.log`. You can see the output in your browser's devloper tools, often available at the key binding `F12`.
+
 Payload:
 - `eventName`: `collisionStart` or `collisionEnd`, depending on the event
 - `bodyA`: First body of the collision pair.
