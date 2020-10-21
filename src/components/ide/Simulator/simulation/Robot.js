@@ -98,11 +98,7 @@ export default class Robot {
     });
 
     this.collisionSensors = [];
-    this.servoArms = [];
-
     const partBodies = [];
-    const compositePartBodies = [];
-    const compositePartConstraints = [];
 
     for (const part of parts) {
       try {
@@ -209,6 +205,39 @@ export default class Robot {
             break;
           }
           case 'servo_arm': {
+            // handled later
+            break;
+          }
+          default:
+            console.warn('unknown robot part:', part);
+        }
+      } catch (err) {
+        console.error(err);
+      }
+    }
+
+    this.body = Matter.Body.create({
+      parts: [leftWheel, rightWheel, ...partBodies, mainBody],
+      ...material,
+      label: 'body',
+    });
+
+    this.drive = new DifferentialDrive(this.controller, 0, 1, leftWheel, rightWheel, this.body);
+
+    this.servoArms = [];
+    const compositePartBodies = [];
+    const compositePartConstraints = [];
+
+    for (const part of parts) {
+      try {
+        switch (part.type) {
+          case 'line':
+          case 'touch':
+          case 'distance': {
+            // handled eariler
+            break;
+          }
+          case 'servo_arm': {
             const { type: _type, port, pivotAnchor, pivotArm, length, objects } = part;
 
             if (objects.length !== 1) {
@@ -228,7 +257,7 @@ export default class Robot {
             const servoArm = new ServoArm(
               this.controller,
               port,
-              mainBody,
+              this.body,
               pivotAnchor,
               partBody,
               pivotArm,
@@ -248,14 +277,6 @@ export default class Robot {
         console.error(err);
       }
     }
-
-    this.body = Matter.Body.create({
-      parts: [leftWheel, rightWheel, ...partBodies, mainBody],
-      ...material,
-      label: 'body',
-    });
-
-    this.drive = new DifferentialDrive(this.controller, 0, 1, leftWheel, rightWheel, this.body);
 
     this.robot = Matter.Composite.create({
       bodies: [this.body, ...compositePartBodies],

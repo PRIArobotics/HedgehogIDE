@@ -82,7 +82,13 @@ export class ServoArm {
       const dAngle = ((position - 500) / 1000) * Math.PI;
 
       // the anchor pivot point rotated by dAngle
-      const pivotAnchor = { ...this.pivotAnchor, angle: this.pivotAnchor.angle + dAngle };
+      let pivotAnchor = { ...this.pivotAnchor, angle: this.pivotAnchor.angle + dAngle };
+
+      // for some reason, we have to consider the anchor's angle, but not its position
+      // this transformation rotates the coordinate frame in which the pivot pose is
+      // specified by the pivot's angle
+      const rotation = { x: 0, y: 0, angle: this.anchor.angle };
+      pivotAnchor = transform(rotation, pivotAnchor);
 
       const translation = { x: this.length, y: 0, angle: 0 };
       const pointA = poseToPoint(transform(pivotAnchor, translation));
