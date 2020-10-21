@@ -5,7 +5,7 @@ import { fs } from 'filer';
 import Executor, { type Task } from '../components/ide/Executor';
 import { Project } from '../core/store/projects';
 import { type ConsoleType } from '../components/ide/Console';
-import { type SimulatorType } from '../components/ide/Simulator';
+import { Simulation } from '../components/ide/Simulator/simulation';
 import initMiscSdk from './misc';
 import initHedgehogSdk from './hedgehog';
 import initBlocklySdk from './blockly';
@@ -17,21 +17,21 @@ class PluginManager {
   pluginReadyResolvers: (() => void)[] = [];
 
   getConsole: () => Promise<ConsoleType>;
-  getSimulator: () => Promise<SimulatorType>;
+  getSimulation: () => Promise<Simulation>;
   sdk: any;
 
   constructor(
     executor: Executor,
     getConsole: () => Promise<ConsoleType>,
-    getSimulator: () => Promise<SimulatorType>,
+    getSimulation: () => Promise<Simulation>,
   ) {
     this.executor = executor;
     this.getConsole = getConsole;
-    this.getSimulator = getSimulator;
+    this.getSimulation = getSimulation;
   }
 
   async initSdk() {
-    const { executor, getConsole, getSimulator } = this;
+    const { executor, getConsole, getSimulation } = this;
 
     // TODO: add on exit handler
     this.sdk = {
@@ -42,12 +42,12 @@ class PluginManager {
         executor,
       }),
       hedgehog: await initHedgehogSdk({
-        getSimulator,
+        getSimulation,
       }),
       blockly: await initBlocklySdk(),
       simulation: await initSimulationSdk({
         executor,
-        getSimulator,
+        getSimulation,
       }),
     };
   }
@@ -102,8 +102,8 @@ class PluginManager {
     return task;
   }
 
-  simulatorAdded(simulator: SimulatorType) {
-    this.sdk.simulation.simulatorAdded(simulator);
+  simulationAdded(simulation: Simulation) {
+    this.sdk.simulation.simulationAdded(simulation);
   }
 
   // TODO this simply resolves one loading plugin, not the correct one

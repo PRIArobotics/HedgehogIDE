@@ -37,7 +37,7 @@ import IframeViewer from '../IframeViewer';
 import Simulator, { type SimulatorType } from '../Simulator';
 import SimulatorEditor, { generateConfigFromXml } from '../SimulatorEditor';
 import VisualEditor from '../VisualEditor';
-import { schema as simulationSchema } from '../Simulator/simulation';
+import { Simulation, schema as simulationSchema } from '../Simulator/simulation';
 
 import {
   type FilerRecursiveStatInfo,
@@ -175,7 +175,7 @@ function Ide({ projectName }: Props) {
     if (project === null || layoutModel === null || executorRef.current === null || pluginsLoaded)
       return;
 
-    const pluginManager = new PluginManager(executorRef.current, getConsole, getSimulator);
+    const pluginManager = new PluginManager(executorRef.current, getConsole, getSimulation);
     await pluginManager.initSdk();
     await pluginManager.loadFromProjectMetadata(project);
     pluginManagerRef.current = pluginManager;
@@ -370,24 +370,24 @@ function Ide({ projectName }: Props) {
       // eslint-disable-next-line no-throw-literal
       if (pluginManagerRef.current === null) throw 'ref is null';
 
-      // TODO this is the only place where simulatorAdded is called,
-      // and it usually only happens through getSimulator through one
+      // TODO this is the only place where simulationAdded is called,
+      // and it usually only happens through getSimulation through one
       // of the SDKs, e.g. the Hedgehog SDK when controlling the robot.
       // That means for a significant portion of the IDEs life,
       // the plugin manager does not know about the simulator,
-      // just because no SDK called getSimulator yet.
+      // just because no SDK called getSimulation yet.
 
       // the whole waitForSimulator call could be avoided when the
       // simulator has already been open, *if* we corrected the
       // lifecycle and made sure the plugin manager is aware of the
       // simulator from the beginning.
-      pluginManagerRef.current.simulatorAdded(s);
+      pluginManagerRef.current.simulationAdded(s.simulation);
     });
   }
 
-  async function getSimulator(): Promise<SimulatorType> {
+  async function getSimulation(): Promise<Simulation> {
     addSimulator();
-    return /* await */ waitForSimulator();
+    return (await waitForSimulator()).simulation;
   }
 
   function addConsole() {
@@ -446,7 +446,7 @@ function Ide({ projectName }: Props) {
         executor,
       }),
       hedgehog: await initHedgehogSdk({
-        getSimulator,
+        getSimulation,
       }),
     };
 

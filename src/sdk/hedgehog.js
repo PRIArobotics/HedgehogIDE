@@ -5,21 +5,20 @@
 import { type TaskHandle } from '../components/ide/Executor/Executor';
 import baseEmit from './base';
 // <GSL customizable: hedgehog-imports>
-import { type SimulatorType } from '../components/ide/Simulator';
-import { Robot } from '../components/ide/Simulator/simulation';
+import { Simulation, Robot } from '../components/ide/Simulator/simulation';
 import { type Command } from '../executor/Hedgehog';
 // </GSL customizable: hedgehog-imports>
 
 type InitArgs = {
-  getSimulator: () => Promise<SimulatorType>,
+  getSimulation: () => Promise<Simulation>,
 };
 
 export default async function init({
-  getSimulator,
+  getSimulation,
 }: InitArgs) {
   // <GSL customizable: hedgehog-init>
   async function getRobot(name: string): Promise<Robot> {
-    const robot = (await getSimulator()).simulation.robots.get(name);
+    const robot = (await getSimulation()).robots.get(name);
     if (robot === undefined) throw new Error(`no robot named "${name}"`);
     return robot;
   }
@@ -78,7 +77,7 @@ export default async function init({
 
   async function sleep(millis: number) {
     // <GSL customizable: hedgehog-body-sleep>
-    const simulation = (await getSimulator()).simulation;
+    const simulation = await getSimulation();
     await simulation.sleep(millis);
     // </GSL customizable: hedgehog-body-sleep>
   }

@@ -27,8 +27,8 @@ modules:
     includeLookup: true
     init:
       args:
-      - name: getSimulator
-        type: () => Promise<SimulatorType>
+      - name: getSimulation
+        type: () => Promise<Simulation>
     functions:
       commands:
         hasReply: true
@@ -89,8 +89,8 @@ modules:
       args:
       - name: executor
         type: Executor
-      - name: getSimulator
-        type: () => Promise<SimulatorType>
+      - name: getSimulation
+        type: () => Promise<Simulation>
     functions:
       add:
         args:

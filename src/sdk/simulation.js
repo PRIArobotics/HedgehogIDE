@@ -5,19 +5,18 @@
 import { type TaskHandle } from '../components/ide/Executor/Executor';
 import baseEmit from './base';
 // <GSL customizable: simulation-imports>
-import { type SimulatorType } from '../components/ide/Simulator';
-import { schema } from '../components/ide/Simulator/simulation';
+import { Simulation, schema } from '../components/ide/Simulator/simulation';
 import Executor from '../components/ide/Executor';
 // </GSL customizable: simulation-imports>
 
 type InitArgs = {
   executor: Executor,
-  getSimulator: () => Promise<SimulatorType>,
+  getSimulation: () => Promise<Simulation>,
 };
 
 export default async function init({
   executor,
-  getSimulator,
+  getSimulation,
 }: InitArgs) {
   // <GSL customizable: simulation-init>
   // Your module initialization code
@@ -40,8 +39,8 @@ export default async function init({
     }
   }
 
-  function simulatorAdded(simulator: SimulatorType) {
-    simulator.simulation.addSensorHandler(handleCollision);
+  function simulationAdded(simulation: Simulation) {
+    simulation.addSensorHandler(handleCollision);
   }
   // </GSL customizable: simulation-init>
 
@@ -49,14 +48,14 @@ export default async function init({
 
   async function add(objects: schema.Object[]) {
     // <GSL customizable: simulation-body-add>
-    const simulation = (await getSimulator()).simulation;
+    const simulation = await getSimulation();
     simulation.jsonAdd(objects, true);
     // </GSL customizable: simulation-body-add>
   }
 
   async function remove(labels: string[]) {
     // <GSL customizable: simulation-body-remove>
-    const simulation = (await getSimulator()).simulation;
+    const simulation = await getSimulation();
     simulation.removeBodies(labels);
     // </GSL customizable: simulation-body-remove>
   }
@@ -64,7 +63,7 @@ export default async function init({
   return {
     // <GSL customizable: simulation-extra-return>
     // Space for extra exports
-    simulatorAdded,
+    simulationAdded,
     // </GSL customizable: simulation-extra-return>
     emit,
     handlers: {
