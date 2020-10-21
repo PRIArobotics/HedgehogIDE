@@ -2,8 +2,8 @@ modules:
   misc:
     init:
       args:
-      - name: getConsole
-        type: () => Promise<ConsoleType>
+      - name: print
+        type: "(text: string, stream: string) => void | Promise<void>"
       - name: onExit
         type: (string | void) => void | Promise<void>
       - name: pluginManager
@@ -12,6 +12,7 @@ modules:
         type: Executor
     functions:
       print:
+        handlerName: handlePrint
         args:
         - name: text
           type: any

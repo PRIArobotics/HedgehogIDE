@@ -175,7 +175,7 @@ function Ide({ projectName }: Props) {
     if (project === null || layoutModel === null || executorRef.current === null || pluginsLoaded)
       return;
 
-    const pluginManager = new PluginManager(executorRef.current, getConsole, getSimulation);
+    const pluginManager = new PluginManager(executorRef.current, print, getSimulation);
     await pluginManager.initSdk();
     await pluginManager.loadFromProjectMetadata(project);
     pluginManagerRef.current = pluginManager;
@@ -390,6 +390,19 @@ function Ide({ projectName }: Props) {
     return (await waitForSimulator()).simulation;
   }
 
+  async function waitForConsole(): Promise<ConsoleType> {
+    return /* await */ new Promise((resolve) => {
+      function tryIt() {
+        if (consoleRef.current) {
+          resolve(consoleRef.current);
+        } else {
+          setTimeout(tryIt, 0);
+        }
+      }
+      tryIt();
+    });
+  }
+
   function addConsole() {
     openOrFocusTab(
       {
@@ -405,18 +418,9 @@ function Ide({ projectName }: Props) {
     );
   }
 
-  async function getConsole(): Promise<ConsoleType> {
+  async function print(text: string, stream: string) {
     addConsole();
-    return /* await */ new Promise((resolve) => {
-      function tryIt() {
-        if (consoleRef.current) {
-          resolve(consoleRef.current);
-        } else {
-          setTimeout(tryIt, 0);
-        }
-      }
-      tryIt();
-    });
+    (await waitForConsole()).print(text, stream);
   }
 
   async function handleConsoleInput(input: string) {
@@ -440,7 +444,7 @@ function Ide({ projectName }: Props) {
 
     const sdk = {
       misc: await initMiscSdk({
-        getConsole,
+        print,
         onExit: handleTerminate,
         pluginManager,
         executor,

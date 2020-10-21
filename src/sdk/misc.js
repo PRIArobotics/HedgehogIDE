@@ -12,14 +12,14 @@ import { type ConsoleType } from '../components/ide/Console';
 // </GSL customizable: misc-imports>
 
 type InitArgs = {
-  getConsole: () => Promise<ConsoleType>,
+  print: (text: string, stream: string) => void | Promise<void>,
   onExit: (string | void) => void | Promise<void>,
   pluginManager: PluginManager,
   executor: Executor,
 };
 
 export default async function init({
-  getConsole,
+  print,
   onExit,
   pluginManager,
   executor,
@@ -31,9 +31,9 @@ export default async function init({
 
   const emit = baseEmit.bind(null, 'misc');
 
-  async function print(text: any) {
+  async function handlePrint(text: any) {
     // <GSL customizable: misc-body-print>
-    (await getConsole()).print(text.toString(), 'stdout');
+    return /* await */ print(text.toString(), 'stdout');
     // </GSL customizable: misc-body-print>
   }
 
@@ -41,7 +41,7 @@ export default async function init({
     // <GSL customizable: misc-body-exit>
     // Your function code goes here
     if (error) {
-      (await getConsole()).print(error, 'stderr');
+      await print(error, 'stderr');
     }
     await onExit(error);
     // </GSL customizable: misc-body-exit>
@@ -61,7 +61,7 @@ export default async function init({
     // </GSL customizable: misc-extra-return>
     emit,
     handlers: {
-      'misc_print': ({ text }: { text: any }) => print(text),
+      'misc_print': ({ text }: { text: any }) => handlePrint(text),
       'misc_exit': ({ error }: { error: string | void }) => exit(error),
       'misc_pluginReady': ({  }: {  }) => pluginReady(),
     },

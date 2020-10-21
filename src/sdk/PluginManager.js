@@ -4,7 +4,6 @@ import { fs } from 'filer';
 
 import Executor, { type Task } from '../components/ide/Executor';
 import { Project } from '../core/store/projects';
-import { type ConsoleType } from '../components/ide/Console';
 import { Simulation } from '../components/ide/Simulator/simulation';
 import initMiscSdk from './misc';
 import initHedgehogSdk from './hedgehog';
@@ -16,27 +15,27 @@ class PluginManager {
   plugins: Task[] = [];
   pluginReadyResolvers: (() => void)[] = [];
 
-  getConsole: () => Promise<ConsoleType>;
+  print: (text: string, stream: string) => Promise<void>;
   getSimulation: () => Promise<Simulation>;
   sdk: any;
 
   constructor(
     executor: Executor,
-    getConsole: () => Promise<ConsoleType>,
+    print: (text: string, stream: string) => Promise<void>,
     getSimulation: () => Promise<Simulation>,
   ) {
     this.executor = executor;
-    this.getConsole = getConsole;
+    this.print = print;
     this.getSimulation = getSimulation;
   }
 
   async initSdk() {
-    const { executor, getConsole, getSimulation } = this;
+    const { executor, print, getSimulation } = this;
 
     // TODO: add on exit handler
     this.sdk = {
       misc: await initMiscSdk({
-        getConsole,
+        print,
         onExit: () => {},
         pluginManager: this,
         executor,
