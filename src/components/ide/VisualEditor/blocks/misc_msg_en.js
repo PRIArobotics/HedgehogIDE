@@ -22,3 +22,6 @@ Msg['CAT_TEXT'] = 'Text';
 
 Msg['PRINT_BLOCK'] = 'print text %1';
 Msg['PRINT_BLOCK_TOOLTIP'] = 'Prints a text or value to the screen';
+
+Msg['GET_INPUT_BLOCK'] = 'text input';
+Msg['GET_INPUT_BLOCK_TOOLTIP'] = 'Waits for text input on the console and returns it';

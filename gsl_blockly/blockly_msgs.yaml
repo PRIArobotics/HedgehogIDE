@@ -20,6 +20,9 @@ modules:
       print_block:
         msg: Gib Text %1 aus
         tooltip: Gibt einen Text oder Wert auf dem Bildschirm aus
+      get_input_block:
+        msg: Texteingabe
+        tooltip: Wartet auf eine Texteingabe auf der Konsole und gibt diese zurück
     en:
       cat_custom:
         msg: Custom
@@ -40,6 +43,9 @@ modules:
       print_block:
         msg: print text %1
         tooltip: Prints a text or value to the screen
+      get_input_block:
+        msg: text input
+        tooltip: Waits for text input on the console and returns it
   hedgehog:
     de:
       hedgehog_cat_drive:

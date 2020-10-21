@@ -7,6 +7,12 @@ modules:
         name: TEXT
         check: [Number, Boolean, String]
       help: /help#blockly-misc
+    get_input_block:
+      colour: 70
+      output: String
+      args: []
+      async: true
+      help: /help#blockly-misc
   hedgehog:
     hedgehog_move:
       requiresScope: hedgehog

@@ -221,6 +221,7 @@ function VisualEditor({
               <shadow type="text" />
             </value>
           </block>
+          {miscBlocks.GET_INPUT_BLOCK.toolboxBlocks.default()}
         </category>
       </xml>,
     );

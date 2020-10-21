@@ -22,3 +22,6 @@ Msg['CAT_TEXT'] = 'Text';
 
 Msg['PRINT_BLOCK'] = 'Gib Text %1 aus';
 Msg['PRINT_BLOCK_TOOLTIP'] = 'Gibt einen Text oder Wert auf dem Bildschirm aus';
+
+Msg['GET_INPUT_BLOCK'] = 'Texteingabe';
+Msg['GET_INPUT_BLOCK_TOOLTIP'] = 'Wartet auf eine Texteingabe auf der Konsole und gibt diese zurück';
