@@ -77,6 +77,7 @@ const workspaceOptions = {
         {blocks.SIMULATOR_ROBOT_PART_LINE.toolboxBlocks.default()}
         {blocks.SIMULATOR_ROBOT_PART_TOUCH.toolboxBlocks.default()}
         {blocks.SIMULATOR_ROBOT_PART_DISTANCE.toolboxBlocks.default()}
+        {blocks.SIMULATOR_ROBOT_PART_SERVO_ARM.toolboxBlocks.default()}
       </category>
     </xml>,
   ),

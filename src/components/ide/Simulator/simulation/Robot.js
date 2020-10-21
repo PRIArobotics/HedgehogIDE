@@ -43,10 +43,10 @@ export default class Robot {
       density: 1,
       frictionAir: 0.4,
     };
-    // const materialGrabber = {
-    //   density: 0.02,
-    //   frictionAir: 0,
-    // };
+    const materialGrabber = {
+      density: 0.02,
+      frictionAir: 0,
+    };
     const styleWheel = {
       render: {
         fillStyle: '#777777',
@@ -75,11 +75,11 @@ export default class Robot {
       frictionAir: 0,
       // fillStyle & opacity controlled by sensor
     };
-    // const styleGrabber = {
-    //   render: {
-    //     fillStyle: '#777777',
-    //   },
-    // };
+    const styleGrabber = {
+      render: {
+        fillStyle: '#777777',
+      },
+    };
 
     const leftWheel = Matter.Bodies.rectangle(7, -21, 20, 4, {
       ...material,
@@ -101,6 +101,8 @@ export default class Robot {
     this.servoArms = [];
 
     const partBodies = [];
+    const compositePartBodies = [];
+    const compositePartConstraints = [];
 
     for (const part of parts) {
       try {
@@ -206,6 +208,39 @@ export default class Robot {
 
             break;
           }
+          case 'servo_arm': {
+            const { type: _type, port, pivotAnchor, pivotArm, length, objects } = part;
+
+            if (objects.length !== 1) {
+              throw new Error(`robot part must have exactly one object: ${part.type} ${port}`);
+            }
+
+            const [object] = objects;
+            const partBody = schema.createBody(
+              {
+                ...materialGrabber,
+                ...styleGrabber,
+                ...object,
+              },
+              assets,
+            );
+
+            const servoArm = new ServoArm(
+              this.controller,
+              port,
+              mainBody,
+              pivotAnchor,
+              partBody,
+              pivotArm,
+              length,
+            );
+
+            compositePartBodies.push(partBody);
+            compositePartConstraints.push(servoArm.pivotConstraint, servoArm.controlConstraint);
+            this.servoArms.push(servoArm);
+
+            break;
+          }
           default:
             console.warn('unknown robot part:', part);
         }
@@ -222,32 +257,9 @@ export default class Robot {
 
     this.drive = new DifferentialDrive(this.controller, 0, 1, leftWheel, rightWheel, this.body);
 
-    // // pivot pose in body coords
-    // const pivotAnchorLeft = { x: 27, y: -19, angle: 0 };
-    // const pivotAnchorRight = { x: 27, y: 19, angle: 0 };
-    // // pivot pose in arm coords
-    // const pivotArm = { x: -17, y: 0, angle: 0 };
-
-    // const leftGrabber = Matter.Bodies.rectangle(35, -15, 35, 3, {
-    //   ...materialGrabber,
-    //   ...styleGrabber,
-    // });
-    // const rightGrabber = Matter.Bodies.rectangle(35, 15, 35, 3, {
-    //   ...materialGrabber,
-    //   ...styleGrabber,
-    // });
-
-    this.servoArms.push(
-      // new ServoArm(this.controller, 0, mainBody, pivotAnchorLeft, leftGrabber, pivotArm, 30),
-      // new ServoArm(this.controller, 1, mainBody, pivotAnchorRight, rightGrabber, pivotArm, 30),
-    );
-
     this.robot = Matter.Composite.create({
-      bodies: [this.body],
-      // parts: [this.body, leftGrabber, rightGrabber],
-      constraints: [
-        ...this.servoArms.flatMap((arm) => [arm.pivotConstraint, arm.controlConstraint]),
-      ],
+      bodies: [this.body, ...compositePartBodies],
+      constraints: [...compositePartConstraints],
       label: 'bot',
     });
 
