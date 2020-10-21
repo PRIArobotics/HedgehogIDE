@@ -9,7 +9,7 @@ import { getInputDescendants, getSettings, collectSettings } from './helpers';
 export const SIMULATOR_ROBOT = {
   blockJson: {
     type: 'simulator_robot',
-    message0: 'Robot %1, with default sensors %2 %3 %4',
+    message0: 'Robot %1, with default sensors %2, with default grabber %3 %4 %5',
     args0: [
       {
         type: 'field_input',
@@ -20,6 +20,11 @@ export const SIMULATOR_ROBOT = {
         type: 'field_checkbox',
         name: 'DEFAULT_SENSORS',
         checked: true,
+      },
+      {
+        type: 'field_checkbox',
+        name: 'DEFAULT_GRABBER',
+        checked: false,
       },
       {
         type: 'input_value',
@@ -59,6 +64,45 @@ export const SIMULATOR_ROBOT = {
       let parts = this.getInputDescendants('PARTS')
         .filter((block) => objectTypes.includes(block.type))
         .map((object) => object.serialize());
+
+      if (this.getField('DEFAULT_GRABBER').getValueBoolean()) {
+        function servoArm(port: number, x: number, y: number, angle: number, label: string) {
+          return {
+            type: 'servo_arm',
+            port,
+            pivotAnchor: {
+              x,
+              y,
+              angle,
+            },
+            pivotArm: {
+              x: -17,
+              y: 0,
+              angle: 0,
+            },
+            length: 30,
+            objects: [
+              {
+                type: 'rectangle',
+                width: 35,
+                height: 3,
+                position: {
+                  x: 0,
+                  y: 0,
+                },
+                angle: 0,
+                label,
+              },
+            ],
+          };
+        }
+
+        parts = [
+          servoArm(0, 27, -19, 0, 'leftServoArm'),
+          servoArm(1, 27, 19, 0, 'leftServoArm'),
+          ...parts,
+        ];
+      }
 
       if (this.getField('DEFAULT_SENSORS').getValueBoolean()) {
         function lineSensor(port: number, x: number, y: number, label: string) {
