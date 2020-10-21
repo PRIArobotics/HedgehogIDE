@@ -11,7 +11,19 @@ import { type ConsoleType } from '../components/ide/Console';
 
 // </GSL customizable: misc-imports>
 
-export default async function init(getConsole: () => Promise<ConsoleType>, onExit: (string | void) => void | Promise<void>, pluginManager: PluginManager, executor: Executor) {
+type InitArgs = {
+  getConsole: () => Promise<ConsoleType>,
+  onExit: (string | void) => void | Promise<void>,
+  pluginManager: PluginManager,
+  executor: Executor,
+};
+
+export default async function init({
+  getConsole,
+  onExit,
+  pluginManager,
+  executor,
+}: InitArgs) {
   // <default GSL customizable: misc-init>
   // Your module initialization code
 

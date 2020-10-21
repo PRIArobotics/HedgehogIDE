@@ -439,8 +439,15 @@ function Ide({ projectName }: Props) {
     if (pluginManager === null) throw 'ref is null';
 
     const sdk = {
-      misc: await initMiscSdk(getConsole, handleTerminate, pluginManager, executor),
-      hedgehog: await initHedgehogSdk(getSimulator),
+      misc: await initMiscSdk({
+        getConsole,
+        onExit: handleTerminate,
+        pluginManager,
+        executor,
+      }),
+      hedgehog: await initHedgehogSdk({
+        getSimulator,
+      }),
     };
 
     executor.addTask({

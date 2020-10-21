@@ -10,7 +10,15 @@ import { schema } from '../components/ide/Simulator/simulation';
 import Executor from '../components/ide/Executor';
 // </GSL customizable: simulation-imports>
 
-export default async function init(executor: Executor, getSimulator: () => Promise<SimulatorType>) {
+type InitArgs = {
+  executor: Executor,
+  getSimulator: () => Promise<SimulatorType>,
+};
+
+export default async function init({
+  executor,
+  getSimulator,
+}: InitArgs) {
   // <GSL customizable: simulation-init>
   // Your module initialization code
 

@@ -95,7 +95,26 @@ import baseEmit from './base';
 
 // </GSL customizable: {module.name}-imports>
 
-export default async function init({', '.join(f"{arg.name}: {arg.type}" for arg in module.init.args)}) {{
+""")
+    if module.init.args:
+      yield from lines(f"""\
+type InitArgs = {{""")
+      for arg in module.init.args:
+        yield from lines(f"""\
+  {arg.name}: {arg.type},""")
+      yield from lines(f"""\
+}};
+
+export default async function init({{""")
+      for arg in module.init.args:
+        yield from lines(f"""\
+  {arg.name},""")
+      yield from lines(f"""\
+}}: InitArgs) {{""")
+    else:
+      yield from lines(f"""\
+export default async function init() {{""")
+    yield from lines(f"""\
   // <default GSL customizable: {module.name}-init>
   // Your module initialization code
 

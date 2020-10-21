@@ -10,7 +10,13 @@ import { Robot } from '../components/ide/Simulator/simulation';
 import { type Command } from '../executor/Hedgehog';
 // </GSL customizable: hedgehog-imports>
 
-export default async function init(getSimulator: () => Promise<SimulatorType>) {
+type InitArgs = {
+  getSimulator: () => Promise<SimulatorType>,
+};
+
+export default async function init({
+  getSimulator,
+}: InitArgs) {
   // <GSL customizable: hedgehog-init>
   async function getRobot(name: string): Promise<Robot> {
     const robot = (await getSimulator()).simulation.robots.get(name);

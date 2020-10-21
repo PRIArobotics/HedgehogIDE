@@ -31,12 +31,24 @@ class PluginManager {
   }
 
   async initSdk() {
+    const { executor, getConsole, getSimulator } = this;
+
     // TODO: add on exit handler
     this.sdk = {
-      misc: await initMiscSdk(this.getConsole, () => {}, this, this.executor),
-      hedgehog: await initHedgehogSdk(this.getSimulator),
+      misc: await initMiscSdk({
+        getConsole,
+        onExit: () => {},
+        pluginManager: this,
+        executor,
+      }),
+      hedgehog: await initHedgehogSdk({
+        getSimulator,
+      }),
       blockly: await initBlocklySdk(),
-      simulation: await initSimulationSdk(this.executor, this.getSimulator),
+      simulation: await initSimulationSdk({
+        executor,
+        getSimulator,
+      }),
     };
   }
 
