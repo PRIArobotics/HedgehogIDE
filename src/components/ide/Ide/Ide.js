@@ -419,6 +419,16 @@ function Ide({ projectName }: Props) {
     });
   }
 
+  async function handleConsoleInput(input: string) {
+    const ideConsole = consoleRef.current;
+    // eslint-disable-next-line no-throw-literal
+    if (ideConsole === null) throw 'ref is null';
+
+    if (input === '/c' || input === '/clear') {
+      ideConsole.clear();
+    }
+  }
+
   async function handleExecute(code: string) {
     const executor = executorRef.current;
     // eslint-disable-next-line no-throw-literal
@@ -942,7 +952,7 @@ function Ide({ projectName }: Props) {
         );
       }
       case 'console': {
-        return <Console ref={consoleRef} />;
+        return <Console ref={consoleRef} onInput={handleConsoleInput} />;
       }
       default:
         return null;

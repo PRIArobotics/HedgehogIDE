@@ -45,7 +45,9 @@ function consoleReducer(state: ConsoleState, action: ConsoleAction): ConsoleStat
   }
 }
 
-type Props = {||};
+type Props = {|
+  onInput: (input: string) => void | Promise<void>,
+|};
 type Instance = {|
   print(text: string, stream: string): void,
   clear(): void,
@@ -56,7 +58,7 @@ type Instance = {|
  * That second capability is currently not used, except for a demo "/clear" command,
  * but may be hooked up to program execution to get inputs passed into user programs or plugins.
  */
-const Console = React.forwardRef<Props, Instance>((_props: Props, ref: Ref<Instance>) => {
+const Console = React.forwardRef<Props, Instance>(({ onInput }: Props, ref: Ref<Instance>) => {
   const [{ items }, dispatch] = React.useReducer(consoleReducer, {
     nextKey: 0,
     items: [],
@@ -82,23 +84,8 @@ const Console = React.forwardRef<Props, Instance>((_props: Props, ref: Ref<Insta
     const input = inputRef.current.value;
     inputRef.current.value = '';
 
-    print(`${input}`, 'stdin');
-    if (input.startsWith('/')) {
-      switch (input) {
-        // case '/help':
-        // case '/h':
-        //   print('1st Line\n2nd Line', 'stdout');
-        //   break;
-
-        case '/clear':
-        case '/c':
-          clear();
-          break;
-
-        default:
-          print(`Command not found: ${input}`, 'stderr');
-      }
-    }
+    print(input, 'stdin');
+    onInput(input);
   }
 
   React.useImperativeHandle(ref, () => ({ print, clear }));
