@@ -13,6 +13,7 @@ import { type ConsoleType } from '../components/ide/Console';
 
 type InitArgs = {
   print: (text: string, stream: string) => void | Promise<void>,
+  getInput: () => Promise<string>,
   onExit: (string | void) => void | Promise<void>,
   pluginManager: PluginManager,
   executor: Executor,
@@ -20,6 +21,7 @@ type InitArgs = {
 
 export default async function init({
   print,
+  getInput,
   onExit,
   pluginManager,
   executor,
@@ -35,6 +37,12 @@ export default async function init({
     // <GSL customizable: misc-body-print>
     return /* await */ print(text.toString(), 'stdout');
     // </GSL customizable: misc-body-print>
+  }
+
+  async function handleGetInput() {
+    // <GSL customizable: misc-body-getInput>
+    return /* await */ getInput();
+    // </GSL customizable: misc-body-getInput>
   }
 
   async function exit(error: string | void) {
@@ -62,6 +70,9 @@ export default async function init({
     emit,
     handlers: {
       'misc_print': ({ text }: { text: any }) => handlePrint(text),
+      'misc_getInput': async ({  }: {  }, taskHandle: TaskHandle) => {
+        return taskHandle.withReply(null, handleGetInput.bind(null, ));
+      },
       'misc_exit': ({ error }: { error: string | void }) => exit(error),
       'misc_pluginReady': ({  }: {  }) => pluginReady(),
     },

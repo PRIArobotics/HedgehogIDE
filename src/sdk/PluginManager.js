@@ -16,26 +16,30 @@ class PluginManager {
   pluginReadyResolvers: (() => void)[] = [];
 
   print: (text: string, stream: string) => Promise<void>;
+  getInput: () => Promise<string>;
   getSimulation: () => Promise<Simulation>;
   sdk: any;
 
   constructor(
     executor: Executor,
     print: (text: string, stream: string) => Promise<void>,
+    getInput: () => Promise<string>,
     getSimulation: () => Promise<Simulation>,
   ) {
     this.executor = executor;
     this.print = print;
+    this.getInput = getInput;
     this.getSimulation = getSimulation;
   }
 
   async initSdk() {
-    const { executor, print, getSimulation } = this;
+    const { executor, print, getInput, getSimulation } = this;
 
     // TODO: add on exit handler
     this.sdk = {
       misc: await initMiscSdk({
         print,
+        getInput,
         onExit: () => {},
         pluginManager: this,
         executor,

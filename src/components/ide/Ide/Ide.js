@@ -175,7 +175,7 @@ function Ide({ projectName }: Props) {
     if (project === null || layoutModel === null || executorRef.current === null || pluginsLoaded)
       return;
 
-    const pluginManager = new PluginManager(executorRef.current, print, getSimulation);
+    const pluginManager = new PluginManager(executorRef.current, print, getInput, getSimulation);
     await pluginManager.initSdk();
     await pluginManager.loadFromProjectMetadata(project);
     pluginManagerRef.current = pluginManager;
@@ -423,12 +423,26 @@ function Ide({ projectName }: Props) {
     (await waitForConsole()).print(text, stream);
   }
 
+  const inputResolveRef = React.useRef<((string) => void) | null>(null);
+  async function getInput(): Promise<string> {
+    if (inputResolveRef.current !== null) {
+      return Promise.reject('there already is a pending input request');
+    }
+
+    return new Promise((resolve, _reject) => {
+      inputResolveRef.current = resolve;
+    });
+  }
+
   async function handleConsoleInput(input: string) {
     const ideConsole = consoleRef.current;
     // eslint-disable-next-line no-throw-literal
     if (ideConsole === null) throw 'ref is null';
 
-    if (input === '/c' || input === '/clear') {
+    if(inputResolveRef.current !== null) {
+      inputResolveRef.current(input);
+      inputResolveRef.current = null;
+    }else if (input === '/c' || input === '/clear') {
       ideConsole.clear();
     }
   }
@@ -445,6 +459,7 @@ function Ide({ projectName }: Props) {
     const sdk = {
       misc: await initMiscSdk({
         print,
+        getInput,
         onExit: handleTerminate,
         pluginManager,
         executor,

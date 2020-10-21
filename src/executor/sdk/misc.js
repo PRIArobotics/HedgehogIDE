@@ -18,6 +18,11 @@ export function print(text: any) {
   connection.send('misc_print', { text });
 }
 
+export async function getInput() {
+  connection.send('misc_getInput', {  });
+  return connection.recv();
+}
+
 export function exit(error: string | void) {
   connection.send('misc_exit', { error });
 }

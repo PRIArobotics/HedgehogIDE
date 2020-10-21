@@ -4,6 +4,8 @@ modules:
       args:
       - name: print
         type: "(text: string, stream: string) => void | Promise<void>"
+      - name: getInput
+        type: () => Promise<string>
       - name: onExit
         type: (string | void) => void | Promise<void>
       - name: pluginManager
@@ -16,6 +18,10 @@ modules:
         args:
         - name: text
           type: any
+      getInput:
+        handlerName: handleGetInput
+        hasReply: true
+        args: []
       exit:
         args:
         - name: error
