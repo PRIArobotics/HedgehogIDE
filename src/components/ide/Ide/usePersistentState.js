@@ -110,10 +110,12 @@ export default function usePersistentState(
   const [state, setState] = useStorage(projectUid && `IDE-State-${projectUid}`);
 
   function dispatch(action: IdeAction) {
-    // eslint-disable-next-line no-throw-literal
-    if (state === undefined) throw 'state must be loaded first';
+    setState((state) => {
+      // eslint-disable-next-line no-throw-literal
+      if (state === undefined) throw 'state must be loaded first';
 
-    setState(ideState(state, action));
+      return ideState(state, action);
+    });
   }
 
   return [state ?? null, dispatch];
