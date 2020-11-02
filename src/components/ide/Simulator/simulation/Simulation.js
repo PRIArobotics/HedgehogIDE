@@ -275,5 +275,9 @@ export default class Simulation {
     for (const body of bodiesToRemove) {
       Matter.World.remove(this.world, body);
     }
+
+    for (const robot of this.robots.values()) {
+      robot.reset();
+    }
   }
 }

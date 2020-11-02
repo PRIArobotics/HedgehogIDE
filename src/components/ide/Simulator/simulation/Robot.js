@@ -301,4 +301,10 @@ export default class Robot {
       servoArm.beforeUpdate();
     }
   }
+
+  reset() {
+    for (const servoArm of this.servoArms) {
+      servoArm.reset();
+    }
+  }
 }

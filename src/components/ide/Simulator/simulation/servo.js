@@ -74,26 +74,33 @@ export class ServoArm {
     });
   }
 
+  setPosition(position: number) {
+    // position 0..=1000 should be translated into angle -90°..=90°
+    // 0..=1000 -> -500..=500 -> -1/2..=1/2 -> PI/2..=PI/2
+    const dAngle = ((position - 500) / 1000) * Math.PI;
+
+    // the anchor pivot point rotated by dAngle
+    let pivotAnchor = { ...this.pivotAnchor, angle: this.pivotAnchor.angle + dAngle };
+
+    // for some reason, we have to consider the anchor's angle, but not its position
+    // this transformation rotates the coordinate frame in which the pivot pose is
+    // specified by the pivot's angle
+    const rotation = { x: 0, y: 0, angle: this.anchor.angle };
+    pivotAnchor = transform(rotation, pivotAnchor);
+
+    const translation = { x: this.length, y: 0, angle: 0 };
+    const pointA = poseToPoint(transform(pivotAnchor, translation));
+
+    this.controlConstraint.pointA = pointA;
+  }
+
   beforeUpdate() {
     const position = this.controller.getServo(this.port);
-    if (position !== null) {
-      // position 0..=1000 should be translated into angle -90°..=90°
-      // 0..=1000 -> -500..=500 -> -1/2..=1/2 -> PI/2..=PI/2
-      const dAngle = ((position - 500) / 1000) * Math.PI;
+    if (position !== null) this.setPosition(position);
+  }
 
-      // the anchor pivot point rotated by dAngle
-      let pivotAnchor = { ...this.pivotAnchor, angle: this.pivotAnchor.angle + dAngle };
-
-      // for some reason, we have to consider the anchor's angle, but not its position
-      // this transformation rotates the coordinate frame in which the pivot pose is
-      // specified by the pivot's angle
-      const rotation = { x: 0, y: 0, angle: this.anchor.angle };
-      pivotAnchor = transform(rotation, pivotAnchor);
-
-      const translation = { x: this.length, y: 0, angle: 0 };
-      const pointA = poseToPoint(transform(pivotAnchor, translation));
-
-      this.controlConstraint.pointA = pointA;
-    }
+  reset() {
+    // the default position is in the middle of the value range, i.e. 500
+    this.setPosition(500);
   }
 }
