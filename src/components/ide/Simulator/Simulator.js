@@ -9,6 +9,8 @@ import {
   TerminateAndResetIcon,
   ZoomInIcon,
   ZoomOutIcon,
+  ZoomFitIcon,
+  ZoomResetIcon,
 } from '../../misc/palette';
 import * as hooks from '../../misc/hooks';
 
@@ -106,6 +108,18 @@ const Simulator = React.forwardRef<Props, Instance>(
               disableRipple
               disabled={!running}
             />
+          </ToolBarItem>
+          <ToolBarItem>
+            <ToolBarIconButton onClick={() => {}} icon={ZoomInIcon} disableRipple />
+          </ToolBarItem>
+          <ToolBarItem>
+            <ToolBarIconButton onClick={() => {}} icon={ZoomResetIcon} disableRipple />
+          </ToolBarItem>
+          <ToolBarItem>
+            <ToolBarIconButton onClick={() => {}} icon={ZoomOutIcon} disableRipple />
+          </ToolBarItem>
+          <ToolBarItem>
+            <ToolBarIconButton onClick={() => {}} icon={ZoomFitIcon} disableRipple />
           </ToolBarItem>
         </ToolBar>
       </div>

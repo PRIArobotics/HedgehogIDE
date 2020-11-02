@@ -15,17 +15,6 @@ import * as React from 'react';
 import { withStyles } from '@material-ui/styles';
 import Badge from '@material-ui/core/Badge';
 
-const IconBadge = withStyles({
-  badge: {
-    bottom: '25%',
-    right: '25%',
-    background: '#e8e8e8',
-    minWidth: 'auto',
-    width: '15px',
-    height: '15px',
-  },
-})(Badge);
-
 import MenuIcon from 'mdi-material-ui/DotsVertical';
 
 // files: general
@@ -85,18 +74,56 @@ import TerminateIcon from 'mdi-material-ui/Stop';
 import ResetIcon from 'mdi-material-ui/RotateLeft';
 import ZoomInIcon from 'mdi-material-ui/MagnifyPlusOutline';
 import ZoomOutIcon from 'mdi-material-ui/MagnifyMinusOutline';
+import ZoomFitIcon from 'mdi-material-ui/MagnifyScan';
+
+const TerminateAndResetIconBadge = withStyles({
+  badge: {
+    bottom: '25%',
+    right: '25%',
+    background: '#e8e8e8',
+    minWidth: 'auto',
+    width: '15px',
+    height: '15px',
+  },
+})(Badge);
 
 const TerminateAndResetIcon = React.forwardRef<
   React.ElementConfig<typeof TerminateIcon>,
   TerminateIcon,
 >((props, ref) => (
-  <IconBadge
+  <TerminateAndResetIconBadge
     overlap="circle"
     anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
     badgeContent={<ResetIcon style={{ fontSize: '15px' }} />}
   >
     <TerminateIcon ref={ref} {...props} />
-  </IconBadge>
+  </TerminateAndResetIconBadge>
+));
+
+import ZoomIcon from 'mdi-material-ui/Magnify';
+
+const ZoomResetIconBadge = withStyles({
+  badge: {
+    bottom: '25%',
+    left: '25%',
+    background: '#e8e8e8',
+    minWidth: 'auto',
+    width: '13px',
+    height: '13px',
+  },
+})(Badge);
+
+const ZoomResetIcon = React.forwardRef<
+  React.ElementConfig<typeof ZoomIcon>,
+  ZoomIcon,
+>((props, ref) => (
+  <ZoomResetIconBadge
+    overlap="circle"
+    anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
+    badgeContent={<ResetIcon style={{ fontSize: '13px' }} />}
+  >
+    <ZoomIcon ref={ref} {...props} />
+  </ZoomResetIconBadge>
 ));
 
 // misc actions
@@ -145,6 +172,8 @@ export {
   ResetIcon,
   ZoomInIcon,
   ZoomOutIcon,
+  ZoomFitIcon,
+  ZoomResetIcon,
   TerminateAndResetIcon,
   SlideLeftIcon,
   SlideRightIcon,
