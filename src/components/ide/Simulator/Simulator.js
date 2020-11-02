@@ -70,7 +70,7 @@ const Simulator = React.forwardRef<Props, Instance>(
     useStyles(s);
     return (
       <div className={s.root}>
-        <div className={s.container}>
+        <div className={`${s.container} ${s.fit}`}>
           <canvas className={s.canvas} ref={setRenderTarget} />
         </div>
         <ToolBar>
@@ -106,12 +106,6 @@ const Simulator = React.forwardRef<Props, Instance>(
               disableRipple
               disabled={!running}
             />
-          </ToolBarItem>
-          <ToolBarItem>
-            <ToolBarIconButton onClick={() => {}} icon={ZoomInIcon} disableRipple />
-          </ToolBarItem>
-          <ToolBarItem>
-            <ToolBarIconButton onClick={() => {}} icon={ZoomOutIcon} disableRipple />
           </ToolBarItem>
         </ToolBar>
       </div>
