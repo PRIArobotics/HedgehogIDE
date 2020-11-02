@@ -973,6 +973,10 @@ function Ide({ projectName }: Props) {
           <Simulator
             ref={attachSimulator}
             running={running}
+            {...state.simulatorState}
+            onUpdate={(simulatorState) => {
+              dispatch({ type: 'SET_SIMULATOR_STATE', simulatorState });
+            }}
             onExecutionAction={handleExecutionAction}
           />
         );
