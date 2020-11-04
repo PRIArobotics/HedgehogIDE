@@ -67,14 +67,14 @@ export function createBody(
     case 'rectangle': {
       // eslint-disable-next-line no-shadow
       const { type: _type, width, height, ...options } = config;
-      resolveSprite(options?.render?.sprite);
+      resolveSprite(options?.render?.sprite, assets);
 
       body = Matter.Bodies.rectangle(0, 0, width, height, options);
       break;
     }
     case 'circle': {
       const { type: _type, radius, ...options } = config;
-      resolveSprite(options?.render?.sprite);
+      resolveSprite(options?.render?.sprite, assets);
 
       body = Matter.Bodies.circle(0, 0, radius, options);
       break;
@@ -89,7 +89,7 @@ export function createBody(
         angle,
         ...options
       } = config;
-      resolveSprite(options?.render?.sprite);
+      resolveSprite(options?.render?.sprite, assets);
 
       if (assets === null) {
         throw new Error(`Trying to use '${src}', but there's no asset map`);
