@@ -14,6 +14,10 @@ export function add(objects: schema.Object[]) {
   connection.send('simulation_add', { objects });
 }
 
+export function update(objects: {[label: string]: any}) {
+  connection.send('simulation_update', { objects });
+}
+
 export function remove(labels: string[]) {
   connection.send('simulation_remove', { labels });
 }

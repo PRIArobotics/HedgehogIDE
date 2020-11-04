@@ -1,5 +1,7 @@
 // @flow
 
+import merge from 'lodash.merge';
+
 import Matter from 'matter-js';
 import 'pathseg';
 import '../../../../client/poly-decomp-polyfill';
@@ -160,6 +162,28 @@ export default class Simulation {
     }
 
     this.updateSensorCache();
+  }
+
+  updateBodies(objects: {[label: string]: any}) {
+    for (const body of this.world.bodies) {
+      const settings = objects[body.label];
+      if (settings !== undefined) {
+        Matter.Body.set(body, {
+          ...settings,
+          // merge render, as that encapsulates multiple settings
+          render: {
+            ...body.render,
+            ...settings.render,
+            sprite: {
+              ...body.render.sprite,
+              ...settings.render.sprite,
+            },
+          },
+          // also recursively merge plugins, which encapsulate arbitrary data
+          plugin: merge({}, body.plugin, settings.plugin),
+        });
+      }
+    }
   }
 
   removeBodies(labels: string[]) {

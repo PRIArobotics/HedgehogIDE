@@ -103,6 +103,10 @@ modules:
         args:
         - name: objects
           type: schema.Object[]
+      update:
+        args:
+        - name: objects
+          type: "{[label: string]: any}"
       remove:
         args:
         - name: labels

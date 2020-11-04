@@ -53,6 +53,13 @@ export default async function init({
     // </GSL customizable: simulation-body-add>
   }
 
+  async function update(objects: {[label: string]: any}) {
+    // <GSL customizable: simulation-body-update>
+    const simulation = await getSimulation();
+    simulation.updateBodies(objects);
+    // </GSL customizable: simulation-body-update>
+  }
+
   async function remove(labels: string[]) {
     // <GSL customizable: simulation-body-remove>
     const simulation = await getSimulation();
@@ -68,6 +75,7 @@ export default async function init({
     emit,
     handlers: {
       'simulation_add': ({ objects }: { objects: schema.Object[] }) => add(objects),
+      'simulation_update': ({ objects }: { objects: {[label: string]: any} }) => update(objects),
       'simulation_remove': ({ labels }: { labels: string[] }) => remove(labels),
     },
   };
