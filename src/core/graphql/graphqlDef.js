@@ -32,7 +32,7 @@ export function merge(...defs: GraphqlDefShape[]): GraphqlDef {
     mutations: [].concat(...defs.map((def) => def.mutations ?? [])),
     subscriptions: [].concat(...defs.map((def) => def.subscriptions ?? [])),
     resolvers: (pubsub: PubSub) =>
-      lodashMerge(...defs.map((def) => (def.resolvers ?? dummyResolver)(pubsub))),
+      lodashMerge({}, ...defs.map((def) => (def.resolvers ?? dummyResolver)(pubsub))),
     defaults: lodashMerge(...defs.map((def) => def.defaults ?? {})),
   };
 }
