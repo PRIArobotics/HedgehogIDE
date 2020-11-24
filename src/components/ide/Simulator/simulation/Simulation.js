@@ -175,8 +175,8 @@ export default class Simulation {
             ...body.render,
             ...settings.render,
             sprite: {
-              ...body.render.sprite,
-              ...settings.render.sprite,
+              ...body.render?.sprite,
+              ...settings.render?.sprite,
             },
           },
           // also recursively merge plugins, which encapsulate arbitrary data
