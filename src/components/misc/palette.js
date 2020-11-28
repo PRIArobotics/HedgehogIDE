@@ -41,6 +41,7 @@ import MetadataToolboxIcon from 'mdi-material-ui/ToolboxOutline';
 
 // projects
 import LocalProjectIcon from 'mdi-material-ui/Folder';
+import UnlinkExerciseIcon from 'mdi-material-ui/LinkOff';
 import UploadExerciseIcon from 'mdi-material-ui/CloudUpload';
 
 // project actions
@@ -149,6 +150,7 @@ export {
   MetadataSimulatorIcon,
   MetadataToolboxIcon,
   LocalProjectIcon,
+  UnlinkExerciseIcon,
   UploadExerciseIcon,
   RestoreLayoutIcon,
   SettingsIcon,

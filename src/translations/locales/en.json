@@ -71,6 +71,9 @@
   "app.projects.rename_project_dialog.new_name_label": "Project Name",
   "app.projects.rename_project_dialog.title": "Rename project",
   "app.projects.rename_project_tooltip": "Rename Project \"{name}\"",
+  "app.projects.unlink_exercise_tooltip": "Unlink project \"{name}\" from its associated exercise",
+  "app.projects.unlink_project_dialog.description": "This action removes the association between the project and the exercise it was cloned from. After unlinking, the project can no longer be opened from the exercise list, but it can be uploaded as a new exercise.",
+  "app.projects.unlink_project_dialog.title": "Confirm unlink",
   "app.sidebar.contest_tooltip": "Contest",
   "app.sidebar.help_tooltip": "Help"
 }

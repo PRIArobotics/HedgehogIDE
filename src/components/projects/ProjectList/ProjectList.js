@@ -22,6 +22,7 @@ import PopupState, { bindTrigger, bindMenu } from 'material-ui-popup-state';
 
 import {
   LocalProjectIcon,
+  UnlinkExerciseIcon,
   UploadExerciseIcon,
   CreateIcon,
   OpenIcon,
@@ -39,6 +40,7 @@ import s from './ProjectList.scss';
 import useCreateProjectDialog from './useCreateProjectDialog';
 import useDeleteProjectDialog from './useDeleteProjectDialog';
 import useRenameProjectDialog from './useRenameProjectDialog';
+import useUnlinkProjectDialog from './useUnlinkProjectDialog';
 import useCreateRemoteProjectDialog from './useCreateRemoteProjectDialog';
 import useDeleteRemoteProjectDialog from './useDeleteRemoteProjectDialog';
 import useCloneRemoteProjectDialog from './useCloneRemoteProjectDialog';
@@ -74,6 +76,11 @@ const messages = defineMessages({
     id: 'app.projects.delete_project_tooltip',
     description: 'Tooltip and screen reader label for the delete project button',
     defaultMessage: 'Delete Project "{name}"',
+  },
+  unlinkProjectTooltip: {
+    id: 'app.projects.unlink_exercise_tooltip',
+    description: 'Tooltip and screen reader label for the unlink project button',
+    defaultMessage: 'Unlink project "{name}" from its associated exercise',
   },
   exercisesTitle: {
     id: 'app.exercises.list_title',
@@ -193,6 +200,20 @@ function ProjectList(_props: Props) {
 
   const renameProject = useRenameProjectDialog(confirmRenameProject, localProjects);
 
+  async function confirmUnlinkProject(project: Project): Promise<boolean> {
+    try {
+      projectIndexDispatch({ type: 'REMOVE_MAPPING', projectUid: project.uid });
+      projectIndexDispatch({ type: 'REFRESH_LOCAL' });
+      return true;
+    } catch (ex) {
+      if (!(ex instanceof ProjectError)) throw ex;
+      projectIndexDispatch({ type: 'REFRESH_LOCAL' });
+      return false;
+    }
+  }
+
+  const unlinkProject = useUnlinkProjectDialog(confirmUnlinkProject);
+
   async function confirmCreateRemoteProject(localProject: Project): Promise<boolean> {
     const id = await createProjectMutation(localProject);
     projectIndexDispatch({
@@ -284,6 +305,23 @@ function ProjectList(_props: Props) {
               </ListItemAvatar>
               <ListItemText primary={project.name} />
               <ListItemSecondaryAction>
+                {isLoggedIn && (project.uid in localToRemoteMap) ? (
+                  <Tooltip
+                    title={intl.formatMessage(messages.unlinkProjectTooltip, {
+                      name: project.name,
+                    })}
+                    placement="bottom"
+                  >
+                    <IconButton
+                      aria-label={intl.formatMessage(messages.unlinkProjectTooltip, {
+                        name: project.name,
+                      })}
+                      onClick={() => unlinkProject.show(project)}
+                    >
+                      <UnlinkExerciseIcon />
+                    </IconButton>
+                  </Tooltip>
+                ) : null}
                 {isLoggedIn ? (
                   <Tooltip
                     title={intl.formatMessage(messages.uploadExerciseTooltip, {
@@ -340,6 +378,7 @@ function ProjectList(_props: Props) {
         <SimpleDialog id="create-dialog" {...createProject.mountSimpleDialog()} />
         <SimpleDialog id="delete-dialog" {...deleteProject.mountSimpleDialog()} />
         <SimpleDialog id="rename-dialog" {...renameProject.mountSimpleDialog()} />
+        <SimpleDialog id="unlink-dialog" {...unlinkProject.mountSimpleDialog()} />
         <SimpleDialog id="create-remote-dialog" {...createRemoteProject.mountSimpleDialog()} />
       </Paper>
       <Paper className={s.root}>

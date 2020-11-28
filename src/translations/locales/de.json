@@ -71,6 +71,9 @@
   "app.projects.rename_project_dialog.new_name_label": "Projektname",
   "app.projects.rename_project_dialog.title": "Projekt umbenennen",
   "app.projects.rename_project_tooltip": "Projekt \"{name}\" umbenennen",
+  "app.projects.unlink_exercise_tooltip": "Projekt \"{name}\" von seiner zugeordneten Aufgabe lösen",
+  "app.projects.unlink_project_dialog.description": "Diese Aktion entfernt die Zuordnung zwischen dem Projekt und der entsprechenden Aufgabe. Nach dieser Aktion kann das Projekt nicht mehr aus der Aufgabenliste geöffnet werden, aber es kann als neue Aufgabe hochgeladen werden.",
+  "app.projects.unlink_project_dialog.title": "Zuordnung entfernen",
   "app.sidebar.contest_tooltip": "Wettbewerb",
   "app.sidebar.help_tooltip": "Hilfe"
 }
