@@ -185,6 +185,16 @@ export class DistanceSensor {
     return this.maxDistance;
   }
 
+  getValueForDistance(distance: number): number {
+    const maxValue = 4000;
+    const value =
+      distance < this.maxDistance
+        ? maxValue * (distance / this.maxDistance)
+        : maxValue;
+
+    return value;
+  }
+
   update(distance: number | void) {
     if (distance === undefined) {
       distance = this.getDistance();
@@ -204,6 +214,12 @@ export class DistanceSensor {
       }
     }
 
+    this.controller.setSensor(this.port, this.getValueForDistance(distance));
+  }
+}
+
+export class SharpDistanceSensor extends DistanceSensor {
+  getValueForDistance(distance: number): number {
     // this is modelled loosely after https://lucsmall.com/images/preview/20130507-voltage-vs-distance.png
     // under a certain distance threshold, the value grows linearly with the distance to the max value
     // over that threshold, the value falls off from the max value inversely with the distance
@@ -215,6 +231,6 @@ export class DistanceSensor {
         ? maxValue * (distance / distanceThreshold)
         : (maxValue * (distanceThreshold + bias)) / (distance + bias);
 
-    this.controller.setSensor(this.port, value);
+    return value;
   }
 }
