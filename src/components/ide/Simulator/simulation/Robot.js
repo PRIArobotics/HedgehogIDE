@@ -5,7 +5,13 @@ import Matter from 'matter-js';
 import { Pose, Hedgehog, schema } from '.';
 import { resolveSprite, setInitialPose } from './schema/helpers';
 import { DifferentialDrive } from './drives';
-import { CollisionSensor, TouchSensor, LineSensor, DistanceSensor, SharpDistanceSensor } from './sensors';
+import {
+  CollisionSensor,
+  TouchSensor,
+  LineSensor,
+  DistanceSensor,
+  SharpDistanceSensor,
+} from './sensors';
 import { ServoArm } from './servo';
 
 function createArray<T>(length: number, cb: (index: number) => T): T[] {
@@ -210,6 +216,7 @@ export default class Robot {
                 break;
               }
               default:
+                // eslint-disable-next-line no-throw-literal
                 throw 'unreachable';
             }
 

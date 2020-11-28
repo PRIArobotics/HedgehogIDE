@@ -164,7 +164,7 @@ export default class Simulation {
     this.updateSensorCache();
   }
 
-  updateBodies(objects: {[label: string]: any}) {
+  updateBodies(objects: { [label: string]: any }) {
     for (const body of this.world.bodies) {
       const settings = objects[body.label];
       if (settings !== undefined) {

@@ -439,10 +439,10 @@ function Ide({ projectName }: Props) {
     // eslint-disable-next-line no-throw-literal
     if (ideConsole === null) throw 'ref is null';
 
-    if(inputResolveRef.current !== null) {
+    if (inputResolveRef.current !== null) {
       inputResolveRef.current(input);
       inputResolveRef.current = null;
-    }else if (input === '/c' || input === '/clear') {
+    } else if (input === '/c' || input === '/clear') {
       ideConsole.clear();
     }
   }

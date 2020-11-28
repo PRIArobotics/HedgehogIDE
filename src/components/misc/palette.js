@@ -114,18 +114,17 @@ const ZoomResetIconBadge = withStyles({
   },
 })(Badge);
 
-const ZoomResetIcon = React.forwardRef<
-  React.ElementConfig<typeof ZoomIcon>,
-  ZoomIcon,
->((props, ref) => (
-  <ZoomResetIconBadge
-    overlap="circle"
-    anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
-    badgeContent={<ResetIcon style={{ fontSize: '13px' }} />}
-  >
-    <ZoomIcon ref={ref} {...props} />
-  </ZoomResetIconBadge>
-));
+const ZoomResetIcon = React.forwardRef<React.ElementConfig<typeof ZoomIcon>, ZoomIcon>(
+  (props, ref) => (
+    <ZoomResetIconBadge
+      overlap="circle"
+      anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
+      badgeContent={<ResetIcon style={{ fontSize: '13px' }} />}
+    >
+      <ZoomIcon ref={ref} {...props} />
+    </ZoomResetIconBadge>
+  ),
+);
 
 // misc actions
 import SlideLeftIcon from 'mdi-material-ui/ChevronLeft';

@@ -305,7 +305,7 @@ function ProjectList(_props: Props) {
               </ListItemAvatar>
               <ListItemText primary={project.name} />
               <ListItemSecondaryAction>
-                {isLoggedIn && (project.uid in localToRemoteMap) ? (
+                {isLoggedIn && project.uid in localToRemoteMap ? (
                   <Tooltip
                     title={intl.formatMessage(messages.unlinkProjectTooltip, {
                       name: project.name,

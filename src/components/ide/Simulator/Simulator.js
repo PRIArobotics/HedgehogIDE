@@ -82,7 +82,11 @@ const Simulator = React.forwardRef<Props, Instance>(
     return (
       <div className={s.root}>
         <div className={`${s.container} ${zoomMode === 'FIT' ? s.fit : s.zoomed}`}>
-          <canvas className={s.canvas} ref={setRenderTarget} style={{transform: zoomMode === 'MANUAL' ? `scale(${zoom / 100})` : undefined}} />
+          <canvas
+            className={s.canvas}
+            ref={setRenderTarget}
+            style={{ transform: zoomMode === 'MANUAL' ? `scale(${zoom / 100})` : undefined }}
+          />
         </div>
         <ToolBar>
           {running ? (
@@ -119,28 +123,52 @@ const Simulator = React.forwardRef<Props, Instance>(
             />
           </ToolBarItem>
           <ToolBarItem>
-            <ToolBarIconButton onClick={() => onUpdate({
-              zoom: Math.min(zoom + 10, 150),
-              zoomMode: 'MANUAL',
-            })} icon={ZoomInIcon} disableRipple />
+            <ToolBarIconButton
+              onClick={() =>
+                onUpdate({
+                  zoom: Math.min(zoom + 10, 150),
+                  zoomMode: 'MANUAL',
+                })
+              }
+              icon={ZoomInIcon}
+              disableRipple
+            />
           </ToolBarItem>
           <ToolBarItem>
-            <ToolBarIconButton onClick={() => onUpdate({
-              zoom: 100,
-              zoomMode: 'MANUAL',
-            })} icon={ZoomResetIcon} disableRipple />
+            <ToolBarIconButton
+              onClick={() =>
+                onUpdate({
+                  zoom: 100,
+                  zoomMode: 'MANUAL',
+                })
+              }
+              icon={ZoomResetIcon}
+              disableRipple
+            />
           </ToolBarItem>
           <ToolBarItem>
-            <ToolBarIconButton onClick={() => onUpdate({
-              zoom: Math.max(zoom - 10, 50),
-              zoomMode: 'MANUAL',
-            })} icon={ZoomOutIcon} disableRipple />
+            <ToolBarIconButton
+              onClick={() =>
+                onUpdate({
+                  zoom: Math.max(zoom - 10, 50),
+                  zoomMode: 'MANUAL',
+                })
+              }
+              icon={ZoomOutIcon}
+              disableRipple
+            />
           </ToolBarItem>
           <ToolBarItem>
-            <ToolBarIconButton onClick={() => onUpdate({
-              zoom,
-              zoomMode: 'FIT',
-            })} icon={ZoomFitIcon} disableRipple />
+            <ToolBarIconButton
+              onClick={() =>
+                onUpdate({
+                  zoom,
+                  zoomMode: 'FIT',
+                })
+              }
+              icon={ZoomFitIcon}
+              disableRipple
+            />
           </ToolBarItem>
         </ToolBar>
       </div>

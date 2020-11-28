@@ -28,7 +28,7 @@ type IdeAction =
   | {| type: 'TOGGLE_METADATA_FOLDER' |}
   | {| type: 'SHOW_METADATA_FOLDER', value: boolean |}
   | {| type: 'UPDATE_FILE_TREE', fileTreeState: FileTreeState |}
-  | {| type: 'LAYOUT', layoutState: LayoutState |}
+  | {| type: 'LAYOUT', layoutState: LayoutState |};
 
 function ideState(state: PersistentState, action: IdeAction): PersistentState {
   switch (action.type) {

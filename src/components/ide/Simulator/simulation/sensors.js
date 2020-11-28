@@ -187,10 +187,7 @@ export class DistanceSensor {
 
   getValueForDistance(distance: number): number {
     const maxValue = 4000;
-    const value =
-      distance < this.maxDistance
-        ? maxValue * (distance / this.maxDistance)
-        : maxValue;
+    const value = distance < this.maxDistance ? maxValue * (distance / this.maxDistance) : maxValue;
 
     return value;
   }
