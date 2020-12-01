@@ -12,6 +12,7 @@
 import * as React from 'react';
 import En from './en/Help';
 import De from './de/Help';
+// import Sk from './sk/Help';
 import Layout from '../../components/layout/Layout';
 
 import { LocaleSelector } from '../../components/locale';
@@ -20,6 +21,7 @@ import { type LocaleMap } from '../../translations';
 const HELP_COMPONENTS: LocaleMap<React.ComponentType<{}>> = {
   en: En,
   de: De,
+  // sk: Sk,
 };
 
 async function action() {

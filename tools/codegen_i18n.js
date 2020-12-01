@@ -7,8 +7,8 @@ export default async function codegen_i18n() {
     translationsDirectory: 'src/translations/locales/',
     languages: process.argv.includes('--check')
       ? // don't put default language of 'en' when checking
-        ['de']
+        ['de', 'sk']
       : // do put default language of 'en' when generating
-        ['en', 'de'],
+        ['en', 'de', 'sk'],
   });
 }

@@ -127,6 +127,14 @@ function Header() {
         >
           English
         </MenuItem>
+        <MenuItem
+          onClick={() => {
+            setPreferredLocale('sk');
+            selectLanguagePopupState.close();
+          }}
+        >
+          Slovák
+        </MenuItem>
       </Menu>
       {auth.authData ? (
         <>

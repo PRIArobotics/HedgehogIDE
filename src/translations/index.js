@@ -6,6 +6,8 @@ import { MessageFormatElement } from 'react-intl';
 import messages_de from './locales/de.json';
 // eslint-disable-next-line camelcase
 import messages_en from './locales/en.json';
+// eslint-disable-next-line camelcase
+import messages_sk from './locales/sk.json';
 
 export type LocaleMap<T> = { [locale: string]: T };
 
@@ -17,6 +19,7 @@ type Messages =
 export const MESSAGES: LocaleMap<Messages> = {
   de: messages_de,
   en: messages_en,
+  sk: messages_sk,
 };
 
 // returns the first locale in `locales` matching the predicate. Most of the
