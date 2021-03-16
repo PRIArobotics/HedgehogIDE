@@ -17,6 +17,7 @@ class PluginManager {
 
   print: (text: string, stream: string) => Promise<void>;
   getInput: () => Promise<string>;
+  getPreferredLocales: () => string[];
   getSimulation: () => Promise<Simulation>;
   sdk: any;
 
@@ -24,22 +25,25 @@ class PluginManager {
     executor: Executor,
     print: (text: string, stream: string) => Promise<void>,
     getInput: () => Promise<string>,
+    getPreferredLocales: () => string[],
     getSimulation: () => Promise<Simulation>,
   ) {
     this.executor = executor;
     this.print = print;
     this.getInput = getInput;
+    this.getPreferredLocales = getPreferredLocales;
     this.getSimulation = getSimulation;
   }
 
   async initSdk() {
-    const { executor, print, getInput, getSimulation } = this;
+    const { executor, print, getInput, getPreferredLocales, getSimulation } = this;
 
     // TODO: add on exit handler
     this.sdk = {
       misc: await initMiscSdk({
         print,
         getInput,
+        getPreferredLocales,
         onExit: () => {},
         pluginManager: this,
         executor,

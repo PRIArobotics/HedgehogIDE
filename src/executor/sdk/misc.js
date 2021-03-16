@@ -23,6 +23,11 @@ export async function getInput() {
   return connection.recv();
 }
 
+export async function getBestLocale(localeOptions: string[]) {
+  connection.send('misc_getBestLocale', { localeOptions });
+  return connection.recv();
+}
+
 export function exit(error: string | void) {
   connection.send('misc_exit', { error });
 }

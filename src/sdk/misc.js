@@ -8,12 +8,14 @@ import baseEmit from './base';
 import PluginManager from './PluginManager';
 import Executor from '../components/ide/Executor';
 import { type ConsoleType } from '../components/ide/Console';
+import { getEffectiveLocale } from '../translations';
 
 // </GSL customizable: misc-imports>
 
 type InitArgs = {
   print: (text: string, stream: string) => void | Promise<void>,
   getInput: () => Promise<string>,
+  getPreferredLocales: () => string[],
   onExit: (string | void) => void | Promise<void>,
   pluginManager: PluginManager,
   executor: Executor,
@@ -22,6 +24,7 @@ type InitArgs = {
 export default async function init({
   print,
   getInput,
+  getPreferredLocales,
   onExit,
   pluginManager,
   executor,
@@ -43,6 +46,14 @@ export default async function init({
     // <GSL customizable: misc-body-getInput>
     return /* await */ getInput();
     // </GSL customizable: misc-body-getInput>
+  }
+
+  async function handleGetBestLocale(localeOptions: string[]) {
+    // <GSL customizable: misc-body-getBestLocale>
+    const locales = getPreferredLocales();
+    const supported = Array.prototype.includes.bind(localeOptions);
+    return getEffectiveLocale(locales, supported);
+    // </GSL customizable: misc-body-getBestLocale>
   }
 
   async function exit(error: string | void) {
@@ -72,6 +83,9 @@ export default async function init({
       'misc_print': ({ text }: { text: any }) => handlePrint(text),
       'misc_getInput': async ({  }: {  }, taskHandle: TaskHandle) => {
         return taskHandle.withReply(null, handleGetInput.bind(null, ));
+      },
+      'misc_getBestLocale': async ({ localeOptions }: { localeOptions: string[] }, taskHandle: TaskHandle) => {
+        return taskHandle.withReply(null, handleGetBestLocale.bind(null, localeOptions));
       },
       'misc_exit': ({ error }: { error: string | void }) => exit(error),
       'misc_pluginReady': ({  }: {  }) => pluginReady(),

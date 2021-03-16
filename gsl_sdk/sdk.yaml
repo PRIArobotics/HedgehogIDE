@@ -6,6 +6,8 @@ modules:
         type: "(text: string, stream: string) => void | Promise<void>"
       - name: getInput
         type: () => Promise<string>
+      - name: getPreferredLocales
+        type: () => string[]
       - name: onExit
         type: (string | void) => void | Promise<void>
       - name: pluginManager
@@ -22,6 +24,12 @@ modules:
         handlerName: handleGetInput
         hasReply: true
         args: []
+      getBestLocale:
+        handlerName: handleGetBestLocale
+        hasReply: true
+        args:
+        - name: localeOptions
+          type: string[]
       exit:
         args:
         - name: error

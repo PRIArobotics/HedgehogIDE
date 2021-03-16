@@ -23,6 +23,7 @@ import FlexLayoutTheme from './flex_layout_ide.css';
 import { RestoreLayoutIcon, SettingsIcon, ConsoleIcon, SimulatorIcon } from '../../misc/palette';
 import * as hooks from '../../misc/hooks';
 import SimpleDialog from '../../misc/SimpleDialog';
+import { useLocale } from '../../locale';
 
 import Console, { type ConsoleType } from '../Console';
 import Editor from '../Editor';
@@ -152,6 +153,14 @@ function Ide({ projectName }: Props) {
 
   const pluginManagerRef = React.useRef<PluginManager | null>(null);
 
+  const preferredLocalesRef = React.useRef<string[] | null>(null);
+
+  const { preferredLocales } = useLocale();
+
+  React.useEffect(() => {
+    preferredLocalesRef.current = preferredLocales;
+  }, [preferredLocales]);
+
   let initialLayoutState = state?.layoutState ?? null;
   if (initialLayoutState === DEFAULT_LAYOUT_STATE) {
     if (projectCache === null) {
@@ -175,7 +184,7 @@ function Ide({ projectName }: Props) {
     if (project === null || layoutModel === null || executorRef.current === null || pluginsLoaded)
       return;
 
-    const pluginManager = new PluginManager(executorRef.current, print, getInput, getSimulation);
+    const pluginManager = new PluginManager(executorRef.current, print, getInput, getPreferredLocales, getSimulation);
     await pluginManager.initSdk();
     await pluginManager.loadFromProjectMetadata(project);
     pluginManagerRef.current = pluginManager;
@@ -434,6 +443,11 @@ function Ide({ projectName }: Props) {
     });
   }
 
+  function getPreferredLocales(): string[] {
+    // $FlowExpectError
+    return preferredLocalesRef.current;
+  }
+
   async function handleConsoleInput(input: string) {
     const ideConsole = consoleRef.current;
     // eslint-disable-next-line no-throw-literal
@@ -460,6 +474,7 @@ function Ide({ projectName }: Props) {
       misc: await initMiscSdk({
         print,
         getInput,
+        getPreferredLocales,
         onExit: handleTerminate,
         pluginManager,
         executor,
