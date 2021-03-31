@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# build command: `yarn build --release`
+
 HOST=priaide@aitne.uberspace.de
 DEPLOY_DIR=/home/priaide/sites/hedgehog-ide
 BUILD_DIR=build
