@@ -18,7 +18,7 @@ export default async function init({
 }: InitArgs) {
   // <GSL customizable: hedgehog-init>
   async function getRobot(name: string): Promise<Robot> {
-    const robot = (await getSimulation()).robots.get(name);
+    const robot = (await getSimulation()).getScene().robots.get(name);
     if (robot === undefined) throw new Error(`no robot named "${name}"`);
     return robot;
   }
@@ -78,7 +78,7 @@ export default async function init({
   async function sleep(millis: number) {
     // <GSL customizable: hedgehog-body-sleep>
     const simulation = await getSimulation();
-    await simulation.sleep(millis);
+    await simulation.getScene().sleep(millis);
     // </GSL customizable: hedgehog-body-sleep>
   }
 

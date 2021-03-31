@@ -49,21 +49,21 @@ export default async function init({
   async function add(objects: schema.Object[]) {
     // <GSL customizable: simulation-body-add>
     const simulation = await getSimulation();
-    simulation.jsonAdd(objects, true);
+    simulation.getScene().jsonAdd(objects);
     // </GSL customizable: simulation-body-add>
   }
 
   async function update(objects: {[label: string]: any}) {
     // <GSL customizable: simulation-body-update>
     const simulation = await getSimulation();
-    simulation.updateBodies(objects);
+    simulation.getScene().updateBodies(objects);
     // </GSL customizable: simulation-body-update>
   }
 
   async function remove(labels: string[]) {
     // <GSL customizable: simulation-body-remove>
     const simulation = await getSimulation();
-    simulation.removeBodies(labels);
+    simulation.getScene().removeBodies(labels);
     // </GSL customizable: simulation-body-remove>
   }
 

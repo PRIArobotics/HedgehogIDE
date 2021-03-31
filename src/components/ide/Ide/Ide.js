@@ -219,7 +219,7 @@ function Ide({ projectName }: Props) {
   function refreshSimulatorFromConfig(config: simulationSchema.Simulation | null) {
     if (simulatorRef.current === null || config === null || assets === null) return;
 
-    simulatorRef.current.simulation.jsonInit(config, assets);
+    simulatorRef.current.setScene(config, assets);
   }
 
   function refreshSimulator() {
@@ -520,7 +520,7 @@ function Ide({ projectName }: Props) {
 
     const simulator = simulatorRef.current;
     if (simulator !== null) {
-      for (const robot of simulator.simulation.robots.values()) {
+      for (const robot of simulator.simulation.getScene().robots.values()) {
         robot.controller.off();
       }
     }
@@ -539,7 +539,7 @@ function Ide({ projectName }: Props) {
     // eslint-disable-next-line no-throw-literal
     if (pluginManager === null) throw 'ref is null';
 
-    simulator.simulation.reset();
+    simulator.reset();
     pluginManager.getSdk().misc.emit(executor, 'simulationReset', null);
   }
 

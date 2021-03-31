@@ -21,7 +21,7 @@ import ToolBarItem from '../ToolBar/ToolBarItem';
 
 import s from './Simulator.scss';
 
-import { Simulation } from './simulation';
+import { schema, Simulation } from './simulation';
 
 import { generateConfigFromXml } from '../SimulatorEditor';
 // $FlowExpectError
@@ -43,6 +43,8 @@ type Props = {|
   onExecutionAction: (action: ExecutionAction) => void | Promise<void>,
 |};
 type Instance = {|
+  setScene(schema: schema.Simulation, assets?: Map<string, [string, Uint8Array]>): void,
+  reset(): void,
   simulation: Simulation,
 |};
 
@@ -53,17 +55,19 @@ type Instance = {|
  */
 const Simulator = React.forwardRef<Props, Instance>(
   ({ running, zoom, zoomMode, onUpdate, onExecutionAction }: Props, ref: Ref<Instance>) => {
-    const simulation = hooks.useValue(() => {
-      const sim = new Simulation();
-      sim.jsonInit(defaultSimulationConfig);
-      return sim;
-    });
+    const simulation = hooks.useValue(() => new Simulation());
+
+    const [scene, setScene] = React.useState<{
+      schema: schema.Simulation,
+      assets?: Map<string, [string, Uint8Array]>,
+    }>({ schema: defaultSimulationConfig });
 
     // mount simulator in the target and simulate continuously
     const [renderTarget, setRenderTarget] = React.useState<HTMLCanvasElement | null>(null);
     React.useEffect(() => {
       if (renderTarget === null) return undefined;
 
+      simulation.createScene(scene.schema, scene.assets);
       simulation.mount(renderTarget);
       simulation.startMatter();
       simulation.startRender();
@@ -71,12 +75,22 @@ const Simulator = React.forwardRef<Props, Instance>(
         simulation.stopRender();
         simulation.stopMatter();
         simulation.unmount();
+        simulation.destroyScene();
       };
-    }, [renderTarget, simulation]);
+    }, [renderTarget, simulation, scene]);
 
     // Need to use a dependency array here, because Ide requires a stable ref.
-    // On each change to the Simulator ref, jsonInit is potentially called.
-    React.useImperativeHandle(ref, () => ({ simulation }), [simulation]);
+    // On each change to the Simulator ref, setScene is potentially called.
+    React.useImperativeHandle(ref, () => ({
+      setScene(schema: schema.Simulation, assets?: Map<string, [string, Uint8Array]>) {
+        setScene({ schema, assets });
+      },
+      reset() {
+        const { schema, assets } = simulation.getScene();
+        setScene({ schema, assets });
+      },
+      simulation,
+    }), [setScene, simulation]);
 
     useStyles(s);
     return (
