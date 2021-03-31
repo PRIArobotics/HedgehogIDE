@@ -184,7 +184,13 @@ function Ide({ projectName }: Props) {
     if (project === null || layoutModel === null || executorRef.current === null || pluginsLoaded)
       return;
 
-    const pluginManager = new PluginManager(executorRef.current, print, getInput, getPreferredLocales, getSimulation);
+    const pluginManager = new PluginManager(
+      executorRef.current,
+      print,
+      getInput,
+      getPreferredLocales,
+      getSimulation,
+    );
     await pluginManager.initSdk();
     await pluginManager.loadFromProjectMetadata(project);
     pluginManagerRef.current = pluginManager;
