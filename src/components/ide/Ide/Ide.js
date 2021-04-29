@@ -793,7 +793,7 @@ function Ide({ projectName }: Props) {
     if (fileUploadRef.current === null) throw 'ref is null';
 
     const files = await fileUploadRef.current.show();
-    if (files.length === 0) return;
+    if (files === null) return;
 
     // eslint-disable-next-line no-throw-literal
     if (project === null) throw 'unreachable';
