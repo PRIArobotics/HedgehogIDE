@@ -79,6 +79,16 @@ class Scene {
     Matter.World.add(this.world, bodies);
   }
 
+  getBodies(labels: string[]): { [label: string]: Matter.Body } {
+    const result = {};
+
+    for (const body of this.world.bodies) {
+      if (labels.includes(body.label)) result[body.label] = body;
+    }
+
+    return result;
+  }
+
   updateBodies(objects: { [label: string]: any }) {
     for (const body of this.world.bodies) {
       const settings = objects[body.label];
@@ -174,34 +184,10 @@ export default class Simulation {
     const scene = new Scene(schema, assets);
     this.scene = scene;
 
-    function extractBodyForSDK({
-      id,
-      label,
-      position,
-      speed,
-      velocity,
-      angle,
-      angularSpeed,
-      angularVelocity,
-      bounds,
-    }: Matter.Body) {
-      return {
-        id,
-        label,
-        position,
-        speed,
-        velocity,
-        angle,
-        angularSpeed,
-        angularVelocity,
-        bounds,
-      };
-    }
-
     const collisionHandler = ({ name, pairs }) => {
       for (const { bodyA, bodyB } of pairs) {
         for (const handler of this.externalSensorHandlers) {
-          handler(name, extractBodyForSDK(bodyA), extractBodyForSDK(bodyB));
+          handler(name, bodyA, bodyB);
         }
 
         scene.onCollision(name, bodyA, bodyB);

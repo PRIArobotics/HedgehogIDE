@@ -14,6 +14,11 @@ export function add(objects: schema.Object[]) {
   connection.send('simulation_add', { objects });
 }
 
+export async function get(labels: string[]) {
+  connection.send('simulation_get', { labels });
+  return connection.recv();
+}
+
 export function update(objects: {[label: string]: any}) {
   connection.send('simulation_update', { objects });
 }

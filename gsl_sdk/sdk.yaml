@@ -111,6 +111,11 @@ modules:
         args:
         - name: objects
           type: schema.Object[]
+      get:
+        hasReply: true
+        args:
+        - name: labels
+          type: string[]
       update:
         args:
         - name: objects
