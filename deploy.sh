@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# build command: `yarn build --release`
+# build command: `yarn build --release && mv build/public/sw.js build/public/sw.js~`
 
 HOST=priaide@aitne.uberspace.de
 DEPLOY_DIR=/home/priaide/sites/hedgehog-ide
