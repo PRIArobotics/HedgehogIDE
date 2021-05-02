@@ -14,7 +14,7 @@ The block will also be added to the toolbar in the *custom* section.
   The latter is usually supplied as XML, but for security reasons, this function will just take the input values and generate the toolbox item.
   We are aware however that this might limit the complexity of block which can be created with this function.
 
-  ```javascript
+  ```ts
   type DynamicBlock = {
     blockJson: Object,
     toolboxBlocksData: {
@@ -35,7 +35,7 @@ The block for the code will be automatically generated to make a call to the com
 
 When the block is invoked, the plugin will print the block's input values.
 
-```javascript
+```ts
 sdk.blockly.addBlock({
   blockJson: {
     type: 'custom_print_block',
@@ -79,7 +79,7 @@ Note that here, `registerCallWithReply` is used, which takes the return value of
 
 When the block is invoked, the plugin will return the passed value back to the user's code.
 
-```javascript
+```ts
 sdk.blockly.addBlock({
   blockJson: {
     type: 'custom_expression_block',

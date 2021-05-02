@@ -1,5 +1,13 @@
 # Plugins
-Plugins allow developers to extend the functionality of Hedgehog IDE.
+Plugins allow developers to extend the functionality of Hedgehog IDE. The lifecycle of a plugin is rather straightforward:
+
+- when a project is opened, each plugin is loaded and executed
+- initially, the plugin is in the "initialization phase"
+  - some SDKs that are available to plugins only work during this phase
+  - at some point, the plugin must call `pluginReady` to end the initialization phase
+- when all plugins have finished the initialization phase, the project's workspace will be loaded
+
+Most plugins will register event listeners during the initialization phase, so that the plugin can later react to those events happening.
 
 ## Writing plugins
 Plugins are attached to projects and are located in a folder called `.metadata/plugins`. Each JavaScript file within the plugin directory is a plugin. Hedgehog IDE will automatically load the plugin when loading the project.
@@ -9,7 +17,7 @@ Some important things to note:
 - Plugins are only loaded once when opening a project. To test your plugin code, reload the page, or go back to the project overview and reopen the project.
 - Each plugin must call `sdk.misc.pluginReady()` once it has finished initializing - if it does not (including because of an exception), the project will not successfully load and the workspace to the right of the file tree will remain empty! It is therefore recommended to use `try`/`finally` for calling `pluginReady`:
 
-  ```js
+  ```ts
   try {
     // ... plugin initialization ...
   } finally {
@@ -57,7 +65,7 @@ sdk.simulation.remove(labels: string[])
 
 A response can be either just a notification that the command has finished, as with `blockly.addBlock`, or a result, as with `simulation.get`:
 
-```js
+```ts
 // tell the IDE to add ablock to the Blockly toolbox
 await sdk.blockly.addBlock(myBlock);
 // the command has been completed
@@ -74,7 +82,7 @@ Note how `await` is used to call these functions. This kind of behavior is used 
 
 Functions without responses are *fire-and-forget*: the plugin gives a command to the IDE, but is not notified when that command completed. An example is `simulation.remove`:
 
-```js
+```ts
 // tell the IDE to remove the 'ball' object from the simulation
 sdk.simulation.remove(['ball']);
 // the command was sent, but has not yet been completed by the IDE
@@ -86,7 +94,7 @@ Note there's no `await`. This behavior is used by functions that have none of th
 
 Events allow plugins to run code as a reaction to things happening in the IDE. An example would be when a user starts their program, or when two simulated objects collide. To react to events, the plugin has to register an event handler for that event via the corresponding SDK's `on` function, e.g. like this:
 
-```js
+```ts
 sdk.misc.on('programExecute', () => {
   print('program started!');
 });

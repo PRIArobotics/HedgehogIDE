@@ -11,10 +11,10 @@ Sets the robot's velocity in per mille (-1000 to 1000). If set to 0, the motor w
 #### `async sdk.hedgehog.setServo(robot: string, port: number, position: number)`
 Sets the servo position.
 
-#### `async sdk.hedgehog.getAnalog(robot: string, port: number)`
+#### `async sdk.hedgehog.getAnalog(robot: string, port: number): number`
 Returns the value of the analog sensor at the specified port.
 
-#### `async sdk.hedgehog.getDigital(robot: string, port: number)`
+#### `async sdk.hedgehog.getDigital(robot: string, port: number): boolean`
 Returns the value of the digital sensor at the specified port.
 
 #### `async sdk.hedgehog.sleep(millis: number)`
