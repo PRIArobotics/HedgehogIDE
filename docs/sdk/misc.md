@@ -3,6 +3,42 @@ The Misc SDK contains general IDE functionality that is not associated with any 
 
 ## Functions
 
+#### `sdk.misc.print(text: string)`
+Prints a text to the IDE's console.
+
+- `text: string`: The text to print.
+
+#### `async sdk.misc.getInput(): string`
+Waits for and reads a line from the IDE's console.
+
+#### `async sdk.misc.getBestLocale(localeOptions: string[]): string | null`
+Selects the best locale for the user from among the given options. If none of the options is fitting, returns `null`.
+
+A typical pattern for using this is like so:
+
+```ts
+const messages = {
+  de: {
+    msg: "Nachricht",
+  },
+  en: {
+    msg: "message",
+  },
+};
+
+const m = messages[await sdk.misc.getBestLocale(Object.keys(messages)) || "en"];
+```
+
+This code
+- declares a number of translations for the necessary messages (here only `msg`)
+- selects the most fitting translation for the user
+- falls back to the `en` locale if neither of the available locales was fitting
+- provides all messages in the `m` variable.
+
+Subsequent code can access messages like `m.msg`.
+
+- `localeOptions: string[]`: The locales to choose from.
+
 #### `sdk.misc.exit(error: string | void)`
 Informs the IDE that the program/plugin is done and its sandbox can be cleaned up. This happens automatically when the program/plugin terminates, *if* no listeners are registered, and therefore it is seldom necessary to call this manually. However, a plugin that has registered event listeners *can* call this manually when it has fulfilled its purpose and does not need to continue running.
 
