@@ -33,7 +33,7 @@ Some important things to note:
 ## SDKs
 For security reasons, plugins run (as normal user programs also do) in an sandboxed environment. The only way for plugins to interact with Hedgehog IDE and its components is via so-called SDKs. Data passed between the IDE and the sandboxed plugin is serialized by the browser using the [structured clone algorithm](https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API/Structured_clone_algorithm), so, for example, instances of classes will preserve their properties, but not their prototypes.
 
-Every SDK enables interaction with a specific aspect of the IDE. The following SDK modules are currently available:
+Every SDK enables interaction with a specific aspect of the IDE. The following SDK modules are currently available and documented [here](./sdk):
 
 - `misc`: general IDE functionality
 - `hedgehog`: control simulated robots; this is intended for user programs, but is also available for plugins
@@ -46,7 +46,14 @@ SDKs provide two kinds of primitives: functions and events.
 
 ### Functions
 
-Functions enable plugins to initiate an operation within the IDE. Functions can be further divided into those with responses and those without.
+Functions enable plugins to initiate an operation within the IDE. Functions can be further divided into those with responses and those without. In the SDK documentation, you can recognize functions with responses by the `async`:
+
+```ts
+// function with response
+async sdk.simulation.get(labels: string[])
+// function without response
+sdk.simulation.remove(labels: string[])
+```
 
 A response can be either just a notification that the command has finished, as with `blockly.addBlock`, or a result, as with `simulation.get`:
 
@@ -87,50 +94,18 @@ sdk.misc.on('programExecute', () => {
 
 In this example, the event handler is from the `programExecute` event of the `misc` SDK.
 
-### Core plugin functions
+### Core SDK functions
+
+Every SDK provides the following function:
+
 #### `sdk.<MODULE>.on(event: string, cb: (payload: any) => void)`
 Register an event handler.
 
-Arguments:
 - `event`: Event name
 - `cb`: Handler function which will be called when the event occurs
 
-#### `sdk.<MODULE>.registerCall(command: string, cb: (payload: any) => void)`
-Register a command handler.
+#### `sdk.<MODULE>.emit(event: string, payload: any)`
+Triggers an event for this SDK. The event is sent to all event handlers registered in all programs/plugins.
 
-Arguments:
-- `name`: Function name
-- `cb`: Handler function which will be called when the command is invoked
-
-#### `sdk.<MODULE>.registerCallWithReply(command: string, cb: (payload: any) => any)`
-Register a command handler that returns a result.
-
-Arguments:
-- `name`: Function name
-- `cb`: Handler function which will be called when the command is invoked
-
-#### `sdk.misc.exit()`
-Terminates the plugin.
-
-#### `sdk.misc.pluginReady()`
-Some features and functions of the SDK require to be executed before the IDE and all the view components are fully initialized. Therefore, plugins need to signal that all initialization code is complete and the IDE can complete the initialization phase and display the views to the user.
-
-*IMPORTANT*: Every plugin MUST call this function after performing any of there early stage SDK calls, even those which do not perform any initialization-phase SDK calls at all.
-
-### Core Plugin Events
-Core events are fired within the `misc` namespace (use `sdk.misc.on(EVENT, ...)` to register to them).
-
-#### `programExecute`
-Called whenever a user starts a program. No payload is passed for this event.
-
-#### `programTerminate`
-Called whenever a program terminated. This can be either cause by a user action (the user clicking on the stop program button) or when the program terminated by itself.
-
-Payload:
-- `error`: Optional error.
-
-#### `simulationReset`
-Called whenever the simulation is reset. No payload is passed for this event.
-
-### SDK documentation
-Documentation on the SDK modules can be found in the sdk directory.
+- `event`: Event name
+- `payload`: The data associated with the event

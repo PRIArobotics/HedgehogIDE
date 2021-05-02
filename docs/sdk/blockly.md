@@ -3,14 +3,13 @@ The Blockly SDK allows plugins to register custom blocks with Hedgehog IDE's vis
 The visual programs in turn can invoke functionality of the plugin via these blocks.
 
 ## Functions
-#### `sdk.blockly.addBlock(dynamicBlock: DynamicBlock)`
+#### `async sdk.blockly.addBlock(dynamicBlock: DynamicBlock)`
 Adds a custom block to the visual programming environment.
 The block will also be added to the toolbar in the *custom* section.
 
 **IMPORTANT:** This is an initialization-phase function and MUST be called before `sdk.misc.pluginReady()`.
 
-Arguments:
-- dynamicBlock: Object describing the block.
+- `dynamicBlock`: Object describing the block.
   The block description consists of Blockly's `blockJson` definition (https://developers.google.com/blockly/guides/create-custom-blocks/define-blocks) and the default input values for the block in the toolbox.
   The latter is usually supplied as XML, but for security reasons, this function will just take the input values and generate the toolbox item.
   We are aware however that this might limit the complexity of block which can be created with this function.
@@ -108,6 +107,4 @@ sdk.misc.registerCallWithReply('blk_custom_expression_block', (payload) => {
 ```
 
 ## Events
-#### `blk_<BLOCK-NAME>_called`
-Event which fires when a custom block has been invoked. The block input values will be passed as payload.
-
+This module does not have any events.

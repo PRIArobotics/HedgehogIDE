@@ -5,12 +5,14 @@ The Simulation SDK enables access to the simulation environment.
 #### `sdk.simulation.add(objects: schema.Object[])`
 Adds multiple objects to the simulation. Objects are given in the same form as they appear in the simulator editor's JSON output.
 
+#### `async sdk.simulation.get(labels: string[])`
+
 #### `sdk.simulation.update(objects: {[label: string]: any})`
 Updates properties of multiple objects in the simulation. For each label, the value is an object with any number of properties to update in the object, e.g.: `angle`, `density`, `frictionAir`, `plugin` (for storing arbitrary properties), `position`, `render`. The complete list can be found [here](https://brm.io/matter-js/docs/classes/Body.html#properties) - be aware that some properties are computed and should therefore not be overwritten.
 
 The given `plugin` property is set on the body using deep merging, as it can hold arbitrary independent data. The `render` and `render.sprite` properties similarly hold independent settings, and are merged shallowly (i.e. setting `render.x` preserves `render.y`, but not `render.x.y`).
 
-#### `sdk.simulation.remove(label: string)`
+#### `sdk.simulation.remove(labels: string[])`
 Removes all objects from the simulation that have the given exact label. Note that right now, removed objects will not be re-added when resetting the simulation.
 
 ## Events
