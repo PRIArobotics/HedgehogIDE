@@ -52,7 +52,7 @@
     "history": "^4.7.2",
     "isomorphic-style-loader": "^5.1.0",
     "json-dir-tree-react": "^1.0.3",
-    "jsonwebtoken": "^8.3.0",
+    "jsonwebtoken": "^9.0.0",
     "jsstore": "^3.4.3",
     "lodash.merge": "^4.6.1",
     "material-ui-popup-state": "^1.5.3",
